@@ -1,0 +1,1244 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FamilyTreeOki | çµ±åã¤ã³ããªã¸ã§ã³ã¹ ããã·ã¥ãã¼ã</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/recharts@2.12.7/umd/Recharts.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.1/base.css" rel="stylesheet"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:#020617;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+    .scrollbar-hide::-webkit-scrollbar{display:none}
+    .scrollbar-hide{-ms-overflow-style:none;scrollbar-width:none}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+    .animate-pulse{animation:pulse 2s cubic-bezier(.4,0,.6,1) infinite}
+  </style>
+  <script>
+    tailwind.config={theme:{extend:{colors:{slate:{950:'#020617'}}}}}
+  </script>
+</head>
+<body>
+  <div id="root"></div>
+  <script>
+    const { useState, useEffect, useRef } = React;
+    const {
+      BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
+      ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line,
+      AreaChart, Area
+    } = Recharts;
+  </script>
+  <script>
+const {
+  useState,
+  useEffect,
+  useRef
+} = React;
+const {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+  LineChart,
+  Line,
+  AreaChart,
+  Area
+} = Recharts;
+
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// DATA
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+const MARKET_DATA = {
+  usdjpy: 152.45,
+  us10y: 4.18,
+  nikkei: 42100,
+  wti: 81.2,
+  gdp: 2.2,
+  pceCore: 2.6,
+  unemployment: 4.4,
+  fed: 4.375,
+  jpTreasury: 1.16,
+  cnTreasury: 0.71
+};
+const MILITARY_MARKET = {
+  sofaTotal: 53754,
+  activePersonnel: 25000,
+  dependents: 28754,
+  monthlyConsumption: 308.0,
+  annualConsumption: 3696.5,
+  avgMonthlyIncome: 1047667,
+  entertainmentShare: 924.1
+};
+const BIRTH_CENTER = {
+  tam: 1100,
+  sam: 770,
+  som: 350,
+  annualSessions: 1400,
+  avgTicket: 28000,
+  monthlyRevenue: 3360000,
+  annualRevenue: 40000000,
+  operatingMargin: 0.5,
+  baseSession: 22000,
+  premiumPackage: 38000
+};
+const PAY_GRADES = [{
+  grade: "E-4",
+  role: "ä¸å£«å®/è¥å¹´",
+  monthly: 5534,
+  jpyMonth: 843581
+}, {
+  grade: "E-7",
+  role: "çç·´ä¸å£«å®",
+  monthly: 7952,
+  jpyMonth: 1211586
+}, {
+  grade: "O-3",
+  role: "å¤§å°/å£«å®",
+  monthly: 9993,
+  jpyMonth: 1523231
+}, {
+  grade: "O-5",
+  role: "ä¸­ä½/å¹¹é¨",
+  monthly: 11800,
+  jpyMonth: 1798760
+}];
+const REGIONAL_CONSUMPTION = [{
+  name: "åæç´å¨è¾º",
+  annual: 1478.6,
+  monthly: 123.22,
+  share: 40
+}, {
+  name: "æ®å¤©éå¨è¾º",
+  annual: 1109.0,
+  monthly: 92.41,
+  share: 30
+}, {
+  name: "é£è¦å°åº",
+  annual: 369.7,
+  monthly: 30.80,
+  share: 10
+}, {
+  name: "åé¨/è¾ºéå¤",
+  annual: 369.7,
+  monthly: 30.80,
+  share: 10
+}, {
+  name: "ãã®ä»",
+  annual: 369.7,
+  monthly: 30.80,
+  share: 10
+}];
+const SCENARIOS = [{
+  name: "è»çé¸",
+  prob: 45,
+  color: "#22c55e",
+  gdp: 2.0,
+  usdJpy: "148-155",
+  military: "ç¾ç¶ç¶­æ(25,000å)",
+  birth: "Â¥4,000ä¸/å¹´",
+  strategy: "ç©æ¥µæ¡å¤§ã»ãã¼ã±ãã£ã³ã°å¼·å",
+  impact: "é«"
+}, {
+  name: "é·æåæ»",
+  prob: 40,
+  color: "#f59e0b",
+  gdp: 0.5,
+  usdJpy: "140-148",
+  military: "å¾®å¢(+2,000å)",
+  birth: "Â¥3,500ä¸/å¹´",
+  strategy: "ã³ã¹ãæé©åã»LTVåä¸æ½ç­",
+  impact: "ä¸­"
+}, {
+  name: "éèäºæ",
+  prob: 15,
+  color: "#ef4444",
+  gdp: -1.5,
+  usdJpy: "120-138",
+  military: "IPACå¼·å(+5,000å)",
+  birth: "Â¥3,000ä¸/å¹´",
+  strategy: "ãã«å»ºã¦æ±ºæ¸å°å¥ã»èåãã¸ã·ã§ã³å¼·å",
+  impact: "ä½âé«"
+}];
+const MORNING_BRIEFS = [{
+  category: "ðºð¸ ç±³å½çµæ¸",
+  title: "GDP2.2%æé·ãéåæ¸å¿µ",
+  detail: "Q1 2026 GDPéå ±å¤2.2%ãPCEã³ã¢2.6%ã§Fedå©ä¸ãã¯æéãCREãªã¹ã¯ãå°éã«æ³¢åãä¸­å°éè¡ã®ä¸è¯åµæ¨©æ¯çãä¸æä¸­ããã«åã¯152åå°ã§è çã",
+  risk: "MEDIUM"
+}, {
+  category: "ð å°æ¿å­¦",
+  title: "åè¥¿ã·ããå éã»æ²ç¸æ¦ç¥ä¾¡å¤MAX",
+  detail: "2026å¹´3ææ¥ç±³é¦è³ä¼è«ã§ãæ°é»éæä»£ãå®£è¨ãã°ã¢ã ç§»è»¢5,000åã®PCSéè¦ãæ¥å¢ãè¾ºéå¤å»ºè¨­ç¶ç¶ã§åé¨æ¶è²»ããã³ã·ã£ã«ä¸æãæ²ç¸ã®è»äºãã¬ã¼ã³ã¹ã¯ä»å¾5å¹´ã§æå¤§åã",
+  risk: "OPPORTUNITY"
+}, {
+  category: "ð¶ åºç£å¸å ´",
+  title: "ç±³è»å¦å©¦TAMå¹´1,100ä»¶ã»ãã«ã¼ãªã¼ã·ã£ã³",
+  detail: "USNHOå¹´éåå¨©æ°æå¤§1,100ä»¶ãåºå°å¤ä½é¨åãµã¼ãã¹ã¸ã®éè¦ã¯770ä»¶(70%)ããBirth Havenããã¸ã·ã§ã³ã¯ç«¶åã¼ã­ãLadies of Kadena FB(1ä¸äºº+)ãä¸»è¦ç²å¾ãã£ãã«ã",
+  risk: "LOW"
+}, {
+  category: "ð± çºæ¿æ¦ç¥",
+  title: "152åå°ï¼ã¢ã¼ããã©ã¼ã¸æå¤§åå±é¢",
+  detail: "ç¾å¨152.45åãÂ¥22,000 = $144 (ç±³å½ä¾¡æ ¼$150-200ã¨åç­ä»¥ä¸)ãåãã¼ã¹ã³ã¹ãã§ãã«åå¥å±¤ã«æä¾âå©çç50%+ãä»®ã«120åã«ãªã£ã¦ãÂ¥22,000 = $183ã§ç«¶äºåç¶­æã",
+  risk: "LOW"
+}];
+const SUPPLY_CHAIN_DATA = [{
+  month: "10æ",
+  cass: 98,
+  drewry: 2100,
+  demand: 72
+}, {
+  month: "11æ",
+  cass: 96,
+  drewry: 2050,
+  demand: 70
+}, {
+  month: "12æ",
+  cass: 97,
+  drewry: 2080,
+  demand: 71
+}, {
+  month: "1æ",
+  cass: 94,
+  drewry: 1980,
+  demand: 68
+}, {
+  month: "2æ",
+  cass: 93,
+  drewry: 1950,
+  demand: 67
+}, {
+  month: "3æ",
+  cass: 95,
+  drewry: 2020,
+  demand: 69
+}, {
+  month: "4æ",
+  cass: 92,
+  drewry: 1900,
+  demand: 66
+}];
+const BIRTH_REVENUE_MODEL = [{
+  package: "åºæ¬(60å)",
+  price: 22000,
+  usd: 144
+}, {
+  package: "2åããã±ã¼ã¸",
+  price: 38000,
+  usd: 249
+}, {
+  package: "4Dãã¬ãã¢ã ",
+  price: 30000,
+  usd: 197
+}, {
+  package: "Heartbeatã¬ãããã¿",
+  price: 5500,
+  usd: 36
+}, {
+  package: "8Kå å·¥(1æ)",
+  price: 3300,
+  usd: 22
+}];
+const GEOPOLITICAL_FRONTS = [{
+  front: "æ¬§å·æ¦ç·",
+  risk: 65,
+  impact: 40,
+  okinawa: 30
+}, {
+  front: "ä¸­æ±æ¦ç·",
+  risk: 55,
+  impact: 45,
+  okinawa: 25
+}, {
+  front: "ã¤ã³ãå¤ªå¹³æ´",
+  risk: 80,
+  impact: 85,
+  okinawa: 95
+}];
+const MONTHLY_CONSUMPTION = [{
+  month: "1æ",
+  amount: 272.06
+}, {
+  month: "2æ",
+  amount: 260.60
+}, {
+  month: "3æ",
+  amount: 298.49
+}, {
+  month: "4æ",
+  amount: 336.38
+}, {
+  month: "5æ",
+  amount: 339.34
+}, {
+  month: "6æ",
+  amount: 338.85
+}, {
+  month: "7æ",
+  amount: 354.25
+}, {
+  month: "8æ",
+  amount: 369.65
+}, {
+  month: "9æ",
+  amount: 323.44
+}, {
+  month: "10æ",
+  amount: 308.04
+}, {
+  month: "11æ",
+  amount: 286.79
+}, {
+  month: "12æ",
+  amount: 316.97
+}];
+const FISCAL_DATA = [{
+  year: "2022",
+  netInterest: 475,
+  debtGDP: 120
+}, {
+  year: "2023",
+  netInterest: 569,
+  debtGDP: 122
+}, {
+  year: "2024",
+  netInterest: 658,
+  debtGDP: 124
+}, {
+  year: "2025",
+  netInterest: 742,
+  debtGDP: 127
+}, {
+  year: "2026E",
+  netInterest: 812,
+  debtGDP: 130
+}];
+
+// ââ TICKER ââ
+function Ticker() {
+  const [offset, setOffset] = useState(0);
+  const items = ["ð´ USD/JPY  152.45  â¼0.23", "ð US 10Y  4.18%  â²0.03", "ð¾ æ¥çµå¹³å  42,100  â²+385", "ð¢ï¸ WTIåæ²¹  $81.20  â¼0.45", "ð GDPæé·ç  2.2%  Q1-2026", "ð¼ å¤±æ¥­ç  4.4%  â²0.1", "ð¦ PCEã³ã¢  2.6%  â¼0.1", "ð¯ðµ æ¥æ¬ä¿æç±³å½åµ  $1.16å  #1ä¸ç", "ð¨ð³ ä¸­å½ä¿æç±³å½åµ  $0.71å", "ð¶ ç±³è»å¹´éåå¨©æ°  1,100ä»¶  TAM", "ð¥ å¨æ²SOFAäººå£  53,754å", "ð° å¨æ²ç±³è»å¹´éæ¶è²»å  Â¥3,697åå", "ð  åæç´å¨è¾ºå¹´éæ¶è²»  Â¥1,479åå  æå¤§æ¶è²»å", "ð± FamilyTreeOki  Â¥22,000/session  = $144", "ð¯ ç®æ¨å¹´å  ¢¥4,000ä¸å  å©çç50%+"];
+  useEffect(() => {
+    const id = setInterval(() => setOffset(p => p - 1), 30);
+    return () => clearInterval(id);
+  }, []);
+  const txt = items.join("   ï½   ");
+  return /*#__PURE__*/React.createElement("div", {
+    className: "bg-slate-900 border-b border-slate-700 overflow-hidden py-2"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "whitespace-nowrap text-xs font-mono text-emerald-400 inline-block",
+    style: {
+      transform: `translateX(${offset % (txt.length * 7.2)}px)`,
+      paddingLeft: "100%"
+    }
+  }, txt, "   ï½   ", txt));
+}
+
+// ââ RISK BADGE ââ
+function RiskBadge({
+  level
+}) {
+  const s = {
+    HIGH: "bg-red-900/60 text-red-300 border border-red-700",
+    MEDIUM: "bg-amber-900/60 text-amber-300 border border-amber-700",
+    LOW: "bg-green-900/60 text-green-300 border border-green-700",
+    OPPORTUNITY: "bg-blue-900/60 text-blue-300 border border-blue-700"
+  };
+  const l = {
+    HIGH: "â  é«ãªã¹ã¯",
+    MEDIUM: "â ä¸­ãªã¹ã¯",
+    LOW: "â ä½ãªã¹ã¯",
+    OPPORTUNITY: "â æ©ä¼"
+  };
+  return /*#__PURE__*/React.createElement("span", {
+    className: `text-xs px-2 py-0.5 rounded-full font-semibold ${s[level] || s.MEDIUM}`
+  }, l[level] || level);
+}
+
+// ââ KPI CARD ââ
+function KpiCard({
+  label,
+  value,
+  sub,
+  color = "emerald",
+  icon
+}) {
+  const c = {
+    emerald: "from-emerald-900/40 to-emerald-800/20 border-emerald-700/50 text-emerald-400",
+    blue: "from-blue-900/40 to-blue-800/20 border-blue-700/50 text-blue-400",
+    amber: "from-amber-900/40 to-amber-800/20 border-amber-700/50 text-amber-400",
+    rose: "from-rose-900/40 to-rose-800/20 border-rose-700/50 text-rose-400",
+    violet: "from-violet-900/40 to-violet-800/20 border-violet-700/50 text-violet-400",
+    cyan: "from-cyan-900/40 to-cyan-800/20 border-cyan-700/50 text-cyan-400"
+  };
+  const cls = c[color];
+  return /*#__PURE__*/React.createElement("div", {
+    className: `bg-gradient-to-br ${cls} border rounded-xl p-4 flex flex-col gap-1`
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "text-2xl"
+  }, icon), /*#__PURE__*/React.createElement("div", {
+    className: `text-2xl font-bold ${cls.split(" ").pop()}`
+  }, value), /*#__PURE__*/React.createElement("div", {
+    className: "text-slate-300 text-sm font-medium"
+  }, label), sub && /*#__PURE__*/React.createElement("div", {
+    className: "text-slate-500 text-xs"
+  }, sub));
+}
+
+// ââ SECTION HEADER ââ
+function SectionHeader({
+  title,
+  subtitle,
+  icon
+}) {
+  return /*#__PURE__*/React.createElement("div", {
+    className: "mb-6"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-3 mb-1"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-2xl"
+  }, icon), /*#__PURE__*/React.createElement("h2", {
+    className: "text-xl font-bold text-white tracking-wide"
+  }, title)), subtitle && /*#__PURE__*/React.createElement("p", {
+    className: "text-slate-400 text-sm ml-9"
+  }, subtitle), /*#__PURE__*/React.createElement("div", {
+    className: "mt-2 h-px bg-gradient-to-r from-emerald-500/50 via-blue-500/30 to-transparent"
+  }));
+}
+
+// ââ AI ADVISOR ââ
+function AiAdvisor() {
+  const [input, setInput] = useState("");
+  const [messages, setMessages] = useState([{
+    role: "ai",
+    text: "ããã«ã¡ã¯ãFamilyTreeOkiæ¦ç¥ã¢ããã¤ã¶ã¼ã§ãããã¯ã­çµæ¸ã»å°æ¿å­¦ã»äºæ¥­æ¦ç¥ã«ã¤ãã¦è³ªåãã¦ãã ãããä¾ï¼ã152åã®çºæ¿ç°å¢ã§ã®æé©ä¾¡æ ¼è¨­å®ã¯ï¼ããè»çé¸ã·ããªãªã§ã®éå®¢æ¦ç¥ã¯ï¼ã"
+  }]);
+  const [loading, setLoading] = useState(false);
+  const bottomRef = useRef(null);
+  const RESP = {
+    ä¾¡æ ¼: "**152åç°å¢ã§ã®æé©ä¾¡æ ¼è¨­è¨**\n\nç¾å¨Â¥22,000 = $144ã§ããç±³å½ã®åæ§ãµã¼ãã¹ã$150-200ãªã®ã§ãç±³å½ããå®ããå¿ççåªä½æ§ãããã¾ãã\n\næ¨å¥¨ä¾¡æ ¼ä½ç³»ï¼\nâ¢ åºæ¬ã»ãã·ã§ã³(60å)ï¼Â¥22,000 ($144)\nâ¢ 4Dãã¬ãã¢ã ï¼Â¥30,000 ($197) â ã¹ã¤ã¼ãã¹ããã\nâ¢ 2åããã±ã¼ã¸ï¼Â¥38,000 ($249) â LTVæå¤§å",
+    éå®¢: "**ç±³è»ã³ãã¥ããã£éå®¢æ¦ç¥ï¼æåªåãã£ãã«3é¸ï¼**\n\n1. Ladies of Kadena Facebook (1ä¸äºº+)\nâ ã¢ã³ããµãã¼ä½é¨âæç¨¿ã§å£ã³ãççºãä¿¡é ¼åº¦ãæé«\n\n2. NPSP(New Parent Support Program)é£æº\nâ åºå°åã®å¬å¼è²åæ¯æ´ãã­ã°ã©ã ã«ãã³ãè¨­ç½®ãå¬ä¿¡å+\n\n3. Google MEOã4D Ultrasound Okinawaã\nâ USNHO(æµ·è»çé¢)ããè»15åãã¢ãã¼ã«ãè±èªSEO1ä½ãç¢ºä¿",
+    å°æ¿å­¦: "**ãã¢ã·ã£ã¤ãã¼ãæ»å¢çãªã¢ãªãºã ãããè¦ãæ²ç¸ãã¸ã·ã§ã³**\n\nç±³å½ã®ã¤ã³ãå¤ªå¹³æ´ãçµ±åææ­¢ãæ¦ç¥ã«ããã¦æ²ç¸ã¯:\nâ¢ å°æ¹¾æäºç¬¬ä¸åå³¶ç·ã®è¦è¡ â é§çåµåã¯åæ¸ä¸å¯\nâ¢ ã°ã¢ã ç§»è»¢(æµ·åµ5,000å)ã¯PCSéè¦ãçã\nâ¢ åè¥¿ã·ãã â é¨éã­ã¼ãã¼ã·ã§ã³å¢å \n\nçµè«ï¼å°æ¿å­¦çç·å¼µâ = å¨æ²ç±³è»å¢å¼· = FamilyTreeOkiã®TAMæ¡å¤§",
+    ã·ããªãª: "**3ã·ããªãªå¥ FamilyTreeOkiæ¦ç¥ãããªã¯ã¹**\n\nð¢ è»çé¸(45%)ï¼Â¥4,000ä¸/å¹´éæãç©æ¥µçãªè¨­åæè³ã¨ã¹ã¿ããæ¡ç¨ã\n\nð¡ é·æåæ»(40%)ï¼Â¥3,500ä¸/å¹´ã§é»å­ç¢ºä¿ãLTVãéè¦ã2åããã±ã¼ã¸ã¸èªå°ã\n\nð´ éèäºæ(15%)ï¼åé«(120å)ã§ãÂ¥22,000=$183ã®ç«¶äºåç¶­æãå°æ¿å­¦å±æ©ã§è»å¢å¼·âéè¦å¢ã",
+    åç: "**FamilyTreeOki åçã¢ãã«è©³ç´°**\n\næéã»ãã·ã§ã³120ä»¶ Ã å¹³åå®¢åä¾¡Â¥28,000 = æéÂ¥336ä¸å\nå¹´éå£²ä¸ï¼ç´Â¥4,000ä¸å\nå¶æ¥­å©ççï¼45-55%ï¼åãã¼ã¹ã³ã¹ã + ãã«é¡§å®¢ã®æ§é ï¼\n\nLTVï¼1äººã®å¦å©¦ãå¹³å4åæ¥é¢ â é¡§å®¢LTV Â¥88,000\næçåå²ç¹ï¼æéç´45ä»¶ï¼åºå®è²»æ150ä¸åæ³å®ï¼"
+  };
+  const getResp = q => {
+    const l = q.toLowerCase();
+    if (l.includes("ä¾¡æ ¼") || l.includes("æé") || l.includes("åå®")) return RESP.ä¾¡æ ¼;
+    if (l.includes("éå®¢") || l.includes("ãã¼ã±") || l.includes("fb") || l.includes("sns")) return RESP.éå®¢;
+    if (l.includes("å°æ¿å­¦") || l.includes("è»") || l.includes("ã·ãã") || l.includes("å°æ¹¾")) return RESP.å°æ¿å­¦;
+    if (l.includes("ã·ããªãª") || l.includes("ãªã¹ã¯") || l.includes("çé¸")) return RESP.ã·ããªãª;
+    if (l.includes("åç") || l.includes("å£²ä¸") || l.includes("å©ç") || l.includes("ltv")) return RESP.åç;
+    return `ãè³ªåã${q}ãã«ã¤ãã¦ï¼\n\nFamilyTreeOkiã¯ç¾å¨ã®152ååå®ç°å¢ã«ããã¦æããªã¹ã¯ãä½ãé«åçãªäºæ¥­ã¢ãã«ã§ããå¨æ²SOFAäººå£53,754åãå¹´éåå¨©TAM1,100ä»¶ãæéå¹³åå®¢åä¾¡Â¥28,000ã¨ããå®ãã¼ã¿ã«åºã¥ããå¹´åÂ¥4,000ä¸ã»å©çç50%+ãç¾å®çç®æ¨ã§ããå·ä½çãªè³ªåï¼ä¾¡æ ¼è¨­è¨ã»éå®¢ã»å°æ¿å­¦ã»ã·ããªãªåæï¼ããè©¦ããã ããã`;
+  };
+  const handleSend = () => {
+    if (!input.trim()) return;
+    setMessages(p => [...p, {
+      role: "user",
+      text: input
+    }]);
+    setInput("");
+    setLoading(true);
+    setTimeout(() => {
+      setMessages(p => [...p, {
+        role: "ai",
+        text: getResp(input)
+      }]);
+      setLoading(false);
+    }, 800);
+  };
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({
+      behavior: "smooth"
+    });
+  }, [messages]);
+  return /*#__PURE__*/React.createElement("div", {
+    className: "bg-slate-900 border border-slate-700 rounded-2xl flex flex-col",
+    style: {
+      height: "380px"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "px-4 py-3 border-b border-slate-700 flex items-center gap-2"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "w-2 h-2 rounded-full bg-emerald-400 animate-pulse"
+  }), /*#__PURE__*/React.createElement("span", {
+    className: "text-sm font-semibold text-slate-200"
+  }, "AI \u6226\u7565\u30A2\u30C9\u30D0\u30A4\u30B6\u30FC"), /*#__PURE__*/React.createElement("span", {
+    className: "text-xs text-slate-500 ml-auto"
+  }, "koya\u5408\u540C\u4F1A\u793E \u5C02\u7528")), /*#__PURE__*/React.createElement("div", {
+    className: "flex-1 overflow-y-auto p-4 space-y-3"
+  }, messages.map((m, i) => /*#__PURE__*/React.createElement("div", {
+    key: i,
+    className: `flex ${m.role === "user" ? "justify-end" : "justify-start"}`
+  }, /*#__PURE__*/React.createElement("div", {
+    className: `max-w-xs rounded-xl px-3 py-2 text-sm ${m.role === "user" ? "bg-blue-600 text-white" : "bg-slate-800 text-slate-200 border border-slate-700"}`
+  }, m.text.split("\n").map((line, j) => /*#__PURE__*/React.createElement("p", {
+    key: j,
+    className: line.startsWith("**") ? "font-bold text-emerald-300" : ""
+  }, line.replace(/\*\*/g, "")))))), loading && /*#__PURE__*/React.createElement("div", {
+    className: "flex justify-start"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-slate-800 border border-slate-700 rounded-xl px-4 py-2"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-slate-400 text-sm animate-pulse"
+  }, "\u5206\u6790\u4E2D..."))), /*#__PURE__*/React.createElement("div", {
+    ref: bottomRef
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "p-3 border-t border-slate-700 flex gap-2"
+  }, /*#__PURE__*/React.createElement("input", {
+    value: input,
+    onChange: e => setInput(e.target.value),
+    onKeyDown: e => e.key === "Enter" && handleSend(),
+    placeholder: "\u4F8B\uFF1A152\u5186\u3067\u306E\u4FA1\u683C\u8A2D\u8A08\u306F\uFF1F",
+    className: "flex-1 bg-slate-800 border border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+  }), /*#__PURE__*/React.createElement("button", {
+    onClick: handleSend,
+    className: "px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-semibold rounded-lg transition-colors"
+  }, "\u9001\u4FE1")));
+}
+
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// MAIN APP
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+function App() {
+  const [tab, setTab] = useState("executive");
+  const tabs = [{
+    id: "executive",
+    label: "ð ã¨ã°ã¼ã¯ãã£ã"
+  }, {
+    id: "economy",
+    label: "ð¦ ç±³å½çµæ¸"
+  }, {
+    id: "market",
+    label: "ð è»å¸å ´"
+  }, {
+    id: "birth",
+    label: "ð¶ åºç£æ¦ç¥"
+  }, {
+    id: "scenarios",
+    label: "ð® ã·ããªãª"
+  }, {
+    id: "advisor",
+    label: "ð¤ AIã¢ããã¤ã¶ã¼"
+  }];
+  const DC = ["#3b82f6", "#10b981", "#f59e0b", "#8b5cf6", "#ef4444"];
+  const TS = {
+    backgroundColor: "#1e293b",
+    border: "1px solid #334155",
+    color: "#f1f5f9"
+  };
+  return /*#__PURE__*/React.createElement("div", {
+    className: "min-h-screen bg-slate-950 text-slate-100 font-sans"
+  }, /*#__PURE__*/React.createElement("header", {
+    className: "bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 border-b border-slate-700"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "max-w-7xl mx-auto px-4 py-4"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-start justify-between flex-wrap gap-3"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-3 mb-1"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-500 to-blue-600 flex items-center justify-center text-sm font-bold"
+  }, "\uD83C\uDF33"), /*#__PURE__*/React.createElement("h1", {
+    className: "text-xl font-bold text-white tracking-tight"
+  }, "FamilyTreeOki"), /*#__PURE__*/React.createElement("span", {
+    className: "text-xs bg-emerald-900/60 text-emerald-400 border border-emerald-700 px-2 py-0.5 rounded-full"
+  }, "Birth Center")), /*#__PURE__*/React.createElement("p", {
+    className: "text-slate-400 text-xs ml-11"
+  }, "\u30DE\u30AF\u30ED\u7D4C\u6E08\xD7\u5730\u653F\u5B66\xD7\u5728\u6C96\u7C73\u8ECD\u5E02\u5834 \u7D71\u5408\u30A4\u30F3\u30C6\u30EA\u30B8\u30A7\u30F3\u30B9\uFF5C2026.04.27")), /*#__PURE__*/React.createElement("div", {
+    className: "flex gap-4 text-right"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    className: "text-emerald-400 font-mono font-bold text-lg"
+  }, "\xA5152.45"), /*#__PURE__*/React.createElement("div", {
+    className: "text-slate-500 text-xs"
+  }, "USD/JPY")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    className: "text-blue-400 font-mono font-bold text-lg"
+  }, "4.18%"), /*#__PURE__*/React.createElement("div", {
+    className: "text-slate-500 text-xs"
+  }, "US 10Y")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    className: "text-amber-400 font-mono font-bold text-lg"
+  }, "42,100"), /*#__PURE__*/React.createElement("div", {
+    className: "text-slate-500 text-xs"
+  }, "\u65E5\u7D4C\u5E73\u5747")))))), /*#__PURE__*/React.createElement(Ticker, null), /*#__PURE__*/React.createElement("div", {
+    className: "sticky top-0 z-20 bg-slate-900 border-b border-slate-700/50"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "max-w-7xl mx-auto px-4"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex gap-1 overflow-x-auto py-2 scrollbar-hide"
+  }, tabs.map(t => /*#__PURE__*/React.createElement("button", {
+    key: t.id,
+    onClick: () => setTab(t.id),
+    className: `px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${tab === t.id ? "bg-emerald-600 text-white shadow-lg" : "text-slate-400 hover:text-slate-200 hover:bg-slate-800"}`
+  }, t.label))))), /*#__PURE__*/React.createElement("main", {
+    className: "max-w-7xl mx-auto px-4 py-6 space-y-8"
+  }, tab === "executive" && /*#__PURE__*/React.createElement("div", {
+    className: "space-y-6"
+  }, /*#__PURE__*/React.createElement(SectionHeader, {
+    icon: "\uD83D\uDCCB",
+    title: "\u30A8\u30B0\u30BC\u30AF\u30C6\u30A3\u30D6\u30B5\u30DE\u30EA\u30FC",
+    subtitle: "\u5408\u540C\u4F1A\u793Ekoya\uFF5CFamilyTreeOki Birth Center\uFF5C2026\u5E744\u670827\u65E5\u7248"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3"
+  }, /*#__PURE__*/React.createElement(KpiCard, {
+    icon: "\uD83D\uDC65",
+    label: "\u5728\u6C96SOFA\u7DCF\u6570",
+    value: "53,754",
+    sub: "\u540D (2026\u63A8\u8A08)",
+    color: "blue"
+  }), /*#__PURE__*/React.createElement(KpiCard, {
+    icon: "\uD83D\uDCB0",
+    label: "\u5E74\u9593\u6D88\u8CBB\u529B",
+    value: "\xA53,697\u5104",
+    sub: "\u5186/\u5E74",
+    color: "emerald"
+  }), /*#__PURE__*/React.createElement(KpiCard, {
+    icon: "\uD83D\uDC76",
+    label: "\u5E74\u9593\u5206\u5A29TAM",
+    value: "1,100\u4EF6",
+    sub: "USNHO\u5B9F\u7E3E\u6700\u5927",
+    color: "violet"
+  }), /*#__PURE__*/React.createElement(KpiCard, {
+    icon: "\uD83C\uDFC6",
+    label: "\u76EE\u6A19\u5E74\u5546",
+    value: "\xA54,000\u4E07",
+    sub: "\u5229\u76CA\u738750%+",
+    color: "amber"
+  }), /*#__PURE__*/React.createElement(KpiCard, {
+    icon: "\uD83D\uDCB1",
+    label: "\u5186\u5B89\u30A2\u30FC\u30D3",
+    value: "152.45\u5186",
+    sub: "\u30C9\u30EB\u9867\u5BA2\u512A\u4F4D\u6027MAX",
+    color: "cyan"
+  }), /*#__PURE__*/React.createElement(KpiCard, {
+    icon: "\uD83C\uDFAF",
+    label: "\u521D\u5E74\u5EA6SOM",
+    value: "350\u4EF6",
+    sub: "\u30B7\u30A7\u30A245%\u76EE\u6A19",
+    color: "rose"
+  })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
+    className: "text-sm font-semibold text-slate-400 uppercase tracking-wider mb-3"
+  }, "\uD83D\uDCF0 \u30E2\u30FC\u30CB\u30F3\u30B0\u30D6\u30EA\u30FC\u30D5\u30A3\u30F3\u30B0"), /*#__PURE__*/React.createElement("div", {
+    className: "grid md:grid-cols-2 gap-3"
+  }, MORNING_BRIEFS.map((b, i) => /*#__PURE__*/React.createElement("div", {
+    key: i,
+    className: "bg-slate-900 border border-slate-700 rounded-xl p-4 hover:border-slate-500 transition-colors"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-start justify-between mb-2"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", {
+    className: "text-xs text-slate-500 font-medium"
+  }, b.category), /*#__PURE__*/React.createElement("h4", {
+    className: "text-sm font-bold text-white mt-0.5"
+  }, b.title)), /*#__PURE__*/React.createElement(RiskBadge, {
+    level: b.risk
+  })), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-slate-400 leading-relaxed"
+  }, b.detail))))), /*#__PURE__*/React.createElement("div", {
+    className: "bg-slate-900 border border-slate-700 rounded-xl overflow-hidden"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "px-4 py-3 border-b border-slate-700 bg-slate-800/50"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "text-sm font-semibold text-slate-200"
+  }, "\uD83D\uDCCA \u4E3B\u8981\u30C7\u30FC\u30BF\u4E00\u89A7\u8868\uFF082026.04.27\u7248\uFF09")), /*#__PURE__*/React.createElement("div", {
+    className: "overflow-x-auto"
+  }, /*#__PURE__*/React.createElement("table", {
+    className: "w-full text-xs"
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", {
+    className: "border-b border-slate-700 bg-slate-800/30"
+  }, ["ã«ãã´ãª", "ææ¨", "æ°å¤", "FamilyTreeOkiã¸ã®æå³"].map(h => /*#__PURE__*/React.createElement("th", {
+    key: h,
+    className: "text-left px-4 py-2 text-slate-400 font-medium"
+  }, h)))), /*#__PURE__*/React.createElement("tbody", null, [["ç±³å½çµæ¸", "GDPæé·ç(Q1-2026)", "2.2%", "ç·©æ¢ãªæé·âè»äºç®ã¯ç¶­æã»åæ¸ãªã¹ã¯å°"], ["ç±³å½çµæ¸", "PCEã³ã¢(ã¤ã³ãã¬)", "2.6%", "é«ã¤ã³ãã¬âãã«è³¼è²·åã¯ç¸å¯¾çã«è¯å¥½"], ["ç±³å½çµæ¸", "å¤±æ¥­ç", "4.4%", "ä¸è¬å¸å ´ã¯è»åâè»é¢ä¿èã®éç¨å®å®ã¯éç«ã¤"], ["ç±³å½çµæ¸", "10å¹´åµå©åã", "4.18%", "é«éå©âFedå©ä¸ãéå»¶âåå®æç¶å¯è½æ§"], ["çºæ¿", "USD/JPY", "Â¥152.45", "Â¥22,000 = $144 ç±³å½ããå®ãä½é¨ä¾¡å¤"], ["ç±³è»å¸å ´", "å¨æ²SOFAç·æ°", "53,754å", "ç´æ¥ã¿ã¼ã²ããå¸å ´è¦æ¨¡"], ["ç±³è»å¸å ´", "æéæ¶è²»å", "Â¥308åå", "å·¨å¤§ãªçµæ¸åãæ²ç¸ã«å­å¨"], ["ç±³è»å¸å ´", "åæç´å¨è¾ºæ¶è²»", "Â¥1,479å/å¹´", "æå¤§æ¶è²»å=FTOkiã®æé©ç«å°"], ["åºç£å¸å ´", "å¹´éåå¨©TAM", "1,100ä»¶", "æå¤§ã®å°éå¯è½å¸å ´è¦æ¨¡"], ["åºç£å¸å ´", "åºå°å¤ãµã¼ãã¹éè¦", "770ä»¶ (70%)", "ç±³è»çé¢å¤ã§ä½é¨åãµã¼ãã¹ãæ±ããå±¤"], ["åºç£å¸å ´", "åå¹´åº¦ç²å¾ç®æ¨", "350ä»¶", "ã·ã§ã¢45%ã»ç¾å®çéæç®æ¨"]].map(([cat, ind, val, meaning], i) => /*#__PURE__*/React.createElement("tr", {
+    key: i,
+    className: `border-b border-slate-800 ${i % 2 === 0 ? "" : "bg-slate-900/30"}`
+  }, /*#__PURE__*/React.createElement("td", {
+    className: "px-4 py-2 text-slate-500 font-medium"
+  }, cat), /*#__PURE__*/React.createElement("td", {
+    className: "px-4 py-2 text-slate-300"
+  }, ind), /*#__PURE__*/React.createElement("td", {
+    className: "px-4 py-2 text-emerald-400 font-mono font-bold text-right"
+  }, val), /*#__PURE__*/React.createElement("td", {
+    className: "px-4 py-2 text-slate-400"
+  }, meaning)))))))), tab === "economy" && /*#__PURE__*/React.createElement("div", {
+    className: "space-y-6"
+  }, /*#__PURE__*/React.createElement(SectionHeader, {
+    icon: "\uD83C\uDFE6",
+    title: "\u7C73\u56FD\u7D4C\u6E08\u5206\u6790",
+    subtitle: "GDP\u30FB\u30A4\u30F3\u30D5\u30EC\u30FB\u8CA1\u653F\u30FB\u30B5\u30D7\u30E9\u30A4\u30C1\u30A7\u30FC\u30F3\u30FB\u9280\u884C\u30EA\u30B9\u30AF\uFF082026\u5E744\u6708\uFF09"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-2 md:grid-cols-4 gap-3"
+  }, /*#__PURE__*/React.createElement(KpiCard, {
+    icon: "\uD83D\uDCC8",
+    label: "GDP\u6210\u9577\u7387",
+    value: "2.2%",
+    sub: "Q1-2026 \u901F\u5831",
+    color: "emerald"
+  }), /*#__PURE__*/React.createElement(KpiCard, {
+    icon: "\uD83D\uDD25",
+    label: "PCE\u30B3\u30A2",
+    value: "2.6%",
+    sub: "\u524D\u5E74\u6BD4\u30FBFed\u6CE8\u76EE",
+    color: "amber"
+  }), /*#__PURE__*/React.createElement(KpiCard, {
+    icon: "\uD83D\uDC77",
+    label: "\u5931\u696D\u7387",
+    value: "4.4%",
+    sub: "\u25B20.1% \u7DE9\u6162\u4E0A\u6607",
+    color: "rose"
+  }), /*#__PURE__*/React.createElement(KpiCard, {
+    icon: "\uD83C\uDFE6",
+    label: "Fed\u653F\u7B56\u91D1\u5229",
+    value: "4.375%",
+    sub: "\u5229\u4E0B\u3052\u614E\u91CD\u59FF\u52E2",
+    color: "blue"
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "grid md:grid-cols-2 gap-6"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-slate-900 border border-slate-700 rounded-xl p-4"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "text-sm font-semibold text-slate-200 mb-4"
+  }, "\uD83D\uDBC9 \u7C73\u56FD\u30CD\u30C3\u30C8\u5229\u6255\u3044\u63A8\u79FB\uFF08\u5341\u5104\u30C9\u30EB\uFF09"), /*#__PURE__*/React.createElement(ResponsiveContainer, {
+    width: "100%",
+    height: 220
+  }, /*#__PURE__*/React.createElement(BarChart, {
+    data: FISCAL_DATA
+  }, /*#__PURE__*/React.createElement(CartesianGrid, {
+    strokeDasharray: "3 3",
+    stroke: "#334155"
+  }), /*#__PURE__*/React.createElement(XAxis, {
+    dataKey: "year",
+    tick: {
+      fill: "#94a3b8",
+      fontSize: 11
+    }
+  }), /*#__PURE__*/React.createElement(YAxis, {
+    tick: {
+      fill: "#94a3b8",
+      fontSize: 11
+    }
+  }), /*#__PURE__*/React.createElement(Tooltip, {
+    contentStyle: TS
+  }), /*#__PURE__*/React.createElement(Bar, {
+    dataKey: "netInterest",
+    fill: "#ef4444",
+    name: "\u30CD\u30C3\u30C8\u5229\u6255\u3044(\u5341\u5104$)",
+    radius: [3, 3, 0, 0]
+  }))), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-slate-500 mt-2"
+  }, "2026E: $812B\u3002GDP\u306E2.8%\u8D85\u3002\u8CA1\u653F\u5727\u529B\u304C\u7D99\u7D9A\u7684\u306B\u62E1\u5927")), /*#__PURE__*/React.createElement("div", {
+    className: "bg-slate-900 border border-slate-700 rounded-xl p-4"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "text-sm font-semibold text-slate-200 mb-4"
+  }, "\uD83D\uDEA2 \u30B5\u30D7\u30E9\u30A4\u30C1\u30A7\u30FC\u30F3\u9700\u8981\u6307\u6570\u63A8\u79FB"), /*#__PURE__*/React.createElement(ResponsiveContainer, {
+    width: "100%",
+    height: 220
+  }, /*#__PURE__*/React.createElement(LineChart, {
+    data: SUPPLY_CHAIN_DATA
+  }, /*#__PURE__*/React.createElement(CartesianGrid, {
+    strokeDasharray: "3 3",
+    stroke: "#334155"
+  }), /*#__PURE__*/React.createElement(XAxis, {
+    dataKey: "month",
+    tick: {
+      fill: "#94a3b8",
+      fontSize: 11
+    }
+  }), /*#__PURE__*/React.createElement(YAxis, {
+    tick: {
+      fill: "#94a3b8",
+      fontSize: 11
+    }
+  }), /*#__PURE__*/React.createElement(Tooltip, {
+    contentStyle: TS
+  }), /*#__PURE__*/React.createElement(Line, {
+    type: "monotone",
+    dataKey: "cass",
+    stroke: "#3b82f6",
+    name: "Cass\u6307\u6570",
+    strokeWidth: 2,
+    dot: false
+  }), /*#__PURE__*/React.createElement(Line, {
+    type: "monotone",
+    dataKey: "demand",
+    stroke: "#10b981",
+    name: "\u9700\u8981\u6307\u6570",
+    strokeWidth: 2,
+    dot: false
+  }), /*#__PURE__*/React.createElement(Legend, {
+    wrapperStyle: {
+      color: "#94a3b8",
+      fontSize: 11
+    }
+  })))))), tab === "market" && /*#__PURE__*/React.createElement("div", {
+    className: "space-y-6"
+  }, /*#__PURE__*/React.createElement(SectionHeader, {
+    icon: "\uD83C\uDF96",
+    title: "\u5728\u6C96\u7C73\u8ECD\u5E02\u5834\u5206\u6790",
+    subtitle: "SOFA\u4EBA\u53E3\u30FB\u6D88\u8CBB\u529B\u30FB\u5730\u57DF\u5206\u5E03\u30FB\u7D66\u4E0E\u4F53\u7CFB\uFF08\u5B9F\u30C7\u30FC\u30BF\uFF1Akoya\u5408\u540C\u4F1A\u793E \u7814\u7A76\u8CC7\u6599\uFF09"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-2 md:grid-cols-4 gap-3"
+  }, /*#__PURE__*/React.createElement(KpiCard, {
+    icon: "\u2694\uFE0F",
+    label: "\u8ECD\u4EBA\uFF08\u73FE\u5F79\uFF09",
+    value: "25,000",
+    sub: "\u540D",
+    color: "blue"
+  }), /*#__PURE__*/React.createElement(KpiCard, {
+    icon: "\uD83D\uDC68\u200D\uD83D\uDC69\u200D\uD83D\uDC67",
+    label: "\u5E2F\u540C\u5BB6\u65CF",
+    value: "28,754",
+    sub: "\u540D",
+    color: "violet"
+  }), /*#__PURE__*/React.createElement(KpiCard, {
+    icon: "\uD83D\uDCB4",
+    label: "\u6708\u9593\u6D88\u8CBB\u529B",
+    value: "\xA5308\u5104",
+    sub: "\u5186/\u6708",
+    color: "emerald"
+  }), /*#__PURE__*/React.createElement(KpiCard, {
+    icon: "\uD83D\uDCC5",
+    label: "\u5E74\u9593\u6D88\u8CBB\u529B",
+    value: "\xA53,697\u5104",
+    sub: "\u5186/\u5E74",
+    color: "amber"
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "grid md:grid-cols-2 gap-6"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-slate-900 border border-slate-700 rounded-xl p-4"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "text-sm font-semibold text-slate-200 mb-4"
+  }, "\uD83D\uDDFA\uFE0F \u5730\u57DF\u5225\u5E74\u9593\u6D88\u8CBB\u984D\uFF08\u5104\u5186\uFF09"), /*#__PURE__*/React.createElement(ResponsiveContainer, {
+    width: "100%",
+    height: 240
+  }, /*#__PURE__*/React.createElement(BarChart, {
+    data: REGIONAL_CONSUMPTION,
+    layout: "vertical"
+  }, /*#__PURE__*/React.createElement(CartesianGrid, {
+    strokeDasharray: "3 3",
+    stroke: "#334155"
+  }), /*#__PURE__*/React.createElement(XAxis, {
+    type: "number",
+    tick: {
+      fill: "#94a3b8",
+      fontSize: 11
+    }
+  }), /*#__PURE__*/React.createElement(YAxis, {
+    dataKey: "name",
+    type: "category",
+    tick: {
+      fill: "#94a3b8",
+      fontSize: 11
+    },
+    width: 85
+  }), /*#__PURE__*/React.createElement(Tooltip, {
+    contentStyle: TS,
+    formatter: v => [`Â¥${v}åå`, "å¹´éæ¶è²»"]
+  }), /*#__PURE__*/React.createElement(Bar, {
+    dataKey: "annual",
+    radius: [0, 4, 4, 0]
+  }, REGIONAL_CONSUMPTION.map((_, i) => /*#__PURE__*/React.createElement(Cell, {
+    key: i,
+    fill: DC[i]
+  })))))), /*#__PURE__*/React.createElement("div", {
+    className: "bg-slate-900 border border-slate-700 rounded-xl p-4"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "text-sm font-semibold text-slate-200 mb-4"
+  }, "\uD83D\uDCC5 \u6708\u5225\u6D88\u8CBB\u5909\u52D5\uFF08\u5104\u5186\uFF09\u30FB\u4EFB\u671F\u4EA4\u4EE3\u5B63\u7BC0\u6027"), /*#__PURE__*/React.createElement(ResponsiveContainer, {
+    width: "100%",
+    height: 240
+  }, /*#__PURE__*/React.createElement(AreaChart, {
+    data: MONTHLY_CONSUMPTION
+  }, /*#__PURE__*/React.createElement("defs", null, /*#__PURE__*/React.createElement("linearGradient", {
+    id: "cg",
+    x1: "0",
+    y1: "0",
+    x2: "0",
+    y2: "1"
+  }, /*#__PURE__*/React.createElement("stop", {
+    offset: "5%",
+    stopColor: "#10b981",
+    stopOpacity: 0.3
+  }), /*#__PURE__*/React.createElement("stop", {
+    offset: "95%",
+    stopColor: "#10b981",
+    stopOpacity: 0
+  }))), /*#__PURE__*/React.createElement(CartesianGrid, {
+    strokeDasharray: "3 3",
+    stroke: "#334155"
+  }), /*#__PURE__*/React.createElement(XAxis, {
+    dataKey: "month",
+    tick: {
+      fill: "#94a3b8",
+      fontSize: 10
+    }
+  }), /*#__PURE__*/React.createElement(YAxis, {
+    domain: [240, 380],
+    tick: {
+      fill: "#94a3b8",
+      fontSize: 11
+    }
+  }), /*#__PURE__*/React.createElement(Tooltip, {
+    contentStyle: TS,
+    formatter: v => [`Â¥${v}åå`, "æéæ¶è²»"]
+  }), /*#__PURE__*/React.createElement(Area, {
+    type: "monotone",
+    dataKey: "amount",
+    stroke: "#10b981",
+    fill: "url(#cg)",
+    strokeWidth: 2
+  }))), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-slate-500 mt-2"
+  }, "7-8\u6708\u304C\u30D4\u30FC\u30AF\u308\xA5370\u5104\u309E\u30023\u6708\u65B0\u898F\u914D\u5C5E\u5F8C\u306B\u9700\u898F\u6025\u5897\u2192Birth Center\u958B\u9662\u30BF\u30A4\u30DF\u30F3\u30B0\u306E\u9375"))), /*#__PURE__*/React.createElement("div", {
+    className: "bg-slate-900 border border-slate-700 rounded-xl p-4"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "text-sm font-semibold text-slate-200 mb-4"
+  }, "\uD83C\uDF0F 3\u6B63\u9762\u306E\u5730\u653F\u5B66\u30EA\u30B9\u30AF\u3068\u6C96\u7E04\u6226\u7565\u4FA1\u5024"), /*#__PURE__*/React.createElement("div", {
+    className: "grid md:grid-cols-3 gap-4"
+  }, GEOPOLITICAL_FRONTS.map((f, i) => /*#__PURE__*/React.createElement("div", {
+    key: i,
+    className: "bg-slate-800/50 rounded-xl p-3"
+  }, /*#__PURE__*/React.createElement("h4", {
+    className: "text-sm font-bold text-white mb-2"
+  }, f.front), [{
+    label: "ç·å¼µãªã¹ã¯",
+    val: f.risk,
+    color: "bg-red-500"
+  }, {
+    label: "çµæ¸å½±é¿",
+    val: f.impact,
+    color: "bg-amber-500"
+  }, {
+    label: "æ²ç¸é£ååº¦",
+    val: f.okinawa,
+    color: "bg-blue-500"
+  }].map(b => /*#__PURE__*/React.createElement("div", {
+    key: b.label,
+    className: "mb-2"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex justify-between text-xs text-slate-400 mb-1"
+  }, /*#__PURE__*/React.createElement("span", null, b.label), /*#__PURE__*/React.createElement("span", null, b.val, "%")), /*#__PURE__*/React.createElement("div", {
+    className: "h-1.5 bg-slate-700 rounded-full"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: `h-full ${b.color} rounded-full`,
+    style: {
+      width: `${b.val}%`
+    }
+  })))), f.front === "ã¤ã³ãå¤ªå¹³æ´" && /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-emerald-400 mt-1 font-medium"
+  }, "\u2192 \u6C96\u7E04\u9023\u52D5\u5EA695%\u3002\u5357\u897F\u30B7\u30D5\u30C8\u52A0\u901F\u4E2D")))))), tab === "birth" && /*#__PURE__*/React.createElement("div", {
+    className: "space-y-6"
+  }, /*#__PURE__*/React.createElement(SectionHeader, {
+    icon: "\uD83D\uDC76",
+    title: "FamilyTreeOki Birth Center \u4E8B\u696D\u6226\u7565",
+    subtitle: "\u52A9\u7523\u9662\u30D4\u30DC\u30C3\u30C8 \xD7 \u70BA\u66FF\u30A2\u30FC\u30D3\u30C8\u30E9\u30FC\u30B8 \xD7 Birth Haven \u30DE\u30FC\u30B1\u30C6\u30A3\u30F3\u30B0"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-2 md:grid-cols-4 gap-3"
+  }, /*#__PURE__*/React.createElement(KpiCard, {
+    icon: "\uD83C\uDFAF",
+    label: "\u6708\u9593\u30BB\u30C3\u30B7\u30E7\u30F3\u76EE\u6A19",
+    value: "120\u4EF6",
+    sub: "\u5B8C\u5168\u4E88\u7D04\u5236",
+    color: "emerald"
+  }), /*#__PURE__*/React.createElement(KpiCard, {
+    icon: "\uD83D\uDCB4",
+    label: "\u5E73\u5747\u5BA2\u5358\u4FA1",
+    value: "\xA528,000",
+    sub: "=$184 (\u5186\u5B89\u30E1\u30EA\u30C3\u30C8)",
+    color: "blue"
+  }), /*#__PURE__*/React.createElement(KpiCard, {
+    icon: "\uD83D\uDCCA",
+    label: "\u6708\u9593\u58F2\u4E0A\u76EE\u6A19",
+    value: "\xA5336\u4E07",
+    sub: "\u5186",
+    color: "violet"
+  }), /*#__PURE__*/React.createElement(KpiCard, {
+    icon: "\uD83D\uDCB9",
+    label: "\u55B6\u696D\u5229\u76CA\u7387",
+    value: "50%+",
+    sub: "\u5186\u30B3\u30B9\u30C8\xD7\u30C9\u30EB\u9867\u5BA2",
+    color: "amber"
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "grid md:grid-cols-2 gap-6"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-slate-900 border border-slate-700 rounded-xl p-4"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "text-sm font-semibold text-slate-200 mb-4"
+  }, "\uD83D\uDCB0 \u30B5\u30FC\u30D3\u30B9\u30E1\u30CB\u30E5\u30FC\u5225\u4FA1\u683C\u30FBUSD\u63DB\u7B97"), /*#__PURE__*/React.createElement(ResponsiveContainer, {
+    width: "100%",
+    height: 220
+  }, /*#__PURE__*/React.createElement(BarChart, {
+    data: BIRTH_REVENUE_MODEL
+  }, /*#__PURE__*/React.createElement(CartesianGrid, {
+    strokeDasharray: "3 3",
+    stroke: "#334155"
+  }), /*#__PURE__*/React.createElement(XAxis, {
+    dataKey: "package",
+    tick: {
+      fill: "#94a3b8",
+      fontSize: 9
+    }
+  }), /*#__PURE__*/React.createElement(YAxis, {
+    tick: {
+      fill: "#94a3b8",
+      fontSize: 11
+    }
+  }), /*#__PURE__*/React.createElement(Tooltip, {
+    contentStyle: TS,
+    formatter: (v, n) => [n === "price" ? `Â¥${v.toLocaleString()}` : `$${v}`, n === "price" ? "åä¾¡æ ¼" : "USD"]
+  }), /*#__PURE__*/React.createElement(Bar, {
+    dataKey: "price",
+    fill: "#8b5cf6",
+    name: "price",
+    radius: [3, 3, 0, 0]
+  })))), /*#__PURE__*/React.createElement("div", {
+    className: "bg-slate-900 border border-slate-700 rounded-xl p-4"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "text-sm font-semibold text-slate-200 mb-4"
+  }, "\uD83D\uDD3D \u5E02\u5834\u30D5\u30A1\u30CD\u30EB\uFF08TAM\u2192SAM\u2192SOM\uFF09"), /*#__PURE__*/React.createElement("div", {
+    className: "space-y-3"
+  }, [{
+    label: "TAM å¹´éåå¨©ç·æ°",
+    val: 1100,
+    pct: 100,
+    color: "bg-blue-500",
+    note: "USNHOã®å®ç¸¾æå¤§å¤"
+  }, {
+    label: "SAM åºå°å¤ä½é¨åéè¦",
+    val: 770,
+    pct: 70,
+    color: "bg-emerald-500",
+    note: "ç±³å½ã§ã®ä½é¨åå©ç¨çåç§"
+  }, {
+    label: "SOM åå¹´åº¦ç²å¾ç®æ¨",
+    val: 350,
+    pct: 32,
+    color: "bg-amber-500",
+    note: "è±èªå¯¾å¿Ãã¢ã¯ã»ã¹åªä½"
+  }, {
+    label: "å¹´éæ½å¨ã»ãã·ã§ã³æ°",
+    val: 1400,
+    pct: null,
+    color: "bg-violet-500",
+    note: "1äººå¹³å4lm7mmage350äºº"
+  }].map((item, i) => /*#__PURE__*/React.createElement("div", {
+    key: i,
+    className: "bg-slate-800/50 rounded-lg p-3"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex justify-between items-center mb-1"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-xs font-semibold text-slate-200"
+  }, item.label), /*#__PURE__*/React.createElement("span", {
+    className: "text-sm font-bold text-emerald-400"
+  }, item.val.toLocaleString(), "\u4EF6")), item.pct && /*#__PURE__*/React.createElement("div", {
+    className: "h-2 bg-slate-700 rounded-full mb-1"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: `h-full ${item.color} rounded-full`,
+    style: {
+      width: `${item.pct}%`
+    }
+  })), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-slate-500"
+  }, item.note)))))), /*#__PURE__*/React.createElement("div", {
+    className: "bg-gradient-to-r from-emerald-950/50 via-blue-950/30 to-slate-900 border border-emerald-700/40 rounded-2xl p-5"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-start gap-4"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "text-4xl"
+  }, "\uD83C\uDF33"), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
+    className: "text-base font-bold text-white mb-2"
+  }, "\"Birth Haven\" \u30DB\u30B8\u30B7\u30E7\u30CB\u30F3\u30B0\u6226\u7565 ", /*#__PURE__*/React.createElement("span", {
+    className: "ml-2 text-xs bg-emerald-900/60 text-emerald-400 border border-emerald-700 px-2 py-0.5 rounded-full"
+  }, "\u30B3\u30A2\u6226\u7565")), /*#__PURE__*/React.createElement("p", {
+    className: "text-sm text-slate-300 leading-relaxed mb-3"
+  }, "\u5730\u653F\u5B66\u7684\u7DCA\u5F35\u304C\u9AD8\u307E\u308B\u4E2D\u3001\u300C\u9060\u3044\u7570\u56FD\u3067\u51FA\u7523\u3059\u308B\u4E0D\u5B89\u3092\u6301\u3064\u7C73\u8ECD\u59BB\u300D\u306B\u5BFE\u3057\u3001FamilyTreeOki\u306F", /*#__PURE__*/React.createElement("span", {
+    className: "text-emerald-400 font-semibold"
+  }, "\u300C\u5BB6\u65CF\u306E\u8056\u57DF\uFF08Birth Haven\uFF09\u300D"), "\u3068\u3057\u3066\u5B58\u5728\u3059\u308B\u3002"), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-2 md:grid-cols-4 gap-3"
+  }, [{
+    label: "é·æã¨å­¤ç¬æãçã",
+    desc: "å®æ¯ä¸å¨ã®æµ·å¤åºç£ã®ä¸å®ããå®å¨è±èªÃå®¶æåä¼´ã§è§£æ¶"
+  }, {
+    label: "ç¥ç¥­æåã¸ã®å¯¾å¿",
+    desc: "Gender Reveal/Baby Showerã®å¿é ã³ã³ãã³ããæä¾"
+  }, {
+    label: "SNSæ ãè¨­è¨",
+    desc: "4Kåç»å³æå±æã§ç±³å½ã®å®¶æã¨ãªã¢ã«ã¿ã¤ã ã§ç¹ãã"
+  }, {
+    label: "å»çã®å¤ã®ä¾¡å¤",
+    desc: "è¨ºæ­ã§ã¯ãªããçµã®è¨å¿µæ¥ãã¨ãã¦å·®å¥åã»æ³çå®å¨"
+  }].map((item, i) => /*#__PURE__*/React.createElement("div", {
+    key: i,
+    className: "bg-slate-900/60 rounded-lg p-3"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-xs font-semibold text-emerald-300 mb-1"
+  }, item.label), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-slate-400"
+  }, item.desc)))))))), tab === "scenarios" && /*#__PURE__*/React.createElement("div", {
+    className: "space-y-6"
+  }, /*#__PURE__*/React.createElement(SectionHeader, {
+    icon: "\uD83D\uDD2E",
+    title: "3\u30B7\u30CA\u30EA\u30AA\u4E88\u6E2C\u5206\u6790",
+    subtitle: "\u8EDF\u7740\u9678(45%) \xB7 \u9577\u671F\u505C\u6EDE(40%) \xB7 \u91D1\u878D\u4E8B\u6545(15%) \u2014 \u78BA\u7387\u5206\u5E03\u3068FamilyTreeOki\u3078\u306E\u5F71\u97FF"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "grid md:grid-cols-2 gap-6 items-center"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-slate-900 border border-slate-700 rounded-xl p-4"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "text-sm font-semibold text-slate-200 mb-4"
+  }, "\uD83D\uDCCA \u30B7\u30CA\u30EA\u30AA\u78BA\u7387\u5206\u5E03"), /*#__PURE__*/React.createElement(ResponsiveContainer, {
+    width: "100%",
+    height: 260
+  }, /*#__PURE__*/React.createElement(PieChart, null, /*#__PURE__*/React.createElement(Pie, {
+    data: SCENARIOS,
+    cx: "50%",
+    cy: "50%",
+    innerRadius: 70,
+    outerRadius: 110,
+    dataKey: "prob",
+    nameKey: "name"
+  }, SCENARIOS.map((s, i) => /*#__PURE__*/React.createElement(Cell, {
+    key: i,
+    fill: s.color
+  }))), /*#__PURE__*/React.createElement(Tooltip, {
+    contentStyle: TS,
+    formatter: v => [`${v}%`, "ç¢ºç"]
+  }), /*#__PURE__*/React.createElement(Legend, {
+    wrapperStyle: {
+      color: "#94a3b8",
+      fontSize: 12
+    }
+  })))), /*#__PURE__*/React.createElement("div", {
+    className: "space-y-4"
+  }, SCENARIOS.map((s, i) => /*#__PURE__*/React.createElement("div", {
+    key: i,
+    className: "bg-slate-900 border rounded-xl p-4",
+    style: {
+      borderColor: s.color + "60"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-between mb-2"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "font-bold text-white"
+  }, s.name, "\u30B7\u30CA\u30EA\u30AA"), /*#__PURE__*/React.createElement("span", {
+    className: "text-2xl font-black",
+    style: {
+      color: s.color
+    }
+  }, s.prob, "%")), /*#__PURE__*/React.createElement("div", {
+    className: "h-1.5 bg-slate-700 rounded-full mb-3"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "h-full rounded-full",
+    style: {
+      width: `${s.prob}%`,
+      backgroundColor: s.color
+    }
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-2 gap-2 text-xs"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", {
+    className: "text-slate-500"
+  }, "GDP: "), /*#__PURE__*/React.createElement("span", {
+    className: "text-slate-200 font-mono"
+  }, s.gdp, "%")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", {
+    className: "text-slate-500"
+  }, "USD/JPY: "), /*#__PURE__*/React.createElement("span", {
+    className: "text-slate-200 font-mono"
+  }, s.usdJpy)), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", {
+    className: "text-slate-500"
+  }, "\u5728\u6C96\u7C73\u8ECD: "), /*#__PURE__*/React.createElement("span", {
+    className: "text-slate-200"
+  }, s.military)), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", {
+    className: "text-slate-500"
+  }, "Birth Center: "), /*#__PURE__*/React.createElement("span", {
+    className: "font-bold",
+    style: {
+      color: s.color
+    }
+  }, s.birth))), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-slate-400 mt-2 pt-2 border-t border-slate-700"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-slate-300 font-medium"
+  }, "\u6226\u7565: "), s.strategy))))), /*#__PURE__*/React.createElement("div", {
+    className: "bg-gradient-to-r from-blue-950/60 to-violet-950/40 border border-blue-700/40 rounded-2xl p-5"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "text-base font-bold text-white mb-3"
+  }, "\uD83C\uDFC6 \u6226\u7565\u7684\u7D50\u8AD6\uFF1A\u3059\u3079\u3066\u306E\u30B7\u30CA\u30EA\u30AA\u3067FamilyTreeOki\u306F\u52DD\u3066\u308B"), /*#__PURE__*/React.createElement("div", {
+    className: "grid md:grid-cols-3 gap-4 text-xs text-slate-300"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-slate-900/50 rounded-lg p-3"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "font-semibold text-green-400 mb-1"
+  }, "\u8EDF\u7740\u9678\uFF1A\u6700\u826F\u306E\u5C55\u958B"), /*#__PURE__*/React.createElement("p", null, "\u666F\u6C17\u56DE\u5FA9\u2192\u7C73\u8ECD\u4E88\u7B97\u7DAD\u6301\u2192SOFA\u4EBA\u53E3\u5B89\u5B9A\u3002\u5186\u5B89\u7D99\u7D9A\u2192\u5229\u76CA\u7387MAX\u3002\u7A4D\u6975\u6295\u8CC7\u30D5\u30A7\u30FC\u30BA\u3002")), /*#__PURE__*/React.createElement("div", {
+    className: "bg-slate-900/50 rounded-lg p-3"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "font-semibold text-amber-400 mb-1"
+  }, "\u505C\u6EDE\uFF1ALTV\u6226\u7565\u3067\u4E57\u308A\u5207\u308B"), /*#__PURE__*/React.createElement("p", null, "\u4E00\u822C\u666F\u6C17\u304C\u60AA\u304F\u3066\u3082\u8ECD\u4EBA\u306E\u7D66\u4E0E\u306F\u5B89\u5B9A\u3002\u30EA\u30D4\u30FC\u30C8\u69CB\u9020(4\u56DE/\u4EBA)\u304C\u4E0B\u652F\u3048\u3002\u640D\u76CA\u5206\u5C90\u306F\u670845\u4EF6\u3002")), /*#__PURE__*/React.createElement("div", {
+    className: "bg-slate-900/50 rounded-lg p-3"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "font-semibold text-red-400 mb-1"
+  }, "\u91D1\u878D\u4E8B\u6545\uFF1A\u5730\u653F\u5B66\u304C\u8FFD\u3044\u98A8"), /*#__PURE__*/React.createElement("p", null, "\u7D4C\u6E08\u5371\u6A5F\u2192\u7C73\u4E2D\u5BFE\u7ACB\u6FC0\u5316\u2192\u6C96\u7E04\u5897\u5F37\u3002\u5186\u9AD8\u3067\u3082\xA522,000=$183\u3067\u7AF6\u4E89\u529B\u7DAD\u6301\u3002\u8ECD\u9700\u306F\u666F\u6C17\u9006\u76F8\u95A2\u3002"))))), tab === "advisor" && /*#__PURE__*/React.createElement("div", {
+    className: "space-y-6"
+  }, /*#__PURE__*/React.createElement(SectionHeader, {
+    icon: "\uD83E\uDD16",
+    title: "AI \u6226\u7565\u30A2\u30C9\u30BA\u30A4\u30B6\u30FC",
+    subtitle: "koya\u5408\u540C\u4F1A\u793E \u5C02\u7528 | \u30DE\u30AF\u30ED\u7D4C\u6E08\u30FB\u5730\u653F\u5B66\u30FBFamilyTreeOki\u4E8B\u696D\u6226\u7565\u306B\u7279\u5316"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "grid md:grid-cols-3 gap-3"
+  }, [{
+    q: "152åã§ã®æé©ä¾¡æ ¼è¨­è¨ã¯ï¼",
+    icon: "ð±"
+  }, {
+    q: "Ladies of Kadenaãä½¿ã£ãéå®¢æ¦ç¥",
+    icon: "ð"
+  }, {
+    q: "å°æ¿å­¦ãªã¹ã¯ã¨æ²ç¸ã®æ¦ç¥ä¾¡å¤",
+    icon: "ð"
+  }, {
+    q: "3ã·ããªãªå¥ã®äºæ¥­æ¦ç¥ã¯ï¼",
+    icon: "ð®"
+  }, {
+    q: "FTOkiã®åçã¢ãã«ã¨LTV",
+    icon: "ð"
+  }, {
+    q: "Birth Havenãã¸ã·ã§ãã³ã°ã¨ã¯",
+    icon: "ð³"
+  }].map((item, i) => /*#__PURE__*/React.createElement("div", {
+    key: i,
+    className: "bg-slate-800 border border-slate-600 rounded-lg px-3 py-2 text-xs text-slate-300 flex gap-2 items-center"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-base"
+  }, item.icon), /*#__PURE__*/React.createElement("span", null, item.q)))), /*#__PURE__*/React.createElement(AiAdvisor, null))), /*#__PURE__*/React.createElement("footer", {
+    className: "border-t border-slate-800 bg-slate-900/50 mt-10"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "max-w-7xl mx-auto px-4 py-4 flex flex-wrap items-center justify-between gap-3"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-2"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-emerald-400 font-bold text-sm"
+  }, "FamilyTreeOki"), /*#__PURE__*/React.createElement("span", {
+    className: "text-slate-600 text-xs"
+  }, "\xD7"), /*#__PURE__*/React.createElement("span", {
+    className: "text-slate-400 text-xs"
+  }, "\u5408\u540C\u4F1A\u793Ekoya")), /*#__PURE__*/React.createElement("div", {
+    className: "text-xs text-slate-600"
+  }, "Strategic Intelligence Dashboard\uFF5C2026.04.27\uFF5CCONFIDENTIAL"), /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-2"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"
+  }), /*#__PURE__*/React.createElement("span", {
+    className: "text-xs text-slate-500"
+  }, "Live Data \xB7 koya Drive Sync")))));
+}
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(/*#__PURE__*/React.createElement(App, null));
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(React.createElement(App));
+  </script>
+</body>
+</html>
