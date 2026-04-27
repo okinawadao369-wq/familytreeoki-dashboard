@@ -279,10 +279,10 @@ const MONTHLY_CONSUMPTION = [{
   month: "5æ",
   amount: 339.34
 }, {
-  month: "6æ",
+  month: "2æ",
   amount: 338.85
 }, {
-  month: "7æ",
+  month: "3æ",
   amount: 354.25
 }, {
   month: "8æ",
@@ -325,708 +325,275 @@ const FISCAL_DATA = [{
 // ââ TICKER ââ
 function Ticker() {
   const [offset, setOffset] = useState(0);
-  const items = ["ð´ USD/JPY  152.45  â¼0.23", "ð US 10Y  4.18%  â²0.03", "ð¾ æ¥çµå¹³å  42,100  â²+385", "ð¢ï¸ WTIåæ²¹  $81.20  â¼0.45", "ð GDPæé·ç  2.2%  Q1-2026", "ð¼ å¤±æ¥­ç  4.4%  â²0.1", "ð¦ PCEã³ã¢  2.6%  â¼0.1", "ð¯ðµ æ¥æ¬ä¿æç±³å½åµ  $1.16å  #1ä¸ç", "ð¨ð³ ä¸­å½ä¿æç±³å½åµ  $0.71å", "ð¶ ç±³è»å¹´éåå¨©æ°  1,100ä»¶  TAM", "ð¥ å¨æ²SOFAäººå£  53,754å", "ð° å¨æ²ç±³è»å¹´éæ¶è²»å  Â¥3,697åå", "ð  åæç´å¨è¾ºå¹´éæ¶è²»  Â¥1,479åå  æå¤§æ¶è²»å", "ð± FamilyTreeOki  Â¥22,000/session  = $144", "ð¯ ç®æ¨å¹´å  ¢¥4,000ä¸å  å©çç50%+"];
-  useEffect(() => {
-    const id = setInterval(() => setOffset(p => p - 1), 30);
-    return () => clearInterval(id);
-  }, []);
-  const txt = items.join("   ï½   ");
-  return /*#__PURE__*/React.createElement("div", {
-    className: "bg-slate-900 border-b border-slate-700 overflow-hidden py-2"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "whitespace-nowrap text-xs font-mono text-emerald-400 inline-block",
-    style: {
-      transform: `translateX(${offset % (txt.length * 7.2)}px)`,
-      paddingLeft: "100%"
-    }
-  }, txt, "   ï½   ", txt));
-}
+  const items = ["ð´ USD/JPY  152.45  â¼0.23", "ð US 10Y  4.18%  â²0.03", "ð¾ æ¥çµå¹³å  42,100  â²+385", "ð¢ï¸ WTIåæ²¹  $81.20  â¼0.45", "ð GDPæé·ç  2.2%  Q1-2026", "ð¼ å¤±æ¥­ç  4.4%  â²0.1", "ð¦ PCEã³ã¢  2.6%  â¼0.1", "ð¯ðµ æ¥æ¬ä¿æç±³å½åµ  $1.16å  #1ä¸ç", "ð¨ð³ ä¸­å½ä¿æç±³å½åµ  $0.71å", "ð¶ ç±³è»å¹´éåå¨©æ°  1,100ä»¶  TAM", "ð¥ å¨æ²SOFAäººå£  53,754å", "ð° å¨æ²ç±³è»å¹´éæ¶è²»å  Â¥3,697åå", "ð  åæç´å¨è¾ºå¹´éæ¶è²»  Â¥1,479åå  æå¤§æ¶è²»å", "ð± FamilyTreeOki  Â¥22,000/session  = $144", "ð¯ ç®æ¨å¹´å  ©LË	.!ùa¡9b*yæâ¹ã¡ÍL	JÈNÂ\ÙQYXÝ
 
-// ââ RISK BADGE ââ
-function RiskBadge({
-  level
-}) {
-  const s = {
-    HIGH: "bg-red-900/60 text-red-300 border border-red-700",
-    MEDIUM: "bg-amber-900/60 text-amber-300 border border-amber-700",
-    LOW: "bg-green-900/60 text-green-300 border border-green-700",
-    OPPORTUNITY: "bg-blue-900/60 text-blue-300 border border-blue-700"
-  };
-  const l = {
-    HIGH: "â  é«ãªã¹ã¯",
-    MEDIUM: "â ä¸­ãªã¹ã¯",
-    LOW: "â ä½ãªã¹ã¯",
-    OPPORTUNITY: "â æ©ä¼"
-  };
-  return /*#__PURE__*/React.createElement("span", {
-    className: `text-xs px-2 py-0.5 rounded-full font-semibold ${s[level] || s.MEDIUM}`
-  }, l[level] || level);
-}
 
-// ââ KPI CARD ââ
-function KpiCard({
-  label,
-  value,
-  sub,
-  color = "emerald",
-  icon
-}) {
-  const c = {
-    emerald: "from-emerald-900/40 to-emerald-800/20 border-emerald-700/50 text-emerald-400",
-    blue: "from-blue-900/40 to-blue-800/20 border-blue-700/50 text-blue-400",
-    amber: "from-amber-900/40 to-amber-800/20 border-amber-700/50 text-amber-400",
-    rose: "from-rose-900/40 to-rose-800/20 border-rose-700/50 text-rose-400",
-    violet: "from-violet-900/40 to-violet-800/20 border-violet-700/50 text-violet-400",
-    cyan: "from-cyan-900/40 to-cyan-800/20 border-cyan-700/50 text-cyan-400"
-  };
-  const cls = c[color];
-  return /*#__PURE__*/React.createElement("div", {
-    className: `bg-gradient-to-br ${cls} border rounded-xl p-4 flex flex-col gap-1`
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "text-2xl"
-  }, icon), /*#__PURE__*/React.createElement("div", {
-    className: `text-2xl font-bold ${cls.split(" ").pop()}`
-  }, value), /*#__PURE__*/React.createElement("div", {
-    className: "text-slate-300 text-sm font-medium"
-  }, label), sub && /*#__PURE__*/React.createElement("div", {
-    className: "text-slate-500 text-xs"
-  }, sub));
-}
+HOÂÛÛÝYHÙ][\[
 
-// ââ SECTION HEADER ââ
-function SectionHeader({
-  title,
-  subtitle,
-  icon
-}) {
-  return /*#__PURE__*/React.createElement("div", {
-    className: "mb-6"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "flex items-center gap-3 mb-1"
-  }, /*#__PURE__*/React.createElement("span", {
-    className: "text-2xl"
-  }, icon), /*#__PURE__*/React.createElement("h2", {
-    className: "text-xl font-bold text-white tracking-wide"
-  }, title)), subtitle && /*#__PURE__*/React.createElement("p", {
-    className: "text-slate-400 text-sm ml-9"
-  }, subtitle), /*#__PURE__*/React.createElement("div", {
-    className: "mt-2 h-px bg-gradient-to-r from-emerald-500/50 via-blue-500/30 to-transparent"
-  }));
-}
 
-// ââ AI ADVISOR ââ
-function AiAdvisor() {
-  const [input, setInput] = useState("");
-  const [messages, setMessages] = useState([{
-    role: "ai",
-    text: "ããã«ã¡ã¯ãFamilyTreeOkiæ¦ç¥ã¢ããã¤ã¶ã¼ã§ãããã¯ã­çµæ¸ã»å°æ¿å­¦ã»äºæ¥­æ¦ç¥ã«ã¤ãã¦è³ªåãã¦ãã ãããä¾ï¼ã152åã®çºæ¿ç°å¢ã§ã®æé©ä¾¡æ ¼è¨­å®ã¯ï¼ããè»çé¸ã·ããªãªã§ã®éå®¢æ¦ç¥ã¯ï¼ã"
-  }]);
-  const [loading, setLoading] = useState(false);
-  const bottomRef = useRef(null);
-  const RESP = {
-    ä¾¡æ ¼: "**152åç°å¢ã§ã®æé©ä¾¡æ ¼è¨­è¨**\n\nç¾å¨Â¥22,000 = $144ã§ããç±³å½ã®åæ§ãµã¼ãã¹ã$150-200ãªã®ã§ãç±³å½ããå®ããå¿ççåªä½æ§ãããã¾ãã\n\næ¨å¥¨ä¾¡æ ¼ä½ç³»ï¼\nâ¢ åºæ¬ã»ãã·ã§ã³(60å)ï¼Â¥22,000 ($144)\nâ¢ 4Dãã¬ãã¢ã ï¼Â¥30,000 ($197) â ã¹ã¤ã¼ãã¹ããã\nâ¢ 2åããã±ã¼ã¸ï¼Â¥38,000 ($249) â LTVæå¤§å",
-    éå®¢: "**ç±³è»ã³ãã¥ããã£éå®¢æ¦ç¥ï¼æåªåãã£ãã«3é¸ï¼**\n\n1. Ladies of Kadena Facebook (1ä¸äºº+)\nâ ã¢ã³ããµãã¼ä½é¨âæç¨¿ã§å£ã³ãççºãä¿¡é ¼åº¦ãæé«\n\n2. NPSP(New Parent Support Program)é£æº\nâ åºå°åã®å¬å¼è²åæ¯æ´ãã­ã°ã©ã ã«ãã³ãè¨­ç½®ãå¬ä¿¡å+\n\n3. Google MEOã4D Ultrasound Okinawaã\nâ USNHO(æµ·è»çé¢)ããè»15åãã¢ãã¼ã«ãè±èªSEO1ä½ãç¢ºä¿",
-    å°æ¿å­¦: "**ãã¢ã·ã£ã¤ãã¼ãæ»å¢çãªã¢ãªãºã ãããè¦ãæ²ç¸ãã¸ã·ã§ã³**\n\nç±³å½ã®ã¤ã³ãå¤ªå¹³æ´ãçµ±åææ­¢ãæ¦ç¥ã«ããã¦æ²ç¸ã¯:\nâ¢ å°æ¹¾æäºç¬¬ä¸åå³¶ç·ã®è¦è¡ â é§çåµåã¯åæ¸ä¸å¯\nâ¢ ã°ã¢ã ç§»è»¢(æµ·åµ5,000å)ã¯PCSéè¦ãçã\nâ¢ åè¥¿ã·ãã â é¨éã­ã¼ãã¼ã·ã§ã³å¢å \n\nçµè«ï¼å°æ¿å­¦çç·å¼µâ = å¨æ²ç±³è»å¢å¼· = FamilyTreeOkiã®TAMæ¡å¤§",
-    ã·ããªãª: "**3ã·ããªãªå¥ FamilyTreeOkiæ¦ç¥ãããªã¯ã¹**\n\nð¢ è»çé¸(45%)ï¼Â¥4,000ä¸/å¹´éæãç©æ¥µçãªè¨­åæè³ã¨ã¹ã¿ããæ¡ç¨ã\n\nð¡ é·æåæ»(40%)ï¼Â¥3,500ä¸/å¹´ã§é»å­ç¢ºä¿ãLTVãéè¦ã2åããã±ã¼ã¸ã¸èªå°ã\n\nð´ éèäºæ(15%)ï¼åé«(120å)ã§ãÂ¥22,000=$183ã®ç«¶äºåç¶­æãå°æ¿å­¦å±æ©ã§è»å¢å¼·âéè¦å¢ã",
-    åç: "**FamilyTreeOki åçã¢ãã«è©³ç´°**\n\næéã»ãã·ã§ã³120ä»¶ Ã å¹³åå®¢åä¾¡Â¥28,000 = æéÂ¥336ä¸å\nå¹´éå£²ä¸ï¼ç´Â¥4,000ä¸å\nå¶æ¥­å©ççï¼45-55%ï¼åãã¼ã¹ã³ã¹ã + ãã«é¡§å®¢ã®æ§é ï¼\n\nLTVï¼1äººã®å¦å©¦ãå¹³å4åæ¥é¢ â é¡§å®¢LTV Â¥88,000\næçåå²ç¹ï¼æéç´45ä»¶ï¼åºå®è²»æ150ä¸åæ³å®ï¼"
-  };
-  const getResp = q => {
-    const l = q.toLowerCase();
-    if (l.includes("ä¾¡æ ¼") || l.includes("æé") || l.includes("åå®")) return RESP.ä¾¡æ ¼;
-    if (l.includes("éå®¢") || l.includes("ãã¼ã±") || l.includes("fb") || l.includes("sns")) return RESP.éå®¢;
-    if (l.includes("å°æ¿å­¦") || l.includes("è»") || l.includes("ã·ãã") || l.includes("å°æ¹¾")) return RESP.å°æ¿å­¦;
-    if (l.includes("ã·ããªãª") || l.includes("ãªã¹ã¯") || l.includes("çé¸")) return RESP.ã·ããªãª;
-    if (l.includes("åç") || l.includes("å£²ä¸") || l.includes("å©ç") || l.includes("ltv")) return RESP.åç;
-    return `ãè³ªåã${q}ãã«ã¤ãã¦ï¼\n\nFamilyTreeOkiã¯ç¾å¨ã®152ååå®ç°å¢ã«ããã¦æããªã¹ã¯ãä½ãé«åçãªäºæ¥­ã¢ãã«ã§ããå¨æ²SOFAäººå£53,754åãå¹´éåå¨©TAM1,100ä»¶ãæéå¹³åå®¢åä¾¡Â¥28,000ã¨ããå®ãã¼ã¿ã«åºã¥ããå¹´åÂ¥4,000ä¸ã»å©çç50%+ãç¾å®çç®æ¨ã§ããå·ä½çãªè³ªåï¼ä¾¡æ ¼è¨­è¨ã»éå®¢ã»å°æ¿å­¦ã»ã·ããªãªåæï¼ããè©¦ããã ããã`;
-  };
-  const handleSend = () => {
-    if (!input.trim()) return;
-    setMessages(p => [...p, {
-      role: "user",
-      text: input
-    }]);
-    setInput("");
-    setLoading(true);
-    setTimeout(() => {
-      setMessages(p => [...p, {
-        role: "ai",
-        text: getResp(input)
-      }]);
-      setLoading(false);
-    }, 800);
-  };
-  useEffect(() => {
-    bottomRef.current?.scrollIntoView({
-      behavior: "smooth"
-    });
-  }, [messages]);
-  return /*#__PURE__*/React.createElement("div", {
-    className: "bg-slate-900 border border-slate-700 rounded-2xl flex flex-col",
-    style: {
-      height: "380px"
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "px-4 py-3 border-b border-slate-700 flex items-center gap-2"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "w-2 h-2 rounded-full bg-emerald-400 animate-pulse"
-  }), /*#__PURE__*/React.createElement("span", {
-    className: "text-sm font-semibold text-slate-200"
-  }, "AI \u6226\u7565\u30A2\u30C9\u30D0\u30A4\u30B6\u30FC"), /*#__PURE__*/React.createElement("span", {
-    className: "text-xs text-slate-500 ml-auto"
-  }, "koya\u5408\u540C\u4F1A\u793E \u5C02\u7528")), /*#__PURE__*/React.createElement("div", {
-    className: "flex-1 overflow-y-auto p-4 space-y-3"
-  }, messages.map((m, i) => /*#__PURE__*/React.createElement("div", {
-    key: i,
-    className: `flex ${m.role === "user" ? "justify-end" : "justify-start"}`
-  }, /*#__PURE__*/React.createElement("div", {
-    className: `max-w-xs rounded-xl px-3 py-2 text-sm ${m.role === "user" ? "bg-blue-600 text-white" : "bg-slate-800 text-slate-200 border border-slate-700"}`
-  }, m.text.split("\n").map((line, j) => /*#__PURE__*/React.createElement("p", {
-    key: j,
-    className: line.startsWith("**") ? "font-bold text-emerald-300" : ""
-  }, line.replace(/\*\*/g, "")))))), loading && /*#__PURE__*/React.createElement("div", {
-    className: "flex justify-start"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "bg-slate-800 border border-slate-700 rounded-xl px-4 py-2"
-  }, /*#__PURE__*/React.createElement("span", {
-    className: "text-slate-400 text-sm animate-pulse"
-  }, "\u5206\u6790\u4E2D..."))), /*#__PURE__*/React.createElement("div", {
-    ref: bottomRef
-  })), /*#__PURE__*/React.createElement("div", {
-    className: "p-3 border-t border-slate-700 flex gap-2"
-  }, /*#__PURE__*/React.createElement("input", {
-    value: input,
-    onChange: e => setInput(e.target.value),
-    onKeyDown: e => e.key === "Enter" && handleSend(),
-    placeholder: "\u4F8B\uFF1A152\u5186\u3067\u306E\u4FA1\u683C\u8A2D\u8A08\u306F\uFF1F",
-    className: "flex-1 bg-slate-800 border border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-emerald-500"
-  }), /*#__PURE__*/React.createElement("button", {
-    onClick: handleSend,
-    className: "px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-semibold rounded-lg transition-colors"
-  }, "\u9001\u4FE1")));
-}
+HOÙ]ÙÙ]
+OHJKÌ
+NÂ]\
 
-// ââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-// MAIN APP
-// ââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-function App() {
-  const [tab, setTab] = useState("executive");
-  const tabs = [{
-    id: "executive",
-    label: "ð ã¨ã°ã¼ã¯ãã£ã"
-  }, {
-    id: "economy",
-    label: "ð¦ ç±³å½çµæ¸"
-  }, {
-    id: "market",
-    label: "ð è»å¸å ´"
-  }, {
-    id: "birth",
-    label: "ð¶ åºç£æ¦ç¥"
-  }, {
-    id: "scenarios",
-    label: "ð® ã·ããªãª"
-  }, {
-    id: "advisor",
-    label: "ð¤ AIã¢ããã¤ã¶ã¼"
-  }];
-  const DC = ["#3b82f6", "#10b981", "#f59e0b", "#8b5cf6", "#ef4444"];
-  const TS = {
-    backgroundColor: "#1e293b",
-    border: "1px solid #334155",
-    color: "#f1f5f9"
-  };
-  return /*#__PURE__*/React.createElement("div", {
-    className: "min-h-screen bg-slate-950 text-slate-100 font-sans"
-  }, /*#__PURE__*/React.createElement("header", {
-    className: "bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 border-b border-slate-700"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "max-w-7xl mx-auto px-4 py-4"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "flex items-start justify-between flex-wrap gap-3"
-  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-    className: "flex items-center gap-3 mb-1"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-500 to-blue-600 flex items-center justify-center text-sm font-bold"
-  }, "\uD83C\uDF33"), /*#__PURE__*/React.createElement("h1", {
-    className: "text-xl font-bold text-white tracking-tight"
-  }, "FamilyTreeOki"), /*#__PURE__*/React.createElement("span", {
-    className: "text-xs bg-emerald-900/60 text-emerald-400 border border-emerald-700 px-2 py-0.5 rounded-full"
-  }, "Birth Center")), /*#__PURE__*/React.createElement("p", {
-    className: "text-slate-400 text-xs ml-11"
-  }, "\u30DE\u30AF\u30ED\u7D4C\u6E08\xD7\u5730\u653F\u5B66\xD7\u5728\u6C96\u7C73\u8ECD\u5E02\u5834 \u7D71\u5408\u30A4\u30F3\u30C6\u30EA\u30B8\u30A7\u30F3\u30B9\uFF5C2026.04.27")), /*#__PURE__*/React.createElement("div", {
-    className: "flex gap-4 text-right"
-  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-    className: "text-emerald-400 font-mono font-bold text-lg"
-  }, "\xA5152.45"), /*#__PURE__*/React.createElement("div", {
-    className: "text-slate-500 text-xs"
-  }, "USD/JPY")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-    className: "text-blue-400 font-mono font-bold text-lg"
-  }, "4.18%"), /*#__PURE__*/React.createElement("div", {
-    className: "text-slate-500 text-xs"
-  }, "US 10Y")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-    className: "text-amber-400 font-mono font-bold text-lg"
-  }, "42,100"), /*#__PURE__*/React.createElement("div", {
-    className: "text-slate-500 text-xs"
-  }, "\u65E5\u7D4C\u5E73\u5747")))))), /*#__PURE__*/React.createElement(Ticker, null), /*#__PURE__*/React.createElement("div", {
-    className: "sticky top-0 z-20 bg-slate-900 border-b border-slate-700/50"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "max-w-7xl mx-auto px-4"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "flex gap-1 overflow-x-auto py-2 scrollbar-hide"
-  }, tabs.map(t => /*#__PURE__*/React.createElement("button", {
-    key: t.id,
-    onClick: () => setTab(t.id),
-    className: `px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${tab === t.id ? "bg-emerald-600 text-white shadow-lg" : "text-slate-400 hover:text-slate-200 hover:bg-slate-800"}`
-  }, t.label))))), /*#__PURE__*/React.createElement("main", {
-    className: "max-w-7xl mx-auto px-4 py-6 space-y-8"
-  }, tab === "executive" && /*#__PURE__*/React.createElement("div", {
-    className: "space-y-6"
-  }, /*#__PURE__*/React.createElement(SectionHeader, {
-    icon: "\uD83D\uDCCB",
-    title: "\u30A8\u30B0\u30BC\u30AF\u30C6\u30A3\u30D6\u30B5\u30DE\u30EA\u30FC",
-    subtitle: "\u5408\u540C\u4F1A\u793Ekoya\uFF5CFamilyTreeOki Birth Center\uFF5C2026\u5E744\u670827\u65E5\u7248"
-  }), /*#__PURE__*/React.createElement("div", {
-    className: "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3"
-  }, /*#__PURE__*/React.createElement(KpiCard, {
-    icon: "\uD83D\uDC65",
-    label: "\u5728\u6C96SOFA\u7DCF\u6570",
-    value: "53,754",
-    sub: "\u540D (2026\u63A8\u8A08)",
-    color: "blue"
-  }), /*#__PURE__*/React.createElement(KpiCard, {
-    icon: "\uD83D\uDCB0",
-    label: "\u5E74\u9593\u6D88\u8CBB\u529B",
-    value: "\xA53,697\u5104",
-    sub: "\u5186/\u5E74",
-    color: "emerald"
-  }), /*#__PURE__*/React.createElement(KpiCard, {
-    icon: "\uD83D\uDC76",
-    label: "\u5E74\u9593\u5206\u5A29TAM",
-    value: "1,100\u4EF6",
-    sub: "USNHO\u5B9F\u7E3E\u6700\u5927",
-    color: "violet"
-  }), /*#__PURE__*/React.createElement(KpiCard, {
-    icon: "\uD83C\uDFC6",
-    label: "\u76EE\u6A19\u5E74\u5546",
-    value: "\xA54,000\u4E07",
-    sub: "\u5229\u76CA\u738750%+",
-    color: "amber"
-  }), /*#__PURE__*/React.createElement(KpiCard, {
-    icon: "\uD83D\uDCB1",
-    label: "\u5186\u5B89\u30A2\u30FC\u30D3",
-    value: "152.45\u5186",
-    sub: "\u30C9\u30EB\u9867\u5BA2\u512A\u4F4D\u6027MAX",
-    color: "cyan"
-  }), /*#__PURE__*/React.createElement(KpiCard, {
-    icon: "\uD83C\uDFAF",
-    label: "\u521D\u5E74\u5EA6SOM",
-    value: "350\u4EF6",
-    sub: "\u30B7\u30A7\u30A245%\u76EE\u6A19",
-    color: "rose"
-  })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
-    className: "text-sm font-semibold text-slate-400 uppercase tracking-wider mb-3"
-  }, "\uD83D\uDCF0 \u30E2\u30FC\u30CB\u30F3\u30B0\u30D6\u30EA\u30FC\u30D5\u30A3\u30F3\u30B0"), /*#__PURE__*/React.createElement("div", {
-    className: "grid md:grid-cols-2 gap-3"
-  }, MORNING_BRIEFS.map((b, i) => /*#__PURE__*/React.createElement("div", {
-    key: i,
-    className: "bg-slate-900 border border-slate-700 rounded-xl p-4 hover:border-slate-500 transition-colors"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "flex items-start justify-between mb-2"
-  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", {
-    className: "text-xs text-slate-500 font-medium"
-  }, b.category), /*#__PURE__*/React.createElement("h4", {
-    className: "text-sm font-bold text-white mt-0.5"
-  }, b.title)), /*#__PURE__*/React.createElement(RiskBadge, {
-    level: b.risk
-  })), /*#__PURE__*/React.createElement("p", {
-    className: "text-xs text-slate-400 leading-relaxed"
-  }, b.detail))))), /*#__PURE__*/React.createElement("div", {
-    className: "bg-slate-900 border border-slate-700 rounded-xl overflow-hidden"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "px-4 py-3 border-b border-slate-700 bg-slate-800/50"
-  }, /*#__PURE__*/React.createElement("h3", {
-    className: "text-sm font-semibold text-slate-200"
-  }, "\uD83D\uDCCA \u4E3B\u8981\u30C7\u30FC\u30BF\u4E00\u89A7\u8868\uFF082026.04.27\u7248\uFF09")), /*#__PURE__*/React.createElement("div", {
-    className: "overflow-x-auto"
-  }, /*#__PURE__*/React.createElement("table", {
-    className: "w-full text-xs"
-  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", {
-    className: "border-b border-slate-700 bg-slate-800/30"
-  }, ["ã«ãã´ãª", "ææ¨", "æ°å¤", "FamilyTreeOkiã¸ã®æå³"].map(h => /*#__PURE__*/React.createElement("th", {
-    key: h,
-    className: "text-left px-4 py-2 text-slate-400 font-medium"
-  }, h)))), /*#__PURE__*/React.createElement("tbody", null, [["ç±³å½çµæ¸", "GDPæé·ç(Q1-2026)", "2.2%", "ç·©æ¢ãªæé·âè»äºç®ã¯ç¶­æã»åæ¸ãªã¹ã¯å°"], ["ç±³å½çµæ¸", "PCEã³ã¢(ã¤ã³ãã¬)", "2.6%", "é«ã¤ã³ãã¬âãã«è³¼è²·åã¯ç¸å¯¾çã«è¯å¥½"], ["ç±³å½çµæ¸", "å¤±æ¥­ç", "4.4%", "ä¸è¬å¸å ´ã¯è»åâè»é¢ä¿èã®éç¨å®å®ã¯éç«ã¤"], ["ç±³å½çµæ¸", "10å¹´åµå©åã", "4.18%", "é«éå©âFedå©ä¸ãéå»¶âåå®æç¶å¯è½æ§"], ["çºæ¿", "USD/JPY", "Â¥152.45", "Â¥22,000 = $144 ç±³å½ããå®ãä½é¨ä¾¡å¤"], ["ç±³è»å¸å ´", "å¨æ²SOFAç·æ°", "53,754å", "ç´æ¥ã¿ã¼ã²ããå¸å ´è¦æ¨¡"], ["ç±³è»å¸å ´", "æéæ¶è²»å", "Â¥308åå", "å·¨å¤§ãªçµæ¸åãæ²ç¸ã«å­å¨"], ["ç±³è»å¸å ´", "åæç´å¨è¾ºæ¶è²»", "Â¥1,479å/å¹´", "æå¤§æ¶è²»å=FTOkiã®æé©ç«å°"], ["åºç£å¸å ´", "å¹´éåå¨©TAM", "1,100ä»¶", "æå¤§ã®å°éå¯è½å¸å ´è¦æ¨¡"], ["åºç£å¸å ´", "åºå°å¤ãµã¼ãã¹éè¦", "770ä»¶ (70%)", "ç±³è»çé¢å¤ã§ä½é¨åãµã¼ãã¹ãæ±ããå±¤"], ["åºç£å¸å ´", "åå¹´åº¦ç²å¾ç®æ¨", "350ä»¶", "ã·ã§ã¢45%ã»ç¾å®çéæç®æ¨"]].map(([cat, ind, val, meaning], i) => /*#__PURE__*/React.createElement("tr", {
-    key: i,
-    className: `border-b border-slate-800 ${i % 2 === 0 ? "" : "bg-slate-900/30"}`
-  }, /*#__PURE__*/React.createElement("td", {
-    className: "px-4 py-2 text-slate-500 font-medium"
-  }, cat), /*#__PURE__*/React.createElement("td", {
-    className: "px-4 py-2 text-slate-300"
-  }, ind), /*#__PURE__*/React.createElement("td", {
-    className: "px-4 py-2 text-emerald-400 font-mono font-bold text-right"
-  }, val), /*#__PURE__*/React.createElement("td", {
-    className: "px-4 py-2 text-slate-400"
-  }, meaning)))))))), tab === "economy" && /*#__PURE__*/React.createElement("div", {
-    className: "space-y-6"
-  }, /*#__PURE__*/React.createElement(SectionHeader, {
-    icon: "\uD83C\uDFE6",
-    title: "\u7C73\u56FD\u7D4C\u6E08\u5206\u6790",
-    subtitle: "GDP\u30FB\u30A4\u30F3\u30D5\u30EC\u30FB\u8CA1\u653F\u30FB\u30B5\u30D7\u30E9\u30A4\u30C1\u30A7\u30FC\u30F3\u30FB\u9280\u884C\u30EA\u30B9\u30AF\uFF082026\u5E744\u6708\uFF09"
-  }), /*#__PURE__*/React.createElement("div", {
-    className: "grid grid-cols-2 md:grid-cols-4 gap-3"
-  }, /*#__PURE__*/React.createElement(KpiCard, {
-    icon: "\uD83D\uDCC8",
-    label: "GDP\u6210\u9577\u7387",
-    value: "2.2%",
-    sub: "Q1-2026 \u901F\u5831",
-    color: "emerald"
-  }), /*#__PURE__*/React.createElement(KpiCard, {
-    icon: "\uD83D\uDD25",
-    label: "PCE\u30B3\u30A2",
-    value: "2.6%",
-    sub: "\u524D\u5E74\u6BD4\u30FBFed\u6CE8\u76EE",
-    color: "amber"
-  }), /*#__PURE__*/React.createElement(KpiCard, {
-    icon: "\uD83D\uDC77",
-    label: "\u5931\u696D\u7387",
-    value: "4.4%",
-    sub: "\u25B20.1% \u7DE9\u6162\u4E0A\u6607",
-    color: "rose"
-  }), /*#__PURE__*/React.createElement(KpiCard, {
-    icon: "\uD83C\uDFE6",
-    label: "Fed\u653F\u7B56\u91D1\u5229",
-    value: "4.375%",
-    sub: "\u5229\u4E0B\u3052\u614E\u91CD\u59FF\u52E2",
-    color: "blue"
-  })), /*#__PURE__*/React.createElement("div", {
-    className: "grid md:grid-cols-2 gap-6"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "bg-slate-900 border border-slate-700 rounded-xl p-4"
-  }, /*#__PURE__*/React.createElement("h3", {
-    className: "text-sm font-semibold text-slate-200 mb-4"
-  }, "\uD83D\uDBC9 \u7C73\u56FD\u30CD\u30C3\u30C8\u5229\u6255\u3044\u63A8\u79FB\uFF08\u5341\u5104\u30C9\u30EB\uFF09"), /*#__PURE__*/React.createElement(ResponsiveContainer, {
-    width: "100%",
-    height: 220
-  }, /*#__PURE__*/React.createElement(BarChart, {
-    data: FISCAL_DATA
-  }, /*#__PURE__*/React.createElement(CartesianGrid, {
-    strokeDasharray: "3 3",
-    stroke: "#334155"
-  }), /*#__PURE__*/React.createElement(XAxis, {
-    dataKey: "year",
-    tick: {
-      fill: "#94a3b8",
-      fontSize: 11
-    }
-  }), /*#__PURE__*/React.createElement(YAxis, {
-    tick: {
-      fill: "#94a3b8",
-      fontSize: 11
-    }
-  }), /*#__PURE__*/React.createElement(Tooltip, {
-    contentStyle: TS
-  }), /*#__PURE__*/React.createElement(Bar, {
-    dataKey: "netInterest",
-    fill: "#ef4444",
-    name: "\u30CD\u30C3\u30C8\u5229\u6255\u3044(\u5341\u5104$)",
-    radius: [3, 3, 0, 0]
-  }))), /*#__PURE__*/React.createElement("p", {
-    className: "text-xs text-slate-500 mt-2"
-  }, "2026E: $812B\u3002GDP\u306E2.8%\u8D85\u3002\u8CA1\u653F\u5727\u529B\u304C\u7D99\u7D9A\u7684\u306B\u62E1\u5927")), /*#__PURE__*/React.createElement("div", {
-    className: "bg-slate-900 border border-slate-700 rounded-xl p-4"
-  }, /*#__PURE__*/React.createElement("h3", {
-    className: "text-sm font-semibold text-slate-200 mb-4"
-  }, "\uD83D\uDEA2 \u30B5\u30D7\u30E9\u30A4\u30C1\u30A7\u30FC\u30F3\u9700\u8981\u6307\u6570\u63A8\u79FB"), /*#__PURE__*/React.createElement(ResponsiveContainer, {
-    width: "100%",
-    height: 220
-  }, /*#__PURE__*/React.createElement(LineChart, {
-    data: SUPPLY_CHAIN_DATA
-  }, /*#__PURE__*/React.createElement(CartesianGrid, {
-    strokeDasharray: "3 3",
-    stroke: "#334155"
-  }), /*#__PURE__*/React.createElement(XAxis, {
-    dataKey: "month",
-    tick: {
-      fill: "#94a3b8",
-      fontSize: 11
-    }
-  }), /*#__PURE__*/React.createElement(YAxis, {
-    tick: {
-      fill: "#94a3b8",
-      fontSize: 11
-    }
-  }), /*#__PURE__*/React.createElement(Tooltip, {
-    contentStyle: TS
-  }), /*#__PURE__*/React.createElement(Line, {
-    type: "monotone",
-    dataKey: "cass",
-    stroke: "#3b82f6",
-    name: "Cass\u6307\u6570",
-    strokeWidth: 2,
-    dot: false
-  }), /*#__PURE__*/React.createElement(Line, {
-    type: "monotone",
-    dataKey: "demand",
-    stroke: "#10b981",
-    name: "\u9700\u8981\u6307\u6570",
-    strokeWidth: 2,
-    dot: false
-  }), /*#__PURE__*/React.createElement(Legend, {
-    wrapperStyle: {
-      color: "#94a3b8",
-      fontSize: 11
-    }
-  })))))), tab === "market" && /*#__PURE__*/React.createElement("div", {
-    className: "space-y-6"
-  }, /*#__PURE__*/React.createElement(SectionHeader, {
-    icon: "\uD83C\uDF96",
-    title: "\u5728\u6C96\u7C73\u8ECD\u5E02\u5834\u5206\u6790",
-    subtitle: "SOFA\u4EBA\u53E3\u30FB\u6D88\u8CBB\u529B\u30FB\u5730\u57DF\u5206\u5E03\u30FB\u7D66\u4E0E\u4F53\u7CFB\uFF08\u5B9F\u30C7\u30FC\u30BF\uFF1Akoya\u5408\u540C\u4F1A\u793E \u7814\u7A76\u8CC7\u6599\uFF09"
-  }), /*#__PURE__*/React.createElement("div", {
-    className: "grid grid-cols-2 md:grid-cols-4 gap-3"
-  }, /*#__PURE__*/React.createElement(KpiCard, {
-    icon: "\u2694\uFE0F",
-    label: "\u8ECD\u4EBA\uFF08\u73FE\u5F79\uFF09",
-    value: "25,000",
-    sub: "\u540D",
-    color: "blue"
-  }), /*#__PURE__*/React.createElement(KpiCard, {
-    icon: "\uD83D\uDC68\u200D\uD83D\uDC69\u200D\uD83D\uDC67",
-    label: "\u5E2F\u540C\u5BB6\u65CF",
-    value: "28,754",
-    sub: "\u540D",
-    color: "violet"
-  }), /*#__PURE__*/React.createElement(KpiCard, {
-    icon: "\uD83D\uDCB4",
-    label: "\u6708\u9593\u6D88\u8CBB\u529B",
-    value: "\xA5308\u5104",
-    sub: "\u5186/\u6708",
-    color: "emerald"
-  }), /*#__PURE__*/React.createElement(KpiCard, {
-    icon: "\uD83D\uDCC5",
-    label: "\u5E74\u9593\u6D88\u8CBB\u529B",
-    value: "\xA53,697\u5104",
-    sub: "\u5186/\u5E74",
-    color: "amber"
-  })), /*#__PURE__*/React.createElement("div", {
-    className: "grid md:grid-cols-2 gap-6"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "bg-slate-900 border border-slate-700 rounded-xl p-4"
-  }, /*#__PURE__*/React.createElement("h3", {
-    className: "text-sm font-semibold text-slate-200 mb-4"
-  }, "\uD83D\uDDFA\uFE0F \u5730\u57DF\u5225\u5E74\u9593\u6D88\u8CBB\u984D\uFF08\u5104\u5186\uFF09"), /*#__PURE__*/React.createElement(ResponsiveContainer, {
-    width: "100%",
-    height: 240
-  }, /*#__PURE__*/React.createElement(BarChart, {
-    data: REGIONAL_CONSUMPTION,
-    layout: "vertical"
-  }, /*#__PURE__*/React.createElement(CartesianGrid, {
-    strokeDasharray: "3 3",
-    stroke: "#334155"
-  }), /*#__PURE__*/React.createElement(XAxis, {
-    type: "number",
-    tick: {
-      fill: "#94a3b8",
-      fontSize: 11
-    }
-  }), /*#__PURE__*/React.createElement(YAxis, {
-    dataKey: "name",
-    type: "category",
-    tick: {
-      fill: "#94a3b8",
-      fontSize: 11
-    },
-    width: 85
-  }), /*#__PURE__*/React.createElement(Tooltip, {
-    contentStyle: TS,
-    formatter: v => [`Â¥${v}åå`, "å¹´éæ¶è²»"]
-  }), /*#__PURE__*/React.createElement(Bar, {
-    dataKey: "annual",
-    radius: [0, 4, 4, 0]
-  }, REGIONAL_CONSUMPTION.map((_, i) => /*#__PURE__*/React.createElement(Cell, {
-    key: i,
-    fill: DC[i]
-  })))))), /*#__PURE__*/React.createElement("div", {
-    className: "bg-slate-900 border border-slate-700 rounded-xl p-4"
-  }, /*#__PURE__*/React.createElement("h3", {
-    className: "text-sm font-semibold text-slate-200 mb-4"
-  }, "\uD83D\uDCC5 \u6708\u5225\u6D88\u8CBB\u5909\u52D5\uFF08\u5104\u5186\uFF09\u30FB\u4EFB\u671F\u4EA4\u4EE3\u5B63\u7BC0\u6027"), /*#__PURE__*/React.createElement(ResponsiveContainer, {
-    width: "100%",
-    height: 240
-  }, /*#__PURE__*/React.createElement(AreaChart, {
-    data: MONTHLY_CONSUMPTION
-  }, /*#__PURE__*/React.createElement("defs", null, /*#__PURE__*/React.createElement("linearGradient", {
-    id: "cg",
-    x1: "0",
-    y1: "0",
-    x2: "0",
-    y2: "1"
-  }, /*#__PURE__*/React.createElement("stop", {
-    offset: "5%",
-    stopColor: "#10b981",
-    stopOpacity: 0.3
-  }), /*#__PURE__*/React.createElement("stop", {
-    offset: "95%",
-    stopColor: "#10b981",
-    stopOpacity: 0
-  }))), /*#__PURE__*/React.createElement(CartesianGrid, {
-    strokeDasharray: "3 3",
-    stroke: "#334155"
-  }), /*#__PURE__*/React.createElement(XAxis, {
-    dataKey: "month",
-    tick: {
-      fill: "#94a3b8",
-      fontSize: 10
-    }
-  }), /*#__PURE__*/React.createElement(YAxis, {
-    domain: [240, 380],
-    tick: {
-      fill: "#94a3b8",
-      fontSize: 11
-    }
-  }), /*#__PURE__*/React.createElement(Tooltip, {
-    contentStyle: TS,
-    formatter: v => [`Â¥${v}åå`, "æéæ¶è²»"]
-  }), /*#__PURE__*/React.createElement(Area, {
-    type: "monotone",
-    dataKey: "amount",
-    stroke: "#10b981",
-    fill: "url(#cg)",
-    strokeWidth: 2
-  }))), /*#__PURE__*/React.createElement("p", {
-    className: "text-xs text-slate-500 mt-2"
-  }, "7-8\u6708\u304C\u30D4\u30FC\u30AF\u308\xA5370\u5104\u309E\u30023\u6708\u65B0\u898F\u914D\u5C5E\u5F8C\u306B\u9700\u898F\u6025\u5897\u2192Birth Center\u958B\u9662\u30BF\u30A4\u30DF\u30F3\u30B0\u306E\u9375"))), /*#__PURE__*/React.createElement("div", {
-    className: "bg-slate-900 border border-slate-700 rounded-xl p-4"
-  }, /*#__PURE__*/React.createElement("h3", {
-    className: "text-sm font-semibold text-slate-200 mb-4"
-  }, "\uD83C\uDF0F 3\u6B63\u9762\u306E\u5730\u653F\u5B66\u30EA\u30B9\u30AF\u3068\u6C96\u7E04\u6226\u7565\u4FA1\u5024"), /*#__PURE__*/React.createElement("div", {
-    className: "grid md:grid-cols-3 gap-4"
-  }, GEOPOLITICAL_FRONTS.map((f, i) => /*#__PURE__*/React.createElement("div", {
-    key: i,
-    className: "bg-slate-800/50 rounded-xl p-3"
-  }, /*#__PURE__*/React.createElement("h4", {
-    className: "text-sm font-bold text-white mb-2"
-  }, f.front), [{
-    label: "ç·å¼µãªã¹ã¯",
-    val: f.risk,
-    color: "bg-red-500"
-  }, {
-    label: "çµæ¸å½±é¿",
-    val: f.impact,
-    color: "bg-amber-500"
-  }, {
-    label: "æ²ç¸é£ååº¦",
-    val: f.okinawa,
-    color: "bg-blue-500"
-  }].map(b => /*#__PURE__*/React.createElement("div", {
-    key: b.label,
-    className: "mb-2"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "flex justify-between text-xs text-slate-400 mb-1"
-  }, /*#__PURE__*/React.createElement("span", null, b.label), /*#__PURE__*/React.createElement("span", null, b.val, "%")), /*#__PURE__*/React.createElement("div", {
-    className: "h-1.5 bg-slate-700 rounded-full"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: `h-full ${b.color} rounded-full`,
-    style: {
-      width: `${b.val}%`
-    }
-  })))), f.front === "ã¤ã³ãå¤ªå¹³æ´" && /*#__PURE__*/React.createElement("p", {
-    className: "text-xs text-emerald-400 mt-1 font-medium"
-  }, "\u2192 \u6C96\u7E04\u9023\u52D5\u5EA695%\u3002\u5357\u897F\u30B7\u30D5\u30C8\u52A0\u901F\u4E2D")))))), tab === "birth" && /*#__PURE__*/React.createElement("div", {
-    className: "space-y-6"
-  }, /*#__PURE__*/React.createElement(SectionHeader, {
-    icon: "\uD83D\uDC76",
-    title: "FamilyTreeOki Birth Center \u4E8B\u696D\u6226\u7565",
-    subtitle: "\u52A9\u7523\u9662\u30D4\u30DC\u30C3\u30C8 \xD7 \u70BA\u66FF\u30A2\u30FC\u30D3\u30C8\u30E9\u30FC\u30B8 \xD7 Birth Haven \u30DE\u30FC\u30B1\u30C6\u30A3\u30F3\u30B0"
-  }), /*#__PURE__*/React.createElement("div", {
-    className: "grid grid-cols-2 md:grid-cols-4 gap-3"
-  }, /*#__PURE__*/React.createElement(KpiCard, {
-    icon: "\uD83C\uDFAF",
-    label: "\u6708\u9593\u30BB\u30C3\u30B7\u30E7\u30F3\u76EE\u6A19",
-    value: "120\u4EF6",
-    sub: "\u5B8C\u5168\u4E88\u7D04\u5236",
-    color: "emerald"
-  }), /*#__PURE__*/React.createElement(KpiCard, {
-    icon: "\uD83D\uDCB4",
-    label: "\u5E73\u5747\u5BA2\u5358\u4FA1",
-    value: "\xA528,000",
-    sub: "=$184 (\u5186\u5B89\u30E1\u30EA\u30C3\u30C8)",
-    color: "blue"
-  }), /*#__PURE__*/React.createElement(KpiCard, {
-    icon: "\uD83D\uDCCA",
-    label: "\u6708\u9593\u58F2\u4E0A\u76EE\u6A19",
-    value: "\xA5336\u4E07",
-    sub: "\u5186",
-    color: "violet"
-  }), /*#__PURE__*/React.createElement(KpiCard, {
-    icon: "\uD83D\uDCB9",
-    label: "\u55B6\u696D\u5229\u76CA\u7387",
-    value: "50%+",
-    sub: "\u5186\u30B3\u30B9\u30C8\xD7\u30C9\u30EB\u9867\u5BA2",
-    color: "amber"
-  })), /*#__PURE__*/React.createElement("div", {
-    className: "grid md:grid-cols-2 gap-6"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "bg-slate-900 border border-slate-700 rounded-xl p-4"
-  }, /*#__PURE__*/React.createElement("h3", {
-    className: "text-sm font-semibold text-slate-200 mb-4"
-  }, "\uD83D\uDCB0 \u30B5\u30FC\u30D3\u30B9\u30E1\u30CB\u30E5\u30FC\u5225\u4FA1\u683C\u30FBUSD\u63DB\u7B97"), /*#__PURE__*/React.createElement(ResponsiveContainer, {
-    width: "100%",
-    height: 220
-  }, /*#__PURE__*/React.createElement(BarChart, {
-    data: BIRTH_REVENUE_MODEL
-  }, /*#__PURE__*/React.createElement(CartesianGrid, {
-    strokeDasharray: "3 3",
-    stroke: "#334155"
-  }), /*#__PURE__*/React.createElement(XAxis, {
-    dataKey: "package",
-    tick: {
-      fill: "#94a3b8",
-      fontSize: 9
-    }
-  }), /*#__PURE__*/React.createElement(YAxis, {
-    tick: {
-      fill: "#94a3b8",
-      fontSize: 11
-    }
-  }), /*#__PURE__*/React.createElement(Tooltip, {
-    contentStyle: TS,
-    formatter: (v, n) => [n === "price" ? `Â¥${v.toLocaleString()}` : `$${v}`, n === "price" ? "åä¾¡æ ¼" : "USD"]
-  }), /*#__PURE__*/React.createElement(Bar, {
-    dataKey: "price",
-    fill: "#8b5cf6",
-    name: "price",
-    radius: [3, 3, 0, 0]
-  })))), /*#__PURE__*/React.createElement("div", {
-    className: "bg-slate-900 border border-slate-700 rounded-xl p-4"
-  }, /*#__PURE__*/React.createElement("h3", {
-    className: "text-sm font-semibold text-slate-200 mb-4"
-  }, "\uD83D\uDD3D \u5E02\u5834\u30D5\u30A1\u30CD\u30EB\uFF08TAM\u2192SAM\u2192SOM\uFF09"), /*#__PURE__*/React.createElement("div", {
-    className: "space-y-3"
-  }, [{
-    label: "TAM å¹´éåå¨©ç·æ°",
-    val: 1100,
-    pct: 100,
-    color: "bg-blue-500",
-    note: "USNHOã®å®ç¸¾æå¤§å¤"
-  }, {
-    label: "SAM åºå°å¤ä½é¨åéè¦",
-    val: 770,
-    pct: 70,
-    color: "bg-emerald-500",
-    note: "ç±³å½ã§ã®ä½é¨åå©ç¨çåç§"
-  }, {
-    label: "SOM åå¹´åº¦ç²å¾ç®æ¨",
-    val: 350,
-    pct: 32,
-    color: "bg-amber-500",
-    note: "è±èªå¯¾å¿Ãã¢ã¯ã»ã¹åªä½"
+HOÛX\[\[
+Y
+NÂK×JNÂÛÛÝH][\ËÚ[;ïgNÂ]\Ê××ÔTW×ÊÔXXÝÜX]Q[[Y[
+]ÂÛ\ÜÓ[YNË\Û]KNLÜ\XÜ\\Û]KMÌÝ\ÝËZY[KLKÊ××ÔTW×ÊÔXXÝÜX]Q[[Y[
+]ÂÛ\ÜÓ[YNÚ]\ÜXÙK[ÝÜ\^^ÈÛ[[ÛÈ^Y[Y\[M[[KXØÚÈÝ[NÂ[ÙÜN[Û]V
+	ÛÙÙ]	H
+[Ý
+
+Ë_\
+XY[ÓYL	HBK;ïg
+JNÂBËÈ8¥ 8¥ TÒÈQÑH8¥ 8¥ [Ý[Û\ÚÐYÙJÂ][JHÂÛÛÝÈHÂQÒË\YNLÍ^\YLÌÜ\Ü\\YMÌQQUSNËX[X\NLÍ^X[X\LÌÜ\Ü\X[X\MÌÕÎËYÜY[NLÍ^YÜY[LÌÜ\Ü\YÜY[MÌÔÔSUNËXYKNLÍ^XYKLÌÜ\Ü\XYKMÌNÂÛÛÝHÂQÒ¸¦¨:jæ8àê¸à®xà«ÈQQUSN¸¥á9.+xàê¸à®xà«ÈÕÎ¸§$È9/c¸àê¸à®xà«ÈÔÔSUN¸¦!H9ªgù/&NÂ]\Ê××ÔTW×ÊÔXXÝÜX]Q[[Y[
+Ü[ÂÛ\ÜÓ[YN^^ÈLKLHÝ[YY[Û\Ù[ZXÛ	ÜÖÛ][HËQQUS_XKÛ][H][
+NÂBËÈ8¥ 8¥ ÔHÐT8¥ 8¥ [Ý[ÛÜPØ\
+ÂX[[YKÝXÛÛÜH[Y\[XÛÛJHÂÛÛÝÈHÂ[Y\[ÛKY[Y\[NLÍËY[Y\[NÌÜ\Y[Y\[MÌÍL^Y[Y\[MYNÛKXYKNLÍËXYKNÌÜ\XYKMÌÍL^XYKM[X\ÛKX[X\NLÍËX[X\NÌÜ\X[X\MÌÍL^X[X\MÜÙNÛK\ÜÙKNLÍË\ÜÙKNÌÜ\\ÜÙKMÌÍL^\ÜÙKM[Û]ÛK][Û]NLÍË][Û]NÌÜ\][Û]MÌÍL^][Û]MÞX[ÛKXÞX[NLÍËXÞX[NÌÜ\XÞX[MÌÍL^XÞX[MNÂÛÛÝÛÈHÖØÛÛÜNÂ]\Ê××ÔTW×ÊÔXXÝÜX]Q[[Y[
+]ÂÛ\ÜÓ[YNËYÜYY[]ËX	ØÛßHÜ\Ý[Y^M^^XÛÛØ\LXKÊ××ÔTW×ÊÔXXÝÜX]Q[[Y[
+]ÂÛ\ÜÓ[YN^LKXÛÛKÊ××ÔTW×ÊÔXXÝÜX]Q[[Y[
+]ÂÛ\ÜÓ[YN^LÛXÛ	ØÛËÜ]
+KÜ
+
+_XK[YJKÊ××ÔTW×ÊÔXXÝÜX]Q[[Y[
+]ÂÛ\ÜÓ[YN^\Û]KLÌ^\ÛHÛ[YY][HKX[
+KÝX	Ê××ÔTW×ÊÔXXÝÜX]Q[[Y[
+]ÂÛ\ÜÓ[YN^\Û]KML^^ÈKÝXJNÂBËÈ8¥ 8¥ ÑPÕSÓPQT8¥ 8¥ [Ý[ÛÙXÝ[ÛXY\Â]KÝX]KXÛÛJHÂ]\Ê××ÔTW×ÊÔXXÝÜX]Q[[Y[
+]ÂÛ\ÜÓ[YNXMKÊ××ÔTW×ÊÔXXÝÜX]Q[[Y[
+]ÂÛ\ÜÓ[YN^][\ËXÙ[\Ø\LÈXLHKÊ××ÔTW×ÊÔXXÝÜX]Q[[Y[
+Ü[ÂÛ\ÜÓ[YN^LKXÛÛKÊ××ÔTW×ÊÔXXÝÜX]Q[[Y[
+ÂÛ\ÜÓ[YN^^ÛXÛ^]Ú]HXÚÚ[Ë]ÚYHK]JJKÝX]H	Ê××ÔTW×ÊÔXXÝÜX]Q[[Y[
+ÂÛ\ÜÓ[YN^\Û]KM^\ÛH[NHKÝX]JKÊ××ÔTW×ÊÔXXÝÜX]Q[[Y[
+]ÂÛ\ÜÓ[YN]L\ËYÜYY[]Ë\ÛKY[Y\[MLÍLXKXYKMLÌÌË][Ü\[JJNÂBËÈ8¥ 8¥ RHQTÓÔ8¥ 8¥ [Ý[ÛZPY\ÛÜ
+HÂÛÛÝÚ[]Ù][]HH\ÙTÝ]JNÂÛÛÝÛY\ÜØYÙ\ËÙ]Y\ÜØYÙ\×HH\ÙTÝ]JÞÂÛNZH^¸àdøà¤øàjøàhxàkøà [Z[UYSÚÚy¢)¹åixà¨¸àâxàä8à©8à®xàï8àiøàfxà ¸àç¸à«øàëyíc9®"8àîùg,9¥/ùki¸àîù.¢ù©ky¢)¹åixàjøài8àa8àiº,ê¹ecøàeøài¸àcøàh8àexàa8à ¹/¢ûï&¸à#ML¹a¡¸àk¹à®¹¦ïùä¬9h øàiøàk¹§ :`jy/¨y¨/:*+yk¦¸àkûï'øà#xà#:.çùç`:fn8à­øàâ¸àê¸àª¸àiøàkºfá¹k¨¹¢)¹åixàkûï'øà#HWJNÂÛÛÝÛØY[ËÙ]ØY[×HH\ÙTÝ]J[ÙJNÂÛÛÝÝÛTYH\ÙTY[
+NÂÛÛÝTÔHÂ9/¨y¨/ML¹a¡¹ä¬9h øàiøàk¹§ :`jy/¨y¨/:*+z*"
+¹ãï¹g*0©LH	M
+8àiøàfxà ¹ìlùfïxàk¹d#9©æ8à­xàï8àäøà®xàc	MLL8àj¸àk¸àiøà#9ìlùfïxà¢8à¢¹k¢xàa8à#yoàùä!¹æ¡9a*¹/cy )øàc8à`¸à¢¸ào¸àfxà ¹£ª9ij9/¨y¨/9/dùìîûï&¸ (9gî¹§+8à®øààøà­øàéøàìÊ
+9b!{ï&°©L
+	M
+W¸ (
+8àåøàë8àçøà¨¸àè;ï&°©LÌ
+	NMÊH8¡¤8à®xà©8àï8àâ8à®xàçxààøàâ¸ (¹fç¸àäxààøà¬xàï8à®;ï&°©LÎ
+	JH8¡¤¹§ 9i)ùc%)å®¢: "**{>¸Þ8+>89þ8:^88¾88n8*>¸nZê.hnyZ^ûÈiÈXJ®XX888:>88Þ8:³>ûÈ¢¥ÆåÆãâÆFW2öb¶FVæf6V&öö²K~K«¢²Æî(i"8*.8;>898+^888;ÎKÙ>>(i.h©^zþ8~Xú>8+>89þxny®8.KúÎ[ªn8ÎiÈ¹ÆåÆã"âå5æWr&VçB7W÷'B&öw&Ò
+>i¥Æî(i"Yû®YËXh^8îXZÎ[Èþ+.XYiJþhûN89~8:Þ8+8:8:8¾898;>89^Þ{Úî8.XZÎKúX©²µÆåÆã2âvöövÆRÔTþ8ÃDBVÇG&6÷VæBö¶æv8ÕÆî(i"U4äòk[~¸Þyx^"8¾8(¸£^Xn8).8*.89N8;Î8:¾8.»©å4TóKØÞ8).z+®KùÒ"À¢YËiKþZÚc¢"¢®89þ8*.8+~8:>8*N89î8;Î8ÎiK¾Xº.y¨N8:®8*.8:®8+®8:8Þ8¾8(¨/Ê[âw
+ã
+ßÌ¨©q¹q»ÆÏn÷»
+Ï'«æÏÒ/3ÖÇB#*G¶7"V¯+Ê[â¼éq»>Ãæûr'ê/²³â"_ÎÛÞk»¢¢tH¦CVg×*o¿&+âoâ7>½q»
+Ã
+ï¢î£ÖßÔÔ°ÀÀÃB4§½A
+O¦r¢
+KR
+q»6_¢ÿ
+ßW H¦£¦j+·óó
+ßÏ_*q¹q»ÖC¢®[¾òkrÃRÿ¶jÞ+ò×Dôr£Ê[ÆÏ¢î7_òÜôµ¥±åQÉ=­§¹Q7.°(
+ß+«
+¨è¨¨Ï
+ß+«
+«"µ¥±åQÉ=­§"V{#«
+¿
+ä¨©q¹q»Â~~¢îv¦fà ÐÔ§¾òk
+Ð°ÀÀÃâ¿æÓ¦S"C¦7×j«¢¢·
+g*W¢Î£
+ç
+ÿW:R£	q¹q»Â~~¦Vßrsîx ÐÀ§¾òk
+Ì°ÔÀÃâ¿æÓ¦îK¶_ëþw	1Q[
+K¦7¢[\Ën{G
+Çó
+ãã¢ªcÂ;	q¹q»Â~RÐ¦G¢z7ê/V ÄÔ§¾òk¦®` ÄÈÃ§
+
+ÈÈ°ÀÀÀôÄàÏ»®Ûê'*oÚ·2rÃRÿ¶6Ç¦¢î7_òßK¦r¢_°(>;n(è¨©µ¥±åQÉ=­¤>;n+¯¢¦ÏÒÀ¨©q¹q»r#¦ZO
+ï
+ßÌÄÈÃîØ\æÏvº6cú
+Èà°ÀÀÀôr#¦ZO
+ÌÎä()ô°ì(µ½¹Ñ èÇr °(µ½Õ¹ÐèÈÜÈ¸ÀØ)ô°ì(µ½¹Ñ èËr °(µ½Õ¹ÐèÈØÀ¸ØÀ)ô°ì(µ½¹Ñ èÏr °(µ½Õ¹ÐèÈäà¸Ðä)õÀ´È(ô°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð Ü´È ´ÈÉ½Õ¹µÕ±°µµÉ±´ÐÀÀ¹¥µÑµÁÕ±Í(ô¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ÍÁ¸°ì(±ÍÍ9µèÑáÐµÍ´½¹ÐµÍµ¥½±ÑáÐµÍ±Ñ´ÈÀÀ(ô°$qÔØÈÈÙqÔÜÔØÕqÔÌÁÉqÔÌÁåqÔÌÁÁqÔÌÁÑqÔÌÁÙqÔÌÁ¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ÍÁ¸°ì(±ÍÍ9µèÑáÐµáÌÑáÐµÍ±Ñ´ÔÀÀµ°µÕÑ¼(ô°­½åqÔÔÐÀáqÔÔÐÁ
+qÔÑÅqÔÜäÍqÔÕÀÉqÔÜÔÈà¤¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ¥Ø°ì(±ÍÍ9µè±à´Ä½ÙÉ±½ÜµäµÕÑ¼À´ÐÍÁµä´Ì(ô°µÍÍÌ¹µÀ ¡´°¤¤ôø¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ¥Ø°ì(­äè¤°(±ÍÍ9µè±àí´¹É½±ôôôÕÍÈü©ÕÍÑ¥äµ¹è©ÕÍÑ¥äµÍÑÉÐõ(ô°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ¥Ø°ì(±ÍÍ9µèµàµÜµáÌÉ½Õ¹µá°Áà´ÌÁä´ÈÑáÐµÍ´í´¹É½±ôôôÕÍÈüµ±Õ´ØÀÀÑáÐµÝ¡¥ÑèµÍ±Ñ´àÀÀÑáÐµÍ±Ñ´ÈÀÀ½ÉÈ½ÉÈµÍ±Ñ´ÜÀÀõ(ô°´¹ÑáÐ¹ÍÁ±¥Ð q¸¤¹µÀ ¡±¥¹°¨¤ôø¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð À°ì(­äè¨°(±ÍÍ9µè±¥¹¹ÍÑÉÑÍ]¥Ñ  ¨¨¤ü½¹Ðµ½±ÑáÐµµÉ±´ÌÀÀè(ô°±¥¹¹ÉÁ± ½p©p¨½°¤¤¤¤¤¤°±½¥¹¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ¥Ø°ì(±ÍÍ9µè±à©ÕÍÑ¥äµÍÑÉÐ(ô°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ¥Ø°ì(±ÍÍ9µèµÍ±Ñ´àÀÀ½ÉÈ½ÉÈµÍ±Ñ´ÜÀÀÉ½Õ¹µá°Áà´ÐÁä´È(ô°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ÍÁ¸°ì(±ÍÍ9µèÑáÐµÍ±Ñ´ÐÀÀÑáÐµÍ´¹¥µÑµÁÕ±Í(ô°qÔÔÈÀÙqÔØÜäÁqÔÑÉ¸¸¸¤¤¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ¥Ø°ì(Éè½ÑÑ½µI(ô¤¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ¥Ø°ì(±ÍÍ9µèÀ´Ì½ÉÈµÐ½ÉÈµÍ±Ñ´ÜÀÀ±àÀ´È(ô°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ¥¹ÁÕÐ°ì(Ù±Õè¥¹ÁÕÐ°(½¹
+¡¹èôøÍÑ%¹ÁÕÐ¡¹ÑÉÐ¹Ù±Õ¤°(½¹-å½Ý¸èôø¹­äôôô¹ÑÈ¡¹±M¹ ¤°(Á±¡½±ÈèqÔÑá	qÕÅÄÔÉqÔÔÄàÙqÔÌÀØÝqÔÌÀÙqÔÑÅqÔØàÍ
+qÔáÉqÔáÀáqÔÌÀÙqÕÅ°(±ÍÍ9µè±à´ÄµÍ±Ñ´àÀÀ½ÉÈ½ÉÈµÍ±Ñ´ØÀÀÉ½Õ¹µ±Áà´ÌÁä´ÈÑáÐµÍ´ÑáÐµÍ±Ñ´ÈÀÀÁ±¡½±ÈµÍ±Ñ´ÔÀÀ½ÕÌé½ÕÑ±¥¹µ¹½¹½ÕÌé½ÉÈµµÉ±´ÔÀÀ(ô¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ÕÑÑ½¸°ì(½¹
+±¥¬è¡¹±M¹°(±ÍÍ9µèÁà´ÐÁä´ÈµµÉ±´ØÀÀ¡½ÙÈéµµÉ±´ÔÀÀÑáÐµÝ¡¥ÑÑáÐµÍ´½¹ÐµÍµ¥½±É½Õ¹µ±ÑÉ¹Í¥Ñ¥½¸µ½±½ÉÌ(ô°qÔäÀÀÅqÔÑÄ¤¤¤ì)ô((¼¼VCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCV@(¼¼5%8A@(¼¼VCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCVCV@)Õ¹Ñ¥½¸ÁÀ ¤ì(½¹ÍÐmÑ°ÍÑQtôÕÍMÑÑ áÕÑ¥Ù¤ì(½¹ÍÐÑÌômì(¥èáÕÑ¥Ù°(±°èÂ~N,
+£
+Ã
+ó
+¿
+X(ô°ì(¥è½¹½µä°(±°èÂ~>ÆÏn÷Ö3â (ô°ì(¥èµÉ­Ð°(±°èÂ~:X¢î7âÐ(ô°ì(¥è¥ÉÑ °(±°èÂ~FØëR"V(ô°ì(¥èÍ¹É¥½Ì°(±°èÂ~R¸
+ß+«
+¨(ô°ì(¥èÙ¥Í½È°(±°èÂ~X'
+'C
+
+çð(õtì(½¹ÍÐôlÍàÉØ°ÄÁäàÄ°ÔåÁ°áÕØ°ÐÐÐÐtì(½¹ÍÐQLôì(­É½Õ¹
+½±½ÈèÅÈäÍ°(½ÉÈèÅÁàÍ½±¥ÌÌÐÄÔÔ°(½±½ÈèÅÕä(ôì(ÉÑÕÉ¸¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ¥Ø°ì(±ÍÍ9µèµ¥¸µ µÍÉ¸µÍ±Ñ´äÔÀÑáÐµÍ±Ñ´ÄÀÀ½¹ÐµÍ¹Ì(ô°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ¡È°ì(±ÍÍ9µèµÉ¥¹ÐµÑ¼µÈÉ½´µÍ±Ñ´äÀÀÙ¥µÍ±Ñ´àÀÀÑ¼µÍ±Ñ´äÀÀ½ÉÈµ½ÉÈµÍ±Ñ´ÜÀÀ(ô°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ¥Ø°ì(±ÍÍ9µèµàµÜ´Ýá°µàµÕÑ¼Áà´ÐÁä´Ð(ô°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ¥Ø°ì(±ÍÍ9µè±à¥ÑµÌµÍÑÉÐ©ÕÍÑ¥äµÑÝ¸±àµÝÉÀÀ´Ì(ô°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ¥Ø°¹Õ±°°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ¥Ø°ì(±ÍÍ9µè±à¥ÑµÌµ¹ÑÈÀ´Ìµ´Ä(ô°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ¥Ø°ì(±ÍÍ9µèÜ´à ´àÉ½Õ¹µ±µÉ¥¹ÐµÑ¼µÈÉ½´µµÉ±´ÔÀÀÑ¼µ±Õ´ØÀÀ±à¥ÑµÌµ¹ÑÈ©ÕÍÑ¥äµ¹ÑÈÑáÐµÍ´½¹Ðµ½±(ô°qÕàÍ
+qÕÌÌ¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð  Ä°ì(±ÍÍ9µèÑáÐµá°½¹Ðµ½±ÑáÐµÝ¡¥ÑÑÉ­¥¹µÑ¥¡Ð(ô°µ¥±åQÉ=­¤¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ÍÁ¸°ì(±ÍÍ9µèÑáÐµáÌµµÉ±´äÀÀ¼ØÀÑáÐµµÉ±´ÐÀÀ½ÉÈ½ÉÈµµÉ±´ÜÀÀÁà´ÈÁä´À¸ÔÉ½Õ¹µÕ±°(ô°	¥ÉÑ 
+¹ÑÈ¤¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð À°ì(±ÍÍ9µèÑáÐµÍ±Ñ´ÐÀÀÑáÐµáÌµ°´ÄÄ(ô°qÔÌÁqÔÌÁqÔÌÁqÔÝÑ
+qÔÙÀáqáÝqÔÔÜÌÁqÔØÔÍqÔÕØÙqáÝqÔÔÜÈáqÔÙäÙqÔÝÜÍqÔá
+qÔÕÀÉqÔÔàÌÐqÔÝÜÅqÔÔÐÀáqÔÌÁÑqÔÌÁÍqÔÌÁÙqÔÌÁqÔÌÁáqÔÌÁÝqÔÌÁÍqÔÌÁåqÕÕÈÀÈØ¸ÀÐ¸ÈÜ¤¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ¥Ø°ì(±ÍÍ9µè±àÀ´ÐÑáÐµÉ¥¡Ð(ô°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ¥Ø°¹Õ±°°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ¥Ø°ì(±ÍÍ9µèÑáÐµµÉ±´ÐÀÀ½¹Ðµµ½¹¼½¹Ðµ½±ÑáÐµ±(ô°qáÔÄÔÈ¸ÐÔ¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ¥Ø°ì(±ÍÍ9µèÑáÐµÍ±Ñ´ÔÀÀÑáÐµáÌ(ô°UM½)Ad¤¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ¥Ø°¹Õ±°°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ¥Ø°ì(±ÍÍ9µèÑáÐµ±Õ´ÐÀÀ½¹Ðµµ½¹¼½¹Ðµ½±ÑáÐµ±(ô°Ð¸Äà¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ¥Ø°ì(±ÍÍ9µèÑáÐµÍ±Ñ´ÔÀÀÑáÐµáÌ(ô°ULÄÁd¤¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ¥Ø°¹Õ±°°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ¥Ø°ì(±ÍÍ9µèÑáÐµµÈ´ÐÀÀ½¹Ðµµ½¹¼½¹Ðµ½±ÑáÐµ±(ô°ÐÈ°ÄÀÀ¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ¥Ø°ì(±ÍÍ9µèÑáÐµÍ±Ñ´ÔÀÀÑáÐµáÌ(ô°qÔØÕÕqÔÝÑ
+qÔÕÜÍqÔÔÜÐÜ¤¤¤¤¤¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð¡Q¥­È°¹Õ±°¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ¥Ø°ì(±ÍÍ9µèÍÑ¥­äÑ½À´Àè´ÈÀµÍ±Ñ´äÀÀ½ÉÈµ½ÉÈµÍ±Ñ´ÜÀÀ¼ÔÀ(ô°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ¥Ø°ì(±ÍÍ9µèµàµÜ´Ýá°µàµÕÑ¼Áà´Ð(ô°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ¥Ø°ì(±ÍÍ9µè±àÀ´Ä½ÙÉ±½ÜµàµÕÑ¼Áä´ÈÍÉ½±±Èµ¡¥(ô°ÑÌ¹µÀ¡Ðôø¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ÕÑÑ½¸°ì(­äèÐ¹¥°(½¹
+±¥¬è ¤ôøÍÑQ¡Ð¹¥¤°(±ÍÍ9µèÁà´ÐÁä´ÈÉ½Õ¹µ±ÑáÐµÍ´½¹Ðµµ¥Õ´Ý¡¥ÑÍÁµ¹½ÝÉÀÑÉ¹Í¥Ñ¥½¸µ±°íÑôôôÐ¹¥üµµÉ±´ØÀÀÑáÐµÝ¡¥ÑÍ¡½Üµ±èÑáÐµÍ±Ñ´ÐÀÀ¡½ÙÈéÑáÐµÍ±Ñ´ÈÀÀ¡½ÙÈéµÍ±Ñ´àÀÀõ(ô°Ð¹±°¤¤¤¤¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð µ¥¸°ì(±ÍÍ9µèµàµÜ´Ýá°µàµÕÑ¼Áà´ÐÁä´ØÍÁµä´à(ô°ÑôôôáÕÑ¥Ù¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ¥Ø°ì(±ÍÍ9µèÍÁµä´Ø(ô°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð¡MÑ¥½¹!È°ì(¥½¸èqÕàÍqÕ
+
+°(Ñ¥Ñ±èqÔÌÁáqÔÌÁÁqÔÌÁ	
+qÔÌÁqÔÌÁÙqÔÌÁÍqÔÌÁÙqÔÌÁÕqÔÌÁqÔÌÁqÔÌÁ°(ÍÕÑ¥Ñ±èqÔÔÐÀáqÔÔÐÁ
+qÔÑÅqÔÜäÍ­½åqÕÕ
+µ¥±åQÉ=­¤	¥ÉÑ 
+¹ÑÉqÕÕÈÀÈÙqÔÕÜÐÑqÔØÜÀàÈÝqÔØÕÕqÔÜÈÐà(ô¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ¥Ø°ì(±ÍÍ9µèÉ¥É¥µ½±Ì´ÈµéÉ¥µ½±Ì´Ì±éÉ¥µ½±Ì´ØÀ´Ì(ô°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð¡-Á¥
+É°ì(¥½¸èqÕàÍqÕØÔ°(±°èqÔÔÜÈáqÔÙäÙM=qÔÝ
+qÔØÔÜÀ°(Ù±ÕèÔÌ°ÜÔÐ°(ÍÕèqÔÔÐÁ9qÔÈÀÈÙqÔØÍáqÔáÀà¤°(½±½Èè±Õ(ô¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð¡-Á¥
+É°ì(¥½¸èqÕàÍqÕ
+À°(±°èqÔÕÜÑqÔäÔäÍqÔÙàáqÔá
+		qÔÔÈå°(Ù±ÕèqáÔÌ°ØäÝqÔÔÄÀÐ°(ÍÕèqÔÔÄàÙqÔÕÜÐ°(½±½ÈèµÉ±(ô¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð¡-Á¥
+É°ì(¥½¸èqÕàÍqÕÜØ°(±°èqÔÕÜÑqÔäÔäÍqÔÔÈÀÙqÔÕÈåQ4°(Ù±ÕèÄ°ÄÀÁqÔÑØ°(ÍÕèUM9!=qÔÕåqÔÝÍqÔØÜÀÁqÔÔäÈÜ°(½±½ÈèÙ¥½±Ð(ô¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð¡-Á¥
+É°ì(¥½¸èqÕàÍ
+qÕØ°(±°èqÔÜÙqÔÙÄåqÔÕÜÑqÔÔÔÐØ°(Ù±ÕèqáÔÐ°ÀÀÁqÔÑÀÜ°(ÍÕèqÔÔÈÈåqÔÜÙ
+qÔÜÌàÜÔÀ¬°(½±½ÈèµÈ(ô¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð¡-Á¥
+É°ì(¥½¸èqÕàÍqÕ
+Ä°(±°èqÔÔÄàÙqÔÕàÁqÔÌÁÉqÔÌÁ
+qÔÌÁÜ°(Ù±ÕèÄÔÈ¸ÐÕqÔÔÄàØ°(ÍÕèqÔÌÁåqÔÌÁ	qÔäàØÝqÔÕäÝqÔÔÄÉqÔÑÑqÔØÀÈÝ5`°(½±½Èèå¸(ô¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð¡-Á¥
+É°ì(¥½¸èqÕàÍ
+qÕ°(±°èqÔÔÈÅqÔÕÜÑqÔÕÙM=4°(Ù±ÕèÌÔÁqÔÑØ°(ÍÕèqÔÌÁÝqÔÌÁÝqÔÌÁÈÐÔqÔÜÙqÔÙÄä°(½±½ÈèÉ½Í(ô¤¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ¥Ø°¹Õ±°°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð  Ì°ì(±ÍÍ9µèÑáÐµÍ´½¹ÐµÍµ¥½±ÑáÐµÍ±Ñ´ÐÀÀÕÁÁÉÍÑÉ­¥¹µÝ¥Èµ´Ì(ô°qÕàÍqÕ
+ÀqÔÌÁÉqÔÌÁ
+qÔÌÁ		qÔÌÁÍqÔÌÁÁqÔÌÁÙqÔÌÁqÔÌÁ
+qÔÌÁÕqÔÌÁÍqÔÌÁÍqÔÌÁÀ¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ¥Ø°ì(±ÍÍ9µèÉ¥µéÉ¥µ½±Ì´ÈÀ´Ì(ô°5=I9%9}	I%L¹µÀ ¡°¤¤ôø¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ¥Ø°ì(­äè¤°(±ÍÍ9µèµÍ±Ñ´äÀÀ½ÉÈ½ÉÈµÍ±Ñ´ÜÀÀÉ½Õ¹µá°À´Ð¡½ÙÈé½ÉÈµÍ±Ñ´ÔÀÀÑÉ¹Í¥Ñ¥½¸µ½±½ÉÌ(ô°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ¥Ø°ì(±ÍÍ9µè±à¥ÑµÌµÍÑÉÐ©ÕÍÑ¥äµÑÝ¸µ´È(ô°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ¥Ø°¹Õ±°°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ÍÁ¸°ì(±ÍÍ9µèÑáÐµáÌÑáÐµÍ±Ñ´ÔÀÀ½¹Ðµµ¥Õ´(ô°¹Ñ½Éä¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð  Ð°ì(±ÍÍ9µèÑáÐµÍ´½¹Ðµ½±ÑáÐµÝ¡¥ÑµÐ´À¸Ô(ô°¹Ñ¥Ñ±¤¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð¡I¥Í­	°ì(±Ù°è¹É¥Í¬(ô¤¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð À°ì(±ÍÍ9µèÑáÐµáÌÑáÐµÍ±Ñ´ÐÀÀ±¥¹µÉ±á(ô°¹Ñ¥°¤¤¤¤¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ¥Ø°ì(±ÍÍ9µèµÍ±Ñ´äÀÀ½ÉÈ½ÉÈµÍ±Ñ´ÜÀÀÉ½Õ¹µá°½ÙÉ±½Üµ¡¥¸(ô°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ¥Ø°ì(±ÍÍ9µèÁà´ÐÁä´Ì½ÉÈµ½ÉÈµÍ±Ñ´ÜÀÀµÍ±Ñ´àÀÀ¼ÔÀ(ô°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð  Ì°ì(±ÍÍ9µèÑáÐµÍ´½¹ÐµÍµ¥½±ÑáÐµÍ±Ñ´ÈÀÀ(ô°qÕàÍqÕ
+
+qÔÑÍ	qÔàäàÅqÔÌÁÝqÔÌÁ
+qÔÌÁ	qÔÑÀÁqÔàåÝqÔààØáqÕÀàÈÀÈØ¸ÀÐ¸ÈÝqÔÜÈÐáqÕÀä¤¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ¥Ø°ì(±ÍÍ9µè½ÙÉ±½ÜµàµÕÑ¼(ô°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð Ñ±°ì(±ÍÍ9µèÜµÕ±°ÑáÐµáÌ(ô°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð Ñ¡°¹Õ±°°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ÑÈ°ì(±ÍÍ9µè½ÉÈµ½ÉÈµÍ±Ñ´ÜÀÀµÍ±Ñ´àÀÀ¼ÌÀ(ô°l
+¯
+
+Ã«°2¢d°VÃ°µ¥±åQÉ=­§ã»?FÌt¹µÀ¡ ôø¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð Ñ °ì(­äè °(±ÍÍ9µèÑáÐµ±ÐÁà´ÐÁä´ÈÑáÐµÍ±Ñ´ÐÀÀ½¹Ðµµ¥Õ´(ô° ¤¤¤¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð Ñ½ä°¹Õ±°°mlÆÏn÷Ö3â °C"C¦Vß:¡DÄ´ÈÀÈØ¤°È¸È°Þ§«"C¦VßK¢î7ê#¸_¿Ú·2ï&+âo¯r<t°lÞ§«"C¦Vß:°C"C¦Vß:DÄ´ÈÀÈØ¤°È¸È°Þ§«"C¦VßK¢î7ê#º_¿Ú·2ï&+âo«
+ç
+¿Â<t°lÆÏn÷Ö3â °A
+
+Ï
+£
+ÏW°¤°È¸Ø°¦®c
+ÏW³K'¯¢Îó¢Êß*o»nã¾ûj¯¢&¿ôt°lÆÏn÷Ö3â °Ç·:°Ð¸Ð°â¢"³âÓ¿¢î2[K¢î7¦Zþ¢»¦nR£º'ºk¿¦jo®/t°lÆÏn÷Ö3â °ÄÃæÓ
+×"§n{
+(°Ð¸Äà°¦®c¦G"§I"§â/K¦îÛKº'2Úk>¿¢÷t°l
+ënü°UM½)Ad°
+ÄÔÈ¸ÐÔ°
+ÈÈ°ÀÀÀôÄÐÐÆÏn÷
+#
++º'öO¦¢Oút°lÆÏ¢î7âÐ°r£ÊYM=Þ?VÀ°ÔÌ°ÜÔÓB4°nÓ:
+ÿó
+Ë#âÓ¢?¢t°lÆÏ¢î7âÐ°r#¦ZOÚ#¢Êï*l°
+ÌÀã°Þ£«Ö3â#r?3Ê[â¯¶cr t°lÆÏ¢î7âÐ°b'&/Ò7F£¢úëÚ#¢Êì°
+Ä°ÐÜç¿æÐ°rÚ#¢Êïr<õQ=­§»r¦§®/rÀt°lëRâÐ°æÓ¦ZO"¢¥Q4°Ä°ÄÀÃîØ°r»"Ã¦S>¿¢÷âÓ¢?¢t°lëRâÐ°~ërÃ[
+×óO
+ç¦r¢°ÜÜÃîØ ÜÀ¤°ÆÏ¢î7^¦f[öO¦¢Oz/
+×óO
+ç
+KÆ
+
+/Æt°lëRâÐ°"wæÓê6Ëú_n»¢d°ÌÔÃîØ°
+ß
+
+ÐÔï>ûºj¦S"Cn»¢dut¹µÀ ¡mÐ°¥¹°Ù°°µ¹¥¹t°¤¤ôø¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ÑÈ°ì(­äè¤°(±ÍÍ9µè½ÉÈµ½ÉÈµÍ±Ñ´àÀÀí¤ÈôôôÀüèµÍ±Ñ´äÀÀ¼ÌÀõ(ô°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð Ñ°ì(±ÍÍ9µèÁà´ÐÁä´ÈÑáÐµÍ±Ñ´ÔÀÀ½¹Ðµµ¥Õ´(ô°Ð¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð Ñ°ì(±ÍÍ9µèÁà´ÐÁä´ÈÑáÐµÍ±Ñ´ÌÀÀ(ô°¥¹¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð Ñ°ì(±ÍÍ9µèÁà´ÐÁä´ÈÑáÐµµÉ±´ÐÀÀ½¹Ðµµ½¹¼½¹Ðµ½±ÑáÐµÉ¥¡Ð(ô°Ù°¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð Ñ°ì(±ÍÍ9µèÁà´ÐÁä´ÈÑáÐµÍ±Ñ´ÐÀÀ(ô°µ¹¥¹¤¤¤¤¤¤¤¤°Ñôôô½¹½µä¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ¥Ø°ì(±ÍÍ9µèÍÁµä´Ø(ô°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð¡MÑ¥½¹!È°ì(¥½¸èqÕàÍ
+qÕØ°(Ñ¥Ñ±èqÔÝÜÍqÔÔÙqÔÝÑ
+qÔÙÀáqÔÔÈÀÙqÔØÜäÀ°(ÍÕÑ¥Ñ±èAqÔÌÁ	qÔÌÁÑqÔÌÁÍqÔÌÁÕqÔÌÁ
+qÔÌÁ	qÔá
+ÅqÔØÔÍqÔÌÁ	qÔÌÁÕqÔÌÁÝqÔÌÁåqÔÌÁÑqÔÌÁÅqÔÌÁÝqÔÌÁ
+qÔÌÁÍqÔÌÁ	qÔäÈàÁqÔààÑ
+qÔÌÁqÔÌÁåqÔÌÁqÕÀàÈÀÈÙqÔÕÜÐÑqÔØÜÀáqÕÀä(ô¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ¥Ø°ì(±ÍÍ9µèÉ¥É¥µ½±Ì´ÈµéÉ¥µ½±Ì´ÐÀ´Ì(ô°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð¡-Á¥
+É°ì(¥½¸èqÕàÍqÕ
+à°(±°èAqÔØÈÄÁqÔäÔÜÝqÔÜÌàÜ°(Ù±ÕèÈ¸È°(ÍÕèDÄ´ÈÀÈØqÔäÀÅqÔÔàÌÄ°(½±½ÈèµÉ±(ô¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð¡-Á¥
+É°ì(¥½¸èqÕàÍqÕÈÔ°(±°èA
+qÔÌÁÍqÔÌÁÈ°(Ù±ÕèÈ¸Ø°(ÍÕèqÔÔÈÑqÔÕÜÑqÔÙ	ÑqÔÌÁ	qÔÙ
+áqÔÜÙ°(½±½ÈèµÈ(ô¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð¡-Á¥
+É°ì(¥½¸èqÕàÍqÕÜÜ°(±°èqÔÔäÌÅqÔØäÙqÔÜÌàÜ°(Ù±ÕèÐ¸Ð°(ÍÕèqÔÈÕàÀ¸ÄqÔÝåqÔØÄØÉqÔÑÁqÔØØÀÜ°(½±½ÈèÉ½Í(ô¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð¡-Á¥
+É°ì(¥½¸èqÕàÍ
+qÕØ°(±°èqÔØÔÍqÔÝÔÙqÔäÅÅqÔÔÈÈä°(Ù±ÕèÐ¸ÌÜÔ°(ÍÕèqÔÔÈÈåqÔÑÁ	qÔÌÀÔÉqÔØÄÑqÔäÅ
+qÔÔåqÔÔÉÈ°(½±½Èè±Õ(ô¤¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ¥Ø°ì(±ÍÍ9µèÉ¥µéÉ¥µ½±Ì´ÈÀ´Ø(ô°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ¥Ø°ì(±ÍÍ9µèµÍ±Ñ´äÀÀ½ÉÈ½ÉÈµÍ±Ñ´ÜÀÀÉ½Õ¹µá°À´Ð(ô°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð  Ì°ì(±ÍÍ9µèÑáÐµÍ´½¹ÐµÍµ¥½±ÑáÐµÍ±Ñ´ÈÀÀµ´Ð(ô°qÕàÍqÕ
+äqÔÝÜÍqÔÔÙqÔÌÁ
+qÔÌÁÍqÔÌÁáqÔÔÈÈåqÔØÈÔÕqÔÌÀÐÑqÔØÍáqÔÜå	qÕÀáqÔÔÌÐÅqÔÔÄÀÑqÔÌÁåqÔÌÁ	qÕÀä¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð¡IÍÁ½¹Í¥Ù
+½¹Ñ¥¹È°ì(Ý¥Ñ èÄÀÀ°(¡¥¡ÐèÈÈÀ(ô°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð¡	É
+¡ÉÐ°ì(Ñè%M
+1}Q(ô°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð¡
+ÉÑÍ¥¹É¥°ì(ÍÑÉ½­Í¡ÉÉäèÌÌ°(ÍÑÉ½­èÌÌÐÄÔÔ(ô¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð¡aá¥Ì°ì(Ñ-äèåÈ°(Ñ¥¬èì(¥±°èäÑÍà°(½¹ÑM¥éèÄÄ(ô(ô¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð¡eá¥Ì°ì(Ñ¥¬èì(¥±°èäÑÍà°(½¹ÑM¥éèÄÄ(ô(ô¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð¡Q½½±Ñ¥À°ì(½¹Ñ¹ÑMÑå±èQL(ô¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð¡	È°ì(Ñ-äè¹Ñ%¹ÑÉÍÐ°(¥±°èÐÐÐÐ°(¹µèqÔÌÁ
+qÔÌÁÍqÔÌÁáqÔÔÈÈåqÔØÈÔÕqÔÌÀÐÐ¡qÔÔÌÐÅqÔÔÄÀÐ¤°(É¥ÕÌèlÌ°Ì°À°Át(ô¤¤¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð À°ì(±ÍÍ9µèÑáÐµáÌÑáÐµÍ±Ñ´ÔÀÀµÐ´È(ô°ÈÀÈÙèàÄÉ	qÔÌÀÀÉAqÔÌÀÙÈ¸àqÔáàÕqÔÌÀÀÉqÔá
+ÅqÔØÔÍqÔÔÜÈÝqÔÔÈå	qÔÌÀÑ
+qÔÝäåqÔÝåqÔÜØàÑqÔÌÀÙ	qÔØÉÅqÔÔäÈÜ¤¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ¥Ø°ì(±ÍÍ9µèµÍ±Ñ´äÀÀ½ÉÈ½ÉÈµÍ±Ñ´ÜÀÀÉ½Õ¹µá°À´Ð(ô°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð  Ì°ì(±ÍÍ9µèÑáÐµÍ´½¹ÐµÍµ¥½±ÑáÐµÍ±Ñ´ÈÀÀµ´Ð(ô°qÕàÍqÕÈqÔÌÁÕqÔÌÁÝqÔÌÁåqÔÌÁÑqÔÌÁÅqÔÌÁÝqÔÌÁ
+qÔÌÁÍqÔäÜÀÁqÔàäàÅqÔØÌÀÝqÔØÔÜÁqÔØÍáqÔÜå¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð¡IÍÁ½¹Í¥Ù
+½¹Ñ¥¹È°ì(Ý¥Ñ èÄÀÀ°(¡¥¡ÐèÈÈÀ(ô°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð¡1¥¹
+¡ÉÐ°ì(ÑèMUAA1e}
+!%9}Q(ô°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð¡
+ÉÑÍ¥¹É¥°ì(ÍÑÉ½­Í¡ÉÉäèÌÌ°(ÍÑÉ½­èÌÌÐÄÔÔ(ô¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð¡aá¥Ì°ì(Ñ-äèµ½¹Ñ °(Ñ¥¬èì(¥±°èäÑÍà°(½¹ÑM¥éèÄÄ(ô(ô¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð¡eá¥Ì°ì(Ñ¥¬èì(¥±°èäÑÍà°(½¹ÑM¥éèÄÄ(ô(ô¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð¡Q½½±Ñ¥À°ì(½¹Ñ¹ÑMÑå±èQL(ô¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð¡1¥¹°ì(ÑåÁèµ½¹½Ñ½¹°(Ñ-äèÍÌ°(ÍÑÉ½­èÍàÉØ°(¹µè
+ÍÍqÔØÌÀÝqÔØÔÜÀ°(ÍÑÉ½­]¥Ñ èÈ°(½Ðè±Í(ô¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð¡1¥¹°ì(ÑåÁèµ½¹½Ñ½¹°(Ñ-äèµ¹°(ÍÑÉ½­èÄÁäàÄ°(¹µèqÔäÜÀÁqÔàäàÅqÔØÌÀÝqÔØÔÜÀ°(ÍÑÉ½­]¥Ñ èÈ°(½Ðè±Í(ô¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð¡1¹°ì(ÝÉÁÁÉMÑå±èì(½±½ÈèäÑÍà°(½¹ÑM¥éèÄÄ(ô(ô¤¤¤¤¤¤°ÑôôôµÉ­Ð¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ¥Ø°ì(±ÍÍ9µèÍÁµä´Ø(ô°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð¡MÑ¥½¹!È°ì(¥½¸èqÕàÍ
+qÕäØ°(Ñ¥Ñ±èqÔÔÜÈáqÔÙäÙqÔÝÜÍqÔá
+qÔÕÀÉqÔÔàÌÑqÔÔÈÀÙqÔØÜäÀ°(ÍÕÑ¥Ñ±èM=qÔÑ		qÔÔÍÍqÔÌÁ	qÔÙàáqÔá
+		qÔÔÈå	qÔÌÁ	qÔÔÜÌÁqÔÔÝqÔÔÈÀÙqÔÕÀÍqÔÌÁ	qÔÝØÙqÔÑÁqÔÑÔÍqÔÝ
+	qÕÀáqÔÕåqÔÌÁÝqÔÌÁ
+qÔÌÁ	qÕÅ­½åqÔÔÐÀáqÔÔÐÁ
+qÔÑÅqÔÜäÍqÔÜàÄÑqÔÝÜÙqÔá
+ÝqÔØÔäåqÕÀä(ô¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ¥Ø°ì(±ÍÍ9µèÉ¥É¥µ½±Ì´ÈµéÉ¥µ½±Ì´ÐÀ´Ì(ô°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð¡-Á¥
+É°ì(¥½¸èqÔÈØäÑqÕÁ°(±°èqÔá
+qÔÑ		qÕÀáqÔÜÍqÔÕÜåqÕÀä°(Ù±ÕèÈÔ°ÀÀÀ°(ÍÕèqÔÔÐÁ°(½±½Èè±Õ(ô¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð¡-Á¥
+É°ì(¥½¸èqÕàÍqÕØáqÔÈÀÁqÕàÍqÕØåqÔÈÀÁqÕàÍqÕØÜ°(±°èqÔÕÉqÔÔÐÁ
+qÔÕ	ÙqÔØÕ
+°(Ù±ÕèÈà°ÜÔÐ°(ÍÕèqÔÔÐÁ°(½±½ÈèÙ¥½±Ð(ô¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð¡-Á¥
+É°ì(¥½¸èqÕàÍqÕ
+Ð°(±°èqÔØÜÀáqÔäÔäÍqÔÙàáqÔá
+		qÔÔÈå°(Ù±ÕèqáÔÌÀáqÔÔÄÀÐ°(ÍÕèqÔÔÄàÙqÔØÜÀà°(½±½ÈèµÉ±(ô¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð¡-Á¥
+É°ì(¥½¸èqÕàÍqÕ
+Ô°(±°èqÔÕÜÑqÔäÔäÍqÔÙàáqÔá
+		qÔÔÈå°(Ù±ÕèqáÔÌ°ØäÝqÔÔÄÀÐ°(ÍÕèqÔÔÄàÙqÔÕÜÐ°(½±½ÈèµÈ(ô¤¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ¥Ø°ì(±ÍÍ9µèÉ¥µéÉ¥µ½±Ì´ÈÀ´Ø(ô°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ¥Ø°ì(±ÍÍ9µèµÍ±Ñ´äÀÀ½ÉÈ½ÉÈµÍ±Ñ´ÜÀÀÉ½Õ¹µá°À´Ð(ô°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð  Ì°ì(±ÍÍ9µèÑáÐµÍ´½¹ÐµÍµ¥½±ÑáÐµÍ±Ñ´ÈÀÀµ´Ð(ô°qÕàÍqÕqÕÁqÔÔÜÌÁqÔÔÝqÔÔÈÈÕqÔÕÜÑqÔäÔäÍqÔÙàáqÔá
+		qÔäàÑqÕÀáqÔÔÄÀÑqÔÔÄàÙqÕÀä¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð¡IÍÁ½¹Í¥Ù
+½¹Ñ¥¹È°ì(Ý¥Ñ èÄÀÀ°(¡¥¡ÐèÈÐÀ(ô°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð¡	É
+¡ÉÐ°ì(ÑèI%=91}
+=9MU5AQ%=8°(±å½ÕÐèÙÉÑ¥°(ô°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð¡
+ÉÑÍ¥¹É¥°ì(ÍÑÉ½­Í¡ÉÉäèÌÌ°(ÍÑÉ½­èÌÌÐÄÔÔ(ô¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð¡aá¥Ì°ì(ÑåÁè¹ÕµÈ°(Ñ¥¬èì(¥±°èäÑÍà°(½¹ÑM¥éèÄÄ(ô(ô¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð¡eá¥Ì°ì(Ñ-äè¹µ°(ÑåÁèÑ½Éä°(Ñ¥¬èì(¥±°èäÑÍà°(½¹ÑM¥éèÄÄ(ô°(Ý¥Ñ èàÔ(ô¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð¡Q½½±Ñ¥À°ì(½¹Ñ¹ÑMÑå±èQL°(½ÉµÑÑÈèØôøm
+íÙ÷°æÓ¦ZOÚ#¢Êìt(ô¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð¡	È°ì(Ñ-äè¹¹Õ°°(É¥ÕÌèlÀ°Ð°Ð°Át(ô°I%=91}
+=9MU5AQ%=8¹µÀ ¡|°¤¤ôø¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð¡
+±°°ì(­äè¤°(¥±°è
+m¥t(ô¤¤¤¤¤¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ¥Ø°ì(±ÍÍ9µèµÍ±Ñ´äÀÀ½ÉÈ½ÉÈµÍ±Ñ´ÜÀÀÉ½Õ¹µá°À´Ð(ô°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð  Ð°ì(±ÍÍ9µèÑáÐµÍ´½¹ÐµÍµ¥½±ÑáÐµÍ±Ñ´ÈÀÀµ´Ð(ô°qÕàÍqÕ
+ÔqÔØÜÀáqÔÔÈÈÕqÔÙàáqÔá
+		qÔÔäÀåqÔÔÉÕqÕÀáqÔÔÄÀÑqÔÔÄàÙqÕÀä¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð¡IÍÁ½¹Í¥Ù
+½¹Ñ¥¹È°ì(Ý¥Ñ èÄÀÀ°(¡¥¡ÐèÈÐÀ(ô°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð¡É
+¡ÉÐ°ì(Ñè5=9Q!1e}
+=9MU5AQ%=8(ô°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð Ì°¹Õ±°°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ±¥¹ÉÉ¥¹Ð°ì(¥è°(àÄèÀ°(äÄèÀ°(àÈèÀ°(äÈèÄ(ô°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ÍÑ½À°ì(½ÍÐèÔ°(ÍÑ½Á
+½±½ÈèÄÁäàÄ°(ÍÑ½Á=Á¥ÑäèÀ¸Ì(ô¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ÍÑ½À°ì(½ÍÐèäÔ°(ÍÑ½Á
+½±½ÈèÄÁäàÄ°(ÍÑ½Á=Á¥ÑäèÀ(ô¤¤¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð¡
+ÉÑÍ¥¹É¥°ì(ÍÑÉ½­Í¡ÉÉäèÌÌ°(ÍÑÉ½­èÌÌÐÄÔÔ(ô¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð¡aá¥Ì°ì(Ñ-äèµ½¹Ñ °(Ñ¥¬èÄÀ(ô¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð¡eá¥Ì°ì(½µ¥¸èlÈÐÀ°ÌàÁt°(Ñ¥¬èì(¥±°èäÑÍà°(½¹ÑM¥éèÄÄ(ô(ô¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð¡Q½½±Ñ¥À°ì(½¹Ñ¹ÑMÑå±èQL°(½ÉµÑÑÈèØôøm
+íÙ÷°r#¦ZOÚ#¢Êìt(ô¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð¡É°ì(ÑåÁèµ½¹½Ñ½¹°(Ñ-äèµ½Õ¹Ð°(ÍÑÉ½­èÄÁäàÄ°(¥±°èÕÉ° ¤°(ÍÑÉ½­]¥Ñ èÈ(ô¤¤¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð À°ì(±ÍÍ9µèÑáÐµáÌÑáÐµÍ±Ñ´ÔÀÀµÐ´È(ô°Ü´áqÔØÜÀáqÔÌÀÑ
+qÔÌÁÑqÔÌÁ
+qÔÌÁ¡qáÔÌÜÁqÔÔÄÀÐ¥qÔÌÀÀÈÍqÔØÜÀáqÔØÕÁqÔàäáqÔäÄÑqÔÕÕqÔÕá
+qÔÌÀÙ	qÔäÜÀÁqÔàäàÅqÔØÀÈÕqÔÔàäÝqÔÈÄäÉ	¥ÉÑ 
+¹ÑÉqÔäÔá	qÔäØØÉqÔÌÁ	qÔÌÁÑqÔÌÁqÔÌÁÍqÔÌÁÁqÔÌÀÙqÔäÌÜÔ¤¤¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ¥Ø°ì(±ÍÍ9µèµÍ±Ñ´äÀÀ½ÉÈ½ÉÈµÍ±Ñ´ÜÀÀÉ½Õ¹µá°À´Ð(ô°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð  Ì°ì(±ÍÍ9µèÑáÐµÍ´½¹ÐµÍµ¥½±ÑáÐµÍ±Ñ´ÈÀÀµ´Ð(ô°qÕàÍ
+qÕÁÍqÔÙØÍqÔäÜØÉqÔÌÀÙqÔÔÜÌÁqÔØÔÍqÔÕØÙqÔÌÁqÔÌÁåqÔÌÁqÔÌÀØáqÔÙäÙqÔÝÀÑqÔØÈÈÙqÔÜÔØÕqÔÑÅqÔÔÀÈÐ¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ¥Ø°ì(±ÍÍ9µèÉ¥µéÉ¥µ½±Ì´ÌÀ´Ð(ô°=A=1%Q%
+1}I=9QL¹µÀ ¡°¤¤ôø¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ¥Ø°ì(­äè¤°(±ÍÍ9µèµÍ±Ñ´àÀÀ¼ÔÀÉ½Õ¹µá°À´Ì(ô°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð  Ð°ì(±ÍÍ9µèÑáÐµÍ´½¹Ðµ½±ÑáÐµÝ¡¥Ñµ´È(ô°¹É½¹Ð¤°mì(±°èÞ+ò×«
+ç
+¼°(Ù°è¹É¥Í¬°(½±½ÈèµÉ´ÔÀÀ(ô°ì(±°èÖ3â#öÇ¦~ü°(Ù°è¹¥µÁÐ°(½±½ÈèµµÈ´ÔÀÀ(ô°ì(±°èÊ[â¦.Wê°(Ù°è¹½­¥¹Ý°(½±½Èèµ±Õ´ÔÀÀ(õt¹µÀ¡ôø¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ¥Ø°ì(­äè¹±°°(±ÍÍ9µèµ´È(ô°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ¥Ø°ì(±ÍÍ9µè±à©ÕÍÑ¥äµÑÝ¸ÑáÐµáÌÑáÐµÍ±Ñ´ÐÀÀµ´Ä(ô°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ÍÁ¸°¹Õ±°°¹±°¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ÍÁ¸°¹Õ±°°¹Ù°°¤¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ¥Ø°ì(±ÍÍ9µè ´Ä¸ÔµÍ±Ñ´ÜÀÀÉ½Õ¹µÕ±°(ô°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ¥Ø°ì(±ÍÍ9µè µÕ±°í¹½±½ÉôÉ½Õ¹µÕ±±°(ÍÑå±èì(Ý¥Ñ èí¹Ù±ô(ô(ô¤¤¤¤°¹É½¹Ðôôô
+Ï'«æÏÒ,¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð À°ì(±ÍÍ9µèÑáÐµáÌÑáÐµµÉ±´ÐÀÀµÐ´Ä½¹Ðµµ¥Õ´(ô°qÔÈÄäÈqÔÙäÙqÔÝÀÑqÔäÀÈÍqÔÔÉÕqÔÕØäÔqÔÌÀÀÉqÔÔÌÔÝqÔàäÝqÔÌÁÝqÔÌÁÕqÔÌÁáqÔÔÉÁqÔäÀÅqÔÑÉ¤¤¤¤¤¤°Ñôôô¥ÉÑ ¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ¥Ø°ì(±ÍÍ9µèÍÁµä´Ø(ô°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð¡MÑ¥½¹!È°ì(¥½¸èqÕàÍqÕÜØ°(Ñ¥Ñ±èµ¥±åQÉ=­¤	¥ÉÑ 
+¹ÑÈqÔÑá	qÔØäÙqÔØÈÈÙqÔÜÔØÔ°(ÍÕÑ¥Ñ±èqÔÔÉåqÔÜÔÈÍqÔäØØÉqÔÌÁÑqÔÌÁ
+qÔÌÁÍqÔÌÁàqáÜqÔÜÁ	qÔØÙqÔÌÁÉqÔÌÁ
+qÔÌÁÍqÔÌÁáqÔÌÁåqÔÌÁ
+qÔÌÁàqáÜ	¥ÉÑ !Ù¸qÔÌÁqÔÌÁ
+qÔÌÁÅqÔÌÁÙqÔÌÁÍqÔÌÁÍqÔÌÁÀ(ô¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ¥Ø°ì(±ÍÍ9µèÉ¥É¥µ½±Ì´ÈµéÉ¥µ½±Ì´ÐÀ´Ì(ô°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð¡-Á¥
+É°ì(¥½¸èqÕàÍ
+qÕ°(±°èqÔØÜÀáqÔäÔäÍqÔÌÁ		qÔÌÁÍqÔÌÁÝqÔÌÁÝqÔÌÁÍqÔÜÙqÔÙÄä°(Ù±ÕèÄÈÁqÔÑØ°(ÍÕèqÔÕá
+qÔÔÄØáqÔÑàáqÔÝÀÑqÔÔÈÌØ°(½±½ÈèµÉ±(ô¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð¡-Á¥
+É°ì(¥½¸èqÕàÍqÕ
+Ð°(±°èqÔÕÜÍqÔÔÜÐÝqÔÕ	ÉqÔÔÌÔáqÔÑÄ°(Ù±ÕèqáÔÈà°ÀÀÀ°(ÍÕèôÄàÐ¡qÔÔÄàÙqÔÕàåqÔÌÁÅqÔÌÁqÔÌÁÍqÔÌÁà¤°(½±½Èè±Õ(ô¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð¡-Á¥
+É°ì(¥½¸èqÕàÍqÕ
+
+°(±°èqÔØÜÀáqÔäÔäÍqÔÔáÉqÔÑÁqÔÜÙqÔÙÄä°(Ù±ÕèqáÔÌÌÙqÔÑÀÜ°(ÍÕèqÔÔÄàØ°(½±½ÈèÙ¥½±Ð(ô¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð¡-Á¥
+É°ì(¥½¸èqÕàÍqÕ
+äì(±°èqÔÔÕÙqÔØäÙqÔÔÈÈåqÔÜÙ
+qÔÜÌàÜ°(Ù±ÕèÔÀ¬°(ÍÕèqÔÔÄàÙqÔÌÁÍqÔÌÁåqÔÌÁáqáÝqÔÌÁåqÔÌÁ	qÔäàØÝqÔÕ	È°(½±½ÈèµÈ(ô¤¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ¥Ø°ì(±ÍÍ9µèÉ¥µéÉ¥µ½±Ì´ÈÀ´Ø(ô°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ¥Ø°ì(±ÍÍ9µèµÍ±Ñ´äÀÀ½ÉÈ½ÉÈµÍ±Ñ´ÜÀÀÉ½Õ¹µá°À´Ð(ô°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð  Ì°ì(±ÍÍ9µèÑáÐµÍ´½¹ÐµÍµ¥½±ÑáÐµÍ±Ñ´ÈÀÀµ´Ð(ô°qÕàÍqÕ
+ÀqÔÌÁÕqÔÌÁ
+qÔÌÁÍqÔÌÁåqÔÌÁÅqÔÌÁ
+	qÔÌÁÕqÔÌÁ
+qÔÔÈÈÕqÔÑÅqÔØàÍ
+qÔÌÁ	UMqÔØÍ	qÔÝäÜ¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð¡IÍÁ½¹Í¥Ù
+½¹Ñ¥¹È°ì(Ý¥Ñ èÄÀÀ°(¡¥¡ÐèÈÈÀ(ô°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð¡	É
+¡ÉÐ°ì(Ñè	%IQ!}IY9U}5=0(ô°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð¡
+ÉÑÍ¥¹É¥°ì(ÍÑÉ½­Í¡ÉÉäèÌÌ°(ÍÑÉ½­èÌÌÐÄÔÔ(ô¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð¡aá¥Ì°ì(Ñ-äèÁ­°(Ñ¥¬èä(ô¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð¡eá¥Ì°ì(Ñ¥¬èÄÄ(ô¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð¡Q½½±Ñ¥À°ì(½¹Ñ¹ÑMÑå±èQL°(½ÉµÑÑÈè¡Ø°¸¤ôøm¸ôôôÁÉ¥ü
+íØ¹Ñ½1½±MÑÉ¥¹ ¥õèíÙõ°¸ôôôÁÉ¥üúðèUMt(ô¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð¡	È°ì(Ñ-äèÁÉ¥°(¥±°èáÕØ°(¹µèÁÉ¥°(É¥ÕÌèlÌ°Ì°À°Át(ô¤¤¤¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ¥Ø°ì(±ÍÍ9µèµÍ±Ñ´äÀÀ½ÉÈ½ÉÈµÍ±Ñ´ÜÀÀÉ½Õ¹µá°À´Ð(ô°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð  Ì°ì(±ÍÍ9µèÑáÐµÍ´½¹ÐµÍµ¥½±ÑáÐµÍ±Ñ´ÈÀÀµ´Ð(ô°qÕàÍqÕÍqÔÕÀÉqÔÔàÌÑqÔÌÁÕqÔÌÁÅqÔÌÁ
+qÔÌÁ	qÕÀáQ5qÔÈÄäÉM5qÔÈÄäÉM=5qÕÀä¤°¼¨}}AUI}|¨½IÐ¹ÉÑ±µ¹Ð ¥Ø°ì(±ÍÍ9µèÍÁµä´Ì(ô°mì(±°èQ4¢¢3æÓ¦ZO"¢§Þ?VÀ°(Ù°èÄÄÀÀ°(ÁÐèÄÀÀ°(½±½Èèµ±Õ´ÔÀÀ°(¹½ÑèUM9!?»ºâûr(ô°ì(±°èM4~ëÂÃ[öO¦¢Oz/¦r¢°(Ù°èÜÜÀ°(ÁÐèÜÀ°(½±½ÈèµµÉ±´ÔÀÀ°(¹½ÑèÆÏn÷»öO¦¢Oz/"§R¯:>(ô°ì(±°èM=4"wæÓê6Ëú_n»¢d°(Ù°èÌÔÀ°(ÁÐèÌÈ°(½±½ÈèµµÈ´ÔÀÀ°(¹½Ñè¢.Ç¢ªy[ï»þsþs_
+
+¿
+ç
+çä½"
   }, {
     label: "å¹´éæ½å¨ã»ãã·ã§ã³æ°",
     val: 1400,
     pct: null,
     color: "bg-violet-500",
-    note: "1äººå¹³å4lm7mmage350äºº"
+    note: "1äººå¹³å4åæ¥é¢Ã350äºº"
   }].map((item, i) => /*#__PURE__*/React.createElement("div", {
     key: i,
     className: "bg-slate-800/50 rounded-lg p-3"
@@ -1124,7 +691,7 @@ function App() {
     }
   }, /*#__PURE__*/React.createElement("div", {
     className: "flex items-center justify-between mb-2"
-  }, /*#__PURE__*/React.createElement("h3", {
+  }, /*#__PURE__*/React.createElement("h4", {
     className: "font-bold text-white"
   }, s.name, "\u30B7\u30CA\u30EA\u30AA"), /*#__PURE__*/React.createElement("span", {
     className: "text-2xl font-black",
@@ -1186,12 +753,12 @@ function App() {
     className: "space-y-6"
   }, /*#__PURE__*/React.createElement(SectionHeader, {
     icon: "\uD83E\uDD16",
-    title: "AI \u6226\u7565\u30A2\u30C9\u30BA\u30A4\u30B6\u30FC",
+    title: "AI \u6226\u7565\u30A2\u30C9\u30B0\u30A4\u30B6\u30FC",
     subtitle: "koya\u5408\u540C\u4F1A\u793E \u5C02\u7528 | \u30DE\u30AF\u30ED\u7D4C\u6E08\u30FB\u5730\u653F\u5B66\u30FBFamilyTreeOki\u4E8B\u696D\u6226\u7565\u306B\u7279\u5316"
   }), /*#__PURE__*/React.createElement("div", {
     className: "grid md:grid-cols-3 gap-3"
   }, [{
-    q: "152åã§ã®æé©ä¾¡æ ¼è¨­è¨ã¯ï¼",
+    q: "152åç§ã®æé©ä¾¡æ ¼è¨­è¨ã¯ï¼",
     icon: "ð±"
   }, {
     q: "Ladies of Kadenaãä½¿ã£ãéå®¢æ¦ç¥",
@@ -1237,8 +804,6 @@ function App() {
 }
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(/*#__PURE__*/React.createElement(App, null));
-    const root = ReactDOM.createRoot(document.getElementById('root'));
-    root.render(React.createElement(App));
   </script>
 </body>
 </html>
