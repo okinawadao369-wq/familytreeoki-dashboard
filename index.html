@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>FamilyTreeOki | çµ±åã¤ã³ããªã¸ã§ã³ã¹ ããã·ã¥ãã¼ã</title>
+  <title>FamilyTreeOki | 統合インテリジェンス ダッシュボード</title>
   <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/recharts@2.12.7/umd/Recharts.js"></script>
@@ -55,9 +55,9 @@ const {
   Area
 } = Recharts;
 
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ═══════════════════════════════════════════════════════
 // DATA
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ═══════════════════════════════════════════════════════
 const MARKET_DATA = {
   usdjpy: 152.45,
   us10y: 4.18,
@@ -93,211 +93,211 @@ const BIRTH_CENTER = {
 };
 const PAY_GRADES = [{
   grade: "E-4",
-  role: "ä¸å£«å®/è¥å¹´",
+  role: "下士官/若年",
   monthly: 5534,
   jpyMonth: 843581
 }, {
   grade: "E-7",
-  role: "çç·´ä¸å£«å®",
+  role: "熟練下士官",
   monthly: 7952,
   jpyMonth: 1211586
 }, {
   grade: "O-3",
-  role: "å¤§å°/å£«å®",
+  role: "大尉/士官",
   monthly: 9993,
   jpyMonth: 1523231
 }, {
   grade: "O-5",
-  role: "ä¸­ä½/å¹¹é¨",
+  role: "中佐/幹部",
   monthly: 11800,
   jpyMonth: 1798760
 }];
 const REGIONAL_CONSUMPTION = [{
-  name: "åæç´å¨è¾º",
+  name: "嘉手納周辺",
   annual: 1478.6,
   monthly: 123.22,
   share: 40
 }, {
-  name: "æ®å¤©éå¨è¾º",
+  name: "普天間周辺",
   annual: 1109.0,
   monthly: 92.41,
   share: 30
 }, {
-  name: "é£è¦å°åº",
+  name: "那覇地区",
   annual: 369.7,
   monthly: 30.80,
   share: 10
 }, {
-  name: "åé¨/è¾ºéå¤",
+  name: "北部/辺野古",
   annual: 369.7,
   monthly: 30.80,
   share: 10
 }, {
-  name: "ãã®ä»",
+  name: "その他",
   annual: 369.7,
   monthly: 30.80,
   share: 10
 }];
 const SCENARIOS = [{
-  name: "è»çé¸",
+  name: "軟着陸",
   prob: 45,
   color: "#22c55e",
   gdp: 2.0,
   usdJpy: "148-155",
-  military: "ç¾ç¶ç¶­æ(25,000å)",
-  birth: "Â¥4,000ä¸/å¹´",
-  strategy: "ç©æ¥µæ¡å¤§ã»ãã¼ã±ãã£ã³ã°å¼·å",
-  impact: "é«"
+  military: "現状維持(25,000名)",
+  birth: "¥4,000万/年",
+  strategy: "積極拡大・マーケティング強化",
+  impact: "高"
 }, {
-  name: "é·æåæ»",
+  name: "長期停滞",
   prob: 40,
   color: "#f59e0b",
   gdp: 0.5,
   usdJpy: "140-148",
-  military: "å¾®å¢(+2,000å)",
-  birth: "Â¥3,500ä¸/å¹´",
-  strategy: "ã³ã¹ãæé©åã»LTVåä¸æ½ç­",
-  impact: "ä¸­"
+  military: "微増(+2,000名)",
+  birth: "¥3,500万/年",
+  strategy: "コスト最適化・LTV向上施策",
+  impact: "中"
 }, {
-  name: "éèäºæ",
+  name: "金融事故",
   prob: 15,
   color: "#ef4444",
   gdp: -1.5,
   usdJpy: "120-138",
-  military: "IPACå¼·å(+5,000å)",
-  birth: "Â¥3,000ä¸/å¹´",
-  strategy: "ãã«å»ºã¦æ±ºæ¸å°å¥ã»èåãã¸ã·ã§ã³å¼·å",
-  impact: "ä½âé«"
+  military: "IPAC強化(+5,000名)",
+  birth: "¥3,000万/年",
+  strategy: "ドル建て決済導入・聖域ポジション強化",
+  impact: "低→高"
 }];
 const MORNING_BRIEFS = [{
-  category: "ðºð¸ ç±³å½çµæ¸",
-  title: "GDP2.2%æé·ãéåæ¸å¿µ",
-  detail: "Q1 2026 GDPéå ±å¤2.2%ãPCEã³ã¢2.6%ã§Fedå©ä¸ãã¯æéãCREãªã¹ã¯ãå°éã«æ³¢åãä¸­å°éè¡ã®ä¸è¯åµæ¨©æ¯çãä¸æä¸­ããã«åã¯152åå°ã§è çã",
+  category: "🇺🇸 米国経済",
+  title: "GDP2.2%成長も鈍化懸念",
+  detail: "Q1 2026 GDP速報値2.2%。PCEコア2.6%でFed利下げは慎重。CREリスクが地銀に波及、中小銀行の不良債権比率が上昇中。ドル円は152円台で膠着。",
   risk: "MEDIUM"
 }, {
-  category: "ð å°æ¿å­¦",
-  title: "åè¥¿ã·ããå éã»æ²ç¸æ¦ç¥ä¾¡å¤MAX",
-  detail: "2026å¹´3ææ¥ç±³é¦è³ä¼è«ã§ãæ°é»éæä»£ãå®£è¨ãã°ã¢ã ç§»è»¢5,000åã®PCSéè¦ãæ¥å¢ãè¾ºéå¤å»ºè¨­ç¶ç¶ã§åé¨æ¶è²»ããã³ã·ã£ã«ä¸æãæ²ç¸ã®è»äºãã¬ã¼ã³ã¹ã¯ä»å¾5å¹´ã§æå¤§åã",
+  category: "🎌 地政学",
+  title: "南西シフト加速・沖縄戦略価値MAX",
+  detail: "2026年3月日米首脳会談で「新黄金時代」宣言。グアム移転5,000名のPCS需要が急増。辺野古建設継続で北部消費ポテンシャル上昇。沖縄の軍事プレゼンスは今後5年で最大化。",
   risk: "OPPORTUNITY"
 }, {
-  category: "ð¶ åºç£å¸å ´",
-  title: "ç±³è»å¦å©¦TAMå¹´1,100ä»¶ã»ãã«ã¼ãªã¼ã·ã£ã³",
-  detail: "USNHOå¹´éåå¨©æ°æå¤§1,100ä»¶ãåºå°å¤ä½é¨åãµã¼ãã¹ã¸ã®éè¦ã¯770ä»¶(70%)ããBirth Havenããã¸ã·ã§ã³ã¯ç«¶åã¼ã­ãLadies of Kadena FB(1ä¸äºº+)ãä¸»è¦ç²å¾ãã£ãã«ã",
+  category: "👶 出産市場",
+  title: "米軍妊婦TAM年1,100件・ブルーオーシャン",
+  detail: "USNHO年間分娩数最大1,100件。基地外体験型サービスへの需要は770件(70%)。「Birth Haven」ポジションは競合ゼロ。Ladies of Kadena FB(1万人+)が主要獲得チャネル。",
   risk: "LOW"
 }, {
-  category: "ð± çºæ¿æ¦ç¥",
-  title: "152åå°ï¼ã¢ã¼ããã©ã¼ã¸æå¤§åå±é¢",
-  detail: "ç¾å¨152.45åãÂ¥22,000 = $144 (ç±³å½ä¾¡æ ¼$150-200ã¨åç­ä»¥ä¸)ãåãã¼ã¹ã³ã¹ãã§ãã«åå¥å±¤ã«æä¾âå©çç50%+ãä»®ã«120åã«ãªã£ã¦ãÂ¥22,000 = $183ã§ç«¶äºåç¶­æã",
+  category: "💱 為替戦略",
+  title: "152円台：アービトラージ最大化局面",
+  detail: "現在152.45円。¥22,000 = $144 (米国価格$150-200と同等以下)。円ベースコストでドル収入層に提供→利益率50%+。仮に120円になっても¥22,000 = $183で競争力維持。",
   risk: "LOW"
 }];
 const SUPPLY_CHAIN_DATA = [{
-  month: "10æ",
+  month: "10月",
   cass: 98,
   drewry: 2100,
   demand: 72
 }, {
-  month: "11æ",
+  month: "11月",
   cass: 96,
   drewry: 2050,
   demand: 70
 }, {
-  month: "12æ",
+  month: "12月",
   cass: 97,
   drewry: 2080,
   demand: 71
 }, {
-  month: "1æ",
+  month: "1月",
   cass: 94,
   drewry: 1980,
   demand: 68
 }, {
-  month: "2æ",
+  month: "2月",
   cass: 93,
   drewry: 1950,
   demand: 67
 }, {
-  month: "3æ",
+  month: "3月",
   cass: 95,
   drewry: 2020,
   demand: 69
 }, {
-  month: "4æ",
+  month: "4月",
   cass: 92,
   drewry: 1900,
   demand: 66
 }];
 const BIRTH_REVENUE_MODEL = [{
-  package: "åºæ¬(60å)",
+  package: "基本(60分)",
   price: 22000,
   usd: 144
 }, {
-  package: "2åããã±ã¼ã¸",
+  package: "2回パッケージ",
   price: 38000,
   usd: 249
 }, {
-  package: "4Dãã¬ãã¢ã ",
+  package: "4Dプレミアム",
   price: 30000,
   usd: 197
 }, {
-  package: "Heartbeatã¬ãããã¿",
+  package: "Heartbeatぬいぐるみ",
   price: 5500,
   usd: 36
 }, {
-  package: "8Kå å·¥(1æ)",
+  package: "8K加工(1枚)",
   price: 3300,
   usd: 22
 }];
 const GEOPOLITICAL_FRONTS = [{
-  front: "æ¬§å·æ¦ç·",
+  front: "欧州戦線",
   risk: 65,
   impact: 40,
   okinawa: 30
 }, {
-  front: "ä¸­æ±æ¦ç·",
+  front: "中東戦線",
   risk: 55,
   impact: 45,
   okinawa: 25
 }, {
-  front: "ã¤ã³ãå¤ªå¹³æ´",
+  front: "インド太平洋",
   risk: 80,
   impact: 85,
   okinawa: 95
 }];
 const MONTHLY_CONSUMPTION = [{
-  month: "1æ",
+  month: "1月",
   amount: 272.06
 }, {
-  month: "2æ",
+  month: "2月",
   amount: 260.60
 }, {
-  month: "3æ",
+  month: "3月",
   amount: 298.49
 }, {
-  month: "4æ",
+  month: "4月",
   amount: 336.38
 }, {
-  month: "5æ",
+  month: "5月",
   amount: 339.34
 }, {
-  month: "6æ",
+  month: "6月",
   amount: 338.85
 }, {
-  month: "7æ",
+  month: "7月",
   amount: 354.25
 }, {
-  month: "8æ",
+  month: "8月",
   amount: 369.65
 }, {
-  month: "9æ",
+  month: "9月",
   amount: 323.44
 }, {
-  month: "10æ",
+  month: "10月",
   amount: 308.04
 }, {
-  month: "11æ",
+  month: "11月",
   amount: 286.79
 }, {
-  month: "12æ",
+  month: "12月",
   amount: 316.97
 }];
 const FISCAL_DATA = [{
@@ -322,15 +322,15 @@ const FISCAL_DATA = [{
   debtGDP: 130
 }];
 
-// ââ TICKER ââ
+// ── TICKER ──
 function Ticker() {
   const [offset, setOffset] = useState(0);
-  const items = ["ð´ USD/JPY  152.45  â¼0.23", "ð US 10Y  4.18%  â²0.03", "ð¾ æ¥çµå¹³å  42,100  â²+385", "ð¢ï¸ WTIåæ²¹  $81.20  â¼0.45", "ð GDPæé·ç  2.2%  Q1-2026", "ð¼ å¤±æ¥­ç  4.4%  â²0.1", "ð¦ PCEã³ã¢  2.6%  â¼0.1", "ð¯ðµ æ¥æ¬ä¿æç±³å½åµ  $1.16å  #1ä¸ç", "ð¨ð³ ä¸­å½ä¿æç±³å½åµ  $0.71å", "ð¶ ç±³è»å¹´éåå¨©æ°  1,100ä»¶  TAM", "ð¥ å¨æ²SOFAäººå£  53,754å", "ð° å¨æ²ç±³è»å¹´éæ¶è²»å  Â¥3,697åå", "ð  åæç´å¨è¾ºå¹´éæ¶è²»  Â¥1,479åå  æå¤§æ¶è²»å", "ð± FamilyTreeOki  Â¥22,000/session  = $144", "ð¯ ç®æ¨å¹´å  Â¥4,000ä¸å  å©çç50%+"];
+  const items = ["💴 USD/JPY  152.45  ▼0.23", "📈 US 10Y  4.18%  ▲0.03", "🗾 日経平均  42,100  ▲+385", "🛢️ WTI原油  $81.20  ▼0.45", "📊 GDP成長率  2.2%  Q1-2026", "💼 失業率  4.4%  ▲0.1", "🏦 PCEコア  2.6%  ▼0.1", "🇯🇵 日本保有米国債  $1.16兆  #1世界", "🇨🇳 中国保有米国債  $0.71兆", "👶 米軍年間分娩数  1,100件  TAM", "👥 在沖SOFA人口  53,754名", "💰 在沖米軍年間消費力  ¥3,697億円", "🏠 嘉手納周辺年間消費  ¥1,479億円  最大消費圏", "💱 FamilyTreeOki  ¥22,000/session  = $144", "🎯 目標年商  ¥4,000万円  利益率50%+"];
   useEffect(() => {
     const id = setInterval(() => setOffset(p => p - 1), 30);
     return () => clearInterval(id);
   }, []);
-  const txt = items.join("   ï½   ");
+  const txt = items.join("   ｜   ");
   return /*#__PURE__*/React.createElement("div", {
     className: "bg-slate-900 border-b border-slate-700 overflow-hidden py-2"
   }, /*#__PURE__*/React.createElement("div", {
@@ -339,10 +339,10 @@ function Ticker() {
       transform: `translateX(${offset % (txt.length * 7.2)}px)`,
       paddingLeft: "100%"
     }
-  }, txt, "   ï½   ", txt));
+  }, txt, "   ｜   ", txt));
 }
 
-// ââ RISK BADGE ââ
+// ── RISK BADGE ──
 function RiskBadge({
   level
 }) {
@@ -353,17 +353,17 @@ function RiskBadge({
     OPPORTUNITY: "bg-blue-900/60 text-blue-300 border border-blue-700"
   };
   const l = {
-    HIGH: "â  é«ãªã¹ã¯",
-    MEDIUM: "â ä¸­ãªã¹ã¯",
-    LOW: "â ä½ãªã¹ã¯",
-    OPPORTUNITY: "â æ©ä¼"
+    HIGH: "⚠ 高リスク",
+    MEDIUM: "◆ 中リスク",
+    LOW: "✓ 低リスク",
+    OPPORTUNITY: "★ 機会"
   };
   return /*#__PURE__*/React.createElement("span", {
     className: `text-xs px-2 py-0.5 rounded-full font-semibold ${s[level] || s.MEDIUM}`
   }, l[level] || level);
 }
 
-// ââ KPI CARD ââ
+// ── KPI CARD ──
 function KpiCard({
   label,
   value,
@@ -393,7 +393,7 @@ function KpiCard({
   }, sub));
 }
 
-// ââ SECTION HEADER ââ
+// ── SECTION HEADER ──
 function SectionHeader({
   title,
   subtitle,
@@ -414,30 +414,30 @@ function SectionHeader({
   }));
 }
 
-// ââ AI ADVISOR ââ
+// ── AI ADVISOR ──
 function AiAdvisor() {
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState([{
     role: "ai",
-    text: "ããã«ã¡ã¯ãFamilyTreeOkiæ¦ç¥ã¢ããã¤ã¶ã¼ã§ãããã¯ã­çµæ¸ã»å°æ¿å­¦ã»äºæ¥­æ¦ç¥ã«ã¤ãã¦è³ªåãã¦ãã ãããä¾ï¼ã152åã®çºæ¿ç°å¢ã§ã®æé©ä¾¡æ ¼è¨­å®ã¯ï¼ããè»çé¸ã·ããªãªã§ã®éå®¢æ¦ç¥ã¯ï¼ã"
+    text: "こんにちは。FamilyTreeOki戦略アドバイザーです。マクロ経済・地政学・事業戦略について質問してください。例：「152円の為替環境での最適価格設定は？」「軟着陸シナリオでの集客戦略は？」"
   }]);
   const [loading, setLoading] = useState(false);
   const bottomRef = useRef(null);
   const RESP = {
-    ä¾¡æ ¼: "**152åç°å¢ã§ã®æé©ä¾¡æ ¼è¨­è¨**\n\nç¾å¨Â¥22,000 = $144ã§ããç±³å½ã®åæ§ãµã¼ãã¹ã$150-200ãªã®ã§ãç±³å½ããå®ããå¿ççåªä½æ§ãããã¾ãã\n\næ¨å¥¨ä¾¡æ ¼ä½ç³»ï¼\nâ¢ åºæ¬ã»ãã·ã§ã³(60å)ï¼Â¥22,000 ($144)\nâ¢ 4Dãã¬ãã¢ã ï¼Â¥30,000 ($197) â ã¹ã¤ã¼ãã¹ããã\nâ¢ 2åããã±ã¼ã¸ï¼Â¥38,000 ($249) â LTVæå¤§å",
-    éå®¢: "**ç±³è»ã³ãã¥ããã£éå®¢æ¦ç¥ï¼æåªåãã£ãã«3é¸ï¼**\n\n1. Ladies of Kadena Facebook (1ä¸äºº+)\nâ ã¢ã³ããµãã¼ä½é¨âæç¨¿ã§å£ã³ãççºãä¿¡é ¼åº¦ãæé«\n\n2. NPSP(New Parent Support Program)é£æº\nâ åºå°åã®å¬å¼è²åæ¯æ´ãã­ã°ã©ã ã«ãã³ãè¨­ç½®ãå¬ä¿¡å+\n\n3. Google MEOã4D Ultrasound Okinawaã\nâ USNHO(æµ·è»çé¢)ããè»15åãã¢ãã¼ã«ãè±èªSEO1ä½ãç¢ºä¿",
-    å°æ¿å­¦: "**ãã¢ã·ã£ã¤ãã¼ãæ»å¢çãªã¢ãªãºã ãããè¦ãæ²ç¸ãã¸ã·ã§ã³**\n\nç±³å½ã®ã¤ã³ãå¤ªå¹³æ´ãçµ±åææ­¢ãæ¦ç¥ã«ããã¦æ²ç¸ã¯:\nâ¢ å°æ¹¾æäºç¬¬ä¸åå³¶ç·ã®è¦è¡ â é§çåµåã¯åæ¸ä¸å¯\nâ¢ ã°ã¢ã ç§»è»¢(æµ·åµ5,000å)ã¯PCSéè¦ãçã\nâ¢ åè¥¿ã·ãã â é¨éã­ã¼ãã¼ã·ã§ã³å¢å \n\nçµè«ï¼å°æ¿å­¦çç·å¼µâ = å¨æ²ç±³è»å¢å¼· = FamilyTreeOkiã®TAMæ¡å¤§",
-    ã·ããªãª: "**3ã·ããªãªå¥ FamilyTreeOkiæ¦ç¥ãããªã¯ã¹**\n\nð¢ è»çé¸(45%)ï¼Â¥4,000ä¸/å¹´éæãç©æ¥µçãªè¨­åæè³ã¨ã¹ã¿ããæ¡ç¨ã\n\nð¡ é·æåæ»(40%)ï¼Â¥3,500ä¸/å¹´ã§é»å­ç¢ºä¿ãLTVãéè¦ã2åããã±ã¼ã¸ã¸èªå°ã\n\nð´ éèäºæ(15%)ï¼åé«(120å)ã§ãÂ¥22,000=$183ã®ç«¶äºåç¶­æãå°æ¿å­¦å±æ©ã§è»å¢å¼·âéè¦å¢ã",
-    åç: "**FamilyTreeOki åçã¢ãã«è©³ç´°**\n\næéã»ãã·ã§ã³120ä»¶ Ã å¹³åå®¢åä¾¡Â¥28,000 = æéÂ¥336ä¸å\nå¹´éå£²ä¸ï¼ç´Â¥4,000ä¸å\nå¶æ¥­å©ççï¼45-55%ï¼åãã¼ã¹ã³ã¹ã + ãã«é¡§å®¢ã®æ§é ï¼\n\nLTVï¼1äººã®å¦å©¦ãå¹³å4åæ¥é¢ â é¡§å®¢LTV Â¥88,000\næçåå²ç¹ï¼æéç´45ä»¶ï¼åºå®è²»æ150ä¸åæ³å®ï¼"
+    価格: "**152円環境での最適価格設計**\n\n現在¥22,000 = $144です。米国の同様サービスが$150-200なので「米国より安い」心理的優位性があります。\n\n推奨価格体系：\n• 基本セッション(60分)：¥22,000 ($144)\n• 4Dプレミアム：¥30,000 ($197) ← スイートスポット\n• 2回パッケージ：¥38,000 ($249) ← LTV最大化",
+    集客: "**米軍コミュニティ集客戦略（最優先チャネル3選）**\n\n1. Ladies of Kadena Facebook (1万人+)\n→ アンバサダー体験→投稿で口コミ爆発。信頼度が最高\n\n2. NPSP(New Parent Support Program)連携\n→ 基地内の公式育児支援プログラムにパンフ設置。公信力+\n\n3. Google MEO「4D Ultrasound Okinawa」\n→ USNHO(海軍病院)から車15分をアピール。英語SEO1位を確保",
+    地政学: "**ミアシャイマー「攻勢的リアリズム」から見た沖縄ポジション**\n\n米国のインド太平洋「統合抑止」戦略において沖縄は:\n• 台湾有事第一列島線の要衝 → 駐留兵力は削減不可\n• グアム移転(海兵5,000名)はPCS需要を生む\n• 南西シフト → 部隊ローテーション増加\n\n結論：地政学的緊張↑ = 在沖米軍増強 = FamilyTreeOkiのTAM拡大",
+    シナリオ: "**3シナリオ別 FamilyTreeOki戦略マトリクス**\n\n🟢 軟着陸(45%)：¥4,000万/年達成。積極的な設備投資とスタッフ採用。\n\n🟡 長期停滞(40%)：¥3,500万/年で黒字確保。LTVを重視し2回パッケージへ誘導。\n\n🔴 金融事故(15%)：円高(120円)でも¥22,000=$183の競争力維持。地政学危機で軍増強→需要増。",
+    収益: "**FamilyTreeOki 収益モデル詳細**\n\n月間セッション120件 × 平均客単価¥28,000 = 月間¥336万円\n年間売上：約¥4,000万円\n営業利益率：45-55%（円ベースコスト + ドル顧客の構造）\n\nLTV：1人の妊婦が平均4回来院 → 顧客LTV ¥88,000\n損益分岐点：月間約45件（固定費月150万円想定）"
   };
   const getResp = q => {
     const l = q.toLowerCase();
-    if (l.includes("ä¾¡æ ¼") || l.includes("æé") || l.includes("åå®")) return RESP.ä¾¡æ ¼;
-    if (l.includes("éå®¢") || l.includes("ãã¼ã±") || l.includes("fb") || l.includes("sns")) return RESP.éå®¢;
-    if (l.includes("å°æ¿å­¦") || l.includes("è»") || l.includes("ã·ãã") || l.includes("å°æ¹¾")) return RESP.å°æ¿å­¦;
-    if (l.includes("ã·ããªãª") || l.includes("ãªã¹ã¯") || l.includes("çé¸")) return RESP.ã·ããªãª;
-    if (l.includes("åç") || l.includes("å£²ä¸") || l.includes("å©ç") || l.includes("ltv")) return RESP.åç;
-    return `ãè³ªåã${q}ãã«ã¤ãã¦ï¼\n\nFamilyTreeOkiã¯ç¾å¨ã®152ååå®ç°å¢ã«ããã¦æããªã¹ã¯ãä½ãé«åçãªäºæ¥­ã¢ãã«ã§ããå¨æ²SOFAäººå£53,754åãå¹´éåå¨©TAM1,100ä»¶ãæéå¹³åå®¢åä¾¡Â¥28,000ã¨ããå®ãã¼ã¿ã«åºã¥ããå¹´åÂ¥4,000ä¸ã»å©çç50%+ãç¾å®çç®æ¨ã§ããå·ä½çãªè³ªåï¼ä¾¡æ ¼è¨­è¨ã»éå®¢ã»å°æ¿å­¦ã»ã·ããªãªåæï¼ããè©¦ããã ããã`;
+    if (l.includes("価格") || l.includes("料金") || l.includes("円安")) return RESP.価格;
+    if (l.includes("集客") || l.includes("マーケ") || l.includes("fb") || l.includes("sns")) return RESP.集客;
+    if (l.includes("地政学") || l.includes("軍") || l.includes("シフト") || l.includes("台湾")) return RESP.地政学;
+    if (l.includes("シナリオ") || l.includes("リスク") || l.includes("着陸")) return RESP.シナリオ;
+    if (l.includes("収益") || l.includes("売上") || l.includes("利益") || l.includes("ltv")) return RESP.収益;
+    return `ご質問「${q}」について：\n\nFamilyTreeOkiは現在の152円円安環境において最もリスクが低く高収益な事業モデルです。在沖SOFA人口53,754名、年間分娩TAM1,100件、月間平均客単価¥28,000という実データに基づき、年商¥4,000万・利益率50%+が現実的目標です。具体的な質問（価格設計・集客・地政学・シナリオ分析）をお試しください。`;
   };
   const handleSend = () => {
     if (!input.trim()) return;
@@ -505,29 +505,29 @@ function AiAdvisor() {
   }, "\u9001\u4FE1")));
 }
 
-// ââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ══════════════════════════════════════════════════════
 // MAIN APP
-// ââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ══════════════════════════════════════════════════════
 function App() {
   const [tab, setTab] = useState("executive");
   const tabs = [{
     id: "executive",
-    label: "ð ã¨ã°ã¼ã¯ãã£ã"
+    label: "📋 エグゼクティブ"
   }, {
     id: "economy",
-    label: "ð¦ ç±³å½çµæ¸"
+    label: "🏦 米国経済"
   }, {
     id: "market",
-    label: "ð è»å¸å ´"
+    label: "🎖 軍市場"
   }, {
     id: "birth",
-    label: "ð¶ åºç£æ¦ç¥"
+    label: "👶 出産戦略"
   }, {
     id: "scenarios",
-    label: "ð® ã·ããªãª"
+    label: "🔮 シナリオ"
   }, {
     id: "advisor",
-    label: "ð¤ AIã¢ããã¤ã¶ã¼"
+    label: "🤖 AIアドバイザー"
   }];
   const DC = ["#3b82f6", "#10b981", "#f59e0b", "#8b5cf6", "#ef4444"];
   const TS = {
@@ -652,10 +652,10 @@ function App() {
     className: "w-full text-xs"
   }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", {
     className: "border-b border-slate-700 bg-slate-800/30"
-  }, ["ã«ãã´ãª", "ææ¨", "æ°å¤", "FamilyTreeOkiã¸ã®æå³"].map(h => /*#__PURE__*/React.createElement("th", {
+  }, ["カテゴリ", "指標", "数値", "FamilyTreeOkiへの意味"].map(h => /*#__PURE__*/React.createElement("th", {
     key: h,
     className: "text-left px-4 py-2 text-slate-400 font-medium"
-  }, h)))), /*#__PURE__*/React.createElement("tbody", null, [["ç±³å½çµæ¸", "GDPæé·ç(Q1-2026)", "2.2%", "ç·©æ¢ãªæé·âè»äºç®ã¯ç¶­æã»åæ¸ãªã¹ã¯å°"], ["ç±³å½çµæ¸", "PCEã³ã¢(ã¤ã³ãã¬)", "2.6%", "é«ã¤ã³ãã¬âãã«è³¼è²·åã¯ç¸å¯¾çã«è¯å¥½"], ["ç±³å½çµæ¸", "å¤±æ¥­ç", "4.4%", "ä¸è¬å¸å ´ã¯è»åâè»é¢ä¿èã®éç¨å®å®ã¯éç«ã¤"], ["ç±³å½çµæ¸", "10å¹´åµå©åã", "4.18%", "é«éå©âFedå©ä¸ãéå»¶âåå®æç¶å¯è½æ§"], ["çºæ¿", "USD/JPY", "Â¥152.45", "Â¥22,000 = $144 ç±³å½ããå®ãä½é¨ä¾¡å¤"], ["ç±³è»å¸å ´", "å¨æ²SOFAç·æ°", "53,754å", "ç´æ¥ã¿ã¼ã²ããå¸å ´è¦æ¨¡"], ["ç±³è»å¸å ´", "æéæ¶è²»å", "Â¥308åå", "å·¨å¤§ãªçµæ¸åãæ²ç¸ã«å­å¨"], ["ç±³è»å¸å ´", "åæç´å¨è¾ºæ¶è²»", "Â¥1,479å/å¹´", "æå¤§æ¶è²»å=FTOkiã®æé©ç«å°"], ["åºç£å¸å ´", "å¹´éåå¨©TAM", "1,100ä»¶", "æå¤§ã®å°éå¯è½å¸å ´è¦æ¨¡"], ["åºç£å¸å ´", "åºå°å¤ãµã¼ãã¹éè¦", "770ä»¶ (70%)", "ç±³è»çé¢å¤ã§ä½é¨åãµã¼ãã¹ãæ±ããå±¤"], ["åºç£å¸å ´", "åå¹´åº¦ç²å¾ç®æ¨", "350ä»¶", "ã·ã§ã¢45%ã»ç¾å®çéæç®æ¨"]].map(([cat, ind, val, meaning], i) => /*#__PURE__*/React.createElement("tr", {
+  }, h)))), /*#__PURE__*/React.createElement("tbody", null, [["米国経済", "GDP成長率(Q1-2026)", "2.2%", "緩慢な成長→軍予算は維持・削減リスク小"], ["米国経済", "PCEコア(インフレ)", "2.6%", "高インフレ→ドル購買力は相対的に良好"], ["米国経済", "失業率", "4.4%", "一般市場は軟化→軍関係者の雇用安定は際立つ"], ["米国経済", "10年債利回り", "4.18%", "高金利→Fed利下げ遅延→円安持続可能性"], ["為替", "USD/JPY", "¥152.45", "¥22,000 = $144 米国より安い体験価値"], ["米軍市場", "在沖SOFA総数", "53,754名", "直接ターゲット市場規模"], ["米軍市場", "月間消費力", "¥308億円", "巨大な経済圏が沖縄に存在"], ["米軍市場", "嘉手納周辺消費", "¥1,479億/年", "最大消費圏=FTOkiの最適立地"], ["出産市場", "年間分娩TAM", "1,100件", "最大の到達可能市場規模"], ["出産市場", "基地外サービス需要", "770件 (70%)", "米軍病院外で体験型サービスを求める層"], ["出産市場", "初年度獲得目標", "350件", "シェア45%・現実的達成目標"]].map(([cat, ind, val, meaning], i) => /*#__PURE__*/React.createElement("tr", {
     key: i,
     className: `border-b border-slate-800 ${i % 2 === 0 ? "" : "bg-slate-900/30"}`
   }, /*#__PURE__*/React.createElement("td", {
@@ -839,7 +839,7 @@ function App() {
     width: 85
   }), /*#__PURE__*/React.createElement(Tooltip, {
     contentStyle: TS,
-    formatter: v => [`Â¥${v}åå`, "å¹´éæ¶è²»"]
+    formatter: v => [`¥${v}億円`, "年間消費"]
   }), /*#__PURE__*/React.createElement(Bar, {
     dataKey: "annual",
     radius: [0, 4, 4, 0]
@@ -886,7 +886,7 @@ function App() {
     }
   }), /*#__PURE__*/React.createElement(Tooltip, {
     contentStyle: TS,
-    formatter: v => [`Â¥${v}åå`, "æéæ¶è²»"]
+    formatter: v => [`¥${v}億円`, "月間消費"]
   }), /*#__PURE__*/React.createElement(Area, {
     type: "monotone",
     dataKey: "amount",
@@ -907,15 +907,15 @@ function App() {
   }, /*#__PURE__*/React.createElement("h4", {
     className: "text-sm font-bold text-white mb-2"
   }, f.front), [{
-    label: "ç·å¼µãªã¹ã¯",
+    label: "緊張リスク",
     val: f.risk,
     color: "bg-red-500"
   }, {
-    label: "çµæ¸å½±é¿",
+    label: "経済影響",
     val: f.impact,
     color: "bg-amber-500"
   }, {
-    label: "æ²ç¸é£ååº¦",
+    label: "沖縄連動度",
     val: f.okinawa,
     color: "bg-blue-500"
   }].map(b => /*#__PURE__*/React.createElement("div", {
@@ -930,7 +930,7 @@ function App() {
     style: {
       width: `${b.val}%`
     }
-  })))), f.front === "ã¤ã³ãå¤ªå¹³æ´" && /*#__PURE__*/React.createElement("p", {
+  })))), f.front === "インド太平洋" && /*#__PURE__*/React.createElement("p", {
     className: "text-xs text-emerald-400 mt-1 font-medium"
   }, "\u2192 \u6C96\u7E04\u9023\u52D5\u5EA695%\u3002\u5357\u897F\u30B7\u30D5\u30C8\u52A0\u901F\u4E2D")))))), tab === "birth" && /*#__PURE__*/React.createElement("div", {
     className: "space-y-6"
@@ -991,7 +991,7 @@ function App() {
     }
   }), /*#__PURE__*/React.createElement(Tooltip, {
     contentStyle: TS,
-    formatter: (v, n) => [n === "price" ? `Â¥${v.toLocaleString()}` : `$${v}`, n === "price" ? "åä¾¡æ ¼" : "USD"]
+    formatter: (v, n) => [n === "price" ? `¥${v.toLocaleString()}` : `$${v}`, n === "price" ? "円価格" : "USD"]
   }), /*#__PURE__*/React.createElement(Bar, {
     dataKey: "price",
     fill: "#8b5cf6",
@@ -1004,29 +1004,29 @@ function App() {
   }, "\uD83D\uDD3D \u5E02\u5834\u30D5\u30A1\u30CD\u30EB\uFF08TAM\u2192SAM\u2192SOM\uFF09"), /*#__PURE__*/React.createElement("div", {
     className: "space-y-3"
   }, [{
-    label: "TAM å¹´éåå¨©ç·æ°",
+    label: "TAM 年間分娩総数",
     val: 1100,
     pct: 100,
     color: "bg-blue-500",
-    note: "USNHOã®å®ç¸¾æå¤§å¤"
+    note: "USNHOの実績最大値"
   }, {
-    label: "SAM åºå°å¤ä½é¨åéè¦",
+    label: "SAM 基地外体験型需要",
     val: 770,
     pct: 70,
     color: "bg-emerald-500",
-    note: "ç±³å½ã§ã®ä½é¨åå©ç¨çåç§"
+    note: "米国での体験型利用率参照"
   }, {
-    label: "SOM åå¹´åº¦ç²å¾ç®æ¨",
+    label: "SOM 初年度獲得目標",
     val: 350,
     pct: 32,
     color: "bg-amber-500",
-    note: "è±èªå¯¾å¿Ãã¢ã¯ã»ã¹åªä½"
+    note: "英語対応×アクセス優位"
   }, {
-    label: "å¹´éæ½å¨ã»ãã·ã§ã³æ°",
+    label: "年間潜在セッション数",
     val: 1400,
     pct: null,
     color: "bg-violet-500",
-    note: "1äººå¹³å4åæ¥é¢Ã350äºº"
+    note: "1人平均4回来院×350人"
   }].map((item, i) => /*#__PURE__*/React.createElement("div", {
     key: i,
     className: "bg-slate-800/50 rounded-lg p-3"
@@ -1062,17 +1062,17 @@ function App() {
   }, "\u300C\u5BB6\u65CF\u306E\u8056\u57DF\uFF08Birth Haven\uFF09\u300D"), "\u3068\u3057\u3066\u5B58\u5728\u3059\u308B\u3002"), /*#__PURE__*/React.createElement("div", {
     className: "grid grid-cols-2 md:grid-cols-4 gap-3"
   }, [{
-    label: "é·æã¨å­¤ç¬æãçã",
-    desc: "å®æ¯ä¸å¨ã®æµ·å¤åºç£ã®ä¸å®ããå®å¨è±èªÃå®¶æåä¼´ã§è§£æ¶"
+    label: "郷愁と孤独感を癒す",
+    desc: "実母不在の海外出産の不安を、完全英語×家族同伴で解消"
   }, {
-    label: "ç¥ç¥­æåã¸ã®å¯¾å¿",
-    desc: "Gender Reveal/Baby Showerã®å¿é ã³ã³ãã³ããæä¾"
+    label: "祝祭文化への対応",
+    desc: "Gender Reveal/Baby Showerの必須コンテンツを提供"
   }, {
-    label: "SNSæ ãè¨­è¨",
-    desc: "4Kåç»å³æå±æã§ç±³å½ã®å®¶æã¨ãªã¢ã«ã¿ã¤ã ã§ç¹ãã"
+    label: "SNS映え設計",
+    desc: "4K動画即時共有で米国の家族とリアルタイムで繋がる"
   }, {
-    label: "å»çã®å¤ã®ä¾¡å¤",
-    desc: "è¨ºæ­ã§ã¯ãªããçµã®è¨å¿µæ¥ãã¨ãã¦å·®å¥åã»æ³çå®å¨"
+    label: "医療の外の価値",
+    desc: "診断ではなく「絆の記念日」として差別化・法的安全"
   }].map((item, i) => /*#__PURE__*/React.createElement("div", {
     key: i,
     className: "bg-slate-900/60 rounded-lg p-3"
@@ -1108,7 +1108,7 @@ function App() {
     fill: s.color
   }))), /*#__PURE__*/React.createElement(Tooltip, {
     contentStyle: TS,
-    formatter: v => [`${v}%`, "ç¢ºç"]
+    formatter: v => [`${v}%`, "確率"]
   }), /*#__PURE__*/React.createElement(Legend, {
     wrapperStyle: {
       color: "#94a3b8",
@@ -1191,23 +1191,23 @@ function App() {
   }), /*#__PURE__*/React.createElement("div", {
     className: "grid md:grid-cols-3 gap-3"
   }, [{
-    q: "152åã§ã®æé©ä¾¡æ ¼è¨­è¨ã¯ï¼",
-    icon: "ð±"
+    q: "152円での最適価格設計は？",
+    icon: "💱"
   }, {
-    q: "Ladies of Kadenaãä½¿ã£ãéå®¢æ¦ç¥",
-    icon: "ð"
+    q: "Ladies of Kadenaを使った集客戦略",
+    icon: "📘"
   }, {
-    q: "å°æ¿å­¦ãªã¹ã¯ã¨æ²ç¸ã®æ¦ç¥ä¾¡å¤",
-    icon: "ð"
+    q: "地政学リスクと沖縄の戦略価値",
+    icon: "🌏"
   }, {
-    q: "3ã·ããªãªå¥ã®äºæ¥­æ¦ç¥ã¯ï¼",
-    icon: "ð®"
+    q: "3シナリオ別の事業戦略は？",
+    icon: "🔮"
   }, {
-    q: "FTOkiã®åçã¢ãã«ã¨LTV",
-    icon: "ð"
+    q: "FTOkiの収益モデルとLTV",
+    icon: "📊"
   }, {
-    q: "Birth Havenãã¸ã·ã§ãã³ã°ã¨ã¯",
-    icon: "ð³"
+    q: "Birth Havenポジショニングとは",
+    icon: "🌳"
   }].map((item, i) => /*#__PURE__*/React.createElement("div", {
     key: i,
     className: "bg-slate-800 border border-slate-600 rounded-lg px-3 py-2 text-xs text-slate-300 flex gap-2 items-center"
