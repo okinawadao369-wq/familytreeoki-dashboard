@@ -27,7 +27,7 @@ const {useState,useEffect}=React;
 const {LineChart,Line,BarChart,Bar,AreaChart,Area,XAxis,YAxis,CartesianGrid,Tooltip,Legend,ResponsiveContainer,PieChart,Pie,Cell,ReferenceLine}=Recharts;
 
 async function fredObs(id,limit=36){
-  const r=await fetch(`https://api.stlouisfed.org/fred/series/observations?series_id=${id}&api_key=${FRED_KEY}&file_type=json&sort_order=desc&limit=${limit}`);
+  const r=await fetch(`https://corsproxy.io/?https://api.stlouisfed.org/fred/series/observations?series_id=${id}&api_key=${FRED_KEY}&file_type=json&sort_order=desc&limit=${limit}`);
   const j=await r.json();
   return (j.observations||[]).filter(o=>o.value!=='.').map(o=>({date:o.date.slice(0,7),v:parseFloat(o.value)})).reverse();
 }
