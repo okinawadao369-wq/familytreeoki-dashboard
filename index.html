@@ -26,8 +26,9 @@ const TODAY=new Date().toLocaleDateString("ja-JP",{year:"numeric",month:"long",d
 const {useState,useEffect}=React;
 const {LineChart,Line,BarChart,Bar,AreaChart,Area,XAxis,YAxis,CartesianGrid,Tooltip,Legend,ResponsiveContainer,PieChart,Pie,Cell,ReferenceLine}=Recharts;
 
-async function fredObs(id,limit=36){
-  const r=await fetch(`https://corsproxy.io/?https://api.stlouisfed.org/fred/series/observations?series_id=${id}&api_key=${FRED_KEY}&file_type=json&sort_order=desc&limit=${limit}`);
+async function fredObs(id,limit=36,freq=null){
+  const fq=freq?`&frequency=${freq}&aggregation_method=avg`:"";
+  const r=await fetch(`https://corsproxy.io/?https://api.stlouisfed.org/fred/series/observations?series_id=${id}&api_key=${FRED_KEY}&file_type=json&sort_order=desc&limit=${limit}${fq}`);
   const j=await r.json();
   return (j.observations||[]).filter(o=>o.value!=='.').map(o=>({date:o.date.slice(0,7),v:parseFloat(o.value)})).reverse();
 }
@@ -50,9 +51,9 @@ function useData(){
     (async()=>{
       try{
         const results=await Promise.allSettled([
-          fredObs("DEXJPUS",60),fredObs("DGS10",60),fredObs("FEDFUNDS",24),
-          fredObs("UNRATE",24),fredObs("CPIAUCSL",24),fredObs("DCOILWTICO",60),
-          fredObs("WALCL",24),fetchNews()
+          fredObs("DEXJPUS",60,"m"),fredObs("DGS10",60),fredObs("FEDFUNDS",24),
+          fredObs("UNRATE",24),fredObs("CPIAUCSL",24),fredObs("DCOILWTICO",60,"m"),
+          fredObs("WALCL",60),fetchNews()
         ]);
         const data={
           usdjpy:results[0].value||[],t10y:results[1].value||[],fedfunds:results[2].value||[],
@@ -144,7 +145,7 @@ function TabExec({d}){
 
 function TabEcon({d}){
   return React.createElement("div",{className:"space-y-4"},
-    React.createElement(Card,{title:"📈 USD/JPY 推移(60ヶ月)"},
+    React.createElement(Card,{title:"📈 USD/JPY 推移(直近5年・月次)"},
       React.createElement(ResponsiveContainer,{width:"100%",height:200},
         React.createElement(AreaChart,{data:d?.usdjpy||[],margin:{top:5,right:10,left:0,bottom:5}},
           React.createElement(CartesianGrid,{strokeDasharray:"3 3",stroke:"#1e293b"}),
@@ -167,7 +168,7 @@ function TabEcon({d}){
           )
         )
       ),
-      React.createElement(Card,{title:"🛢️ 原油WTI(60ヶ月)"},
+      React.createElement(Card,{title:"🛢️ 原油WTI(直近5年・月次)"},
         React.createElement(ResponsiveContainer,{width:"100%",height:160},
           React.createElement(LineChart,{data:d?.oil||[],margin:{top:5,right:10,left:0,bottom:5}},
             React.createElement(CartesianGrid,{strokeDasharray:"3 3",stroke:"#1e293b"}),
@@ -261,7 +262,7 @@ function TabFx({d}){
       React.createElement(Kpi,{icon:"📈",label:"10年金利",value:f2(last(d?.t10y)?.v)+"%",c:"blue"}),
       React.createElement(Kpi,{icon:"🏦",label:"FF金利",value:f2(last(d?.fedfunds)?.v)+"%",c:"amber"}),
       React.createElement(Kpi,{icon:"💵",label:"$100 =",value:"¥"+Math.round(rate*100).toLocaleString(),c:"cyan"}),
-      React.createElement(Kpi,{icon:"💹",label:"FRBバランスシート",value:"$"+f2((last(d?.fed_bs)?.v||0)/1000)+"T",c:"purple"}),
+      React.createElement(Kpi,{icon:"💹",label:"FRBバランスシート",value:"$"+f2((last(d?.fed_bs)?.v||0)/1000000)+"T",c:"purple"}),
       React.createElement(Kpi,{icon:"📊",label:"円安構造",value:rate>145?"🔴 高":"🟡 中",sub:"対米金利差",c:"rose"})
     ),
     React.createElement(Card,{title:"💱 USD/JPY 長期推移 + 警戒ライン"},
@@ -279,7 +280,7 @@ function TabFx({d}){
     ),
     React.createElement(Card,{title:"🏦 FRBバランスシート(兆USD)"},
       React.createElement(ResponsiveContainer,{width:"100%",height:160},
-        React.createElement(AreaChart,{data:(d?.fed_bs||[]).map(x=>({...x,v:x.v/1000})),margin:{top:5,right:10,left:0,bottom:5}},
+        React.createElement(AreaChart,{data:(d?.fed_bs||[]).map(x=>({...x,v:+(x.v/1000000).toFixed(2)})),margin:{top:5,right:10,left:0,bottom:5}},
           React.createElement(CartesianGrid,{strokeDasharray:"3 3",stroke:"#1e293b"}),
           React.createElement(XAxis,{dataKey:"date",tick:{fill:"#94a3b8",fontSize:8}}),
           React.createElement(YAxis,{tick:{fill:"#94a3b8",fontSize:9}}),
@@ -379,12 +380,4 @@ function App(){
           },t)
         )
       ),
-      panels[tab]
-    )
-  );
-}
-
-ReactDOM.render(React.createElement(App),document.getElementById("root"));
-</script>
-</body>
-</html>
+    
