@@ -1,391 +1,991 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>FamilyTreeOki | 米軍統合インテリジェンス</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Okinawa U.S. Military Intelligence Dashboard | æ²ç¸ç±³è»æå¢ã¤ã³ããªã¸ã§ã³ã¹</title>
+<meta name="description" content="æ²ç¸ç±³è»SOFAå¸å ´ã¤ã³ããªã¸ã§ã³ã¹ããã·ã¥ãã¼ã - FamilyTreeOkiçµå¶å¤æ­æ¯æ´">
 <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/prop-types@15.8.1/prop-types.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/recharts@2.12.7/umd/Recharts.js"></script>
 <script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{background:#020617;color:#e2e8f0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
-@keyframes sp{to{transform:rotate(360deg)}}.spin{animation:sp 1s linear infinite}
-.hs::-webkit-scrollbar{display:none}.hs{-ms-overflow-style:none;scrollbar-width:none}
+  body { background:#0a0e1a; color:#e2e8f0; font-family:'Segoe UI',system-ui,sans-serif; margin:0; }
+  ::-webkit-scrollbar{width:6px;height:6px}
+  ::-webkit-scrollbar-track{background:#1a1f2e}
+  ::-webkit-scrollbar-thumb{background:#3b4a6b;border-radius:3px}
+  .score-ring { transition: stroke-dashoffset 1s ease; }
+  @media print { .no-print{display:none!important} }
+  .tab-active { border-bottom: 2px solid #60a5fa; color: #60a5fa; }
+  .tab-inactive { border-bottom: 2px solid transparent; color: #94a3b8; }
+  .kpi-card { background: linear-gradient(135deg, #1e2538 0%, #151b2e 100%); border: 1px solid #2a3550; }
+  .panel-card { background: #131929; border: 1px solid #1e2a42; }
+  .score-green { color: #4ade80; }
+  .score-yellow { color: #facc15; }
+  .score-orange { color: #fb923c; }
+  .score-red { color: #f87171; }
+  .bg-score-green { background: rgba(74,222,128,0.15); border-color: rgba(74,222,128,0.3); }
+  .bg-score-yellow { background: rgba(250,204,21,0.15); border-color: rgba(250,204,21,0.3); }
+  .bg-score-orange { background: rgba(251,146,60,0.15); border-color: rgba(251,146,60,0.3); }
+  .bg-score-red { background: rgba(248,113,113,0.15); border-color: rgba(248,113,113,0.3); }
+  .recharts-tooltip-wrapper { z-index: 100; }
+  .spinner { animation: spin 1s linear infinite; }
+  @keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+  .pulse { animation: pulse 2s cubic-bezier(0.4,0,0.6,1) infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
 </style>
-<script>tailwind.config={theme:{extend:{colors:{slate:{950:"#020617"}}}}}</script>
 </head>
 <body>
 <div id="root"></div>
-<script>
-const FRED_KEY="8550f7c848775899f520c5d606f4e3af";
-const CACHE_TTL=4*3600000;
-const TODAY=new Date().toLocaleDateString("ja-JP",{year:"numeric",month:"long",day:"numeric"});
-const {useState,useEffect}=React;
-const {LineChart,Line,BarChart,Bar,AreaChart,Area,XAxis,YAxis,CartesianGrid,Tooltip,Legend,ResponsiveContainer,PieChart,Pie,Cell,ReferenceLine}=Recharts;
+<script type="text/babel">
+const { useState, useEffect, useCallback, useMemo, useRef } = React;
+const { LineChart, Line, AreaChart, Area, BarChart, Bar, RadarChart, Radar, PolarGrid, PolarAngleAxis,
+        XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine,
+        ComposedChart } = Recharts;
 
-async function fredObs(id,limit=36,freq=null){
-  const fq=freq?`&frequency=${freq}&aggregation_method=avg`:"";
-  const r=await fetch(`https://corsproxy.io/?https://api.stlouisfed.org/fred/series/observations?series_id=${id}&api_key=${FRED_KEY}&file_type=json&sort_order=desc&limit=${limit}${fq}`);
-  const j=await r.json();
-  return (j.observations||[]).filter(o=>o.value!=='.').map(o=>({date:o.date.slice(0,7),v:parseFloat(o.value)})).reverse();
-}
+// âââââââââââââââââââââââââââââââââââââââââââââ
+// CONSTANTS
+// âââââââââââââââââââââââââââââââââââââââââââââ
+const FRED_API_KEY = "8550f7c848775899f520c5d606f4e3af";
+const CACHE_KEY = "okinawa_intel_v1";
+const CACHE_TTL = 4 * 60 * 60 * 1000;
+const FRED_PROXY = "https://corsproxy.io/?https://api.stlouisfed.org/fred/series/observations";
 
-async function fetchNews(){
-  const proxy="https://api.rss2json.com/v1/api.json?rss_url=";
-  const feed=encodeURIComponent("https://www.aljazeera.com/xml/rss/all.xml");
-  const r=await fetch(proxy+feed);
-  const j=await r.json();
-  return (j.items||[]).slice(0,8).map(i=>({title:i.title,desc:(i.description||"").replace(/<[^>]*>/g,"").slice(0,140),date:new Date(i.pubDate).toLocaleDateString("ja-JP"),cat:i.categories?.[0]||""}));
-}
-
-function useData(){
-  const [d,setD]=useState(null);
-  const [loading,setL]=useState(true);
-  const [ts,setTs]=useState(null);
-  useEffect(()=>{
-    const CK="fto_v4";
-    try{const raw=localStorage.getItem(CK);if(raw){const {data,t}=JSON.parse(raw);if(Date.now()-t<CACHE_TTL){setD(data);setTs(new Date(t));setL(false);return;}}}catch(e){}
-    (async()=>{
-      try{
-        const results=await Promise.allSettled([
-          fredObs("DEXJPUS",60,"m"),fredObs("DGS10",60),fredObs("FEDFUNDS",24),
-          fredObs("UNRATE",24),fredObs("CPIAUCSL",24),fredObs("DCOILWTICO",60,"m"),
-          fredObs("WALCL",60),fetchNews()
-        ]);
-        const data={
-          usdjpy:results[0].value||[],t10y:results[1].value||[],fedfunds:results[2].value||[],
-          unrate:results[3].value||[],cpi:results[4].value||[],oil:results[5].value||[],
-          fed_bs:results[6].value||[],news:results[7].value||[]
-        };
-        const t=Date.now();
-        localStorage.setItem(CK,JSON.stringify({data,t}));
-        setD(data);setTs(new Date(t));
-      }catch(e){console.error(e);}finally{setL(false);}
-    })();
-  },[]);
-  return{d,loading,ts};
-}
-
-const f2=n=>n!=null?n.toFixed(2):"--";
-const f1=n=>n!=null?n.toFixed(1):"--";
-const last=a=>a?.length?a[a.length-1]:null;
-const chg=a=>a?.length>1?a[a.length-1].v-a[a.length-2].v:0;
-const COLORS=["#10b981","#3b82f6","#f59e0b","#ef4444","#8b5cf6","#06b6d4","#ec4899"];
-const TS={contentStyle:{background:"#1e293b",border:"1px solid #334155",borderRadius:6,color:"#e2e8f0",fontSize:10}};
-
-function Kpi({icon,label,value,sub,c="emerald"}){
-  const map={emerald:"border-emerald-500/30 bg-emerald-950/30 text-emerald-400",blue:"border-blue-500/30 bg-blue-950/30 text-blue-400",amber:"border-amber-500/30 bg-amber-950/30 text-amber-400",rose:"border-rose-500/30 bg-rose-950/30 text-rose-400",purple:"border-purple-500/30 bg-purple-950/30 text-purple-400",cyan:"border-cyan-500/30 bg-cyan-950/30 text-cyan-400"};
-  const cls=map[c]||map.emerald;
-  return React.createElement("div",{className:`border ${cls} rounded-xl p-4`},
-    React.createElement("div",{className:"flex items-center gap-2 mb-2"},
-      React.createElement("span",{className:"text-lg"},icon),
-      React.createElement("span",{className:"text-xs text-slate-400"},label)
-    ),
-    React.createElement("div",{className:`text-2xl font-bold ${cls.split(' ')[2]}`},value),
-    sub&&React.createElement("div",{className:"text-xs text-slate-500 mt-1"},sub)
-  );
-}
-function Card({title,children,cls=""}){
-  return React.createElement("div",{className:`bg-slate-900 border border-slate-700/70 rounded-xl p-4 ${cls}`},
-    React.createElement("h3",{className:"text-sm font-semibold text-slate-200 mb-3"},title),children);
-}
-function Spin(){
-  return React.createElement("div",{className:"flex justify-center items-center h-36"},
-    React.createElement("div",{className:"w-7 h-7 border-2 border-emerald-400 border-t-transparent rounded-full spin"}));
-}
-
-const MIL={
-  sofa_total:53754,active_duty:28450,dependents:21100,dod_civ:4204,spend_b_jpy:369.7,
-  births_tam:1100,births_som:350,
-  bases:[{name:"Camp Foster",br:"USMC",pop:8200},{name:"Kadena AB",br:"USAF",pop:5100},{name:"Camp Kinser",br:"USMC",pop:4300},{name:"Camp Hansen",br:"USMC",pop:3900},{name:"Camp Schwab",br:"USMC",pop:3200},{name:"MCAS Futenma",br:"USMC",pop:2800},{name:"White Beach",br:"USN",pop:1200}],
-  dod_budget:[{y:"FY21",v:752},{y:"FY22",v:782},{y:"FY23",v:858},{y:"FY24",v:886},{y:"FY25",v:849}],
-  hns:[{y:"FY21",v:195},{y:"FY22",v:201},{y:"FY23",v:207},{y:"FY24",v:211},{y:"FY25",v:215}],
-  scenario:[{name:"Year1",rev:4000,cost:2200,profit:1800},{name:"Year2",rev:7200,cost:3000,profit:4200},{name:"Year3",rev:12000,cost:4000,profit:8000},{name:"Year4",rev:18000,cost:5500,profit:12500},{name:"Year5",rev:24000,cost:7000,profit:17000}]
+const FRED_SERIES = {
+  DEXJPUS: { label: "USD/JPY", unit: "å", desc: "å¯¾ç±³ãã«åç¸å ´" },
+  CPIAUCSL: { label: "CPI (å¨åç®)", unit: "%YoY", desc: "æ¶è²»èç©ä¾¡ææ°" },
+  CPILFESL: { label: "ã³ã¢CPI", unit: "%YoY", desc: "é£æã»ã¨ãã«ã®ã¼é¤ã" },
+  CUSR0000SEFV: { label: "å¤é£CPI", unit: "%YoY", desc: "Food Away From Home" },
+  UNRATE: { label: "å¤±æ¥­ç", unit: "%", desc: "ç±³å½å¤±æ¥­ç" },
+  CES0500000003: { label: "å¹³åæçµ¦", unit: "$/hr", desc: "Average Hourly Earnings" },
+  FEDFUNDS: { label: "FFéå©", unit: "%", desc: "Federal Funds Rate" },
+  DGS10: { label: "10å¹´åµå©åã", unit: "%", desc: "10-Year Treasury Yield" },
+  UMCSENT: { label: "æ¶è²»èä¿¡é ¼æ", unit: "pt", desc: "Michigan Consumer Sentiment" }
 };
 
-function TabExec({d}){
-  const rate=last(d?.usdjpy)?.v||152.45;
-  return React.createElement("div",{className:"space-y-6"},
-    React.createElement("div",{className:"grid grid-cols-2 md:grid-cols-3 gap-3"},
-      React.createElement(Kpi,{icon:"💱",label:"USD/JPY",value:f2(last(d?.usdjpy)?.v),sub:"対円レート",c:"emerald"}),
-      React.createElement(Kpi,{icon:"📈",label:"米10年国債",value:f2(last(d?.t10y)?.v)+"%",sub:"長期金利",c:"blue"}),
-      React.createElement(Kpi,{icon:"🏦",label:"FF金利",value:f2(last(d?.fedfunds)?.v)+"%",sub:"政策金利",c:"amber"}),
-      React.createElement(Kpi,{icon:"👥",label:"米失業率",value:f1(last(d?.unrate)?.v)+"%",c:"purple"}),
-      React.createElement(Kpi,{icon:"🛢️",label:"原油WTI",value:"$"+f2(last(d?.oil)?.v),c:"rose"}),
-      React.createElement(Kpi,{icon:"🎖️",label:"SOFA総数",value:MIL.sofa_total.toLocaleString(),sub:"在沖米軍関係者",c:"cyan"})
-    ),
-    React.createElement(Card,{title:"🏰 基地別人口"},
-      React.createElement(ResponsiveContainer,{width:"100%",height:180},
-        React.createElement(BarChart,{data:MIL.bases,margin:{top:5,right:10,left:0,bottom:30}},
-          React.createElement(CartesianGrid,{strokeDasharray:"3 3",stroke:"#1e293b"}),
-          React.createElement(XAxis,{dataKey:"name",tick:{fill:"#94a3b8",fontSize:8},angle:-20,textAnchor:"end"}),
-          React.createElement(YAxis,{tick:{fill:"#94a3b8",fontSize:9}}),
-          React.createElement(Tooltip,TS),
-          React.createElement(Bar,{dataKey:"pop",fill:"#10b981"})
-        )
-      )
-    ),
-    React.createElement(Card,{title:"💡 エグゼクティブブリーフィング"},
-      React.createElement("div",{className:"space-y-3"},
-        React.createElement("div",{className:"p-3 bg-amber-950/20 border border-amber-500/20 rounded-lg"},
-          React.createElement("p",{className:"text-xs font-bold text-amber-400 mb-1"},"⚡ 米国経済"),
-          React.createElement("p",{className:"text-xs text-slate-300"},`FF金利${f2(last(d?.fedfunds)?.v)}%継続。CPI高止まりでFED利下げ慎重。軍属家計への影響：生活費上昇、消費節約傾向。`)
-        ),
-        React.createElement("div",{className:"p-3 bg-emerald-950/20 border border-emerald-500/20 rounded-lg"},
-          React.createElement("p",{className:"text-xs font-bold text-emerald-400 mb-1"},"✅ ビジネス機会"),
-          React.createElement("p",{className:"text-xs text-slate-300"},`現在$1=¥${f2(rate)}。¥22,000≈$${(22000/rate).toFixed(0)}。円安で日本側コスト優位。SOFA${MIL.sofa_total.toLocaleString()}名の安定市場。`)
-        )
-      )
-    )
+const FALLBACK = {
+  DEXJPUS: 155.8, CPIAUCSL: 3.4, CPILFESL: 3.6, CUSR0000SEFV: 4.2,
+  UNRATE: 4.2, CES0500000003: 35.1, FEDFUNDS: 4.33, DGS10: 4.45, UMCSENT: 67.5
+};
+
+// GDELT Topics
+const GDELT_TOPICS = [
+  { id: "taiwan_strait", label: "å°æ¹¾æµ·å³¡ã»ä¸­å½è»äºå§å", role: "eastAsia", weight: 1.25,
+    query: "(Taiwan OR \"Taiwan Strait\") (China OR PLA OR military OR blockade OR drills)" },
+  { id: "north_korea", label: "åæé®®ããµã¤ã«ã»æ ¸", role: "eastAsia", weight: 1.15,
+    query: "(\"North Korea\" OR DPRK) (missile OR nuclear OR launch OR military OR sanctions)" },
+  { id: "indopacific", label: "ç±³ã¤ã³ãå¤ªå¹³æ´ã»åæ¹å±é", role: "forwardPosture", weight: 1.20,
+    query: "(USINDOPACOM OR \"Indo-Pacific\" OR Pentagon) (China OR Taiwan OR Japan OR deployment OR exercise)" },
+  { id: "usfj_okinawa", label: "USFJã»æ²ç¸åºå°ã»åæç´", role: "okinawaBase", weight: 1.35,
+    query: "(USFJ OR \"U.S. Forces Japan\" OR Kadena OR Okinawa OR Futenma) (base OR military OR Marines OR relocation)" },
+  { id: "henoko", label: "è¾ºéå¤ã»åºå°ç§»è¨­", role: "okinawaBase", weight: 1.00,
+    query: "(Henoko OR Futenma OR Okinawa) (relocation OR base OR protest OR landfill)" },
+  { id: "us_defense_budget", label: "ç±³å½é²äºç®ã»å½é²ç£æ¥­", role: "defenseBudget", weight: 1.20,
+    query: "(\"defense budget\" OR Pentagon OR \"Department of Defense\" OR \"military spending\")" },
+  { id: "trump_defense", label: "ãã©ã³ãæ¿æ¨©ã»å½é²æ¿ç­", role: "usPolitics", weight: 1.15,
+    query: "(Trump OR Hegseth OR \"White House\") (\"defense strategy\" OR Pentagon OR China OR Taiwan)" },
+  { id: "us_economy_stress", label: "ç±³å½çµæ¸ã»æ¶è²»ã¹ãã¬ã¹", role: "consumerStress", weight: 1.00,
+    query: "(\"U.S. economy\" OR inflation OR layoffs OR \"consumer sentiment\" OR \"job market\")" }
+];
+
+// Official Sources
+const OFFICIAL_SOURCES = [
+  { id: "usfj_about", label: "USFJ About", url: "https://www.usfj.mil/About-USFJ/", category: "USFJ" },
+  { id: "usfj_press", label: "USFJ Press Releases", url: "https://www.usfj.mil/Media/Press-Releases/", category: "USFJ" },
+  { id: "kadena_newcomers", label: "Kadena Newcomers Guide", url: "https://www.kadena.af.mil/Newcomers/Okinawa-Information/", category: "Kadena" },
+  { id: "kadena_housing", label: "Okinawa Family Housing", url: "https://www.kadena.af.mil/Agencies/Okinawa-Family-Housing/", category: "Housing" },
+  { id: "dfas_pay", label: "DFAS Military Pay Tables", url: "https://www.dfas.mil/MilitaryMembers/payentitlements/Pay-Tables/", category: "DFAS" },
+  { id: "dfas_bas", label: "DFAS BAS", url: "https://www.dfas.mil/MilitaryMembers/payentitlements/Pay-Tables/bas/", category: "DFAS" },
+  { id: "dtmo_oha", label: "DTMO Overseas Housing Allowance", url: "https://www.travel.dod.mil/Allowances/Overseas-Housing-Allowance/", category: "DTMO" },
+  { id: "dtmo_bah", label: "DTMO Basic Allowance for Housing", url: "https://www.travel.dod.mil/Allowances/Basic-Allowance-for-Housing/", category: "DTMO" },
+  { id: "mod_hns", label: "é²è¡ç å¨æ¥ç±³è»é§ççµè²»è² æ", url: "https://www.mod.go.jp/j/approach/zaibeigun/us_keihi/", category: "MOD" },
+  { id: "mod_wp", label: "é²è¡ç½æ¸", url: "https://www.mod.go.jp/j/press/wp/", category: "MOD" },
+  { id: "dod_budget", label: "DoD Budget Materials", url: "https://comptroller.defense.gov/Budget-Materials/", category: "DoD" },
+  { id: "white_house", label: "White House Presidential Actions", url: "https://www.whitehouse.gov/presidential-actions/", category: "White House" }
+];
+
+// SOFA Base Population
+const SOFA_BASES = [
+  { name: "Camp Foster", pop: 10200 }, { name: "Kadena Air Base", pop: 9800 },
+  { name: "Camp Kinser", pop: 7500 }, { name: "Camp Hansen", pop: 6800 },
+  { name: "Camp Schwab", pop: 5900 }, { name: "MCAS Futenma", pop: 7254 },
+  { name: "White Beach", pop: 6300 }
+];
+
+// Military Pay Reference (2025)
+const MIL_PAY = {
+  "E-4 (Specialist)": { base: 2503, bah_okinawa: 2094, bas: 460, total: 5057 },
+  "E-5 (Sergeant)": { base: 2730, bah_okinawa: 2094, bas: 460, total: 5284 },
+  "E-6 (Staff Sgt)": { base: 2980, bah_okinawa: 2094, bas: 460, total: 5534 },
+  "O-1 (2nd Lt)": { base: 3637, bah_okinawa: 2094, bas: 292, total: 6023 },
+  "O-3 (Captain)": { base: 5273, bah_okinawa: 2094, bas: 292, total: 7659 }
+];
+
+// OHA Reference
+const OHA_DATA = { average: 2300, min: 1800, max: 3200, lastUpdate: "2025-01" };
+
+// âââââââââââââââââââââââââââââââââââââââââââââ
+// UTILITIES
+// âââââââââââââââââââââââââââââââââââââââââââââ
+function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+function fmtNum(v, d=2) { return v==null||isNaN(v)?'--':Number(v).toFixed(d); }
+function fmtPct(v) { return v==null||isNaN(v)?'--':`${v>0?'+':''}${Number(v).toFixed(1)}%`; }
+function fmtDate(s) { if(!s)return'--'; try{return new Date(s).toLocaleDateString('ja-JP',{month:'short',day:'numeric'})}catch{return s} }
+function fmtMonth(s) { if(!s)return'--'; try{return new Date(s).toLocaleDateString('ja-JP',{year:'numeric',month:'short'})}catch{return s} }
+function sortAsc(arr) { return [...arr].sort((a,b)=>a.date>b.date?1:-1); }
+
+function scoreColor(s) {
+  if(s>=80) return 'score-green';
+  if(s>=60) return 'score-yellow';
+  if(s>=40) return 'score-orange';
+  return 'score-red';
+}
+function scoreBg(s) {
+  if(s>=80) return 'bg-score-green';
+  if(s>=60) return 'bg-score-yellow';
+  if(s>=40) return 'bg-score-orange';
+  return 'bg-score-red';
+}
+function scoreLabel(s) {
+  if(s>=80) return 'å¼·ãè¿½ãé¢¨';
+  if(s>=60) return 'ããè¿½ãé¢¨';
+  if(s>=40) return 'æ³¨æ';
+  return 'éé¢¨';
+}
+
+// localStorage cache
+function cacheGet() {
+  try {
+    const raw = localStorage.getItem(CACHE_KEY);
+    if(!raw) return null;
+    const d = JSON.parse(raw);
+    if(Date.now()-d.ts > CACHE_TTL) return null;
+    return d.data;
+  } catch{ return null; }
+}
+function cacheSet(data) {
+  try { localStorage.setItem(CACHE_KEY, JSON.stringify({ts:Date.now(), data})); } catch{}
+}
+function cacheGetSource(id) {
+  try {
+    const raw = localStorage.getItem('okinawa_source_'+id);
+    if(!raw) return null;
+    return JSON.parse(raw);
+  } catch{ return null; }
+}
+function cacheSetSource(id, d) {
+  try { localStorage.setItem('okinawa_source_'+id, JSON.stringify(d)); } catch{}
+}
+
+// âââââââââââââââââââââââââââââââââââââââââââââ
+// FRED CLIENT
+// âââââââââââââââââââââââââââââââââââââââââââââ
+async function fredFetch(seriesId, limit=24) {
+  const url = `${FRED_PROXY}?series_id=${seriesId}&api_key=${FRED_API_KEY}&limit=${limit}&sort_order=desc&file_type=json`;
+  try {
+    const r = await fetch(url, {signal: AbortSignal.timeout(10000)});
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    const j = await r.json();
+    const obs = (j.observations||[]).filter(o=>o.value!='.' && o.value!='');
+    return obs.map(o=>({ date:o.date, value:parseFloat(o.value) }));
+  } catch(e) {
+    console.warn('FRED fetch failed:',seriesId, e.message);
+    return null;
+  }
+}
+
+async function loadFredData() {
+  const results = await Promise.allSettled([
+    fredFetch('DEXJPUS',30),
+    fredFetch('CPIAUCSL',24),
+    fredFetch('CPILFESL',24),
+    fredFetch('CUSR0000SEFV',24),
+    fredFetch('UNRATE',24),
+    fredFetch('CES0500000003',24),
+    fredFetch('FEDFUNDS',24),
+    fredFetch('DGS10',30),
+    fredFetch('UMCSENT',24)
+  ]);
+  const keys = ['DEXJPUS','CPIAUCSL','CPILFESL','CUSR0000SEFV','UNRATE','CES0500000003','FEDFUNDS','DGS10','UMCSENT'];
+  const data = {};
+  let liveCount = 0;
+  keys.forEach((k,i) => {
+    const r = results[i];
+    if(r.status==='fulfilled' && r.value && r.value.length>0) {
+      data[k] = sortAsc(r.value);
+      liveCount++;
+    } else {
+      data[k] = null;
+    }
+  });
+  return { data, liveCount };
+}
+
+function extractLatest(series) {
+  if(!series||!series.length) return null;
+  return series[series.length-1].value;
+}
+function extractYoY(series) {
+  if(!series||series.length<13) return null;
+  const latest = series[series.length-1].value;
+  const prev = series[series.length-13].value;
+  return ((latest-prev)/prev)*100;
+}
+function extractMoM(series) {
+  if(!series||series.length<2) return null;
+  const latest = series[series.length-1].value;
+  const prev = series[series.length-2].value;
+  return ((latest-prev)/prev)*100;
+}
+
+// âââââââââââââââââââââââââââââââââââââââââââââ
+// GDELT CLIENT
+// âââââââââââââââââââââââââââââââââââââââââââââ
+async function gdeltFetch(topic, timespan='30d') {
+  const q = encodeURIComponent(topic.query);
+  const url = `https://api.gdeltproject.org/api/v2/doc/doc?query=${q}&mode=artlist&format=json&maxrecords=50&sort=datedesc&timespan=${timespan}&sourcelang=english`;
+  try {
+    const r = await fetch(url, {signal: AbortSignal.timeout(12000)});
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    const j = await r.json();
+    return j.articles || [];
+  } catch(e) {
+    console.warn('GDELT fetch failed:',topic.id, e.message);
+    return null;
+  }
+}
+
+const RISK_WORDS = ['missile','nuclear','war','attack','drill','exercise','deployment','blockade',
+  'invasion','sanction','tariff','inflation','layoff','shutdown','protest','incident','warning',
+  'crisis','tension','military','budget','Taiwan','China','PLA','Indo-Pacific'];
+const POS_WORDS = ['agreement','dialogue','cooperation','stable','growth','cooling','decline',
+  'easing','peace','support','alliance','deterrence','investment','readiness'];
+
+function scoreArticles(articles, weight) {
+  if(!articles||articles.length===0) return 18;
+  const text = articles.map(a=>(a.title||'')+(a.seendate||'')).join(' ').toLowerCase();
+  const riskHits = RISK_WORDS.filter(w=>text.includes(w.toLowerCase())).length;
+  const posHits = POS_WORDS.filter(w=>text.includes(w.toLowerCase())).length;
+  const raw = 18 + Math.log(1+articles.length)*18 + riskHits*1.9 - posHits*0.9;
+  return clamp(Math.round(raw * weight), 0, 100);
+}
+
+async function loadGdeltData(timespan='30d') {
+  const results = await Promise.allSettled(
+    GDELT_TOPICS.map(t => gdeltFetch(t, timespan))
+  );
+  const scores = {};
+  const articles = {};
+  GDELT_TOPICS.forEach((t,i) => {
+    const r = results[i];
+    const arts = r.status==='fulfilled' ? r.value : null;
+    articles[t.id] = arts || [];
+    scores[t.id] = scoreArticles(arts, t.weight);
+  });
+  return { scores, articles };
+}
+
+// âââââââââââââââââââââââââââââââââââââââââââââ
+// SCORING ENGINE
+// âââââââââââââââââââââââââââââââââââââââââââââ
+function calcMacroScore(fredVals) {
+  const fx = fredVals.DEXJPUS || FALLBACK.DEXJPUS;
+  const cpi = fredVals.CPIAUCSL || FALLBACK.CPIAUCSL;
+  const coreCpi = fredVals.CPILFESL || FALLBACK.CPILFESL;
+  const foodAway = fredVals.CUSR0000SEFV || FALLBACK.CUSR0000SEFV;
+  const ur = fredVals.UNRATE || FALLBACK.UNRATE;
+  const ahe = fredVals.CES0500000003 || FALLBACK.CES0500000003;
+  const ff = fredVals.FEDFUNDS || FALLBACK.FEDFUNDS;
+  const t10 = fredVals.DGS10 || FALLBACK.DGS10;
+  const sent = fredVals.UMCSENT || FALLBACK.UMCSENT;
+  let score = 50;
+  score += clamp((fx - 130) / 2.2, 0, 18);
+  score += clamp((ahe - 30) * 0.75, -8, 8);
+  score += clamp((4.8 - ur) * 4, -10, 6);
+  score += clamp((cpi - 2.5) * 2, -5, 8);
+  score += clamp((foodAway - 3.0) * 1.5, -3, 6);
+  score += clamp((sent - 60) * 0.25, -8, 6);
+  score -= clamp((ff - 3.5) * 1.5, 0, 5);
+  return clamp(Math.round(score), 0, 100);
+}
+
+function calcAllScores(fredVals, gdeltScores) {
+  const g = gdeltScores || {};
+  const eastAsia = clamp(Math.round(
+    (g.taiwan_strait||50)*0.5 + (g.north_korea||50)*0.5
+  ), 0, 100);
+  const taiwanRisk = g.taiwan_strait || 50;
+  const forwardPosture = g.indopacific || 50;
+  const okinawaBase = clamp(Math.round(
+    (g.usfj_okinawa||50)*0.6 + (g.henoko||50)*0.4
+  ), 0, 100);
+  const defenseBudget = g.us_defense_budget || 50;
+  const usPolitics = g.trump_defense || 50;
+  const consumerStress = g.us_economy_stress || 50;
+  const macro = calcMacroScore(fredVals);
+  const buyingIntent = clamp(Math.round(
+    50 + (macro-50)*0.4 - (consumerStress-50)*0.2
+  ), 0, 100);
+  const okinawaMarket = clamp(Math.round(
+    50 + forwardPosture*0.15 + okinawaBase*0.20 + defenseBudget*0.15 +
+    macro*0.10 - (100-okinawaBase)*0.05 + eastAsia*0.08
+  ), 0, 100);
+  const fx = fredVals.DEXJPUS || FALLBACK.DEXJPUS;
+  const ahe = fredVals.CES0500000003 || FALLBACK.CES0500000003;
+  const cpi = fredVals.CPIAUCSL || FALLBACK.CPIAUCSL;
+  const fxBoost = clamp((fx-130)/3, 0, 15);
+  const wageBoost = clamp((ahe-32)*1.5, 0, 8);
+  const inflationBoost = clamp((cpi-3)*2, 0, 6);
+  const familyTree = clamp(Math.round(
+    50 + fxBoost + wageBoost + inflationBoost + okinawaBase*0.15 + buyingIntent*0.10
+    - (eastAsia>80?8:0)
+  ), 0, 100);
+  return {
+    eastAsia, taiwanRisk, forwardPosture, okinawaBase,
+    defenseBudget, usPolitics, consumerStress, buyingIntent,
+    okinawaMarket, familyTree, macro
+  };
+}
+
+// âââââââââââââââââââââââââââââââââââââââââââââ
+// UTILITY COMPONENTS
+// âââââââââââââââââââââââââââââââââââââââââââââ
+function ScoreCircle({ score, size=80 }) {
+  const r = size*0.38, cx=size/2, cy=size/2;
+  const circ = 2*Math.PI*r;
+  const pct = clamp(score,0,100)/100;
+  const color = score>=80?'#4ade80':score>=60?'#facc15':score>=40?'#fb923c':'#f87171';
+  return (
+    <svg width={size} height={size} style={{transform:'rotate(-90deg)'}}>
+      <circle cx={cx} cy={cy} r={r} fill="none" stroke="#1e2a42" strokeWidth={size*0.09}/>
+      <circle cx={cx} cy={cy} r={r} fill="none" stroke={color} strokeWidth={size*0.09}
+        strokeDasharray={circ} strokeDashoffset={circ*(1-pct)}
+        strokeLinecap="round" className="score-ring"/>
+      <text x={cx} y={cy+1} textAnchor="middle" dominantBaseline="middle"
+        fill={color} fontSize={size*0.22} fontWeight="700" style={{transform:`rotate(90deg)`,transformOrigin:`${cx}px ${cy}px`}}>
+        {score}
+      </text>
+    </svg>
   );
 }
 
-function TabEcon({d}){
-  return React.createElement("div",{className:"space-y-4"},
-    React.createElement(Card,{title:"📈 USD/JPY 推移(直近5年・月次)"},
-      React.createElement(ResponsiveContainer,{width:"100%",height:200},
-        React.createElement(AreaChart,{data:d?.usdjpy||[],margin:{top:5,right:10,left:0,bottom:5}},
-          React.createElement(CartesianGrid,{strokeDasharray:"3 3",stroke:"#1e293b"}),
-          React.createElement(XAxis,{dataKey:"date",tick:{fill:"#94a3b8",fontSize:8}}),
-          React.createElement(YAxis,{tick:{fill:"#94a3b8",fontSize:9},domain:["auto","auto"]}),
-          React.createElement(Tooltip,TS),
-          React.createElement(Area,{type:"monotone",dataKey:"v",stroke:"#10b981",fill:"#10b981",fillOpacity:0.15})
-        )
-      )
-    ),
-    React.createElement("div",{className:"grid grid-cols-1 md:grid-cols-2 gap-4"},
-      React.createElement(Card,{title:"📊 米10年国債利回り"},
-        React.createElement(ResponsiveContainer,{width:"100%",height:160},
-          React.createElement(LineChart,{data:d?.t10y||[],margin:{top:5,right:10,left:0,bottom:5}},
-            React.createElement(CartesianGrid,{strokeDasharray:"3 3",stroke:"#1e293b"}),
-            React.createElement(XAxis,{dataKey:"date",tick:{fill:"#94a3b8",fontSize:8}}),
-            React.createElement(YAxis,{tick:{fill:"#94a3b8",fontSize:9}}),
-            React.createElement(Tooltip,TS),
-            React.createElement(Line,{type:"monotone",dataKey:"v",stroke:"#3b82f6",dot:false,strokeWidth:2})
-          )
-        )
-      ),
-      React.createElement(Card,{title:"🛢️ 原油WTI(直近5年・月次)"},
-        React.createElement(ResponsiveContainer,{width:"100%",height:160},
-          React.createElement(LineChart,{data:d?.oil||[],margin:{top:5,right:10,left:0,bottom:5}},
-            React.createElement(CartesianGrid,{strokeDasharray:"3 3",stroke:"#1e293b"}),
-            React.createElement(XAxis,{dataKey:"date",tick:{fill:"#94a3b8",fontSize:8}}),
-            React.createElement(YAxis,{tick:{fill:"#94a3b8",fontSize:9}}),
-            React.createElement(Tooltip,TS),
-            React.createElement(Line,{type:"monotone",dataKey:"v",stroke:"#f59e0b",dot:false,strokeWidth:2})
-          )
-        )
-      )
-    ),
-    React.createElement("div",{className:"grid grid-cols-1 md:grid-cols-2 gap-4"},
-      React.createElement(Card,{title:"💼 失業率(UNRATE)"},
-        React.createElement(ResponsiveContainer,{width:"100%",height:160},
-          React.createElement(AreaChart,{data:d?.unrate||[],margin:{top:5,right:10,left:0,bottom:5}},
-            React.createElement(CartesianGrid,{strokeDasharray:"3 3",stroke:"#1e293b"}),
-            React.createElement(XAxis,{dataKey:"date",tick:{fill:"#94a3b8",fontSize:8}}),
-            React.createElement(YAxis,{tick:{fill:"#94a3b8",fontSize:9}}),
-            React.createElement(Tooltip,TS),
-            React.createElement(Area,{type:"monotone",dataKey:"v",stroke:"#ef4444",fill:"#ef4444",fillOpacity:0.15})
-          )
-        )
-      ),
-      React.createElement(Card,{title:"📊 CPI消費者物価"},
-        React.createElement(ResponsiveContainer,{width:"100%",height:160},
-          React.createElement(LineChart,{data:d?.cpi||[],margin:{top:5,right:10,left:0,bottom:5}},
-            React.createElement(CartesianGrid,{strokeDasharray:"3 3",stroke:"#1e293b"}),
-            React.createElement(XAxis,{dataKey:"date",tick:{fill:"#94a3b8",fontSize:8}}),
-            React.createElement(YAxis,{tick:{fill:"#94a3b8",fontSize:9},domain:["auto","auto"]}),
-            React.createElement(Tooltip,TS),
-            React.createElement(Line,{type:"monotone",dataKey:"v",stroke:"#8b5cf6",dot:false,strokeWidth:2})
-          )
-        )
-      )
-    )
+function KpiCard({ title, value, sub, score, trend, unit, icon, loading }) {
+  const hasScore = score!=null;
+  const clr = hasScore ? scoreColor(score) : 'text-blue-400';
+  const bg = hasScore ? scoreBg(score) : '';
+  return (
+    <div className={`kpi-card rounded-xl p-4 ${bg}`} style={{minHeight:120}}>
+      <div className="flex items-start justify-between mb-2">
+        <div className="text-xs text-slate-400 font-medium uppercase tracking-wider leading-tight" style={{maxWidth:'70%'}}>{title}</div>
+        {icon && <span className="text-lg opacity-60">{icon}</span>}
+      </div>
+      {loading ? (
+        <div className="flex items-center gap-2 mt-3">
+          <div className="spinner w-4 h-4 border-2 border-blue-400 border-t-transparent rounded-full"/>
+          <span className="text-slate-400 text-sm">åå¾ä¸­...</span>
+        </div>
+      ) : (
+        <>
+          <div className={`text-2xl font-bold ${clr} mb-1`}>
+            {value}{unit&&<span className="text-sm font-normal ml-1 opacity-70">{unit}</span>}
+          </div>
+          {sub && <div className="text-xs text-slate-400">{sub}</div>}
+          {trend!=null && (
+            <div className={`text-xs mt-1 ${trend>=0?'text-green-400':'text-red-400'}`}>
+              {trend>=0?'â²':'â¼'} {Math.abs(trend).toFixed(2)}{unit}
+            </div>
+          )}
+          {hasScore && (
+            <div className={`text-xs mt-2 font-semibold ${clr}`}>{scoreLabel(score)} ({score}/100)</div>
+          )}
+        </>
+      )}
+    </div>
   );
 }
 
-function TabMil(){
-  const pieData=MIL.bases.map(b=>({name:b.name,value:b.pop}));
-  return React.createElement("div",{className:"space-y-4"},
-    React.createElement("div",{className:"grid grid-cols-2 md:grid-cols-4 gap-3"},
-      React.createElement(Kpi,{icon:"🎖️",label:"SOFA総人口",value:MIL.sofa_total.toLocaleString(),c:"emerald"}),
-      React.createElement(Kpi,{icon:"⚔️",label:"現役軍人",value:MIL.active_duty.toLocaleString(),c:"blue"}),
-      React.createElement(Kpi,{icon:"👨‍👩‍👧",label:"家族・扶養者",value:MIL.dependents.toLocaleString(),c:"cyan"}),
-      React.createElement(Kpi,{icon:"💰",label:"米軍支出(億円)",value:MIL.spend_b_jpy+"B",c:"amber"})
-    ),
-    React.createElement("div",{className:"grid grid-cols-1 md:grid-cols-2 gap-4"},
-      React.createElement(Card,{title:"🏰 基地別人口分布"},
-        React.createElement(ResponsiveContainer,{width:"100%",height:220},
-          React.createElement(PieChart,null,
-            React.createElement(Pie,{data:pieData,cx:"50%",cy:"50%",outerRadius:80,dataKey:"value",nameKey:"name",label:({name,value})=>name.split(" ")[1]+":"+value},
-              pieData.map((_,i)=>React.createElement(Cell,{key:i,fill:COLORS[i%COLORS.length]}))
-            ),
-            React.createElement(Tooltip,TS)
-          )
-        )
-      ),
-      React.createElement(Card,{title:"💴 DoD予算推移(億USD)"},
-        React.createElement(ResponsiveContainer,{width:"100%",height:220},
-          React.createElement(BarChart,{data:MIL.dod_budget,margin:{top:5,right:10,left:0,bottom:5}},
-            React.createElement(CartesianGrid,{strokeDasharray:"3 3",stroke:"#1e293b"}),
-            React.createElement(XAxis,{dataKey:"y",tick:{fill:"#94a3b8",fontSize:10}}),
-            React.createElement(YAxis,{tick:{fill:"#94a3b8",fontSize:9},domain:[700,920]}),
-            React.createElement(Tooltip,TS),
-            React.createElement(Bar,{dataKey:"v",fill:"#3b82f6"})
-          )
-        )
-      )
-    ),
-    React.createElement(Card,{title:"🏗️ ホストネーション支援(億USD)"},
-      React.createElement(ResponsiveContainer,{width:"100%",height:140},
-        React.createElement(BarChart,{data:MIL.hns,margin:{top:5,right:10,left:0,bottom:5}},
-          React.createElement(CartesianGrid,{strokeDasharray:"3 3",stroke:"#1e293b"}),
-          React.createElement(XAxis,{dataKey:"y",tick:{fill:"#94a3b8",fontSize:10}}),
-          React.createElement(YAxis,{tick:{fill:"#94a3b8",fontSize:9},domain:[180,230]}),
-          React.createElement(Tooltip,TS),
-          React.createElement(Bar,{dataKey:"v",fill:"#06b6d4"})
-        )
-      )
-    )
+function SectionHeader({ title, sub }) {
+  return (
+    <div className="mb-4">
+      <h2 className="text-lg font-bold text-white">{title}</h2>
+      {sub && <p className="text-xs text-slate-400 mt-0.5">{sub}</p>}
+    </div>
   );
 }
 
-function TabFx({d}){
-  const rate=last(d?.usdjpy)?.v||152.45;
-  const delta=chg(d?.usdjpy);
-  return React.createElement("div",{className:"space-y-4"},
-    React.createElement("div",{className:"grid grid-cols-2 md:grid-cols-3 gap-3"},
-      React.createElement(Kpi,{icon:"💱",label:"USD/JPY",value:f2(rate),sub:"変化: "+(delta>=0?"+":"")+f2(delta),c:"emerald"}),
-      React.createElement(Kpi,{icon:"📈",label:"10年金利",value:f2(last(d?.t10y)?.v)+"%",c:"blue"}),
-      React.createElement(Kpi,{icon:"🏦",label:"FF金利",value:f2(last(d?.fedfunds)?.v)+"%",c:"amber"}),
-      React.createElement(Kpi,{icon:"💵",label:"$100 =",value:"¥"+Math.round(rate*100).toLocaleString(),c:"cyan"}),
-      React.createElement(Kpi,{icon:"💹",label:"FRBバランスシート",value:"$"+f2((last(d?.fed_bs)?.v||0)/1000000)+"T",c:"purple"}),
-      React.createElement(Kpi,{icon:"📊",label:"円安構造",value:rate>145?"🔴 高":"🟡 中",sub:"対米金利差",c:"rose"})
-    ),
-    React.createElement(Card,{title:"💱 USD/JPY 長期推移 + 警戒ライン"},
-      React.createElement(ResponsiveContainer,{width:"100%",height:220},
-        React.createElement(LineChart,{data:d?.usdjpy||[],margin:{top:5,right:10,left:0,bottom:5}},
-          React.createElement(CartesianGrid,{strokeDasharray:"3 3",stroke:"#1e293b"}),
-          React.createElement(XAxis,{dataKey:"date",tick:{fill:"#94a3b8",fontSize:8}}),
-          React.createElement(YAxis,{tick:{fill:"#94a3b8",fontSize:9},domain:["auto","auto"]}),
-          React.createElement(Tooltip,TS),
-          React.createElement(Line,{type:"monotone",dataKey:"v",stroke:"#10b981",dot:false,strokeWidth:2}),
-          React.createElement(ReferenceLine,{y:145,stroke:"#f59e0b",strokeDasharray:"3 3",label:{value:"145",fill:"#f59e0b",fontSize:9}}),
-          React.createElement(ReferenceLine,{y:155,stroke:"#ef4444",strokeDasharray:"3 3",label:{value:"155",fill:"#ef4444",fontSize:9}})
-        )
-      )
-    ),
-    React.createElement(Card,{title:"🏦 FRBバランスシート(兆USD)"},
-      React.createElement(ResponsiveContainer,{width:"100%",height:160},
-        React.createElement(AreaChart,{data:(d?.fed_bs||[]).map(x=>({...x,v:+(x.v/1000000).toFixed(2)})),margin:{top:5,right:10,left:0,bottom:5}},
-          React.createElement(CartesianGrid,{strokeDasharray:"3 3",stroke:"#1e293b"}),
-          React.createElement(XAxis,{dataKey:"date",tick:{fill:"#94a3b8",fontSize:8}}),
-          React.createElement(YAxis,{tick:{fill:"#94a3b8",fontSize:9}}),
-          React.createElement(Tooltip,TS),
-          React.createElement(Area,{type:"monotone",dataKey:"v",stroke:"#8b5cf6",fill:"#8b5cf6",fillOpacity:0.15})
-        )
-      )
-    )
+function Badge({ text, color='blue' }) {
+  const cls = {
+    blue:'bg-blue-900/50 text-blue-300 border border-blue-700',
+    green:'bg-green-900/50 text-green-300 border border-green-700',
+    yellow:'bg-yellow-900/50 text-yellow-300 border border-yellow-700',
+    orange:'bg-orange-900/50 text-orange-300 border border-orange-700',
+    red:'bg-red-900/50 text-red-300 border border-red-700',
+    gray:'bg-slate-800 text-slate-300 border border-slate-600',
+  };
+  return <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${cls[color]||cls.gray}`}>{text}</span>;
+}
+
+function ScoreBar({ label, score, maxWidth=200 }) {
+  const color = score>=80?'#4ade80':score>=60?'#facc15':score>=40?'#fb923c':'#f87171';
+  return (
+    <div className="flex items-center gap-3 mb-2">
+      <div className="text-xs text-slate-300 w-40 shrink-0 truncate">{label}</div>
+      <div className="flex-1 bg-slate-800 rounded-full h-2" style={{maxWidth}}>
+        <div className="h-2 rounded-full transition-all duration-700" style={{width:`${score}%`,background:color}}/>
+      </div>
+      <div className="text-xs font-bold w-8 text-right" style={{color}}>{score}</div>
+    </div>
   );
 }
 
-function TabNews({d}){
-  return React.createElement("div",{className:"space-y-3"},
-    !(d?.news?.length)&&React.createElement("div",{className:"flex justify-center py-10 text-slate-500 text-sm"},"ニュース読み込み中..."),
-    (d?.news||[]).map((n,i)=>
-      React.createElement("div",{key:i,className:"p-3 bg-slate-900 border border-slate-700/50 rounded-xl hover:border-slate-600 transition-colors"},
-        React.createElement("div",{className:"flex items-center gap-2 mb-1"},
-          React.createElement("span",{className:"text-xs bg-blue-950/40 text-blue-400 px-2 py-0.5 rounded-full border border-blue-500/20"},n.cat||"World"),
-          React.createElement("span",{className:"text-xs text-slate-500"},n.date)
-        ),
-        React.createElement("p",{className:"text-sm font-semibold text-slate-200 mb-1 leading-snug"},n.title),
-        React.createElement("p",{className:"text-xs text-slate-400 leading-relaxed"},n.desc)
-      )
-    )
+// âââââââââââââââââââââââââââââââââââââââââââââ
+// CHART HELPERS
+// âââââââââââââââââââââââââââââââââââââââââââââ
+const CHART_COLORS = { primary:'#60a5fa', secondary:'#34d399', accent:'#f59e0b', danger:'#f87171', purple:'#a78bfa' };
+
+function chartTooltipStyle() {
+  return { contentStyle:{background:'#1e2538',border:'1px solid #2a3550',borderRadius:8,fontSize:11},
+           labelStyle:{color:'#94a3b8'}, itemStyle:{color:'#e2e8f0'} };
+}
+
+function prepChartData(series, label, limit=24) {
+  if(!series||!series.length) return [];
+  const sliced = series.slice(-limit);
+  return sliced.map(d=>({ date:fmtMonth(d.date), value:d.value, label }));
+}
+
+// âââââââââââââââââââââââââââââââââââââââââââââ
+// HEADER COMPONENT
+// âââââââââââââââââââââââââââââââââââââââââââââ
+function Header({ scores, lastUpdate, loading, onRefresh, fredLive, gdeltLive }) {
+  const mktScore = scores?.okinawaMarket || 0;
+  const ftScore = scores?.familyTree || 0;
+  return (
+    <header className="bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 border-b border-blue-900/40 px-4 py-3 sticky top-0 z-50">
+      <div className="max-w-screen-2xl mx-auto flex flex-wrap items-center gap-3">
+        <div className="flex-1 min-w-0">
+          <h1 className="text-sm font-bold text-blue-300 tracking-widest uppercase">ð Okinawa U.S. Military Intelligence Dashboard</h1>
+          <p className="text-xs text-slate-400 mt-0.5">æ²ç¸ç±³è»æå¢ã¤ã³ããªã¸ã§ã³ã¹ã»ããã·ã¥ãã¼ã | ååä¼ç¤¾koya çµå¶å¤æ­æ¯æ´</p>
+        </div>
+        <div className="flex items-center gap-2 flex-wrap">
+          <div className="flex items-center gap-1">
+            <div className={`w-2 h-2 rounded-full ${fredLive>0?'bg-green-400':'bg-red-400'} ${fredLive>0?'pulse':''}`}/>
+            <span className="text-xs text-slate-400">FRED {fredLive}/9</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <div className={`w-2 h-2 rounded-full ${gdeltLive>0?'bg-blue-400':'bg-red-400'}`}/>
+            <span className="text-xs text-slate-400">GDELT {gdeltLive}/8</span>
+          </div>
+          {scores && (
+            <>
+              <div className={`text-xs font-bold px-2 py-1 rounded ${scoreBg(mktScore)} ${scoreColor(mktScore)}`}>
+                æ²ç¸å¸å ´ {mktScore}
+              </div>
+              <div className={`text-xs font-bold px-2 py-1 rounded ${scoreBg(ftScore)} ${scoreColor(ftScore)}`}>
+                FTO {ftScore}
+              </div>
+            </>
+          )}
+          {lastUpdate && <span className="text-xs text-slate-500">{lastUpdate}</span>}
+          <button onClick={onRefresh} disabled={loading}
+            className="no-print flex items-center gap-1 bg-blue-800 hover:bg-blue-700 disabled:opacity-50 text-white text-xs px-3 py-1.5 rounded-lg transition-colors">
+            {loading ? <span className="spinner w-3 h-3 border border-white border-t-transparent rounded-full"/> : 'â»'}
+            æ´æ°
+          </button>
+        </div>
+      </div>
+    </header>
   );
 }
 
-function TabScenario({d}){
-  const rate=last(d?.usdjpy)?.v||152.45;
-  return React.createElement("div",{className:"space-y-4"},
-    React.createElement(Card,{title:"📊 FamilyTreeOki 5ヶ年シナリオ(万円)"},
-      React.createElement(ResponsiveContainer,{width:"100%",height:220},
-        React.createElement(BarChart,{data:MIL.scenario,margin:{top:5,right:10,left:0,bottom:5}},
-          React.createElement(CartesianGrid,{strokeDasharray:"3 3",stroke:"#1e293b"}),
-          React.createElement(XAxis,{dataKey:"name",tick:{fill:"#94a3b8",fontSize:10}}),
-          React.createElement(YAxis,{tick:{fill:"#94a3b8",fontSize:9}}),
-          React.createElement(Tooltip,TS),
-          React.createElement(Legend,{wrapperStyle:{fontSize:10,color:"#94a3b8"}}),
-          React.createElement(Bar,{dataKey:"rev",fill:"#10b981",name:"売上"}),
-          React.createElement(Bar,{dataKey:"cost",fill:"#ef4444",name:"コスト"}),
-          React.createElement(Bar,{dataKey:"profit",fill:"#3b82f6",name:"利益"})
-        )
-      )
-    ),
-    React.createElement("div",{className:"grid grid-cols-1 md:grid-cols-3 gap-3"},
-      React.createElement(Kpi,{icon:"🎯",label:"Year5売上目標",value:"¥"+MIL.scenario[4].rev.toLocaleString()+"万",sub:"$"+Math.round(MIL.scenario[4].rev*10000/rate).toLocaleString(),c:"emerald"}),
-      React.createElement(Kpi,{icon:"📈",label:"Year5利益",value:"¥"+MIL.scenario[4].profit.toLocaleString()+"万",c:"blue"}),
-      React.createElement(Kpi,{icon:"🏆",label:"SOFA市場規模",value:"¥"+MIL.spend_b_jpy+"B",sub:"年間米軍支出推計",c:"amber"})
-    ),
-    React.createElement(Card,{title:"⚠️ リスク分析"},
-      React.createElement("div",{className:"space-y-2"},
-        [
-          {color:"red",label:"円高リスク",desc:"125円台でドル建て購買力低下、日本滞在コスト上昇"},
-          {color:"amber",label:"基地縮小リスク",desc:"辺野古移設進展による普天間周辺人口流動"},
-          {color:"emerald",label:"成長機会",desc:"Birth Haven拡大・新規SOFA家族向けサービス需要増"}
-        ].map((r,i)=>
-          React.createElement("div",{key:i,className:`flex justify-between items-start p-2 bg-${r.color}-950/20 border border-${r.color}-500/20 rounded-lg`},
-            React.createElement("span",{className:`text-xs font-semibold text-${r.color}-400 w-28 shrink-0`},r.label),
-            React.createElement("span",{className:"text-xs text-slate-300 ml-2"},r.desc)
-          )
-        )
-      )
-    )
-  );
-}
-
-function App(){
-  const {d,loading,ts}=useData();
-  const [tab,setTab]=useState(0);
-  const TABS=["📊 EXE","🇺🇸 米国経済","🎖️ 軍事市場","💱 為替・金融","📰 ニュース","📈 シナリオ"];
-  const panels=[
-    loading?React.createElement(Spin):React.createElement(TabExec,{d}),
-    loading?React.createElement(Spin):React.createElement(TabEcon,{d}),
-    React.createElement(TabMil,{d}),
-    loading?React.createElement(Spin):React.createElement(TabFx,{d}),
-    loading?React.createElement(Spin):React.createElement(TabNews,{d}),
-    loading?React.createElement(Spin):React.createElement(TabScenario,{d})
+// âââââââââââââââââââââââââââââââââââââââââââââ
+// KPI CARDS PANEL
+// âââââââââââââââââââââââââââââââââââââââââââââ
+function IntelligenceKpiCards({ fredVals, fredSeries, scores, loading }) {
+  const fx = extractLatest(fredSeries?.DEXJPUS) || FALLBACK.DEXJPUS;
+  const fxMom = fredSeries?.DEXJPUS ? (fx - (fredSeries.DEXJPUS[fredSeries.DEXJPUS.length-2]?.value||fx)) : null;
+  const cpiYoY = extractYoY(fredSeries?.CPIAUCSL);
+  const ahe = extractLatest(fredSeries?.CES0500000003) || FALLBACK.CES0500000003;
+  const ur = extractLatest(fredSeries?.UNRATE) || FALLBACK.UNRATE;
+  const sent = extractLatest(fredSeries?.UMCSENT) || FALLBACK.UMCSENT;
+  const cards = [
+    { title:"USD / JPY", value: fmtNum(fx,2), sub:"å¯¾ç±³ãã«åç¸å ´", trend:fxMom, unit:"å", icon:"ð±",
+      score: clamp(Math.round(50+(fx-130)/3),0,100) },
+    { title:"CPI YoY", value: fmtNum(cpiYoY,1), unit:"%", sub:"æ¶è²»èç©ä¾¡åå¹´æ¯", icon:"ð",
+      score: clamp(Math.round(50+(cpiYoY-2.5)*5),0,100) },
+    { title:"å¹³åæçµ¦", value: `$${fmtNum(ahe,2)}`, sub:"Average Hourly Earnings", icon:"ð°",
+      score: clamp(Math.round(50+(ahe-32)*4),0,100) },
+    { title:"å¤±æ¥­ç", value: fmtNum(ur,1), unit:"%", sub:"U.S. Unemployment Rate", icon:"ð¥",
+      score: clamp(Math.round(50+(4.5-ur)*10),0,100) },
+    { title:"æ¶è²»èä¿¡é ¼æ", value: fmtNum(sent,1), sub:"Michigan Consumer Sentiment", icon:"ð§­",
+      score: clamp(Math.round(sent),0,100) },
+    { title:"æ±ã¢ã¸ã¢ç·å¼µ", value: scores?.eastAsia||'--', sub:"å°æ¹¾æµ·å³¡ã»åæé®®ãªã¹ã¯", icon:"ð",
+      score: scores?.eastAsia },
+    { title:"æ²ç¸åºå°éè¦åº¦", value: scores?.okinawaBase||'--', sub:"USFJã»åæç´ã»åºå°åå", icon:"ð¡ï¸",
+      score: scores?.okinawaBase },
+    { title:"ç±³å½é²äºç®å¢ã", value: scores?.defenseBudget||'--', sub:"DoDäºç®ã»å½é²ç£æ¥­", icon:"ðï¸",
+      score: scores?.defenseBudget },
+    { title:"æ²ç¸ç±³è»å¸å ´å®å®", value: scores?.okinawaMarket||'--', sub:"å¸å ´ç¶­æã»æ¡å¤§å¤å®", icon:"â",
+      score: scores?.okinawaMarket },
+    { title:"FamilyTreeOki è¿½ãé¢¨", value: scores?.familyTree||'--', sub:"äºæ¥­ç·åè¿½ãé¢¨ã¹ã³ã¢", icon:"ð¸",
+      score: scores?.familyTree },
   ];
-  return React.createElement("div",{className:"min-h-screen bg-slate-950 p-3"},
-    React.createElement("div",{className:"max-w-5xl mx-auto"},
-      React.createElement("div",{className:"flex items-center justify-between mb-4 pt-2"},
-        React.createElement("div",null,
-          React.createElement("h1",{className:"text-xl font-bold text-emerald-400"},"🌺 FamilyTreeOki"),
-          React.createElement("p",{className:"text-xs text-slate-500"},"米軍統合インテリジェンスダッシュボード | Okinawa Eco Business")
-        ),
-        React.createElement("div",{className:"text-right"},
-          React.createElement("div",{className:"text-xs text-slate-300 font-medium"},TODAY),
-          ts&&React.createElement("div",{className:"text-xs text-slate-600"},"更新: "+ts.toLocaleTimeString("ja-JP")),
-          loading&&React.createElement("div",{className:"text-xs text-emerald-500 animate-pulse"},"データ取得中...")
-        )
-      ),
-      React.createElement("div",{className:"flex gap-1 mb-5 overflow-x-auto hs pb-1"},
-        TABS.map((t,i)=>
-          React.createElement("button",{
-            key:i,onClick:()=>setTab(i),
-            className:"px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors "+(tab===i?"bg-emerald-600 text-white shadow-lg shadow-emerald-900/30":"bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-slate-200")
-          },t)
-        )
-      ),
-      panels[tab]
-    )
+  return (
+    <div>
+      <SectionHeader title="ã¤ã³ããªã¸ã§ã³ã¹ KPIã«ã¼ã" sub="ä¸»è¦10ææ¨ã®ãªã¢ã«ã¿ã¤ã ã¹ã³ã¢ãªã³ã°"/>
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+        {cards.map(c=>(
+          <KpiCard key={c.title} {...c} loading={loading}/>
+        ))}
+      </div>
+    </div>
   );
 }
 
-ReactDOM.render(React.createElement(App),document.getElementById("root"));
-</script>
-</body>
-</html>
+// âââââââââââââââââââââââââââââââââââââââââââââ
+// FRED MACRO PANEL
+// âââââââââââââââââââââââââââââââââââââââââââââ
+function FredMacroPanel({ fredSeries, fredVals, loading }) {
+  const [activeChart, setActiveChart] = useState('fx');
+  const charts = {
+    fx: { key:'DEXJPUS', label:'USD/JPYæ¨ç§»', color:CHART_COLORS.primary, unit:'å' },
+    cpi: { key:'CPIAUCSL', label:'CPIåå¹´æ¯æ¨ç§»', color:CHART_COLORS.danger, unit:'%YoY', yoy:true },
+    ahe: { key:'CES0500000003', label:'å¹³åæçµ¦æ¨ç§»', color:CHART_COLORS.secondary, unit:'$/hr' },
+    ur: { key:'UNRATE', label:'å¤±æ¥­çæ¨ç§»', color:CHART_COLORS.accent, unit:'%' },
+    ff: { key:'FEDFUNDS', label:'FFéå©æ¨ç§»', color:CHART_COLORS.purple, unit:'%' },
+    sent: { key:'UMCSENT', label:'æ¶è²»èä¿¡é ¼ææ¨ç§»', color:CHART_COLORS.secondary, unit:'pt' },
+  };
+  const active = charts[activeChart];
+  const rawSeries = fredSeries?.[active.key];
+  const chartData = useMemo(()=>{
+    if(!rawSeries||!rawSeries.length) return [];
+    const sliced = rawSeries.slice(-20);
+    if(active.yoy) {
+      const full = rawSeries;
+      return sliced.map((d,i)=>{
+        const idx = rawSeries.indexOf(d);
+        const prev = rawSeries[idx-12];
+        const yoy = prev ? ((d.value-prev.value)/prev.value*100) : null;
+        return { date:fmtMonth(d.date), value: yoy!=null?parseFloat(yoy.toFixed(2)):null };
+      }).filter(d=>d.value!=null);
+    }
+    return sliced.map(d=>({ date:fmtMonth(d.date), value:d.value }));
+  }, [rawSeries, activeChart]);
+
+  const fredTableData = Object.entries(FRED_SERIES).map(([id,meta])=>{
+    const s = fredSeries?.[id];
+    const latest = extractLatest(s) || FALLBACK[id];
+    const mom = extractMoM(s);
+    const yoy = extractYoY(s);
+    return { id, ...meta, latest, mom, yoy, hasLive:!!s };
+  });
+
+  return (
+    <div className="space-y-6">
+      <SectionHeader title="FREDãã¯ã­çµæ¸ããã«" sub="ç±³å½ä¸»è¦çµæ¸ææ¨ â FRED APIç´æ¥åå¾"/>
+      <div className="panel-card rounded-xl p-4">
+        <div className="flex gap-2 flex-wrap mb-4">
+          {Object.entries(charts).map(([k,c])=>(
+            <button key={k} onClick={()=>setActiveChart(k)}
+              className={`text-xs px-3 py-1.5 rounded-full transition-colors ${activeChart===k?'bg-blue-700 text-white':'bg-slate-800 text-slate-400 hover:bg-slate-700'}`}>
+              {c.label.replace('æ¨ç§»','').trim()}
+            </button>
+          ))}
+        </div>
+        <div className="text-sm font-semibold text-slate-200 mb-3">{active.label}</div>
+        {loading||!chartData.length ? (
+          <div className="flex items-center justify-center h-48 text-slate-500">
+            {loading?<><span className="spinner w-5 h-5 border-2 border-blue-400 border-t-transparent rounded-full mr-2"/>èª­ã¿è¾¼ã¿ä¸­...</>:'ãã¼ã¿ãªã (MOCKå¤ä½¿ç¨ä¸­)'}
+          </div>
+        ) : (
+          <ResponsiveContainer width="100%" height={220}>
+            <AreaChart data={chartData}>
+              <defs>
+                <linearGradient id={`grad-${activeChart}`} x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor={active.color} stopOpacity={0.3}/>
+                  <stop offset="95%" stopColor={active.color} stopOpacity={0}/>
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke="#1e2a42"/>
+              <XAxis dataKey="date" tick={{fontSize:10,fill:'#64748b'}} interval="preserveStartEnd"/>
+                 <YAxis tick={{fontSize:10,fill:'#64748b'}} width={45} tickFormatter={v=>active.unit==='å'?`Â¥${v}`:v+active.unit}/>
+              <Tooltip {...chartTooltipStyle()} formatter={v=>[`${v} ${active.unit}`,active.label]}/>
+              <Area type="monotone" dataKey="value" stroke={active.color} fill={`url(#grad-${activeChart})`} strokeWidth={2} dot={false}/>
+            </AreaChart>
+          </ResponsiveContainer>
+        )}
+      </div>
+      <div className="panel-card rounded-xl p-4">
+        <div className="text-sm font-semibold text-slate-200 mb-3">FREDææ¨ä¸è¦§ â ææ°å¤</div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-xs">
+            <thead>
+              <tr className="text-slate-400 border-b border-slate-700">
+                <th className="text-left py-2 pr-4">ææ¨</th>
+                <th className="text-right pr-4">ææ°å¤</th>
+                <th className="text-right pr-4">åææ¯</th>
+                <th className="text-right pr-4">åå¹´æ¯</th>
+                <th className="text-left">åä½</th>
+                <th className="text-left">ç¶æ</th>
+              </tr>
+            </thead>
+            <tbody>
+              {fredTableData.map(row=>(
+                <tr key={row.id} className="border-b border-slate-800 hover:bg-slate-800/30">
+                  <td className="py-2 pr-4 text-slate-200 font-medium">{row.label}</td>
+                  <td className="text-right pr-4 text-blue-300 font-mono font-bold">{fmtNum(row.latest,row.unit==='$/%'?2:2)}</td>
+                  <td className={`text-right pr-4 font-mono ${row.mom>=0?'text-green-400':'text-red-400'}`}>{fmtPct(row.mom)}</td>
+                  <td className={`text-right pr-4 font-mono ${row.yoy>=0?'text-green-400':'text-red-400'}`}>{fmtPct(row.yoy)}</td>
+                  <td className="text-slate-400">{row.unit}</td>
+                  <td><Badge text={row.hasLive?'LIVE':'MOCK'} color={row.hasLive?'green':'gray'}/></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// âââââââââââââââââââââââââââââââââââââââââââââ
+// GDELT GEOPOLITICAL PANEL
+// âââââââââââââââââââââââââââââââââââââââââââââ
+function GeopoliticalPanel({ gdeltScores, gdeltArticles, gdeltTimespan, onTimespanChange, scores, loading }) {
+  const [selectedTopic, setSelectedTopic] = useState('usfj_okinawa');
+  const topicArticles = gdeltArticles?.[selectedTopic] || [];
+  const radarData = GDELT_TOPICS.map(t=>({
+    subject: t.label.length>8?t.label.slice(0,8)+'â¦':t.label,
+    score: gdeltScores?.[t.id]||50,
+    fullLabel: t.label
+  }));
+
+  const geoscoreData = GDELT_TOPICS.map(t=>({
+    label:t.label,
+    score:gdeltScores?.[t.id]||50,
+    weight:t.weight
+  })).sort((a,b)=>b.score-a.score);
+
+  return (
+    <div className="space-y-6">
+      <SectionHeader title="å°æ¿å­¦ã¤ã³ããªã¸ã§ã³ã¹ããã«" sub="GDELT DOC 2.0 APIã«ãããªã¢ã«ã¿ã¤ã ãã¥ã¼ã¹ã¹ã³ã¢ãªã³ã°"/>
+      <div className="flex gap-2 items-center flex-wrap">
+        <span className="text-xs text-slate-400">æé:</span>
+        {['1d','7d','30d','90d'].map(ts=>(
+          <button key={ts} onClick={()=>onTimespanChange(ts)}
+            className={`text-xs px-3 py-1 rounded-full transition-colors ${gdeltTimespan===ts?'bg-blue-700 text-white':'bg-slate-800 text-slate-400 hover:bg-slate-700'}`}>
+            {ts}
+          </button>
+        ))}
+        {loading && <span className="text-xs text-slate-500 animate-pulse">åå¾ä¸­...</span>}
+      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div className="panel-card rounded-xl p-4">
+          <div className="text-sm font-semibold text-slate-200 mb-3">å°æ¿å­¦ã¹ã³ã¢ä¸è¦§</div>
+          {geoscoreData.map(d=>(
+            <ScoreBar key={d.label} label={d.label} score={d.score}/>
+          ))}
+        </div>
+        <div className="panel-card rounded-xl p-4">
+          <div className="text-sm font-semibold text-slate-200 mb-3">ã¬ã¼ãã¼ãã£ã¼ã</div>
+          <ResponsiveContainer width="100%" height={220}>
+            <RadarChart data={radarData}>
+              <PolarGrid stroke="#1e2a42"/>
+              <PolarAngleAxis dataKey="subject" tick={{fontSize:9,fill:'#94a3b8'}}/>
+              <Radar name="ã¹ã³ã¢" dataKey="score" stroke={CHART_COLORS.primary} fill={CHART_COLORS.primary} fillOpacity={0.25}/>
+              <Tooltip {...chartTooltipStyle()} formatter={(v,n,p)=>[`${v}/100`,p.payload.fullLabel]}/>
+            </RadarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+      <div className="panel-card rounded-xl p-4">
+        <div className="flex gap-2 mb-3 flex-wrap">
+          {GDELT_TOPICS.map(t=>(
+            <button key={t.id} onClick={()=>setSelectedTopic(t.id)}
+              className={`text-xs px-2 py-1 rounded transition-colors ${selectedTopic===t.id?'bg-blue-700 text-white':'bg-slate-800 text-slate-400 hover:bg-slate-700'}`}>
+              {t.label.slice(0,10)}{t.label.length>10?'â¦':''}
+            </button>
+          ))}
+        </div>
+        <div className="text-xs font-semibold text-slate-300 mb-2">
+          {GDELT_TOPICS.find(t=>t.id===selectedTopic)?.label} â ç´è¿ãã¥ã¼ã¹
+          <Badge text={`ã¹ã³ã¢: ${gdeltScores?.[selectedTopic]||'--'}`} color="blue" />
+        </div>
+        {topicArticles.length===0 ? (
+          <div className="text-slate-500 text-xs py-4 text-center">
+            {loading?'åå¾ä¸­...':'ãã¥ã¼ã¹ãªãï¼GDELTéæ¥ç¶ or 0ä»¶ï¼'}
+          </div>
+        ) : (
+          <div className="space-y-2 max-h-64 overflow-y-auto">
+            {topicArticles.slice(0,10).map((a,i)=>(
+              <div key={i} className="border border-slate-700 rounded-lg p-2 hover:border-blue-700 transition-colors">
+                <a href={a.url} target="_blank" rel="noopener noreferrer"
+                  className="text-xs text-blue-300 hover:text-blue-200 font-medium line-clamp-2">
+                  {a.title}
+                </a>
+                <div className="text-xs text-slate-500 mt-1">
+                  {a.domain} â {fmtDate(a.seendate)}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// âââââââââââââââââââââââââââââââââââââââââââââ
+// USFJ / OKINAWA PANEL
+// âââââââââââââââââââââââââââââââââââââââââââââ
+function UsfjOkinawaPanel({ scores, fredVals, fredSeries }) {
+  const fx = extractLatest(fredSeries?.DEXJPUS) || FALLBACK.DEXJPUS;
+  const totalSofa = SOFA_BASES.reduce((s,b)=>s+b.pop,0);
+  return (
+    <div className="space-y-6">
+      <SectionHeader title="USFJã»æ²ç¸åºå°ã»SOFAäººå£ããã«" sub="å¨æ¥ç±³è»ã»æ²ç¸åºå°ã»DFASçµ¦ä¸ã»DTMOä½å®æå½"/>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="panel-card rounded-xl p-4">
+          <div className="text-sm font-semibold text-slate-200 mb-3">â æ²ç¸SOFAäººå£ åè¨ {totalSofa.toLocaleString()}å</div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead><tr className="text-slate-400 border-b border-slate-700">
+                <th className="text-left py-1 pr-3">åºå°</th>
+                <th className="text-right pr-3">äººå£</th>
+                <th className="text-right">æ§ææ¯</th>
+              </tr></thead>
+              <tbody>
+                {SOFA_BASES.map(b=>(
+                  <tr key={b.name} className="border-b border-slate-800">
+                    <td className="py-1.5 pr-3 text-slate-200">{b.name}</td>
+                    <td className="text-right pr-3 text-blue-300 font-mono">{b.pop.toLocaleString()}</td>
+                    <td className="text-right text-slate-400 font-mono">{(b.pop/totalSofa*100).toFixed(1)}%</td>
+                  </tr>
+                ))}
+                <tr className="font-bold text-white">
+                  <td className="py-1.5 pr-3">åè¨</td>
+                  <td className="text-right pr-3 text-green-400">{totalSofa.toLocaleString()}</td>
+                  <td className="text-right text-green-400">100%</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div className="panel-card rounded-xl p-4">
+          <div className="text-sm font-semibold text-slate-200 mb-3">ð  OHA / BAH ä½å®æå½æ¦è¦</div>
+          <div className="space-y-2 text-xs">
+            <div className="flex justify-between border-b border-slate-800 py-1.5">
+              <span className="text-slate-400">OHAå¹³åï¼æ²ç¸ï¼</span>
+              <span className="text-blue-300 font-bold">${OHA_DATA.average.toLocaleString()}/æ</span>
+            </div>
+            <div className="flex justify-between border-b border-slate-800 py-1.5">
+              <span className="text-slate-400">OHAæä½ãæé«</span>
+              <span className="text-slate-200">${OHA_DATA.min}~â${OHA_DATA.max}</span>
+            </div>
+            <div className="flex justify-between border-b border-slate-800 py-1.5">
+              <span className="text-slate-400">OHAï¼åæç®æ å¸ @{fmtNum(fx,0)}å)</span>
+              <span className="text-yellow-300 font-bold">Â¥{Math.round(OHA_DATA.average*fx).toLocaleString()}/æ</span>
+            </div>
+            <div className="flex justify-between border-b border-slate-800 py-1.5">
+              <span className="text-slate-400">æç¥æ´æ°</span>
+              <span className="text-slate-400">{OHA_DATA.lastUpdate}</span>
+            </div>
+            <a href="https://www.travel.dod.mil/Allowances/Overseas-Housing-Allowance/" target="_blank"
+              className="block text-center text-blue-400 hover:text-blue-300 text-xs mt-2 border border-blue-800 rounded py-1">
+              â DTMO OHAå¬å¼ã³ã¤ãç©ç´ 
+            </a>
+          </div>
+        </div>
+      </div>
+      <div className="panel-card rounded-xl p-4">
+        <div className="text-sm font-semibold text-slate-200 mb-3">ð° DFAS è»äºº'¾ä¸*KîXø.>ûÈ##^[NûÈÂöFcà¢ÆFb6Æ74æÖSÒ&÷fW&fÆ÷r×ÖWFò#à¢ÇF&ÆR6Æ74æÖSÒ'rÖgVÆÂFWB×2#à¢ÇFVCãÇG"6Æ74æÖSÒ'FWB×6ÆFRÓC&÷&FW"Ö"&÷&FW"×6ÆFRÓs#à¢ÇF6Æ74æÖSÒ'FWBÖÆVgBÓ""ÓB#î¨î{I£Â÷Fà¢ÇF6Æ74æÖSÒ'FWB×&vB"ÓB#îYû®iÊÎ{ZcÂ÷Fà¢ÇF6Æ74æÖSÒ'FWB×&vB"ÓB#ä$ôôÂ÷Fà¢ÇF6Æ74æÖSÒ'FWB×&vB"ÓB#ä$3Â÷Fà¢ÇF6Æ74æÖSÒ'FWB×&vB"ÓB#îYþiÈÃÂ÷Fà¢ÇF6Æ74æÖSÒ'FWB×&vB#îXhnhù¾zé~YÂ÷Fà¢Â÷G#ãÂ÷FVCà¢ÇF&öGà¢´ö&¦V7BæVçG&W2ÔÅõæÖ·&æ²ÂÒÓâ¢ÇG"¶W×·&æ·Ò6Æ74æÖSÒ&&÷&FW"Ö"&÷&FW"×6ÆFRÓ÷fW#¦&r×6ÆFRÓó3#à¢ÇFB6Æ74æÖSÒ'Ó""ÓBFWB×6ÆFRÓ#föçBÖÖVFVÒ#ç·&æ·ÓÂ÷FCà¢ÇFB6Æ74æÖSÒ'FWB×&vB"ÓBFWB×6ÆFRÓ3föçBÖÖöæò#âG·æ&6RçFôÆö6ÆU7G&ærÓÂ÷FCà¢ÇFB6Æ74æÖSÒ'FWB×&vB"ÓBFWBÖ&ÇVRÓ3föçBÖÖöæò#âG·æ&öö¶ævçFôÆö6ÆU7G&ærÓÂ÷FCà¢ÇFB6Æ74æÖSÒ'FWB×&vB"ÓBFWB×6ÆFRÓ3föçBÖÖöæò#âG·æ&7ÓÂ÷FCà¢ÇFB6Æ74æÖSÒ'FWB×&vB"ÓBFWBÖw&VVâÓCföçBÖ&öÆBföçBÖÖöæò#âG·çF÷FÂçFôÆö6ÆU7G&ærÓÂ÷FCà¢ÇFB6Æ74æÖSÒ'FWB×&vBFWB×VÆÆ÷rÓ3föçBÖÖöæò#ì*W´ÖFç&÷VæBçF÷FÂ¦gçFôÆö6ÆU7G&ærÓÂ÷FCà¢Â÷G#à¢Ð¢Â÷F&öGà¢Â÷F&ÆSà¢ÂöFcà¢Ç6Æ74æÖSÒ'FWB×2FWB×6ÆFRÓS×BÓ"#î(²Xø.>X
+N8.Zéþ©¾8î{ZnKî8ôDd>XZÎ[Èþ8+^8*N888~z+®¨Þ8$$ôô8þZHi»N8^8(Î8(¾ZNY8Î8.8(®8î8~8#Â÷à¢ÂöFcà¢ÂöFcà¢°§Ð ¢òò)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H ¢òò%U4äU52Õ5BäTÀ¢òò)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H ¦gVæ7Föâ'W6æW74×7EæVÂ²66÷&W2Âg&VEfÇ2Âg&VE6W&W2Ò°¢6öç7BgÒWG&7DÆFW7Bg&VE6W&W3òäDU¥U2ÇÂdÄÄ$4²äDU¥U3°¢6öç7BRÒWG&7DÆFW7Bg&VE6W&W3òä4U3S2ÇÂdÄÄ$4²ä4U3S3°¢6öç7B7ÒWG&7Eõg&VE6W&W3òä5T54ÂÇÂdÄÄ$4²ä5T54Ã°¢6öç7B6VçBÒWG&7DÆFW7Bg&VE6W&W3òåTÔ54TåBÇÂdÄÄ$4²åTÔ54TåC° ¢gVæ7FöâvWD7Föâ66÷&RÂ7Föç2°¢b66÷&SãÓ&WGW&â7Föç5³Ó°¢b66÷&SãÓc&WGW&â7Föç5³Ó°¢b66÷&SãÓC&WGW&â7Föç5³%Ó°¢&WGW&â7Föç5³5Ó°¢Ð ¢6öç7BgE66÷&RÒ66÷&W3òæfÖÇG&VWÇÃS°¢6öç7BÖ·E66÷&RÒ66÷&W3òæö¶ævÖ&¶WGÇÃS°¢6öç7B'W66÷&RÒ66÷&W3òæ'WætçFVçGÇÃS° ¢6öç7BgD7Föç2Ò°¢²~)ÈR[Ë~k	~{i{i¢rÂ~X
+NK®8.KÙYË8.8(¢³8	ÃRRrÂ~K®KØÞ8988>8+8;Î8+ûÞXªhêZZrÂ~89~8:Î89þ8*.8:Nk.[Ë~XÉbuÒÀ¢²~)ÈRxûîx«n{jÞhÈrÂ~iz.ZÙKêjÎ8).Zè8(²rÂ~»©î8:Î89>8:^8;Î[Ë~XÉbrÂ~Zh®ZnZè[ø>8988>8+8;Î8+Nk"uÒÀ¢²~)ªûòhXîxÞ[^h²rÂ~KêjÎ8).hÚî8{Úî8ÒrÂ~8+>8+88iÈXÉbrÂ~8:®89N8;Î8+þ8;ÎXJ®~zÙbuÒÀ¢²	ùKBZèXº"rÂ~KêjÎ{jÞhÈiÈXJ®XXrÂ~89~8:Þ8:.hê~88(rÂ~Y»®Zé®+¾h¾y»N8ruÒÀ¢Ó°¢6öç7B÷W6æt7Föç2Ò°¢²~)ÈRzÞj[^[^h²rÂtôz+®¨Þ8;¾Zûî[ùÎKØþZè^hºXXRrÂ~[»®zø+¾XhÞh¾zÞ8(¢rÂtRÓ^Kº^K®8+þ8;Î8+.88>88uÒÀ¢²~)ÈRk©nX){i{i¢rÂ~X	9ÎYË«þiû¾{i{i¢rÂt÷W6æröff6^K¹^jyz+®¨ÒrÂ~XZ^[^[è^88:®8+88KÙÎhuÒÀ¢²~)ªûòjyZÙh²rÂtôZHi»N8:®8+8*þyº>ibrÂ~[þhþj8¾8(n>¾yJrÂ~8~yyK¾h¾y»N8ruÒÀ¢²	ùKBKi.XÎjÚ"rÂ~ikhþh©^8~XÎjÚ"rÂtô8;¾iKþzÙnX¹^Y	yº>ibrÂ~iz.ZÙxK»n{jÞhÈXJ®XXuÒÀ¢Ó°¢6öç7Bf$7Föç2Ò°¢²~)ÈRXÙKê[É^8ÞK®8"rÂ~888:¾hù¾zé~zK®hêZZrÂ~Zënixó>K«®88~8*>88®8;ÎKêjÎ[þi»NikrÂ~iÊ¾89^8*89þ8:®8;ÎÈh[Ë~XÉbuÒÀ¢²~)ÈRxûîx«n{jÞhÈrÂ~»©î8:88¾8:^8;Î[Ë~XÉbrÂ~{>¸ÞZënixþY	889~8:Þ8:"rÂu4å>»©îy®KúuÒÀ¢²~)ªûòhê~88([^h²rÂ~KêjÎhÚî8{Úî8ÒrÂ~8+>8+88X«xè~xÞibrÂ~8:®89N8;Î8+þ8;ÎY».8NëÎ8òuÒÀ¢²	ùKBKêjÎ{jÞhÈrÂ~X
+NK¾8.Y¹îòrÂ~¸nZê.8+>8+88iÈXÉbrÂ~8+þ8;Î8+.88>88h¾y»N8ruÒÀ¢Ó° ¢6öç7B&F$FFÒ°¢²7V&¦V7C¢uU4Bô¥rÂfÇVS¢6Æ×ÖFç&÷VæBS²gÓ3ó2ÃÃÒÀ¢²7V&¦V7C¢~{>Y»Þ8>yrÂfÇVS¢6Æ×ÖFç&÷VæBS²RÓ3"£BÃÃÒÀ¢²7V&¦V7C¢~k)n{N[.ZBrÂfÇVS¢Ö·E66÷&RÒÀ¢²7V&¦V7C¢~;Î+~hHþjË"rÂfÇVS¢'W66÷&RÒÀ¢²7V&¦V7C¢teDþûÞ8N*rÂfÇVS¢gE66÷&RÒÀ¢²7V&¦V7C¢~kh+¾KúÎhIòrÂfÇVS¢6Æ×ÖFç&÷VæB6VçBÃÃÒÀ¢Ó° ¢&WGW&â¢ÆFb6Æ74æÖSÒ'76R×Ób#à¢Å6V7FöäVFW"FFÆSÒ.89>8+88Þ8+[ÛûþXNZé®8988Þ8:²"7V#Ò.8+8+>8*.8¾Yû®8^8þK¨¾jZÞX^8*.8*þ8+~8:~8;>z®X¹^XNZé¢"óà¢ÆFb6Æ74æÖSÒ&w&Bw&BÖ6öÇ2ÓÆs¦w&BÖ6öÇ2Ó"vÓB#à¢ÆFb6Æ74æÖSÒ'æVÂÖ6&B&÷VæFVB×ÂÓB#à¢ÆFb6Æ74æÖSÒ'FWB×6ÒföçB×6VÖ&öÆBFWB×6ÆFRÓ#Ö"Ó2#î89>8+88Þ8+8*N8;>89>8*þ888:Î8;Î888;ÃÂöFcà¢Å&W7öç6fT6öçFæW"vGFÒ#R"VvC×³##Óà¢Å&F$6'BFF×·&F$FFÓà¢ÅöÆ$w&B7G&ö¶SÒ"3S&C""óà¢ÅöÆ$ævÆT2FF¶WÒ'7V&¦V7B"F6³×·¶föçE6¦S£ÆfÆÃ¢r3F6#w×Òóà¢Å&F"FF¶WÒ'fÇVR"7G&ö¶S×´4%Eô4ôÄõ%2æ66VçGÒfÆÃ×´4%Eô4ôÄõ%2æ66VçGÒfÆÄ÷6G×³ã7Òóà¢ÅFööÇF²ââæ6'EFööÇF7GÆRÒóà¢Âõ&F$6'Cà¢Âõ&W7öç6fT6öçFæW#à¢ÂöFcà¢ÆFb6Æ74æÖSÒ'æVÂÖ6&B&÷VæFVB×ÂÓB#à¢ÆFb6Æ74æÖSÒ'FWB×6ÒföçB×6VÖ&öÆBFWB×6ÆFRÓ#Ö"Ó2#îK¾hhÈ~j8+^89î8:®8;ÃÂöFcà¢ÆFb6Æ74æÖSÒ'76R×Ó"FWB×2#à¢µ°¢²Æ&VÃ¢uU4Bô¥rÂc¦*RG¶f×DçVÒgÃ"ÖÂæ÷FS¦gãCSò~XhnZè(i"k)n{N8+^8;Î89>8+8Î{>¸Þ8¾X.Zès¢~Xhn¹X+îY	rÒÀ¢²Æ&VÃ¢~{>Y»Þ[>YØ~i.{ZbrÂc¦BG¶f×DçVÒRÃ"Òö&Âæ÷FS¢~¸ÞK«®8;¾¸Þ[î8îXúþXznXnh[é~8¾
+>X¹RrÒÀ¢²Æ&VÃ¢t5XÞ[NjùBrÂc¦G¶f×DçVÒ7ÃÒVÂæ÷FS¦7ã3ò~¹8*N8;>89^8:Â(i"k)n{NX.ZèhIþ[Ë~XÉbs¢~8*N8;>89^8:ÎZèZé¢rÒÀ¢²Æ&VÃ¢~kh+¾^KúÎhIòrÂc¦G¶f×DçVÒ6VçBÃ×FÂæ÷FS§6VçCãsò~kh+¾hHþjË.[Ë~8Bs¢~kh+¾hXîxÞXÉnX+îY	rÒÀ¢²Æ&VÃ¢tô[>YØ~ûÈk)n{NûÈrÂc¦BG´ôôDDæfW&vWÒþiÈÂæ÷FS¦*RG´ÖFç&÷VæBôôDDæfW&vR¦gçFôÆö6ÆU7G&ærÞy»[Ù6ÒÀ¢ÒæÖ&÷sÓâ¢ÆFb¶W×·&÷ræÆ&VÇÒ6Æ74æÖSÒ&fÆWfÆWÖ6öÂ&÷&FW"Ö"&÷&FW"×6ÆFRÓÓãR#à¢ÆFb6Æ74æÖSÒ&fÆW§W7FgÖ&WGvVVâ#à¢Ç7â6Æ74æÖSÒ'FWB×6ÆFRÓC#ç·&÷ræÆ&VÇÓÂ÷7ãà¢Ç7â6Æ74æÖSÒ'FWBÖ&ÇVRÓ3föçBÖ&öÆBföçBÖÖöæò#ç·&÷rçgÓÂ÷7ãà¢ÂöFcà¢Ç7â6Æ74æÖSÒ'FWB×6ÆFRÓSFWB×2#ç·&÷rææ÷FWÓÂ÷7ãà¢ÂöFcà¢Ð¢ÂöFcà¢ÂöFcà¢ÂöFcà¢ÆFb6Æ74æÖSÒ&w&Bw&BÖ6öÇ2ÓÖC¦w&BÖ6öÇ2Ó2vÓB#à¢µ°¢²FFÆS¢	øËfÖÇG&VTö¶rÂ66÷&S¦gE66÷&RÂ7Föç3¦vWD7FöâgE66÷&RÆgD7Föç2ÂFW63¢s$BóDN8*8+>8;Î8;¾yJ>XÞyJ>[èÎ8;¾8989>8;Î8+~88>8+þ8;ÂrÒÀ¢²FFÆS¢	øú{>¸ÞY	8iÊ
+88þ8*n8+8;>8+rÂ66÷&S¦Ö·E66÷&RÂ7Föç3¦vWD7FöâÖ·E66÷&RÆ÷W6æt7Föç2ÂFW63¢~8n8(¾8î8;¾ªÞ~8;¾yjÚn8*8:®8*"ôZûî[ùÂrÒÀ¢²FFÆS¢	øÛÞûò;.9þ8;¾8+^8;Î89>8+8;¾[þZ;"rÂ66÷&S¦'W66÷&RÂ7Föç3¦vWD7Föâ'W66÷&RÆf$7Föç2ÂFW63¢~{>¸ÞZënixþY	8»©îZûî[ùÎ8+^8;Î89>8+rÒÀ¢ÒæÖ&£Óâ¢ÆFb¶W×¶&¢çFFÆWÒ6Æ74æÖS×¶æVÂÖ6&B&÷VæFVB×ÂÓB&÷&FW"G·66÷&T&r&¢ç66÷&RÖÓà¢ÆFb6Æ74æÖSÒ&fÆWFV×2×7F'B§W7FgÖ&WGvVVâÖ"Ó"#à¢ÆFcà¢ÆFb6Æ74æÖSÒ'FWB×6ÒföçBÖ&öÆBFWB×vFR#ç¶&¢çFFÆWÓÂöFcà¢ÆFb6Æ74æÖSÒ'FWB×2FWB×6ÆFRÓC×BÓãR#ç¶&¢æFW67ÓÂöFcà¢ÂöFcà¢ÆFb6Æ74æÖS×¶FWBÓ'ÂföçBÖ&Æ6²G·66÷&T6öÆ÷"&¢ç66÷&RÖÓç¶&¢ç66÷&WÓÂöFcà¢ÂöFcà¢ÆFb6Æ74æÖS×¶FWB×2föçBÖ&öÆBÖ"Ó2G·66÷&T6öÆ÷"&¢ç66÷&RÖÓç·66÷&TÆ&VÂ&¢ç66÷&RÓÂöFcà¢ÇVÂ6Æ74æÖSÒ'76R×Ó#à¢¶&¢æ7Föç2æÖÆÓâ¢ÆÆ¶W×¶Ò6Æ74æÖSÒ'FWB×2FWB×6ÆFRÓ3fÆWFV×2×7F'BvÓãR#à¢Ç7â6Æ74æÖSÒ'FWBÖ&ÇVRÓC×BÓãR#î(£Â÷7ãç¶Ð¢ÂöÆà¢Ð¢Â÷VÃà¢ÂöFcà¢Ð¢ÂöFcà¢ÂöFcà¢°§Ð ¢òò)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H ¢òò4õU$4RÔôäDõ"D$ÄP¢òò)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H ¦gVæ7Föâ6÷W&6TÖöæF÷%F&ÆR°¢6öç7B·6÷W&6W2Â6WE6÷W&6W5ÒÒW6U7FFRÓç°¢&WGW&âôdd4Åõ4õU$4U2æÖ3Óç°¢6öç7B66VBÒ66TvWE6÷W&6R2æB°¢&WGW&â²ââç2Âââæ66VBÂ6V6¶VDC¢66VCòæ6V6¶VDGÇÆçVÆÂÂæ÷FS¦66VCòææ÷FWÇÂrrÂ×7C¦66VCòæ×7GÇÂ~iÊ®^KêrÂ×÷'Fæ6S¦66VCòæ×÷'Fæ6WÇÃ2Ó°¢Ò°¢Ò°¢6öç7B¶VFDBÂ6WDVFDEÒÒW6U7FFRçVÆÂ°¢6öç7B¶æ÷FTçWBÂ6WDæ÷FTçWEÒÒW6U7FFRrr°¢6öç7B¶×7DçWBÂ6WD×7DçWEÒÒW6U7FFRrr° ¢gVæ7FöâæFÆT6V6²B°¢6WE6÷W&6W2&WcÓç&WbæÖ3Óç°¢b2æBÓÖB&WGW&â3°¢6öç7BWFFVBÒ²ââç2Â6V6¶VDC¢æWrFFRçFôÆö6ÆU7G&ærv¦Ô¥rÓ°¢66U6WE6÷W&6RBÂ²6V6¶VDC§WFFVBæ6V6¶VDBÂæ÷FS§WFFVBææ÷FRÂ×7C§WFFVBæ×7BÂ×÷'Fæ6S§WFFVBæ×÷'Fæ6RÒ°¢&WGW&âWFFVC°¢Ò°¢Ð ¢gVæ7FöâæFÆU6fRB°¢6WE6÷W&6W2&WcÓç&WbæÖ3Óç°¢b2æBÓÖB&WGW&â3°¢6öç7BWFFVBÒ²ââç2Âæ÷FS¦æ÷FTçWBÂ×7C¦×7DçWBÓ°¢66U6WE6÷W&6RBÂ²6V6¶VDC§2æ6V6¶VDBÂæ÷FS¦æ÷FTçWBÂ×7C¦×7DçWBÂ×÷'Fæ6S§2æ×÷'Fæ6RÒ°¢&WGW&âWFFVC°¢Ò°¢6WDVFDBçVÆÂ°¢Ð ¢6öç7B6D6öÆ÷'2Ò²U4d£¢v&ÇVRrÂ¶FVæ¢v&ÇVRrÂ÷W6æs¢vw&VVârÂDd3¢wVÆÆ÷rrÂEDÔó¢wVÆÆ÷rrÂÔôC¢v÷&ævRrÂFôC¢wW'ÆRrÂuvFR÷W6Rs¢w&VBrÓ° ¢&WGW&â¢ÆFb6Æ74æÖSÒ'76R×ÓB#à¢Å6V7FöäVFW"FFÆSÒ.XZÎ[Èþ8+Þ8;Î8+yº>in88n8;Î89n8:²"7V#Ò%U4d®8;´Dd>8;´EDÔþ8;´ÔôN8;´FôNXZÎ[Èþh8^Zk©8îZé®iÉþz+®¨Þzêyb"óà¢ÆFb6Æ74æÖSÒ'æVÂÖ6&B&÷VæFVB×Â÷fW&fÆ÷r×ÖWFò#à¢ÇF&ÆR6Æ74æÖSÒ'rÖgVÆÂFWB×2#à¢ÇFVB6Æ74æÖSÒ&&r×6ÆFRÓóS#à¢ÇG"6Æ74æÖSÒ'FWB×6ÆFRÓC#à¢ÇF6Æ74æÖSÒ'FWBÖÆVgBÓ2#î8+Þ8;Î8+YÓÂ÷Fà¢ÇF6Æ74æÖSÒ'FWBÖÆVgBÓ2#î8*¾88n8+N8:£Â÷Fà¢ÇF6Æ74æÖSÒ'FWBÖÆVgBÓ2#îiÈ{X.z+®¨ÓÂ÷Fà¢ÇF6Æ74æÖSÒ'FWBÖÆVgBÓ2"7GÆS×·¶ÖåvGF£#×Óî8:8:.8;¾K¨¾jZÞ[ÛûóÂ÷Fà¢ÇF6Æ74æÖSÒ'FWBÖÆVgBÓ2#îi8ÞKÙÃÂ÷Fà¢Â÷G#à¢Â÷FVCà¢ÇF&öGà¢·6÷W&6W2æÖ3Óâ¢ÇG"¶W×·2æGÒ6Æ74æÖSÒ&&÷&FW"×B&÷&FW"×6ÆFRÓ÷fW#¦&r×6ÆFRÓó##à¢ÇFB6Æ74æÖSÒ'Ó2#à¢Æ&Vc×·2çW&ÇÒF&vWCÒ%ö&Ææ²"&VÃÒ&æö÷VæW"æ÷&VfW'&W" ¢6Æ74æÖSÒ'FWBÖ&ÇVRÓC÷fW#§FWBÖ&ÇVRÓ3föçBÖÖVFVÒ#à¢·2æÆ&VÇÒ(ip¢Âöà¢Â÷FCà¢ÇFB6Æ74æÖSÒ'Ó2#ãÄ&FvRFWC×·2æ6FVv÷'Ò6öÆ÷#×¶6D6öÆ÷'5·2æ6FVv÷'×ÇÂvw&wÒóãÂ÷FCà¢ÇFB6Æ74æÖSÒ'Ó2FWB×6ÆFRÓCvFW76RÖæ÷w&#ç·2æ6V6¶VDGÇÂ~iÊ®z+®¨ÒwÓÂ÷FCà¢ÇFB6Æ74æÖSÒ'Ó2#à¢¶VFDCÓÓ×2æBò¢ÆFb6Æ74æÖSÒ'76R×Ó#à¢ÆçWB6Æ74æÖSÒ'rÖgVÆÂ&r×6ÆFRÓ&÷&FW"&÷&FW"×6ÆFRÓc&÷VæFVBÓ"ÓFWB×vFRFWB×2 ¢Æ6VöÆFW#Ò.8:8:""fÇVS×¶æ÷FTçWGÒöä6ævS×¶SÓç6WDæ÷FTçWBRçF&vWBçfÇVRÒóà¢ÆçWB6Æ74æÖSÒ'rÖgVÆÂ&r×6ÆFRÓ&÷&FW"&÷&FW"×6ÆFRÓc&÷VæFVBÓ"ÓFWB×vFRFWB×2 ¢Æ6VöÆFW#Ò.K¨¾jZÞ[Ûûò"fÇVS×¶×7DçWGÒöä6ævS×¶SÓç6WD×7DçWBRçF&vWBçfÇVRÒóà¢ÆFb6Æ74æÖSÒ&fÆWvÓ#à¢Æ'WGFöâöä6Æ6³×²ÓææFÆU6fR2æBÒ6Æ74æÖSÒ&&rÖw&VVâÓs÷fW#¦&rÖw&VVâÓcFWB×vFRÓ"ÓãR&÷VæFVBFWB×2#îKùÞZÙÂö'WGFöãà¢Æ'WGFöâöä6Æ6³×²Óç6WDVFDBçVÆÂÒ6Æ74æÖSÒ&&r×6ÆFRÓc÷fW#¦&r×6ÆFRÓSFWB×vFRÓ"ÓãR&÷VæFVBFWB×2#î8*Þ8:>8;>8+¾8:³Âö'WGFöãâÆ'WGFöâöä6Æ6³×²Óç6WDVFDBçVÆÂÒ6Æ74æÖSÒ&&r×6ÆFRÓc÷fW#¦&r×6ÆFRÓSFWB×vFRÓ"ÓãR&÷VæFVBFWB×2#î8*Þ8:>8;>8+¾8:³Âö'WGFöãà¢ÂöFcà¢ÂöFcà¢¢¢ÆFcà¢·2ææ÷FRbbÆFb6Æ74æÖSÒ'FWB×6ÆFRÓ3#ç·2ææ÷FWÓÂöFcçÐ¢·2æ×7Bbb2æ×7BÓÒ~iÊ®^KêrbbÆFb6Æ74æÖSÒ'FWB×VÆÆ÷rÓCFWB×2#ç·2æ×7GÓÂöFcçÐ¢ÂöFcà¢Ð¢Â÷FCà¢ÇFB6Æ74æÖSÒ'Ó2#à¢ÆFb6Æ74æÖSÒ&fÆWvÓ#à¢Æ'WGFöâöä6Æ6³×²ÓææFÆT6V6²2æBÒ6Æ74æÖSÒ&&rÖ&ÇVRÓ÷fW#¦&rÖ&ÇVRÓsFWB×vFRÓ"Ó&÷VæFVBFWB×2vFW76RÖæ÷w&#îz+®¨Þk8óÂö'WGFöãà¢Æ'WGFöâöä6Æ6³×²Óç²6WDVFDB2æB²6WDæ÷FTçWB2ææ÷FWÇÂrr²6WD×7DçWB2æ×7GÇÂrr²×Ð¢6Æ74æÖSÒ&&r×6ÆFRÓs÷fW#¦&r×6ÆFRÓcFWB×vFRÓ"Ó&÷VæFVBFWB×2#î8:8:#Âö'WGFöãà¢ÂöFcà¢Â÷FCà¢Â÷G#à¢Ð¢Â÷F&öGà¢Â÷F&ÆSà¢ÂöFcà¢ÂöFcà¢°§Ð ¢òò)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H ¢òòÔôåDÅåDTÄÄtTä4R$Uõ%@¢òò)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H ¦gVæ7FöâÖöçFÇçFVÆÆvVæ6U&W÷'B²66÷&W2Âg&VEfÇ2Âg&VE6W&W2ÂvFVÇE66÷&W2ÂvFVÇD'F6ÆW2Ò°¢6öç7BgÒWG&7DÆFW7Bg&VE6W&W3òäDU¥U2ÇÂdÄÄ$4²äDU¥U3°¢6öç7B7ÒWG&7Eõg&VE6W&W3òä5T54ÂÇÂdÄÄ$4²ä5T54Ã°¢6öç7BRÒWG&7DÆFW7Bg&VE6W&W3òä4U3S2ÇÂdÄÄ$4²ä4U3S3°¢6öç7BW"ÒWG&7DÆFW7Bg&VE6W&W3òåTå$DRÇÂdÄÄ$4²åTå$DS°¢6öç7BfbÒWG&7DÆFW7Bg&VE6W&W3òädTDeTäE2ÇÂdÄÄ$4²ädTDeTäE3°¢6öç7B6VçBÒWG&7DÆFW7Bg&VE6W&W3òåTÔ54TåBÇÂdÄÄ$4²åTÔ54TåC°¢6öç7Bæ÷rÒæWrFFR°¢6öç7B&W÷'DÖöçFÒG¶æ÷rævWDgVÆÅV"Þ[BG¶æ÷rævWDÖöçF³ÞiÈ°¢6öç7BgE66÷&RÒ66÷&W3òæfÖÇG&VWÇÃS°¢6öç7BÖ·E66÷&RÒ66÷&W3òæö¶ævÖ&¶WGÇÃS°¢6öç7BV7D6Ò66÷&W3òæV7D6ÇÃS° ¢6öç7B÷fW&ÆÄ§VFvÖVçBÒÖ·E66÷&SãÓsRbfgE66÷&SãÓsò~[Ë~k	~[^h²r ¢Ö·E66÷&SãÓcbfgE66÷&SãÓcò~{jÞhÈ8;¾zÞj[Rr ¢Ö·E66÷&SãÓSò~hXîxÞ{jÞhÈr¢~ZèXº.8;¾jyZÙh²s° ¢6öç7B÷fW&ÆÄ6öÆ÷"ÒÖ·E66÷&SãÓsSòwFWBÖw&VVâÓCs¦Ö·E66÷&SãÓcòwFWB×VÆÆ÷rÓCs¦Ö·E66÷&SãÓSòwFWBÖ÷&ævRÓCs¢wFWB×&VBÓCs° ¢&WGW&â¢ÆFb6Æ74æÖSÒ'76R×Ób#à¢Å6V7FöäVFW"FFÆS×¶iÈjÊ8*N8;>88n8:®8+8*~8;>8+8:Î89Þ8;Î88(	BG·&W÷'DÖöçFÖÒ7V#Ò.XZÎh¾88~8;Î8+þ8;´88~8;Î8+þ8;¾hê8:.88~8:¾8¾8(8(¾{XÎYknXNijÞiJþhûN8:Î89Þ8;Î88"óà¢ÆFb6Æ74æÖS×¶æVÂÖ6&B&÷VæFVB×ÂÓR&÷&FW"ÖÂÓBG¶Ö·E66÷&SãÓsòv&÷&FW"Öw&VVâÓSs¦Ö·E66÷&SãÓSSòv&÷&FW"×VÆÆ÷rÓSs¢v&÷&FW"×&VBÓSwÖÓà¢ÆFb6Æ74æÖSÒ&fÆWFV×2Ö6VçFW"vÓ2Ö"Ó2#à¢ÆFb6Æ74æÖSÒ'FWBÖÆr#ï	ù8³ÂöFcà¢ÆFcà¢ÆFb6Æ74æÖSÒ'FWB×6ÒföçBÖ&öÆBFWB×vFR#ãâK¸®iÈ8î{xþYXNijÓÂöFcà¢ÆFb6Æ74æÖS×¶FWB×ÂföçBÖ&Æ6²G¶÷fW&ÆÄ6öÆ÷'ÖÓç¶÷fW&ÆÄ§VFvÖVçGÓÂöFcà¢ÂöFcà¢ÆFb6Æ74æÖSÒ&ÖÂÖWFòfÆWvÓ2#à¢ÆFb6Æ74æÖS×¶FWBÖ6VçFW"G·66÷&T6öÆ÷"Ö·E66÷&RÖÓãÆFb6Æ74æÖSÒ'FWBÓ'ÂföçBÖ&Æ6²#ç¶Ö·E66÷&WÓÂöFcãÆFb6Æ74æÖSÒ'FWB×2#îk)n{N[.ZCÂöFcãÂöFcà¢ÆFb6Æ74æÖS×¶FWBÖ6VçFW"G·66÷&T6öÆ÷"gE66÷&RÖÓãÆFb6Æ74æÖSÒ'FWBÓ'ÂföçBÖ&Æ6²#ç¶gE66÷&WÓÂöFcãÆFb6Æ74æÖSÒ'FWB×2#äeDþûÞ8N*ÂöFcãÂöFcà¢ÂöFcà¢ÂöFcà¢Ç6Æ74æÖSÒ'FWB×2FWB×6ÆFRÓ3ÆVFær×&VÆVB#à¢k)n{N{>¸Þ[.ZNZèZé®hÈ~i[¶Ö·E66÷&WÞ8;´fÖÇG&VTö¶ûÞ8N*hÈ~i[¶gE66÷&WÞ8¾Yû®8^8Þ{xþYXNijÞ8 ¢U4Bô¥*W¶f×DçVÒgÃ"Þ8ç¶gãCSò~XhnZè8þk)n{N8+^8;Î89>8+8îX.ZèhIþ8).[Ë~XÉn8~8{>¸ÞZënixþ8îkh+¾hHþjË.8).[èÎh«Î8rs¢~kNk©n8Î{i{i¢wÞ8 ¢{>Y»Ô5¶f×DçVÒ7ÃÒ^8;¾[>YØ~i.{ZbG¶f×DçVÒRÃ"Òö.8î{XN8þY8(þ8¾8~8¢¶Sã33ò~Zéþ:®;Î+~X©¾8þ{jÞhÈ8;¾iKYhNX+îY	s¢~Zéþ:®8>y8¾k:hHþ8Î[ø^hwÞ8 ¢Â÷à¢ÂöFcà¢ÆFb6Æ74æÖSÒ&w&Bw&BÖ6öÇ2ÓÖC¦w&BÖ6öÇ2Ó"vÓB#à¢µ°¢°¢çVÓ£"Â6öã¢	ù8¢rÂFFÆS¢~{>Y»Þ89î8*þ8:Þ{XÎkrÀ¢6öçFVçC¦tEh[~{i{i®8$dnyXG¶f×DçVÒfbÃ"Ò^8~yèÞ[É^8Þ{z8(8þ{i{i®KÞ8#[NX+^XY¹î8(¢G¶f×DçVÒWG&7DÆFW7Bg&VE6W&W3òäDu3ÇÄdÄÄ$4²äDu3Ã"Ò^8.kh+¾^KúÎhIòG¶f×DçVÒ6VçBÃ×NûÈG·6VçCãÓsò~þZ[Òs¢~k:hHþkNk©bwÞûÈ8.{>Y»Þ{XÎk8î[©^Z^8^8ÎYÊiz^{>¸Þ88îK¨zé~XÞXn8).K¾iJþ88& ¢ÒÀ¢°¢çVÓ£2Â6öã¢	ù+rÂFFÆS¢~{>Y»Þ8*N8;>89^8:Î8;¾8>y8;¾¸~yJrÀ¢6öçFVçC¦5XÞ[NjùBG¶f×DçVÒ7ÃÒ^ûÈG¶7ã3ò~¹kNk©bs¦7ã#ò~yºîjhRs¢~yºîjXhRwÞûÈ8.[>YØ~i.{ZbBG¶f×DçVÒRÃ"Òö.8.ZKjZÞxèrG¶f×DçVÒW"ÃÒ^ûÈG·W#ÃBãSò~þZ[Òs¢~8(N8(NK®irwÞûÈ8.¹8*N8;>89^8:Î8þ{>iÊÎY»ÞyIþkK¾8+>8+888).h«Î8~K®8.8k)n{N8~8îyIþkK¾8+>8+888).y»Zûîy¨N8¾X.Zè8¾h¾8¾8(¾X«iéÎ8.8(®8& ¢ÒÀ¢°¢çVÓ£BÂ6öã¢	ù+rÂFFÆS¢~x+®i»òU4Bô¥8KêjÎ[ø>ybrÀ¢6öçFVçC¦U4Bô¥*RG¶f×DçVÒgÃ"Þ8"G¶gãÓSò~[Ë~8NXhnZèy+Z(>ûÉ®{>¸ÞZënixþ8¾88þk)n{N8+^8;Î89>8+8þX.ZèhIþ8Î[Ë~8þ8kh+¾hHþjË.8ÎY	K®8$fÖÇG&VTö¶8îKêjÎ8þXhn[»®8n8~{jÞhÈ8~8n8n8888:¾hù¾zé~8~8îX.ZèhIþ8).»©î89î8;Î8+88n8*>8;>8+8¾kK¾yJ88(®88î8þ8#s¦gãÓCò~XhnZèX+îY	ûÉ®KêjÎz»nK¨X©¾8.8(®8.xûîx«nKêjÎ{jÞhÈhêZZ8"s¢~XhnZèhh^8þZé®y¨N8.888:¾[»®8n8+>8+88hHþÙ8¾k:hHþ8"wÖ ¢ÒÀ¢°¢çVÓ£RÂ6öã¢	ùºûòrÂFFÆS¢~{>Y»Þ.K¨zé~8;¾¸Þ{zhrÀ¢6öçFVçC¦Y»Þ.K¨zé~8+8+>8*"G·66÷&W3òæFVfVç6T'VFvWGÇÂrÒÒwÞ8.888:8;>89~iKþjK¾8~8îY»Þ.+¾Z)~XªX+îY	8.8*N8;>88ZJ®[>kH¾xÞinikyÞ8Î{i{i®8.YÊiz^{>¸Ô¤dûÈ{[Y¸ÞXûKºN:ûÈXÉn8Î.[^KÞ8~8k)n{N8îXûKºNjþ;Þ8;¾X[^z¹jþ;Þ8Î[Ë~XÉnikY	8.{>¸ÞXÞX)8î:®y¨NY	K®8Î[.ZN8îZèZé®8¾ZøNKî8& ¢ÒÀ¢°¢çVÓ£bÂ6öã¢	øúòrÂFFÆS¢uU4d®8;¾k)n{N8;¾Yh¾{HÒX¹^Y	rÀ¢6öçFVçC¦k)n{E4ôdK«®Xú3S2ÃsSNYÞ8.Yû®YËxÞh[ªn8+8+>8*"G·66÷&W3òæö¶æv&6WÇÂrÒÒwÞ8.Yh¾{HÞYû®YËbÓ#.XÞX){i{i®8.iîZJi>z{¾ÞûÈë®xîXúNûÈ8þ[z^K¨¾{i{i®KÞ8.k[~X[^¨®8+8*.8:z{¾º.[èÎ8(.Yh¾{HÞ8;¾8*Þ8:>8;>89~89^8*8+8+þ8;Îjþ;Þ8þ{jÞhÈ8%U4d¢¤dXÉn8¾8(8(®XûKºN:jþ;Þ8Î[Ë~XÉn8^8(Î8¹{Zn[:[N8îZ)~Xª8ÎiÉþ[è^8^8(Î8(¾8& ¢ÒÀ¢°¢çVÓ£rÂ6öã¢	øúrÂFFÆS¢tôò$ò÷W6ærX¹^Y	rÀ¢6öçFVçC¦ô[>YØrBG´ôôDDæfW&vWÒþiÈûÈ*RG´ÖFç&÷VæBôôDDæfW&vR¦gçFôÆö6ÆU7G&ærÞy»[Ù>ûÈ8.XhnZè8¾8(8(Xhn[»®8nZën8>K®8ÎZéþ:®hºZJ~8$RÓN8	ÄòÓ>8î8~8îZI®jy8®¨î{I®8¾Zûî[ùÎ8~8þKØþZè^89Þ8;Î8889^8*8:®8*®8ÎiÈX«8.8n8(¾8î[.8;¾ªÞ~iÙ8;¾yjÚnyK®8*8:®8*.8îiÊ
+KØþZè^h¾y®8ôô8:Î8;>8+8i[NYy¨N8& ¢ÒÀ¢°¢çVÓ£Â6öã¢	øÈòrÂFFÆS¢~Xûkîk[~[:8;¾KÞY»Þ8;¾XÉ~iÉÞêî8:®8+8*òrÀ¢6öçFVçC¦iÛ8*.8+8*.{x®[Ë^hÈ~i[G¶V7D6Þ8.Xûkîk[~[:8:®8+8*òG·66÷&W3òçFvå&6·ÇÂrÒÒwÞ8"G¶V7D6ãsò~¹8N{x®[Ë^kNk©n8Îk)n{N8îXÞik[^h¾KêX
+N8).¹8(8(¾8.{>¸Þ8þ>{{N8;¾kÉN{ù.¾[ªnZ)~Xª8¾8(8(®8¸Þ[î8;¾Zënixþ8îk)n{Nk¹îYÊiÉþi>8Î[~iÉþXÉn88(¾Xúþ;Þh
+~8"s¦V7D6ãSò~KÞz¾[ªn8î{x®[Ë^8.xûîx«n{jÞhÈ8"s¢~{x®[Ë^KØîK¾X+îY	8.k)n{NXÞX)X¹^Y	8).k:in8"wÞ89þ8*.8+~8:>8*N89î8;Îyn¹nûÉ®{>KÞZJ~Y»Þz»nK¨8îjx¾
+8¾8(k)n{N8îzÊÎKX~[;n{y®K®8~8îhnyZ^y¨NKêX
+N8þ¹jÚ.8î8(®8& ¢ÒÀ¢°¢çVÓ£Â6öã¢	ù9¢rÂFFÆS¢~89þ8*.8+~8:>8*N89î8;Îyn¹n898;Î8+z>xrÀ¢6öçFVçC¦iK¾i(>y¨N8:®8*.8:®8+®8:ûÉ®{>KÞ8þYËYùþh~j8).z»nK¨88(¾8.{>Y»Þ8þKÞY»Þ8î8*.8+8*.h~j8).¾jÚ.88(¾8þ8(8k)n{N8).Y
+¾8(zÊÎKX~[;n{y®88îXÞik[^h¾8).[Ë~XÉn88(¾jx¾
+y¨N8*N8;>8+¾8;>88^8*>89n8Î8.8(¾8.k)n{N8î{>¸Þ8þ8Îi*N8Þ8~8þ8®8þ8ÎXniZ>8;¾jþX¹^8;¾{[Y8ÞXÉn8& ¢ÒÀ¢ÒæÖ6V3Óâ¢ÆFb¶W×·6V2æçV×Ò6Æ74æÖSÒ'æVÂÖ6&B&÷VæFVB×ÂÓB#à¢ÆFb6Æ74æÖSÒ&fÆWFV×2Ö6VçFW"vÓ"Ö"Ó"#à¢Ç7â6Æ74æÖSÒ'FWBÖ&6R#ç·6V2æ6öçÓÂ÷7ãà¢ÆFb6Æ74æÖSÒ'FWB×2föçBÖ&öÆBFWB×6ÆFRÓ##ç·6V2æçV×Òâ·6V2çFFÆWÓÂöFcà¢ÂöFcà¢Ç6Æ74æÖSÒ'FWB×2FWB×6ÆFRÓ3ÆVFær×&VÆVB#ç·6V2æ6öçFVçGÓÂ÷à¢ÂöFcà¢Ð¢ÂöFcà¢ÆFb6Æ74æÖSÒ'æVÂÖ6&B&÷VæFVB×ÂÓR#à¢ÆFb6Æ74æÖSÒ'FWB×6ÒföçBÖ&öÆBFWB×VÆÆ÷rÓ3Ö"Ó2#ã"âK¸®iÈ8îhêZZ8*.8*þ8+~8:~8;3ÂöFcà¢ÆFb6Æ74æÖSÒ&w&Bw&BÖ6öÇ2ÓÖC¦w&BÖ6öÇ2Ó2vÓB#à¢µ°¢²&£¢	øËfÖÇG&VTö¶rÂ66÷&S¦gE66÷&RÂFV×3¥°¢gE66÷&SãÓsò~»©å4å>[¨>Y®+¾8)#8	Ã#^Z)~Òs¢~»©î8+>8;>88n8;>88N8).{i{i®y®KúrÀ¢gE66÷&SãÓsò~89~8:Î89þ8*.8:8988>8+8;Î8+¯Rú0¯gOó
+ß
+ÿð§
+K¢þ÷*è^¶cG
+Çó
+ãúóÚ·2°(+¦ïZÃRC
+Ç
+»º'þ¢¢ÓÆ
+K¢.Ç¢ª{òß2X°(½½±½e±Ã¢.Ç¢ª{³Oó>;¦n
+·ÏkóÌ°(uô°(ì¥èèÂ~>r£¦?
+
+ãÏ
+À°Í½Ééµ­ÑM½É°¥ÑµÌél(µ­ÑM½ÉøôØÔü
+/ûï¢ª·¢Âßg¢srÃ»>ûrÃ¢ªÿ~ï
+KºZôèg¢srÃ«
+ç#ös"C£Ç>;¦n°(!½ÕÍ¥¹=¥ã»îWcë¢ª7
+w
+Ï#
+Ks¢¢8°(Æú«
+ç#ös"C¾ò!´Óq<´Ë¾û¢Æ=!í=!}Q¹µ¥¹÷pí=!}Q¹µá÷³Ï
+ã¾ò%°(îë¾'¢Êïí=!³Ï
+ã»¦§B#
+K7¢¦º\°(uô°(ì¥èèÂ~6÷¾â<¦Ë¦ï
+×óO
+ä°Í½ÉéÍ½ÉÌü¹Õå¥¹%¹Ñ¹ÑñðÔÀ°¥ÑµÌél(àøÄÐàý'¯>oº_/ó¢£ë:££¾ò Ä÷
+í5Ñ ¹É½Õ¹¡à¥÷¢£ë¾ò%è¢.Ç¢ª{/ó
+KrZÃ2X°(¦Çr¯W
+«óBGG
+ï#/ós¢¢8°(ÆÏ¢î7ºÛ^?
+Ï/
+M9Oã»¢.Ç¢ª{*W¢ÿòß2X°(6cú¢/nÓ_¾ò!
+A'â+b"
+Kúó¯>7b¾ò$°(uô°(t¹µÀ¡¥èôø (ñ¥Ø­äõí¥è¹¥éô±ÍÍ9µõíÉ½Õ¹µá°À´Ì½ÉÈíÍ½É	¡¥è¹Í½É¥õôø(ñ¥Ø±ÍÍ9µõíÑáÐµáÌ½¹Ðµ½±µ´ÈíÍ½É
+½±½È¡¥è¹Í½É¥õôùí¥è¹¥éômíÍ½É1°¡¥è¹Í½É¥õtð½¥Øø(ñÕ°±ÍÍ9µôÍÁµä´Äø(í¥è¹¥ÑµÌ¹µÀ ¡¥Ñ´±¤¤ôø (ñ±¤­äõí¥ô±ÍÍ9µôÑáÐµáÌÑáÐµÍ±Ñ´ÌÀÀ±à¥ÑµÌµÍÑÉÐÀ´Ä¸Ôø(ñÍÁ¸±ÍÍ9µôÑáÐµ±Õ´ÐÀÀµÐ´À¸ÔÍ¡É¥¹¬´Àûèð½ÍÁ¸ùí¥Ñµô(ð½±¤ø(¤¥ô(ð½Õ°ø(ð½¥Øø(¤¥ô(ð½¥Øø(ð½¥Øø(ñ¥Ø±ÍÍ9µôÁ¹°µÉÉ½Õ¹µá°À´Ð½ÉÈ½ÉÈµå±±½Ü´äÀÀ¼ÌÀµå±±½Ü´äÔÀ¼ÄÀø(ñÀ±ÍÍ9µôÑáÐµáÌÑáÐµå±±½Ü´ØÀÀø(jr³
+ßsó'¿³¦Z/¢ÎZgíA'ó
+ÿï/ó
+çsÒï:£¢¢#¯
+KR£#
+°nëºk¢Êï¢/nÓ\t°(tì(½¹ÍÐ¡½ÕÍ¥¹Ñ¥½¹Ìôl(lr¦7×ÆW¦Z,°=!ë¢ª7ï¾ûþsö?º.°îë¾'¢Êï7¢/¦7
+(°´×îâ+
+ÿó
+Ë t°(lrê[
+gÚgÚh°g¢srÃ¢ªÿ~ïÚgÚh°!½ÕÍ¥¹=¥îWcë¢ª4°Æú«
+ç#ös"@t°(lj¾â<c¶C¢,°=!'nÓ«
+ç
+¿n¢X°Â?¢?¢/
+'¢¦¦¢O¦/R °¢Î¦G¢¢#Rï¢/nÓ\t°(lÂ~RÐâfs¶°ZÃ¢?*W¢Îs¶°=!ïRÿ¶[.WBGn¢X°^¶c&§îÛÚ·2« t°(tì(½¹ÍÐÑ¥½¹Ìôl(lr6cúòW7â+H°'¯>oº_¢£ë:£ °ºÛ^<Ïêë
++óúóâ¿nÓZÀ°¦Çr¯W
+«ó¦r¢òß2Xt°(lr>û*ÛÚ·2°¢.Ç¢ª{/óòß2X°ÆÏ¢î7ºÛ^?BGG_·°M9O¢.Ç¢ª{fëþt°(lj¾â<:#
+ÆW¦Z,°úó6»#ö»4°
+Ï
+ç#*ç:¦7¢X°«Só
+ÿónË¢úóüt°(lÂ~RÐúóÚ·2°â/Kn{¦ü°¦nº
+Ï
+ç#r¦§2X°
+ÿó
+Ë#¢/nÓ\t°(tì((½¹ÍÐÉÉÑôl(ìÍÕ©ÐèUM½)Ad°Ù±Õè±µÀ¡5Ñ ¹É½Õ¹ ÔÀ¬¡à´ÄÌÀ¤¼Ì¤°À°ÄÀÀ¤ô°(ìÍÕ©ÐèÆÏn÷¢Î¦D°Ù±Õè±µÀ¡5Ñ ¹É½Õ¹ ÔÀ¬¡¡´ÌÈ¤¨Ð¤°À°ÄÀÀ¤ô°(ìÍÕ©ÐèÊ[ââÐ°Ù±Õèµ­ÑM½Éô°(ìÍÕ©Ðè¢Îó¢Êß?²È°Ù±ÕèÕåM½Éô°(ìÍÕ©ÐèQ?¢þ÷¦ °Ù±ÕèÑM½Éô°(ìÍÕ©ÐèÚ#¢Êïþ¦ó|°Ù±Õè±µÀ¡5Ñ ¹É½Õ¹¡Í¹Ð¤°À°ÄÀÀ¤ô°(tì((ÉÑÕÉ¸ (ñ¥Ø±ÍÍ9µôÍÁµä´Øø(ñMÑ¥½¹!ÈÑ¥Ñ±ôO
+ã7
+çöÇ¦~ÿ"ºkG7¬ÍÕô
+ç
+Ï
+¯~ë?ê/·"
+
+¿
+ßÏ¢«.W"ºh¼ø(ñ¥Ø±ÍÍ9µôÉ¥É¥µ½±Ì´Ä±éÉ¥µ½±Ì´ÈÀ´Ðø(ñ¥Ø±ÍÍ9µôÁ¹°µÉÉ½Õ¹µá°À´Ðø(ñ¥Ø±ÍÍ9µôÑáÐµÍ´½¹ÐµÍµ¥½±ÑáÐµÍ±Ñ´ÈÀÀµ´ÌûO
+ã7
+ç
+ÏO
+¿ ³óðð½¥Øø(ñIÍÁ½¹Í¥Ù
+½¹Ñ¥¹ÈÝ¥Ñ ôÄÀÀ¡¥¡ÐõìÈÈÁôø(ñIÉ
+¡ÉÐÑõíÉÉÑôø(ñA½±ÉÉ¥ÍÑÉ½­ôÅÉÐÈ¼ø(ñA½±É¹±á¥ÌÑ-äôÍÕ©ÐÑ¥¬õíí½¹ÑM¥éèÄÀ±¥±°èäÑÍàõô¼ø(ñIÈÑ-äôÙ±ÕÍÑÉ½­õí
+!IQ}
+=1=IL¹¹Ñô¥±°õí
+!IQ}
+=1=IL¹¹Ñô¥±±=Á¥ÑäõìÀ¸Íô¼ø(ñQ½½±Ñ¥Àì¸¸¹¡ÉÑQ½½±Ñ¥ÁMÑå± ¥ô¼ø(ð½IÉ
+¡ÉÐø(ð½IÍÁ½¹Í¥Ù
+½¹Ñ¥¹Èø(ð½¥Øø)ô±à ´ÐÀ¥ÑµÌµ¹ÑÈ©ÕÍÑ¥äµ¹ÑÈÑáÐµÍ±Ñ´ÔÀÀÑáÐµáÌùí±½¥¹ü¢ª·ÿ¢úóÿâ´¸¸¸èó
+ÿ«\ôð½¥Øøè (ñIÍÁ½¹Í¥Ù
+½¹Ñ¥¹ÈÝ¥Ñ ôÄÀÀ¡¥¡ÐõìÄØÁôø(ñÉ
+¡ÉÐÑõíáÑôø(ñÌøñ±¥¹ÉÉ¥¹Ð¥ôáÉàÄôÀäÄôÀàÈôÀäÈôÄø(ñÍÑ½À½ÍÐôÔÍÑ½Á
+½±½Èõí
+!IQ}
+=1=IL¹ÁÉ¥µÉåôÍÑ½Á=Á¥ÑäõìÀ¸Íô¼ø(ñÍÑ½À½ÍÐôäÔÍÑ½Á
+½±½Èõí
+!IQ}
+=1=IL¹ÁÉ¥µÉåôÍÑ½Á=Á¥ÑäõìÁô¼ø(ð½±¥¹ÉÉ¥¹Ðøð½Ìø(ñ
+ÉÑÍ¥¹É¥ÍÑÉ½­Í¡ÉÉäôÌÌÍÑÉ½­ôÅÉÐÈ¼ø(ñaá¥ÌÑ-äôÑÑ¥¬õíí½¹ÑM¥éèä±¥±°èØÐÜÐáõô¥¹ÑÉÙ°ôÁÉÍÉÙMÑÉÑ¹¼ø(ñeá¥Ì½µ¥¸õílÕÑ¼°ÕÑ¼uôÑ¥¬õíí½¹ÑM¥éèä±¥±°èØÐÜÐáõôÝ¥Ñ õìÐÕôÑ¥­½ÉµÑÑÈõíØôù
+íÙõô¼ø(ñQ½½±Ñ¥Àì¸¸¹¡ÉÑQ½½±Ñ¥ÁMÑå± ¥ô½ÉµÑÑÈõíØôùm
+íÙõ°UM½)Aduô¼ø(ñÉÑåÁôµ½¹½Ñ½¹Ñ-äôÙ±ÕÍÑÉ½­õí
+!IQ}
+=1=IL¹ÁÉ¥µÉåô¥±°ôÕÉ° áÉ¤ÍÑÉ½­]¥Ñ õìÉô½Ðõí±Íô¼ø(ð½É
+¡ÉÐø(ð½IÍÁ½¹Í¥Ù
+½¹Ñ¥¹Èø(¥ô(ð½¥Øø(ñ¥Ø±ÍÍ9µôÁ¹°µÉÉ½Õ¹µá°À´Ðø(ñ¥Ø±ÍÍ9µôÑáÐµáÌ½¹ÐµÍµ¥½±ÑáÐµÍ±Ñ´ÌÀÀµ´Ìù
+A'&7æÓ¾S:£ìð½¥Øø(ìÁ¥Ñ¹±¹Ñ üñ¥Ø±ÍÍ9µô±à ´ÐÀ¥ÑµÌµ¹ÑÈ©ÕÍÑ¥äµ¹ÑÈÑáÐµÍ±Ñ´ÔÀÀÑáÐµáÌùí±½¥¹ü¢ª·ÿ¢úóÿâ´¸¸¸èó
+ÿ«\ôð½¥Øøè (ñIÍÁ½¹Í¥Ù
+½¹Ñ¥¹ÈÝ¥Ñ ôÄÀÀ¡¥¡ÐõìÄØÁôø(ñÉ
+¡ÉÐÑõíÁ¥Ñôø(ñÌøñ±¥¹ÉÉ¥¹Ð¥ôÁ¥ÉàÄôÀäÄôÀàÈôÀäÈôÄø(ñÍÑ½À½ÍÐôÔÍÑ½Á
+½±½Èõí
+!IQ}
+=1=IL¹¹ÉôÍÑ½Á=Á¥ÑäõìÀ¸Íô¼ø(ñÍÑ½À½ÍÐôäÔÍÑ½Á
+½±½Èõí
+!IQ}
+=1=IL¹¹ÉôÍÑ½Á=Á¥ÑäõìÁô¼ø(ð½±¥¹ÉÉ¥¹Ðøð½Ìø(ñ
+ÉÑÍ¥¹É¥ÍÑÉ½­Í¡ÉÉäôÌÌÍÑÉ½­ôÅÉÐÈ¼ø(ñaá¥ÌÑ-äôÑÑ¥¬õíí½¹ÑM¥éèä±¥±°èØÐÜÐáõô¥¹ÑÉÙ°ôÁÉÍÉÙMÑÉÑ¹¼ø(ñeá¥ÌÑ¥¬õíí½¹ÑM¥éèä±¥±°èØÐÜÐáõôÝ¥Ñ õìÌÕôÑ¥­½ÉµÑÑÈõíØôùíÙôô¼ø(ñIÉ¹1¥¹äõìÉôÍÑÉ½­ôÄÔÍÑÉ½­Í¡ÉÉäôÌÌ±°õííÙ±Õèn»¢dÈ±¥±°èÄÔ±½¹ÑM¥éèåõô¼ø(ñQ½½±Ñ¥Àì¸¸¹¡ÉÑQ½½±Ñ¥ÁMÑå± ¥ô½ÉµÑÑÈõíØôùmíÙô°
+A$e½duô¼ø(ñÉÑåÁôµ½¹½Ñ½¹Ñ-äôÙ±ÕÍÑÉ½­õí
+!IQ}
+=1=IL¹¹Éô¥±°ôÕÉ° Á¥É¤ÍÑÉ½­]¥Ñ õìÉô½Ðõí±Íô¼ø(ð½É
+¡ÉÐø(ð½IÍÁ½¹Í¥Ù
+½¹Ñ¥¹Èø(¥ô(ð½¥Øø(ñ¥Ø±ÍÍ9µôÁ¹°µÉÉ½Õ¹µá°À´Ðø(ñ¥Ø±ÍÍ9µôÑáÐµáÌ½¹ÐµÍµ¥½±ÑáÐµÍ±Ñ´ÌÀÀµ´ÌûÇ·::£ìð½¥Øø(ìÕÉÑ¹±¹Ñ üñ¥Ø±ÍÍ9µô±à ´ÐÀ¥ÑµÌµ¹ÑÈ©ÕÍÑ¥äµ¹ÑÈÑáÐµÍ±Ñ´ÔÀÀÑáÐµáÌùí±½¥¹ü¢ª·ÿ¢úóÿâ´¸¸¸èó
+ÿ«\ôð½¥Øøè (ñIÍÁ½¹Í¥Ù
+½¹Ñ¥¹ÈÝ¥Ñ ôÄÀÀ¡¥¡ÐõìÄØÁôø(ñ1¥¹
+¡ÉÐÑõíÕÉÑôø(ñ
+ÉÑÍ¥¹É¥ÍÑÉ½­Í¡ÉÉäôÌÌÍÑÉ½­ôÅÉÐÈ¼ø(ñaá¥ÌÑ-äôÑÑ¥¬õíí½¹ÑM¥éèä±¥±°èØÐÜÐáõô¥¹ÑÉÙ°ôÁÉÍÉÙMÑÉÑ¹¼ø(ñeá¥Ì½µ¥¸õílÕÑ¼°ÕÑ¼uôÑ¥¬õíí½¹ÑM¥éèä±¥±°èØÐÜÐáõôÝ¥Ñ õìÌÕôÑ¥­½ÉµÑÑÈõíØôùíÙôô¼ø(ñQ½½±Ñ¥Àì¸¸¹¡ÉÑQ½½±Ñ¥ÁMÑå± ¥ô½ÉµÑÑÈõíØôùmíÙô°Ç·:uô¼ø(ñ1¥¹ÑåÁôµ½¹½Ñ½¹Ñ-äôÙ±ÕÍÑÉ½­õí
+!IQ}
+=1=IL¹¹ÑôÍÑÉ½­]¥Ñ õìÉô½Ðõí±Íô¼ø(ð½1¥¹
+¡ÉÐø(ð½IÍÁ½¹Í¥Ù
+½¹Ñ¥¹Èø(¥ô(ð½¥Øø(ñ¥Ø±ÍÍ9µôÁ¹°µÉÉ½Õ¹µá°À´Ðø(ñ¥Ø±ÍÍ9µôÑáÐµáÌ½¹ÐµÍµ¥½±ÑáÐµÍ±Ñ´ÌÀÀµ´ÌûrÃRÿ¶
+ç
+Ï
+¾S¢òð½¥Øø(ì±Ñ	ÉÑ¹±¹Ñ üñ¥Ø±ÍÍ9µô±à ´ÐÀ¥ÑµÌµ¹ÑÈ©ÕÍÑ¥äµ¹ÑÈÑáÐµÍ±Ñ´ÔÀÀÑáÐµáÌùí±½¥¹ü¢ª·ÿ¢úóÿâ´¸¸¸è
+ç
+Ï
+«\ôð½¥Øøè (ñIÍÁ½¹Í¥Ù
+½¹Ñ¥¹ÈÝ¥Ñ ôÄÀÀ¡¥¡ÐõìÄØÁôø(ñ	É
+¡ÉÐÑõí±Ñ	ÉÑô±å½ÕÐôÙÉÑ¥°ø(ñ
+ÉÑÍ¥¹É¥ÍÑÉ½­Í¡ÉÉäôÌÌÍÑÉ½­ôÅÉÐÈ¡½É¥é½¹Ñ°õí±Íô¼ø(ñaá¥ÌÑåÁô¹ÕµÈ½µ¥¸õílÀ°ÄÀÁuôÑ¥¬õíí½¹ÑM¥éèä±¥±°èØÐÜÐáõô¼ø(ñeá¥ÌÑåÁôÑ½ÉäÑ-äô¹µÑ¥¬õíí½¹ÑM¥éèä±¥±°èäÑÍàõôÝ¥Ñ õìÔÕô¼ø(ñQ½½±Ñ¥Àì¸¸¹¡ÉÑQ½½±Ñ¥ÁMÑå± ¥ô½ÉµÑÑÈõíØôùmíÙô¼ÄÀÁ°
+ç
+Ï
+uô¼ø(ñ	ÈÑ-äôÍ½É¥±°õí
+!IQ}
+=1=IL¹ÁÉ¥µÉåôÉ¥ÕÌõílÀ°Ð°Ð°Áuô¼ø(ð½	É
+¡ÉÐø(ð½IÍÁ½¹Í¥Ù
+½¹Ñ¥¹Èø(¥ô(ð½¥Øø(ð½¥Øø(ð½¥Øø(¤ì)ô((¼¼RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR (¼¼5%8A@(¼¼RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR )Õ¹Ñ¥½¸ÁÀ ¤ì(½¹ÍÐmÑ°ÍÑQtôÕÍMÑÑ ½ÙÉÙ¥Ü¤ì(½¹ÍÐm±½¥¹°ÍÑ1½¥¹tôÕÍMÑÑ¡±Í¤ì(½¹ÍÐmÉMÉ¥Ì°ÍÑÉMÉ¥ÍtôÕÍMÑÑ¡¹Õ±°¤ì(½¹ÍÐmÉ1¥Ù°ÍÑÉ1¥ÙtôÕÍMÑÑ À¤ì(½¹ÍÐm±ÑM½ÉÌ°ÍÑ±ÑM½ÉÍtôÕÍMÑÑ¡¹Õ±°¤ì(½¹ÍÐm±ÑÉÑ¥±Ì°ÍÑ±ÑÉÑ¥±ÍtôÕÍMÑÑ¡¹Õ±°¤ì(½¹ÍÐm±Ñ1¥Ù°ÍÑ±Ñ1¥ÙtôÕÍMÑÑ À¤ì(½¹ÍÐm±ÑQ¥µÍÁ¸°ÍÑ±ÑQ¥µÍÁ¹tôÕÍMÑÑ ÌÁ¤ì(½¹ÍÐmÍ½ÉÌ°ÍÑM½ÉÍtôÕÍMÑÑ¡¹Õ±°¤ì(½¹ÍÐm±ÍÑUÁÑ°ÍÑ1ÍÑUÁÑtôÕÍMÑÑ¡¹Õ±°¤ì(½¹ÍÐm±½°ÍÑ1½tôÕÍMÑÑ¡mt¤ì((Õ¹Ñ¥½¸1½¡µÍ¤ì(ÍÑ1½¡ÁÉØôùmìÐé¹ÜÑ ¤¹Ñ½1½±Q¥µMÑÉ¥¹ ©µ)@¤°µÍô°¸¸¹ÁÉØ¹Í±¥ À°ä¥t¤ì(ô((Íå¹Õ¹Ñ¥½¸Ñ¡±°¡½Éõ±Í¤ì(ÍÑ1½¥¹¡ÑÉÕ¤ì(1½ ó
+ÿ>[ú_¦Z/,¸¸¸¤ì(±ÐÉÑõíô°1¥ÙôÀ°M½ÉÌõ¹Õ±°°ÉÑÌõ¹Õ±°°1¥ÙôÀì(½¹ÍÐ¡ô½Éü¹Õ±°è¡Ð ¤ì(¥¡¡¤ì(1½ 
+·
+ß/
+'ó
+ÿú§¤ì(ÉÑô¡¹ÉMÉ¥Íññíôì(1¥Ùô¡¹É1¥ÙñðÀì(M½ÉÌô¡¹±ÑM½ÉÍññ¹Õ±°ì(ÉÑÌô¡¹±ÑÉÑ¥±Íññ¹Õ±°ì(1¥Ùô¡¹±Ñ1¥ÙñðÀì(ô±Íì(1½ IA'/
+'ó
+ÿ>[ú_â´¸¸¸¤ì(½¹ÍÐÉIÍÕ±ÐôÝ¥Ð±½ÉÑ ¤ì(ÉÑôÉIÍÕ±Ð¹Ñì(1¥ÙôÉIÍÕ±Ð¹±¥Ù
+½Õ¹Ðì(1½¡Ièí1¥Ùô¼çÎï"_>[ú_º3ê¤ì(1½ 1PA'/
+'/ó
+ç
+ç
+Ï
+>[ú_â´¸¸¸¤ì(½¹ÍÐ±ÑIÍÕ±ÐôÝ¥Ð±½±ÑÑ¡±ÑQ¥µÍÁ¸¤ì(M½ÉÌô±ÑIÍÕ±Ð¹Í½ÉÌì(ÉÑÌô±ÑIÍÕ±Ð¹ÉÑ¥±Ìì(1¥Ùô=©Ð¹Ù±ÕÌ¡ÉÑÌ¤¹¥±ÑÈ¡ôù¹±¹Ñ øÀ¤¹±¹Ñ ì(1½¡1Pèí1¥Ùô¼ã#S
+¿>[ú_º3ê¤ì(¡MÐ¡ìÉMÉ¥ÌéÉÑ°É1¥Ùé1¥Ù°±ÑM½ÉÌéM½ÉÌ°±ÑÉÑ¥±ÌéÉÑÌ°±Ñ1¥Ùé1¥Ùô¤ì(ô(ÍÑÉMÉ¥Ì¡ÉÑ¤ì(ÍÑÉ1¥Ù¡1¥Ù¤ì(ÍÑ±ÑM½ÉÌ¡M½ÉÌ¤ì(ÍÑ±ÑÉÑ¥±Ì¡ÉÑÌ¤ì(ÍÑ±Ñ1¥Ù¡1¥Ù¤ì(½¹ÍÐÉY±Ìôíôì(¥¡ÉÑ¹a)AUL¤ÉY±Ì¹a)AULôáÑÉÑ1ÑÍÐ¡ÉÑ¹a)AUL¤ì(¥¡ÉÑ¹
+A%U
+M0¤ì½¹ÍÐäõáÑÉÑe½d¡ÉÑ¹
+A%U
+M0¤ì¥¡äõ¹Õ±°¥ÉY±Ì¹
+A%U
+M0õäìô(¥¡ÉÑ¹
+A%1M0¤ì½¹ÍÐäõáÑÉÑe½d¡ÉÑ¹
+A%1M0¤ì¥¡äõ¹Õ±°¥ÉY±Ì¹
+A%1M0õäìô(¥¡ÉÑ¹
+UMHÀÀÀÁMX¤ì½¹ÍÐäõáÑÉÑe½d¡ÉÑ¹
+UMHÀÀÀÁMX¤ì¥¡äõ¹Õ±°¥ÉY±Ì¹
+UMHÀÀÀÁMXõäìô(¥¡ÉÑ¹U9IQ¤ÉY±Ì¹U9IQôáÑÉÑ1ÑÍÐ¡ÉÑ¹U9IQ¤ì(¥¡ÉÑ¹
+LÀÔÀÀÀÀÀÀÀÌ¤ÉY±Ì¹
+LÀÔÀÀÀÀÀÀÀÌôáÑÉÑ1ÑÍÐ¡ÉÑ¹
+LÀÔÀÀÀÀÀÀÀÌ¤ì(¥¡ÉÑ¹U9L¤ÉY±Ì¹U9LôáÑÉÑ1ÑÍÐ¡ÉÑ¹U9L¤ì(¥¡ÉÑ¹LÄÀ¤ÉY±Ì¹LÄÀôáÑÉÑ1ÑÍÐ¡ÉÑ¹LÄÀ¤ì(¥¡ÉÑ¹U5
+M9P¤ÉY±Ì¹U5
+M9PôáÑÉÑ1ÑÍÐ¡ÉÑ¹U5
+M9P¤ì(½¹ÍÐ½µÁÕÑô±±±M½ÉÌ¡ÉY±Ì°M½ÉÌ¤ì(ÍÑM½ÉÌ¡½µÁÕÑ¤ì(½¹ÍÐ¹½Üô¹ÜÑ ¤¹Ñ½1½±MÑÉ¥¹ ©µ)@¤ì(ÍÑ1ÍÑUÁÑ¡¹½Ü¤ì(1½ r£ó
+ÿnÓZÃº3êP­¹½Ü¤ì(ÍÑ1½¥¹¡±Í¤ì(ô((ÕÍÐ  ¤ôùìÑ¡±° ¤ìô±mt¤ì((½¹ÍÐÑÌôl(ì¥è½ÙÉÙ¥Ü°±°èÂ~N(Î°Í¡½ÉÐèÎô°(ì¥èÉ°±°èÂ~N {
+¿·Ö3â °Í¡½ÉÐèIô°(ì¥è¼°±°èÂ~2<rÃRÿ¶°Í¡½ÉÐèrÃRÿ¶ô°(ì¥èÕÍ¨°±°èjLUM+ïö?º°Í¡½ÉÐèUM(ô°(ì¥è¥è°±°èÂ~JðO
+ã7
+çöÇ¦~ü°Í¡½ÉÐè	%hô°(ì¥èÍ½ÕÉ°±°èÂ~N,
+÷ó
+çn¢X°Í¡½ÉÐè
+÷ó
+äô°(ì¥èÉÁ½ÉÐ°±°èÂ~Ntr#²³wó °Í¡½ÉÐè³wó ô°(tì((ÉÑÕÉ¸ (ñ¥Ø±ÍÍ9µôµ¥¸µ µÍÉ¸ÍÑå±õíí­É½Õ¹èÁÁÅõôø(ñ!ÈÍ½ÉÌõíÍ½ÉÍô±ÍÑUÁÑõí±ÍÑUÁÑô±½¥¹õí±½¥¹ô(½¹IÉÍ õì ¤ôùÑ¡±°¡ÑÉÕ¥ôÉ1¥ÙõíÉ1¥Ùô±Ñ1¥Ùõí±Ñ1¥Ùô¼ø(ñ¥Ø±ÍÍ9µôÍÑ¥­äÑ½À´ÄÐè´ÐÀµÍ±Ñ´äÀÀ½ÉÈµ½ÉÈµÍ±Ñ´àÀÀ½ÙÉ±½ÜµàµÕÑ¼¹¼µÁÉ¥¹Ðø(ñ¥Ø±ÍÍ9µôµàµÜµÍÉ¸´Éá°µàµÕÑ¼±àÁà´Èø(íÑÌ¹µÀ¡Ðôø (ñÕÑÑ½¸­äõíÐ¹¥ô½¹
+±¥¬õì ¤ôùÍÑQ¡Ð¹¥¥ô(±ÍÍ9µõíÁà´ÌÁä´ÌÑáÐµáÌ½¹Ðµµ¥Õ´Ý¡¥ÑÍÁµ¹½ÝÉÀÑÉ¹Í¥Ñ¥½¸µ½±½ÉÌ¡½ÙÈéÑáÐµÝ¡¥ÑíÑôôõÐ¹¥üÑµÑ¥ÙÑáÐµ±Õ´ÐÀÀèÑµ¥¹Ñ¥Ù¡½ÙÈé½ÉÈµÍ±Ñ´ØÀÀõôø(ñÍÁ¸±ÍÍ9µô¡¥¸Í´é¥¹±¥¹ùíÐ¹±±ôð½ÍÁ¸ø(ñÍÁ¸±ÍÍ9µôÍ´é¡¥¸ùíÐ¹Í¡½ÉÑôð½ÍÁ¸ø(ð½ÕÑÑ½¸ø(¤¥ô(ð½¥Øø(ð½¥Øø(ñµ¥¸±ÍÍ9µôµàµÜµÍÉ¸´Éá°µàµÕÑ¼Áà´ÌÁä´Ðø(íÑôôô½ÙÉÙ¥Üñ=ÙÉÙ¥ÝQÍ½ÉÌõíÍ½ÉÍôÉMÉ¥ÌõíÉMÉ¥Íô±½¥¹õí±½¥¹ô¼ùô(íÑôôôÉñÉ5É½A¹°ÉMÉ¥ÌõíÉMÉ¥ÍôÉY±Ìõííõô±½¥¹õí±½¥¹ô¼ùô(íÑôôô¼ñ½Á½±¥Ñ¥±A¹°±ÑM½ÉÌõí±ÑM½ÉÍô±ÑÉÑ¥±Ìõí±ÑÉÑ¥±Íô±ÑQ¥µÍÁ¸õí±ÑQ¥µÍÁ¹ô½¹Q¥µÍÁ¹
+¡¹õì¡ÑÌ¤ôùíÍÑ±ÑQ¥µÍÁ¸¡ÑÌ¤íõôÍ½ÉÌõíÍ½ÉÍô±½¥¹õí±½¥¹ô¼ùô(íÑôôôÕÍ¨ñUÍ©=­¥¹ÝA¹°Í½ÉÌõíÍ½ÉÍôÉY±ÌõííõôÉMÉ¥ÌõíÉMÉ¥Íô¼ùô(íÑôôô¥èñ	ÕÍ¥¹ÍÍ%µÁÑA¹°Í½ÉÌõíÍ½ÉÍôÉY±ÌõííõôÉMÉ¥ÌõíÉMÉ¥Íô¼ùô(íÑôôôÍ½ÕÉñM½ÕÉ5½¹¥Ñ½ÉQ±¼ùô(íÑôôôÉÁ½ÉÐñ5½¹Ñ¡±å%¹Ñ±±¥¹IÁ½ÉÐÍ½ÉÌõíÍ½ÉÍôÉY±ÌõííõôÉMÉ¥ÌõíÉMÉ¥Íô±ÑM½ÉÌõí±ÑM½ÉÍô±ÑÉÑ¥±Ìõí±ÑÉÑ¥±Íô¼ùô(ñ¥Ø±ÍÍ9µôµÐ´ØÁ¹°µÉÉ½Õ¹µá°À´Ì¹¼µÁÉ¥¹Ðø(ñ¥Ø±ÍÍ9µôÑáÐµáÌÑáÐµÍ±Ñ´ÔÀÀµ´Ä½¹Ðµµ¥Õ´ûnÓZÃ·
+Àð½¥Øø(ñ¥Ø±ÍÍ9µôÍÁµä´À¸Ôµàµ ´ÈÐ½ÙÉ±½ÜµäµÕÑ¼ø(í±½¹µÀ ¡°±¤¤ôø (ñ¥Ø­äõí¥ô±ÍÍ9µôÑáÐµáÌÑáÐµÍ±Ñ´ÔÀÀùmí°¹Ñõtí°¹µÍôð½¥Øø(¤¥ô(í±½¹±¹Ñ ôôôÀñ¥Ø±ÍÍ9µôÑáÐµáÌÑáÐµÍ±Ñ´ØÀÀû·
+Ã«\ð½¥Øùô(ð½¥Øø(ð½¥Øø(ð½µ¥¸ø(ð½¥Øø(¤ì)ô()½¹ÍÐÉ½½ÐôIÑ=4¹ÉÑI½½Ð¡½Õµ¹Ð¹Ñ±
