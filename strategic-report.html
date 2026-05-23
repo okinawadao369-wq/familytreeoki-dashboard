@@ -465,6 +465,101 @@
   .conclusion-box p  { font-size: 14px; line-height: 1.85; opacity: 0.9; }
   .conclusion-box .highlight { color: var(--gold); font-weight: 800; }
 
+  /* ── レビュー統計グリッド ── */
+  .review-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin: 20px 0;
+  }
+  .review-stat-card {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 16px 14px;
+    text-align: center;
+    border: 1.5px solid var(--border);
+  }
+  .review-stat-card.gold-border { border-color: var(--gold); }
+  .review-stat-card.green-border { border-color: var(--green); }
+  .review-stat-card.blue-border  { border-color: var(--blue); }
+  .review-stat-card.coral-border { border-color: var(--coral); }
+  .rscard-num { font-size: clamp(22px, 4vw, 30px); font-weight: 800; color: var(--navy); }
+  .rscard-label { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+  /* ── 分類バーチャート ── */
+  .classify-bar-list { margin: 16px 0; }
+  .cb-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 9px;
+  }
+  .cb-label { font-size: 12px; font-weight: 600; min-width: 130px; flex-shrink: 0; color: var(--dark); }
+  .cb-bar-wrap { flex: 1; background: var(--border); border-radius: 4px; height: 20px; overflow: hidden; }
+  .cb-bar { height: 100%; border-radius: 4px; display: flex; align-items: center; padding-left: 8px; font-size: 10.5px; font-weight: 700; color: #fff; }
+  .cb-bar.c1 { background: linear-gradient(90deg, var(--navy), #2a5090); }
+  .cb-bar.c2 { background: linear-gradient(90deg, var(--blue), #2a9fd0); }
+  .cb-bar.c3 { background: linear-gradient(90deg, var(--green), #3a9a60); }
+  .cb-bar.c4 { background: linear-gradient(90deg, var(--gold), #e8c040); }
+  .cb-bar.c5 { background: linear-gradient(90deg, var(--coral), #e87070); }
+  .cb-count { font-size: 12px; font-weight: 700; color: var(--navy); min-width: 28px; text-align: right; }
+
+  /* ── 顧客心理カード ── */
+  .psych-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin: 18px 0;
+  }
+  .psych-card {
+    border-radius: 12px;
+    padding: 16px 16px;
+    border: 1.5px solid var(--border);
+    background: var(--white);
+  }
+  .psych-title { font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+  .psych-tag { font-size: 10px; background: var(--navy-light); color: var(--navy); padding: 2px 8px; border-radius: 10px; font-weight: 600; }
+  .psych-fact { font-size: 12px; color: var(--muted); margin-bottom: 5px; line-height: 1.55; }
+  .psych-suggest { font-size: 12px; color: var(--dark); background: var(--green-light); border-left: 3px solid var(--green); padding: 6px 10px; border-radius: 0 6px 6px 0; line-height: 1.55; }
+
+  /* ── 広告文テーブル ── */
+  .ad-copy-table { width: 100%; border-collapse: collapse; font-size: 12.5px; margin: 16px 0; }
+  .ad-copy-table th { background: var(--navy); color: #fff; padding: 9px 12px; text-align: left; font-size: 11.5px; }
+  .ad-copy-table td { padding: 8px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  .ad-copy-table tr:nth-child(even) td { background: var(--gray); }
+  .ad-copy-table .copy-text { font-weight: 600; color: var(--navy); }
+  .ad-badge { font-size: 10px; padding: 2px 7px; border-radius: 10px; font-weight: 700; }
+  .ad-badge.en { background: var(--blue-light); color: var(--blue); }
+  .ad-badge.ja { background: var(--green-light); color: var(--green); }
+
+  /* ── 次アクション ── */
+  .action-checklist { margin: 16px 0; }
+  .ac-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    margin-bottom: 8px;
+    border: 1px solid var(--border);
+    background: var(--white);
+  }
+  .ac-row.week { border-left: 4px solid var(--coral); }
+  .ac-row.month { border-left: 4px solid var(--gold); }
+  .ac-row.owner { border-left: 4px solid var(--green); }
+  .ac-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+  .ac-text { font-size: 13px; line-height: 1.6; }
+  .ac-badge { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 10px; margin-right: 5px; }
+  .ac-badge.week  { background: var(--coral-light);  color: var(--coral); }
+  .ac-badge.month { background: var(--gold-light);   color: var(--orange); }
+  .ac-badge.owner { background: var(--green-light);  color: var(--green); }
+
+  @media (max-width: 680px) {
+    .review-stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .psych-grid { grid-template-columns: 1fr; }
+    .cb-label { min-width: 90px; font-size: 11px; }
+  }
+
   /* ── フッター ── */
   .report-footer {
     text-align: center;
@@ -545,13 +640,14 @@
     <ul class="toc-list">
       <li><a href="#s1"><span class="toc-num">1</span>エグゼクティブサマリー</a></li>
       <li><a href="#s2"><span class="toc-num">2</span>ビジネスモデル検証</a></li>
-      <li><a href="#s3"><span class="toc-num">3</span>ターゲット市場ヷ米軍家族の経済力</a></li>
+      <li><a href="#s3"><span class="toc-num">3</span>ターゲット市場・米軍家族の経済力</a></li>
       <li><a href="#s4"><span class="toc-num">4</span>為替・インフレと心理的価格</a></li>
       <li><a href="#s5"><span class="toc-num">5</span>競合・市場ポジション分析</a></li>
       <li><a href="#s6"><span class="toc-num">6</span>今後12〜18ヶ月の予測</a></li>
       <li><a href="#s7"><span class="toc-num">7</span>戦略的アクションプラン</a></li>
       <li><a href="#s8"><span class="toc-num">8</span>リスク分析と対応策</a></li>
       <li><a href="#s9"><span class="toc-num">9</span>総括：構造的優位性</a></li>
+      <li><a href="#s10"><span class="toc-num">10</span>顧客レビュー統合分析</a></li>
     </ul>
   </nav>
 
@@ -667,7 +763,7 @@
       <div class="insight-box green">
         <div class="insight-icon">✅</div>
         <div class="insight-text"><strong>機能している点③</strong> コアファン形成の兆し。最多来店9回・累計¥105,000の顧客が存在。LTVトップ10平均¥40,000以上。</div>
- �    </div>
+      </div>
       <div class="insight-box coral">
         <div class="insight-icon">⚠️</div>
         <div class="insight-text"><strong>改善余地①</strong> 9月閑散期の構造的リスク。8月→9月の売上下落が−38%と大きい。PCSサイクルによる季節性を今から対策設計すること。</div>
@@ -697,7 +793,7 @@
         <div class="kpi-card">
           <div class="kpi-val gold">400〜600名</div>
           <div class="kpi-label">年間妊婦推計数</div>
-         <div class="kpi-sub">年間出生率2.5%から推計</div>
+          <div class="kpi-sub">年間出生率2.5%から推計</div>
         </div>
       </div>
       <div class="insight-box navy">
@@ -706,7 +802,7 @@
       </div>
 
       <div class="sub-header">米軍給与の実態（2026年・+3.8%ベースアップ）</div>
-      <div class="data-table-wrap">
+      <div class="data-table-wrap">
         <table class="data-table">
           <thead>
             <tr><th>階級</th><th>月額基本給（USD）</th><th>円換算（¥158.90/$）</th><th>単価¥20,840の比率</th></tr>
@@ -848,7 +944,7 @@
             <tr><td>2D標準</td><td>$100〜$200</td><td>¥15,890〜¥31,780</td><td>現行¥12,000〜¥16,000 <strong>（割安）</strong></td></tr>
             <tr><td>3D/4D</td><td>$200〜$350</td><td>¥31,780〜¥55,615</td><td>現行¥18,000〜¥26,000 <strong style="color:#2a7a50">（37〜64%安）</strong></td></tr>
             <tr><td>5D HDライブ</td><td>$200〜$350</td><td>¥31,780〜¥55,615</td><td>—</td></tr>
-            <tr><td>プレミアムパc��ケージ</td><td>$400〜$600</td><td>¥63,560〜¥95,340</td><td>現行¥27,000〜（<strong style="color:#2a7a50">57%安</strong>）</td></tr>
+            <tr><td>プレミアムパッケージ</td><td>$400〜$600</td><td>¥63,560〜¥95,340</td><td>現行¥27,000〜（<strong style="color:#2a7a50">57%安</strong>）</td></tr>
           </tbody>
         </table>
       </div>
@@ -927,7 +1023,7 @@
             <span class="action-priority">即時実行</span>
             <span class="action-title">② 退出時「次回来院」提案</span>
           </div>
-          <div class="action-body">「妊娠週数が進んだら予約しませんく？」の一言で、リピート率15.2% → 20%目標。</div>
+          <div class="action-body">「妊娠週数が進んだら予約しませんか？」の一言で、リピート率15.2% → 20%目標。</div>
           <div class="action-effect">月+6〜8件の追加来院</div>
         </div>
         <div class="action-card urgent">
@@ -965,7 +1061,7 @@
         <div class="action-card medium">
           <div class="action-header">
             <span class="action-priority">中長期</span>
-            <span class="action-title">⑦ プレミアムパc��ケージ拡充</span>
+            <span class="action-title">⑦ プレミアムパッケージ拡充</span>
           </div>
           <div class="action-body">「4D+HD+動画USB+心音ぬいぐるみ+フォトブック」バンドル ¥35,000〜¥45,000。現状5.3% → 15%目標。米国比まだ割安。</div>
           <div class="action-effect">プレミアム率2倍化で年+¥2,000,000</div>
@@ -1065,9 +1161,293 @@
     </div>
   </section>
 
+  <!-- ── 第10章 ── -->
+  <section class="section" id="s10">
+    <div class="section-header">
+      <span class="section-num">第10章</span>
+      <span class="section-title">顧客レビュー統合分析（STORES＋Google）</span>
+    </div>
+    <div class="section-body">
+
+      <!-- 10.0 概要 -->
+      <div class="sub-header">📊 レビュー概要（2025年5月〜2026年5月）</div>
+      <div class="review-stats-grid">
+        <div class="review-stat-card gold-border">
+          <div class="rscard-num">64件</div>
+          <div class="rscard-label">総レビュー数<br>STORES 37 ＋ Google 27</div>
+        </div>
+        <div class="review-stat-card green-border">
+          <div class="rscard-num">99%</div>
+          <div class="rscard-label">5つ星率<br>63件 ★5（1件のみ★1）</div>
+        </div>
+        <div class="review-stat-card blue-border">
+          <div class="rscard-num">49件</div>
+          <div class="rscard-label">「スタッフ対応」<br>最多言及カテゴリ</div>
+        </div>
+        <div class="review-stat-card coral-border">
+          <div class="rscard-num">29件</div>
+          <div class="rscard-label">「紹介意向」<br>口コミ成長エンジン</div>
+        </div>
+      </div>
+
+      <div class="insight-box navy">
+        <div class="insight-icon">💡</div>
+        <div class="insight-text">
+          FamilyTreeOkiのレビューは、単なる「エコー画像の品質」ではなく、
+          <strong>英語対応・家族参加・丁寧なスタッフ・妊娠中の不安への寄り添い・記念品の価値</strong>が
+          一体になった体験として評価されている。価格ではなく「安心と記念」で選ばれているビジネスである。
+        </div>
+      </div>
+
+      <!-- 10.1 分類集計 -->
+      <div class="sub-header">📌 レビュー分類 件数ランキング（STORES＋Google 64件）</div>
+      <div class="classify-bar-list">
+        <div class="cb-row">
+          <div class="cb-label">スタッフ対応</div>
+          <div class="cb-bar-wrap"><div class="cb-bar c1" style="width:100%">49件</div></div>
+          <div class="cb-count">49</div>
+        </div>
+        <div class="cb-row">
+          <div class="cb-label">4D/2Dエコー体験</div>
+          <div class="cb-bar-wrap"><div class="cb-bar c2" style="width:88%">43件</div></div>
+          <div class="cb-count">43</div>
+        </div>
+        <div class="cb-row">
+          <div class="cb-label">紹介意向</div>
+          <div class="cb-bar-wrap"><div class="cb-bar c3" style="width:59%">29件</div></div>
+          <div class="cb-count">29</div>
+        </div>
+        <div class="cb-row">
+          <div class="cb-label">家族参加</div>
+          <div class="cb-bar-wrap"><div class="cb-bar c1" style="width:53%">26件</div></div>
+          <div class="cb-count">26</div>
+        </div>
+        <div class="cb-row">
+          <div class="cb-label">リピート意向</div>
+          <div class="cb-bar-wrap"><div class="cb-bar c2" style="width:31%">15件</div></div>
+          <div class="cb-count">15</div>
+        </div>
+        <div class="cb-row">
+          <div class="cb-label">医療的安心感</div>
+          <div class="cb-bar-wrap"><div class="cb-bar c4" style="width:24%">12件</div></div>
+          <div class="cb-count">12</div>
+        </div>
+        <div class="cb-row">
+          <div class="cb-label">英語対応</div>
+          <div class="cb-bar-wrap"><div class="cb-bar c5" style="width:16%">8件</div></div>
+          <div class="cb-count">8</div>
+        </div>
+        <div class="cb-row">
+          <div class="cb-label">清潔感</div>
+          <div class="cb-bar-wrap"><div class="cb-bar c3" style="width:12%">6件</div></div>
+          <div class="cb-count">6</div>
+        </div>
+        <div class="cb-row">
+          <div class="cb-label">心音ぬいぐるみ</div>
+          <div class="cb-bar-wrap"><div class="cb-bar c4" style="width:12%">6件</div></div>
+          <div class="cb-count">6</div>
+        </div>
+        <div class="cb-row">
+          <div class="cb-label">価格への言及</div>
+          <div class="cb-bar-wrap"><div class="cb-bar c5" style="width:4%">2件</div></div>
+          <div class="cb-count">2</div>
+        </div>
+      </div>
+
+      <!-- 10.2 顧客心理分析 -->
+      <div class="sub-header">🧠 顧客心理の読み取りと施策提案</div>
+      <div class="psych-grid">
+
+        <div class="psych-card">
+          <div class="psych-title">🌐 英語対応 <span class="psych-tag">8件</span></div>
+          <div class="psych-fact">在沖米軍・軍属ファミリーは基地内診療の制約（子連れ不可・予約間隔）を補完する場として来院。Kadena Hospital、TRICARE、"on base" などの言及が複数確認。</div>
+          <div class="psych-suggest">👉 英語LP・Google投稿に <em>"English support near Kadena"</em>、<em>"family-friendly"</em>、<em>"not rushed"</em> を中心コピーとして配置する。</div>
+        </div>
+
+        <div class="psych-card">
+          <div class="psych-title">👐 スタッフ対応 <span class="psych-tag">49件</span></div>
+          <div class="psych-fact">"kind"・"patient"・"professional"・「優しい」「丁寧」が全レビューにわたって反復。機械的な検査ではなく「大切に扱われる体験」への価値評価が中心。</div>
+          <div class="psych-suggest">👉 スタッフ行動KPIとして、説明・声かけ・家族への配慮・写真取得への粘り強さをレビュータグで月次追跡する。</div>
+        </div>
+
+        <div class="psych-card">
+          <div class="psych-title">🏥 医療的安心感 <span class="psych-tag">12件</span></div>
+          <div class="psych-fact">成長不安・流産後の不安・健診間隔の長さ・質問対応への言及が確認。「診断保証」ではなく「妊娠中の不安に寄り添う補完ケア」として価値を持っている。</div>
+          <div class="psych-suggest">👉 広告では医療効果を断定せず、<em>"questions answered"</em>・<em>"warm support between appointments"</em> 表現に留める。</div>
+        </div>
+
+        <div class="psych-card">
+          <div class="psych-title">👨‍👩‍👧 家族参加 <span class="psych-tag">26件</span></div>
+          <div class="psych-fact">夫・パートナー・幼児・兄弟・両親・友人の参加が繰り返し評価。基地内診療では子ども同伴不可という具体的な比較言及も確認。</div>
+          <div class="psych-suggest">👉 <em>"Bring your husband, toddler, and family"</em> を英語LP・STORES予約ページ・Instagram固定投稿に入れる。</div>
+        </div>
+
+        <div class="psych-card">
+          <div class="psych-title">🧸 心音ぬいぐるみ <span class="psych-tag">6件</span></div>
+          <div class="psych-fact">STORES・Google双方で「心音をぬいぐるみに録音できる」体験が強い感情言及として登場。"I was mind blown"・"so cute"・"worth it" など価格以上の感動価値。</div>
+          <div class="psych-suggest">👉 "Heartbeat Keepsake Package" として予約時に写真付きで提案。アップセル成功率とレビュー言及率を月次計測する。</div>
+        </div>
+
+        <div class="psych-card">
+          <div class="psych-title">💰 価格・体験時間への不満 <span class="psych-tag">2件</span></div>
+          <div class="psych-fact">Google Amber Howard：値上げ＋体験時間短縮への不満。Google suzy：性別判定の誤認と急かされた感覚への強い不満（★1）。不満の核は「短い・説明不足・確度低い」の複合。</div>
+          <div class="psych-suggest">👉 一律値上げより、基本プラン維持＋上位パッケージ化＋所要時間・含まれるもの・性別判定確度の明示が安全策。</div>
+        </div>
+
+      </div>
+
+      <!-- 10.3 代表レビュー引用 -->
+      <div class="sub-header">⭐ 代表レビュー引用（広告活用候補）</div>
+      <div class="insight-box green">
+        <div class="insight-icon">🗣️</div>
+        <div class="insight-text">
+          <strong>「一言、最高でした！！ パートナーもエコーを自分で当ててみるっていう体験をさせてもらえて終わってからはしゃいでました笑 もし、また妊娠することがあれば絶対来たいって素直に思いました。」</strong>
+          <br><span style="font-size:11px;color:var(--muted)">— STORES匿名 ★5（2026/05/15）</span>
+        </div>
+      </div>
+      <div class="insight-box blue">
+        <div class="insight-icon">🗣️</div>
+        <div class="insight-text">
+          <strong>"Family Tree comes very well recommended by other American families and I can see why. Very pleasant staff and the place was calming too."</strong>
+          <br><span style="font-size:11px;color:var(--muted)">— Whitlatch Anna ★5（STORES 2026/05/09）</span>
+        </div>
+      </div>
+      <div class="insight-box gold">
+        <div class="insight-icon">🗣️</div>
+        <div class="insight-text">
+          <strong>"This studio is quite literally the best investment I have ever made! My husband and I went in expecting just some print outs of our little one. That was far from the experience."</strong>
+          <br><span style="font-size:11px;color:var(--muted)">— Abigail Williams ★5（Google 1年前）</span>
+        </div>
+      </div>
+
+      <!-- 10.4 広告コピー候補 -->
+      <div class="sub-header">📣 レビューから導出した広告文候補</div>
+      <div class="data-table-wrap">
+        <table class="ad-copy-table">
+          <thead>
+            <tr><th>用途</th><th>広告コピー候補</th><th>注意</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="ad-badge en">英語LP</span></td>
+              <td class="copy-text">A private, family-friendly 4D ultrasound experience in Okinawa.</td>
+              <td>医療効果は断定しない</td>
+            </tr>
+            <tr>
+              <td><span class="ad-badge en">英語LP</span></td>
+              <td class="copy-text">Bring your husband, toddler, and family to share the moment.</td>
+              <td>医療効果は断定しない</td>
+            </tr>
+            <tr>
+              <td><span class="ad-badge en">英語LP</span></td>
+              <td class="copy-text">English support near Kadena for expecting families.</td>
+              <td>医療効果は断定しない</td>
+            </tr>
+            <tr>
+              <td><span class="ad-badge en">英語LP</span></td>
+              <td class="copy-text">Keep the heartbeat, photos, and videos as family memories.</td>
+              <td>医療効果は断定しない</td>
+            </tr>
+            <tr>
+              <td><span class="ad-badge ja">日本語LP</span></td>
+              <td class="copy-text">沖縄で家族と一緒に赤ちゃんに会える、プライベート4Dエコー体験。</td>
+              <td>医療効果は断定しない</td>
+            </tr>
+            <tr>
+              <td><span class="ad-badge ja">日本語LP</span></td>
+              <td class="copy-text">妊婦健診の間の不安にも、あたたかく寄り添うエコー時間を。</td>
+              <td>医療効果は断定しない</td>
+            </tr>
+            <tr>
+              <td><span class="ad-badge ja">Google投稿</span></td>
+              <td class="copy-text">家族同伴・英語対応・大画面で、赤ちゃんとの時間をゆっくり共有できます。</td>
+              <td>医療効果は断定しない</td>
+            </tr>
+            <tr>
+              <td><span class="ad-badge ja">STORES予約</span></td>
+              <td class="copy-text">心音ぬいぐるみ、写真、動画を家族の思い出として残せます。</td>
+              <td>医療効果は断定しない</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 10.5 強み・改善点 -->
+      <div class="sub-header">💪 レビューから確認した強みと改善点</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 0;">
+        <div class="insight-box green" style="flex-direction:column;align-items:stretch;">
+          <div style="font-weight:700;font-size:13px;color:var(--green);margin-bottom:10px;">✅ 強み（5点）</div>
+          <div style="font-size:12.5px;line-height:1.8;">
+            ① 英語対応と通訳により、米軍・英語圏ファミリーの心理的障壁が低い<br>
+            ② 夫・子ども・家族参加可能で、基地内診療では満たしにくい体験価値<br>
+            ③ スタッフ対応が高評価の中心で、信頼・安心・記念価値で選ばれている<br>
+            ④ 写真・動画・プリント・心音ぬいぐるみがレビューで語られる記念商品<br>
+            ⑤ 再来・紹介意向が強く、MEOと口コミの成長余地が大きい
+          </div>
+        </div>
+        <div class="insight-box coral" style="flex-direction:column;align-items:stretch;">
+          <div style="font-weight:700;font-size:13px;color:var(--coral);margin-bottom:10px;">⚠️ 改善点（5点）</div>
+          <div style="font-size:12.5px;line-height:1.8;">
+            ① Googleレビューの全文・投稿日・サービス種別が不足（API補完必要）<br>
+            ② 性別判定は確度・限界・医療診断ではないことを予約ページで明示する<br>
+            ③ 価格改定時は体験時間・成果物・説明範囲を見える化する<br>
+            ④ 子連れ導線・玩具・待機スペース・兄弟参加ルールを標準化する<br>
+            ⑤ 産後ケア・ベビーシッター導線は同意取得と別サービス説明を分ける
+          </div>
+        </div>
+      </div>
+
+      <!-- 10.6 次アクション -->
+      <div class="sub-header">🚀 次アクション</div>
+      <div class="action-checklist">
+        <div class="ac-row week">
+          <div class="ac-icon">📅</div>
+          <div class="ac-text"><span class="ac-badge week">今週</span>Googleレビューの正規エクスポートまたは手動CSV化の担当者を決める</div>
+        </div>
+        <div class="ac-row week">
+          <div class="ac-icon">📝</div>
+          <div class="ac-text"><span class="ac-badge week">今週</span>STORES予約後レビュー依頼テンプレートを英語・日本語で作成する</div>
+        </div>
+        <div class="ac-row week">
+          <div class="ac-icon">⚠️</div>
+          <div class="ac-text"><span class="ac-badge week">今週</span>性別判定に関する説明文と免責表現を予約ページに追加する</div>
+        </div>
+        <div class="ac-row month">
+          <div class="ac-icon">📊</div>
+          <div class="ac-text"><span class="ac-badge month">今月</span>Google SheetsにレビューKPI表を作り、分類タグを月次更新する仕組みを構築</div>
+        </div>
+        <div class="ac-row month">
+          <div class="ac-icon">🌐</div>
+          <div class="ac-text"><span class="ac-badge month">今月</span>英語LPのファーストビューに <em>Family-friendly 4D ultrasound near Kadena / English support / husband and children welcome</em> を入れる</div>
+        </div>
+        <div class="ac-row month">
+          <div class="ac-icon">🧸</div>
+          <div class="ac-text"><span class="ac-badge month">今月</span>心音ぬいぐるみを含む上位パッケージを1つ作り、予約率とレビュー反応を計測</div>
+        </div>
+        <div class="ac-row owner">
+          <div class="ac-icon">👤</div>
+          <div class="ac-text"><span class="ac-badge owner">オーナー判断</span>価格改定は予約率・キャンセル率・レビュー内価格不満件数を見ながら段階的に実施</div>
+        </div>
+        <div class="ac-row owner">
+          <div class="ac-icon">🔒</div>
+          <div class="ac-text"><span class="ac-badge owner">オーナー判断</span>産後ケア・ベビーシッターは同意ベース案内と個人情報管理ルールを決めてから拡張</div>
+        </div>
+      </div>
+
+      <div class="insight-box coral">
+        <div class="insight-icon">📌</div>
+        <div class="insight-text">
+          <strong>スタッフ会議メモ：</strong>
+          お客様は「赤ちゃんが見える」だけでなく、「家族で安心して参加できる」「急かされない」「説明してもらえる」「思い出を持ち帰れる」ことに満足している。価格への直接不満は少ないが、時間が短い・説明不足・性別判定への不確実さが重なると一気に不満に転化する。日々の接客での説明・声かけ・家族への配慮・ぬいぐるみ案内がすべてレビュー資産になる。
+        </div>
+      </div>
+
+    </div>
+  </section>
+
   <footer class="report-footer">
     本レポートは合同会社koya代表専用の内部資料です。外部公開・第三者共有禁止。<br>
-    データ取得: 2026年5月18日 ｜ Square API実データ 641件確定値 ｜ 分析: Claude AI (Anthropic)
+    データ取得: 2026年5月22日 ｜ Square API実データ 641件確定値 ｜ レビュー統合: STORES 37件＋Google 27件 ｜ 分析: Claude AI (Anthropic)
   </footer>
 
 </div>
