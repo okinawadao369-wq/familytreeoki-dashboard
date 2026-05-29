@@ -349,6 +349,27 @@ function calcAllScores(fredVals, gdeltScores) {
   };
 }
 
+
+// ─────────────────────────────────────────────
+// KOYA PRICE SIGNAL SCORE
+// ─────────────────────────────────────────────
+function calcPriceSignalScore(fredSeries) {
+  const fx  = extractLatest(fredSeries?.DEXJPUS) || 0;
+  const cpi = extractYoY(fredSeries?.CPIAUCSL)  || 0;
+  const ff  = extractLatest(fredSeries?.FEDFUNDS) || 0;
+  const ahe = extractLatest(fredSeries?.CES0500000003) || 0;
+  const ur  = extractLatest(fredSeries?.UNRATE)  || 0;
+  const criteria = [
+    { label:'USD/JPY 円安', sub:'145円超 → 米軍客の割安感増加', met: fx >= 145, value: fx ? `¥${fx.toFixed(2)}` : '--', threshold:'≥ ¥145' },
+    { label:'米国CPI 高インフレ', sub:'3%超 → 沖縄割安感強化', met: cpi >= 3.0, value: cpi ? `${cpi.toFixed(1)}%` : '--', threshold:'≥ 3.0%' },
+    { label:'FF金利 安定', sub:'5%以下 → 米軍消費余力維持', met: ff > 0 && ff <= 5.0, value: ff ? `${ff.toFixed(2)}%` : '--', threshold:'≤ 5.0%' },
+    { label:'米国平均時給', sub:'$30超 → 軍人・軍属の可処分所得安定', met: ahe >= 30, value: ahe ? `${ahe.toFixed(2)}` : '--', threshold:'≥ $30' },
+    { label:'米国失業率', sub:'5%以下 → 顧客支出余力安定', met: ur > 0 && ur <= 5.0, value: ur ? `${ur.toFixed(1)}%` : '--', threshold:'≤ 5.0%' },
+  ];
+  const score = criteria.filter(c=>c.met).length;
+  return { score, criteria };
+}
+
 // ─────────────────────────────────────────────
 // UTILITY COMPONENTS
 // ─────────────────────────────────────────────
@@ -831,6 +852,56 @@ function UsfjOkinawaPanel({ scores, fredVals, fredSeries }) {
   );
 }
 
+
+// ─────────────────────────────────────────────
+// PRICE SIGNAL PANEL
+// ─────────────────────────────────────────────
+function PriceSignalPanel({ fredSeries }) {
+  const { score, criteria } = calcPriceSignalScore(fredSeries || {});
+  const statuses = [
+    { min:5, text:'🚀 即時値上げ検討', color:'text-emerald-400', bg:'bg-emerald-900/40 border-emerald-500/40', desc:'全5条件クリア。今すぐ価格改定を実行してください。+15〜20%の余地あり。' },
+    { min:4, text:'✅ 値上げ提案',     color:'text-green-400',   bg:'bg-green-900/40 border-green-500/40',   desc:'4条件クリア。値上げのタイミングです。+10〜15%を検討。英語LP価格表を更新。' },
+    { min:3, text:'📊 据え置き確認',   color:'text-blue-400',    bg:'bg-blue-900/40 border-blue-500/40',     desc:'3条件クリア。現状価格を守りつつ上位パッケージ・アップセルを強化。' },
+    { min:2, text:'⚠️ 慎重維持',       color:'text-yellow-400',  bg:'bg-yellow-900/40 border-yellow-500/40', desc:'2条件クリア。価格据え置き。コスト最適化とリピーター囲い込みを優先。' },
+    { min:0, text:'🔴 様子見',         color:'text-red-400',     bg:'bg-red-900/40 border-red-500/40',       desc:'条件不足。価格維持最優先。固定費見直しと口コミ・MEO強化を優先。' },
+  ];
+  const st = statuses.find(s=>score>=s.min);
+  const pct = (score/5)*100;
+  return (
+    <div className={`panel-card rounded-xl p-5 border ${st.bg} mb-6`}>
+      <div className="flex items-start justify-between mb-3">
+        <div>
+          <div className="text-sm font-bold text-slate-200">💴 コヤ式 価格改定シグナルスコア</div>
+          <div className="text-xs text-slate-400 mt-0.5">FamilyTreeOki — 円原価 × ドル訴求 の最適価格タイミング判定</div>
+        </div>
+        <div className="text-right">
+          <div className={`text-5xl font-black ${st.color}`}>{score}<span className="text-xl text-slate-500">/5</span></div>
+          <div className={`text-xs font-bold mt-0.5 ${st.color}`}>{st.text}</div>
+        </div>
+      </div>
+      <div className="w-full bg-slate-800 rounded-full h-2 mb-3">
+        <div className={`h-2 rounded-full transition-all ${score>=4?'bg-emerald-500':score>=3?'bg-blue-500':score>=2?'bg-yellow-500':'bg-red-500'}`} style={{width:`${pct}%`}}/>
+      </div>
+      <div className="text-xs text-slate-300 bg-slate-800/60 rounded-lg px-3 py-2 mb-4">{st.desc}</div>
+      <div className="grid grid-cols-1 sm:grid-cols-5 gap-2">
+        {criteria.map((c,i)=>(
+          <div key={i} className={`rounded-lg p-2.5 border ${c.met?'bg-emerald-900/30 border-emerald-500/30':'bg-slate-800/50 border-slate-700/40'}`}>
+            <div className="flex items-center gap-1 mb-1">
+              <span className="text-sm">{c.met?'✅':'○'}</span>
+              <span className="text-xs font-bold text-slate-200 leading-tight">{c.label}</span>
+            </div>
+            <div className="text-xs text-slate-500 mb-2 leading-tight">{c.sub}</div>
+            <div className="flex items-center justify-between">
+              <span className={`text-xs font-mono font-bold ${c.met?'text-emerald-300':'text-slate-400'}`}>{c.value}</span>
+              <span className="text-xs text-slate-600">{c.threshold}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // ─────────────────────────────────────────────
 // BUSINESS IMPACT PANEL
 // ─────────────────────────────────────────────
@@ -881,6 +952,7 @@ function BusinessImpactPanel({ scores, fredVals, fredSeries }) {
 
   return (
     <div className="space-y-6">
+      <PriceSignalPanel fredSeries={fredSeries}/>
       <SectionHeader title="ビジネス影響判定パネル" sub="スコアに基づく事業別アクション自動判定"/>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div className="panel-card rounded-xl p-4">
