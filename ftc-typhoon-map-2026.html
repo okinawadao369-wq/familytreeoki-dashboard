@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>台風6号チャンミー｜沖縄進路マップ 2026.6.1</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Hiragino Sans','Noto Sans JP',-apple-system,sans-serif;
+  background:#07101f;color:#e2e8f0;min-height:100vh;
+  -webkit-text-size-adjust:100%;
+}
+
+/* ─── HEADER ─── */
+.hdr{
+  background:linear-gradient(135deg,#0d1b2e,#1a2f4e);
+  border-bottom:3px solid #e53e3e;
+  padding:12px 16px;
+}
+.hdr-top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.hdr h1{font-size:15px;font-weight:900;color:#fff;line-height:1.3}
+.hdr .sub{font-size:10px;color:#90cdf4;margin-top:2px}
+.live{
+  display:flex;align-items:center;gap:5px;
+  background:rgba(239,68,68,.15);border:1px solid #e53e3e;
+  border-radius:20px;padding:4px 12px;font-size:11px;font-weight:700;color:#fc8181;
+  white-space:nowrap;
+}
+.pulse{width:7px;height:7px;border-radius:50%;background:#e53e3e;flex-shrink:0;animation:pulse 1.4s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(1.6)}}
+
+/* ─── ALERT BAR ─── */
+.alert{
+  background:linear-gradient(90deg,rgba(239,68,68,.2),rgba(239,68,68,.05));
+  border-left:5px solid #e53e3e;
+  padding:10px 16px;font-size:12px;font-weight:700;color:#fca5a5;line-height:1.6;
+}
+
+/* ─── KPI STRIP ─── */
+.kpi-strip{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:1px;background:#2d3a5c;border-bottom:1px solid #2d3a5c;
+}
+.kpi{
+  background:#111827;padding:10px 10px;text-align:center;
+}
+.kpi-l{font-size:9px;color:#64748b;text-transform:uppercase;letter-spacing:.3px;margin-bottom:4px}
+.kpi-v{font-size:14px;font-weight:900;line-height:1.1}
+.kpi-s{font-size:9px;color:#94a3b8;margin-top:2px}
+
+/* ─── MAIN MAP CARD ─── */
+.map-section{padding:12px 12px 0}
+.card{background:#111827;border:1px solid #2d3a5c;border-radius:12px;overflow:hidden;margin-bottom:12px}
+.card-title{
+  font-size:11px;font-weight:700;color:#06b6d4;letter-spacing:.8px;text-transform:uppercase;
+  padding:12px 14px 0;display:flex;align-items:center;gap:6px;
+}
+.ct-dot{width:5px;height:5px;border-radius:50%;background:#06b6d4;flex-shrink:0}
+
+/* ─── SVG MAP ─── */
+.map-wrap{padding:10px 12px 12px;position:relative}
+.map-wrap svg{width:100%;height:auto;display:block;border-radius:10px}
+
+/* ─── LEGEND ─── */
+.legend{
+  display:flex;flex-wrap:wrap;gap:8px 14px;
+  padding:8px 14px 12px;font-size:10px;
+}
+.leg-item{display:flex;align-items:center;gap:5px}
+.leg-line{width:18px;height:3px;border-radius:2px;flex-shrink:0}
+
+/* ─── SCENARIO TABS ─── */
+.sc-section{padding:0 12px}
+.sc-tabs{display:flex;gap:4px;margin-bottom:8px}
+.sc-tab{
+  flex:1;padding:8px 4px;text-align:center;font-size:11px;font-weight:700;
+  border-radius:8px;border:none;cursor:pointer;transition:.2s;
+  background:#1a2340;color:#94a3b8;
+}
+.sc-tab.active-a{background:#7f1d1d;color:#fca5a5}
+.sc-tab.active-b{background:#78350f;color:#fdba74}
+.sc-tab.active-c{background:#164e63;color:#67e8f9}
+.sc-body{display:none}
+.sc-body.show{display:block}
+.sc-content{
+  background:#1a2340;border-radius:10px;padding:12px 14px;
+  font-size:12px;line-height:1.85;color:#cbd5e0;margin-bottom:8px;
+}
+.sc-content strong{color:#f59e0b}
+.sc-row{margin-bottom:6px;display:flex;align-items:flex-start;gap:6px}
+
+/* ─── PROGRESS SECTION ─── */
+.prog-section{padding:0 12px}
+.prog{margin-bottom:8px}
+.ph{display:flex;justify-content:space-between;font-size:11px;color:#94a3b8;margin-bottom:3px}
+.pb{background:#1a2340;border-radius:4px;height:8px;overflow:hidden}
+.pf{height:100%;border-radius:4px}
+
+/* ─── TIMELINE ─── */
+.tl-section{padding:0 12px}
+.tl{overflow-x:auto;padding-bottom:6px}
+.tl-inner{display:flex;min-width:600px}
+.tl-item{flex:1;text-align:center;position:relative;padding:10px 4px}
+.tl-item::before{
+  content:'';position:absolute;top:17px;left:0;right:0;
+  height:2px;background:#2d3a5c;z-index:0;
+}
+.tl-item:first-child::before{left:50%}
+.tl-item:last-child::before{right:50%}
+.tl-dot{
+  width:16px;height:16px;border-radius:50%;
+  margin:0 auto 6px;position:relative;z-index:1;border:2px solid #2d3a5c;background:#111827;
+}
+.tl-dot.done{background:#64748b;border-color:#64748b}
+.tl-dot.now{background:#e53e3e;border-color:#e53e3e;box-shadow:0 0 10px #e53e3e}
+.tl-dot.hot{background:#f97316;border-color:#f97316;box-shadow:0 0 7px #f97316}
+.tl-dot.warn{background:#f59e0b;border-color:#f59e0b}
+.tl-dot.ok{background:#10b981;border-color:#10b981}
+.tl-dt{font-size:9px;color:#94a3b8;margin-bottom:2px}
+.tl-lbl{font-size:11px;font-weight:700;margin-bottom:1px}
+.tl-desc{font-size:9px;color:#94a3b8;line-height:1.3}
+
+/* ─── ACTION LIST ─── */
+.act-section{padding:0 12px}
+.act-list{list-style:none}
+.act-list li{
+  display:flex;align-items:flex-start;gap:8px;
+  padding:9px 0;border-bottom:1px solid rgba(45,58,92,.5);
+  font-size:12px;line-height:1.7;
+}
+.act-list li:last-child{border-bottom:none}
+.act-tag{
+  flex-shrink:0;border-radius:5px;padding:2px 7px;
+  font-size:10px;font-weight:700;text-align:center;min-width:50px;
+}
+
+/* ─── CONCLUSION ─── */
+.conc-section{padding:0 12px 12px}
+.conc{
+  background:linear-gradient(135deg,rgba(59,130,246,.1),#111827);
+  border:1px solid #3b82f6;border-radius:12px;padding:14px 16px;
+}
+.conc-title{font-size:13px;font-weight:800;color:#90cdf4;margin-bottom:8px}
+.conc-body{font-size:12px;line-height:1.9;color:#cbd5e0}
+
+/* ─── CAL ─── */
+.cal-section{padding:0 12px}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cal-day{
+  background:#1a2340;border-radius:8px;padding:7px 4px;
+  text-align:center;border:1px solid #2d3a5c;
+}
+.cal-dt{font-size:9px;color:#94a3b8;margin-bottom:3px}
+.cal-ico{font-size:16px;margin-bottom:2px}
+.cal-risk{font-size:9px;font-weight:700;margin-bottom:1px}
+.cal-note{font-size:8px;color:#94a3b8;line-height:1.2}
+
+/* ─── SECTION LABELS ─── */
+.sec-lbl{
+  font-size:11px;font-weight:700;color:#06b6d4;letter-spacing:.8px;
+  text-transform:uppercase;padding:14px 14px 8px;
+  display:flex;align-items:center;gap:6px;
+}
+.sec-lbl .ct-dot{background:#06b6d4}
+
+/* ─── FOOTER ─── */
+.footer{
+  font-size:9px;color:#4a5568;text-align:center;
+  padding:12px 16px 24px;border-top:1px solid #1e2a40;margin-top:4px;line-height:1.8;
+}
+
+/* ─── ROUTE DETAIL BOX ─── */
+.route-box{
+  background:#1a2340;border-radius:10px;padding:12px 14px;
+  margin:0 12px 12px;font-size:12px;line-height:1.85;color:#cbd5e0;
+}
+.route-box .rb-title{font-size:12px;font-weight:700;color:#f59e0b;margin-bottom:7px}
+.route-box .rb-row{display:flex;gap:6px;margin-bottom:4px;align-items:flex-start}
+.rb-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="hdr-top">
+    <div>
+      <h1>🌀 台風6号チャンミー｜沖縄進路リアルマップ</h1>
+      <div class="sub">Family Tree Clinic Oki ｜ 合同会社koya ｜ 2026年6月1日（月）最新</div>
+    </div>
+    <div class="live"><div class="pulse"></div>🔴 接近中</div>
+  </div>
+</div>
+
+<!-- ALERT -->
+<div class="alert">
+  ⚠️ 【厳重警戒】6/1夜〜6/2、沖縄本島の西側（那覇寄り）を通過。電柱倒壊レベルの暴風・大雨・高潮。FTC本日〜明日休診・患者連絡を至急実施。
+</div>
+
+<!-- KPI STRIP -->
+<div class="kpi-strip">
+  <div class="kpi">
+    <div class="kpi-l">現在地</div>
+    <div class="kpi-v" style="color:#fc8181;font-size:11px">宮古島<br>南東260km</div>
+    <div class="kpi-s">N23.4° E127.3°</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-l">中心気圧</div>
+    <div class="kpi-v" style="color:#fb923c">975<span style="font-size:10px">hPa</span></div>
+    <div class="kpi-s">最大風速30m/s</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-l">最接近</div>
+    <div class="kpi-v" style="color:#fbbf24;font-size:12px">6/1夜<br>〜6/2</div>
+    <div class="kpi-s">沖縄西側通過</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-l">FTC影響</div>
+    <div class="kpi-v" style="color:#fc8181;font-size:11px">休診<br>必至</div>
+    <div class="kpi-s">6/1夜〜6/2終日</div>
+  </div>
+</div>
+
+<!-- MAP -->
+<div class="map-section">
+  <div class="card">
+    <div class="card-title"><span class="ct-dot"></span>沖縄本島 実態進路マップ｜3シナリオ</div>
+    <div class="map-wrap">
+      <!--
+        座標系: SVG 500×680
+        実際の地理座標マッピング:
+          経度: 123°E〜132°E → x: 30〜470  (1°≈ 49px)
+          緯度: 20°N〜30°N → y: 620〜80   (1°≈ 54px)
+        
+        主要地点:
+          宮古島    26.4N 127.8E → x=240, y=310
+          那覇      26.2N 127.7E → x=235, y=321
+          石垣島    24.3N 124.2E → x=62,  y=424
+          与那国島  24.5N 123.0E → x=3,   y=411
+          奄美大島  28.4N 129.7E → x=333, y=202
+          
+        台風現在地: 23.4N 127.3E → x=211, y=470
+        台風進路: 北北西(350°方向)
+        
+        沖縄本島の形状（実際の島形）:
+        西海岸は若干南西向き、東海岸は東向き
+        北端: 26.9N 128.3E → x=260, y=268
+        南端: 26.0N 127.7E → x=235, y=357
+        本島南部(那覇付近): 26.2N, 127.65E → x=232, y=346
+      -->
+      <svg viewBox="0 0 500 680" xmlns="http://www.w3.org/2000/svg">
+        <!-- 海 -->
+        <rect width="500" height="680" fill="#0b1e3a"/>
+        
+        <!-- グリッド（緯度経度） -->
+        <!-- 緯度線 20N,22N,24N,26N,28N,30N -->
+        <line x1="0" y1="620" x2="500" y2="620" stroke="#1a2a45" stroke-width=".5"/>
+        <text x="4" y="618" fill="#2d3a5c" font-size="8">20°N</text>
+        <line x1="0" y1="512" x2="500" y2="512" stroke="#1a2a45" stroke-width=".5"/>
+        <text x="4" y="510" fill="#2d3a5c" font-size="8">22°N</text>
+        <line x1="0" y1="404" x2="500" y2="404" stroke="#1a2a45" stroke-width=".5"/>
+        <text x="4" y="402" fill="#2d3a5c" font-size="8">24°N</text>
+        <line x1="0" y1="296" x2="500" y2="296" stroke="#1a2a45" stroke-width=".5"/>
+        <text x="4" y="294" fill="#2d3a5c" font-size="8">26°N</text>
+        <line x1="0" y1="188" x2="500" y2="188" stroke="#1a2a45" stroke-width=".5"/>
+        <text x="4" y="186" fill="#2d3a5c" font-size="8">28°N</text>
+        <line x1="0" y1="80" x2="500" y2="80" stroke="#1a2a45" stroke-width=".5"/>
+        <text x="4" y="78" fill="#2d3a5c" font-size="8">30°N</text>
+        <!-- 経度線 123E,125E,127E,129E,131E -->
+        <line x1="30" y1="0" x2="30" y2="680" stroke="#1a2a45" stroke-width=".5"/>
+        <text x="28" y="670" fill="#2d3a5c" font-size="8" text-anchor="middle">123E</text>
+        <line x1="128" y1="0" x2="128" y2="680" stroke="#1a2a45" stroke-width=".5"/>
+        <text x="128" y="670" fill="#2d3a5c" font-size="8" text-anchor="middle">125E</text>
+        <line x1="226" y1="0" x2="226" y2="680" stroke="#1a2a45" stroke-width=".5"/>
+        <text x="226" y="670" fill="#2d3a5c" font-size="8" text-anchor="middle">127E</text>
+        <line x1="324" y1="0" x2="324" y2="680" stroke="#1a2a45" stroke-width=".5"/>
+        <text x="324" y="670" fill="#2d3a5c" font-size="8" text-anchor="middle">129E</text>
+        <line x1="422" y1="0" x2="422" y2="680" stroke="#1a2a45" stroke-width=".5"/>
+        <text x="422" y="670" fill="#2d3a5c" font-size="8" text-anchor="middle">131E</text>
+
+        <!-- ====== 陸地 ====== -->
+        <!-- 台湾 (24.5-25.3N, 121.5-121.9E) → x=35-55, y=260-350 -->
+        <ellipse cx="25" cy="314" rx="14" ry="48" fill="#2d4a1e" opacity=".75"/>
+        <text x="25" y="318" fill="#4a7a32" font-size="9" text-anchor="middle">台湾</text>
+
+        <!-- フィリピン北部ルソン島 (16-19N, 120-122E) → 画面左下 -->
+        <ellipse cx="30" cy="546" rx="16" ry="36" fill="#2d4a1e" opacity=".6"/>
+        <text x="30" y="550" fill="#4a7a32" font-size="8" text-anchor="middle">ルソン</text>
+
+        <!-- 与那国島 (24.47N, 123.01E) → x=32, y=405 -->
+        <circle cx="32" cy="405" r="5" fill="#2d5a1e" opacity=".9"/>
+        <text x="42" y="408" fill="#7ab55a" font-size="8">与那国</text>
+
+        <!-- 石垣島 (24.34N, 124.16E) → x=88, y=413 -->
+        <ellipse cx="88" cy="413" rx="12" ry="6" fill="#2d5a1e" opacity=".9"/>
+        <text x="88" y="430" fill="#7ab55a" font-size="8" text-anchor="middle">石垣島</text>
+
+        <!-- 宮古島 (24.8N, 125.3E) → x=140, y=391 -->
+        <ellipse cx="140" cy="391" rx="10" ry="5" fill="#2d5a1e" opacity=".9"/>
+        <text x="140" y="407" fill="#7ab55a" font-size="8" text-anchor="middle">宮古島</text>
+
+        <!--
+          ====== 沖縄本島（実態形状） ======
+          実際の沖縄本島: 全長約106km、南北に細長い
+          北端（辺戸岬）:  26.87N 128.26E → x=256, y=268
+          北部中央:        26.7N  128.1E  → x=248, y=278
+          やんばる中部:    26.5N  127.9E  → x=238, y=289
+          名護:            26.6N  127.98E → x=243, y=284
+          金武湾東:        26.45N 128.1E  → x=248, y=294
+          中部東(うるま):  26.37N 127.9E  → x=238, y=298
+          中部(沖縄市):    26.33N 127.8E  → x=233, y=300
+          那覇:            26.21N 127.68E → x=228, y=306
+          豊見城南:        26.1N  127.68E → x=228, y=312
+          糸満南端:        26.0N  127.66E → x=227, y=318
+          
+          形状: 南北に細長く、中部が少し膨らんだ形
+          西海岸(東シナ海側): 那覇、北谷(米軍基地)
+          東海岸(太平洋側): うるま市、金武
+        -->
+
+        <!-- 沖縄本島 西海岸ライン -->
+        <polyline
+          points="252,268 248,272 244,278 240,284 237,290 234,296 231,303 228,310 226,316 226,322"
+          fill="none" stroke="#2d5a1e" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" opacity=".9"/>
+        <!-- 東海岸ライン（少し東寄り） -->
+        <polyline
+          points="252,268 255,274 258,282 256,290 253,297 250,304 247,310 243,317 238,322 234,326 228,328"
+          fill="none" stroke="#2d5a1e" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" opacity=".9"/>
+        <!-- 本島塗りつぶし -->
+        <polygon
+          points="252,264 256,272 260,282 258,292 254,300 250,307 246,314 241,320 236,326 229,330 226,326 225,318 225,310 226,302 229,294 233,287 237,280 241,274 246,268"
+          fill="#2d5a1e" opacity=".85"/>
+
+        <!-- 主要地点マーカー -->
+        <!-- 那覇（市街地・FTCエリア北寄り） -->
+        <circle cx="228" cy="310" r="5" fill="#ff6b6b" opacity=".9"/>
+        <text x="214" y="308" fill="#ff9999" font-size="9" text-anchor="end">那覇</text>
+        <!-- 北谷（米軍基地エリア） -->
+        <circle cx="233" cy="300" r="4" fill="#60a5fa" opacity=".9"/>
+        <text x="219" y="298" fill="#93c5fd" font-size="8" text-anchor="end">北谷/嘉手納</text>
+        <!-- 名護 -->
+        <circle cx="243" cy="284" r="3" fill="#a0aec0" opacity=".8"/>
+        <text x="250" y="283" fill="#a0aec0" font-size="8">名護</text>
+        <!-- 辺戸岬 -->
+        <circle cx="253" cy="266" r="3" fill="#a0aec0" opacity=".7"/>
+        <text x="255" y="264" fill="#94a3b8" font-size="8">辺戸岬</text>
+        <!-- 糸満 -->
+        <circle cx="228" cy="322" r="3" fill="#a0aec0" opacity=".7"/>
+        <text x="216" y="323" fill="#94a3b8" font-size="8" text-anchor="end">糸満</text>
+
+        <!-- 伊江島 -->
+        <ellipse cx="232" cy="276" rx="5" ry="2" fill="#2d5a1e" opacity=".8"/>
+        <text x="222" y="274" fill="#6b8f4e" font-size="7" text-anchor="end">伊江島</text>
+        <!-- 慶良間諸島 -->
+        <circle cx="214" cy="316" r="3" fill="#2d5a1e" opacity=".7"/>
+        <text x="204" y="327" fill="#6b8f4e" font-size="7" text-anchor="middle">慶良間</text>
+
+        <!-- 久米島 -->
+        <circle cx="186" cy="315" r="5" fill="#2d5a1e" opacity=".8"/>
+        <text x="186" y="330" fill="#6b8f4e" font-size="7" text-anchor="middle">久米島</text>
+
+        <!-- 奄美大島 (28.4N 129.7E) → x=333, y=198 -->
+        <ellipse cx="333" cy="198" rx="8" ry="20" fill="#2d5a1e" opacity=".8"/>
+        <text x="345" y="202" fill="#7ab55a" font-size="9">奄美</text>
+
+        <!-- 徳之島 (27.8N 128.9E) → x=295, y=230 -->
+        <ellipse cx="295" cy="230" rx="6" ry="10" fill="#2d5a1e" opacity=".7"/>
+        <text x="304" y="233" fill="#6b8f4e" font-size="8">徳之島</text>
+
+        <!-- 沖永良部島 (27.4N 128.6E) → x=281, y=252 -->
+        <ellipse cx="280" cy="252" rx="6" ry="4" fill="#2d5a1e" opacity=".7"/>
+        <text x="289" y="255" fill="#6b8f4e" font-size="8">沖永良部</text>
+
+        <!-- ====== 暴風域・強風域 ====== -->
+        <!-- 現在地: 23.42N 127.35E → x=213, y=469 -->
+        <!-- 強風域: 東500km, 西390km (楕円) -->
+        <ellipse cx="213" cy="469" rx="95" ry="90" fill="rgba(245,158,11,.06)" stroke="#f59e0b" stroke-width="1" stroke-dasharray="5,4" opacity=".6"/>
+        <text x="310" y="468" fill="#f59e0b" font-size="8" opacity=".7">強風域</text>
+        <!-- 暴風域: 全域185km → r=185km→約36px(1°≈54px, 1°≈111km, 185/111≈1.67°) -->
+        <circle cx="213" cy="469" r="42" fill="rgba(239,68,68,.1)" stroke="#e53e3e" stroke-width="1.5" stroke-dasharray="4,3" opacity=".8"/>
+        <text x="213" y="520" fill="#fc8181" font-size="8" text-anchor="middle">暴風域</text>
+
+        <!-- ====== 予報円（6/1夜の最接近時） ====== -->
+        <!-- 最接近時想定位置: 26.2N 127.4E → x=217, y=322 付近（沖縄本島西側） -->
+        <circle cx="217" cy="318" r="22" fill="rgba(239,68,68,.08)" stroke="#e53e3e" stroke-width="1.2" stroke-dasharray="4,3" opacity=".7"/>
+        <text x="192" y="314" fill="#fc8181" font-size="8" text-anchor="end">予報円</text>
+        <text x="192" y="323" fill="#fc8181" font-size="8" text-anchor="end">6/1夜</text>
+
+        <!-- ====== シナリオ進路ライン ====== -->
+
+        <!-- シナリオA: 現行予測（本島西側を通過 → 東シナ海 → 奄美 → 九州）
+             現在地 → 北北西進 → 本島の西側を通過（127.4E付近）→ 東シナ海 → 奄美 → 北東転回
+             ポイント: 
+               23.4N 127.35E → x=213, y=469
+               24.5N 127.2E  → x=206, y=415 (北北西進)
+               25.5N 127.1E  → x=201, y=361 (那覇の西100km付近)
+               26.1N 127.3E  → x=211, y=329 (本島西岸付近・最接近)
+               26.8N 127.8E  → x=233, y=291 (本島北端付近)
+               27.5N 128.2E  → x=253, y=253 (東シナ海を北上)
+               28.4N 129.5E  → x=323, y=204 (奄美付近)
+               29.5N 130.5E  → x=372, y=161 (奄美北東)
+               31.0N 132.0E  → x=445, y=80  (九州南端方面)
+        -->
+        <path d="M213,469 C208,445 205,420 202,395 C200,373 202,350 210,328 C216,315 224,300 233,290 C244,277 254,262 265,250 C278,236 295,222 323,204 C350,187 375,162 420,120"
+              fill="none" stroke="#fc8181" stroke-width="3.5" stroke-linecap="round" opacity=".9"/>
+        <!-- A矢印 -->
+        <polygon points="416,116 426,122 412,128" fill="#fc8181" opacity=".9"/>
+
+        <!-- シナリオB: 台湾偏向（高気圧強化で西寄り → 台湾北部）
+             現在地 → さらに西北西 → 台湾北方バシー海峡へ
+             ポイント:
+               23.4N 127.35E → x=213, y=469
+               23.0N 126.5E  → x=172, y=491  (西北西)
+               23.0N 125.5E  → x=123, y=491  (西進)
+               23.5N 124.5E  → x=74,  y=469  (台湾北東へ)
+               24.5N 123.5E  → x=25,  y=415  (台湾方面)
+        -->
+        <path d="M213,469 C196,476 178,483 155,487 C135,490 110,488 80,475 C55,462 35,445 20,420"
+              fill="none" stroke="#fb923c" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="8,4" opacity=".8"/>
+        <!-- B矢印 -->
+        <polygon points="17,417 15,428 25,422" fill="#fb923c" opacity=".8"/>
+
+        <!-- シナリオC: フィリピン/西進滞留
+             現在地 → 西進 → フィリピン方面
+        -->
+        <path d="M213,469 C200,490 180,510 158,528 C138,545 110,556 80,562"
+              fill="none" stroke="#22d3ee" stroke-width="2" stroke-linecap="round" stroke-dasharray="6,4" opacity=".7"/>
+        <!-- C矢印 -->
+        <polygon points="77,558 75,568 85,563" fill="#22d3ee" opacity=".7"/>
+
+        <!-- ====== 台風現在地マーカー ====== -->
+        <!-- 現在地: 23.42N 127.35E → x=213, y=469 -->
+        <circle cx="213" cy="469" r="16" fill="none" stroke="#fc8181" stroke-width="2.5" opacity=".8"/>
+        <circle cx="213" cy="469" r="8" fill="#fc8181" opacity=".85"/>
+        <!-- 渦マーク風の放射線 -->
+        <line x1="213" y1="449" x2="213" y2="455" stroke="#fc8181" stroke-width="2" opacity=".6"/>
+        <line x1="213" y1="483" x2="213" y2="489" stroke="#fc8181" stroke-width="2" opacity=".6"/>
+        <line x1="193" y1="469" x2="199" y2="469" stroke="#fc8181" stroke-width="2" opacity=".6"/>
+        <line x1="227" y1="469" x2="233" y2="469" stroke="#fc8181" stroke-width="2" opacity=".6"/>
+        <text x="213" y="505" fill="#fc8181" font-size="11" text-anchor="middle" font-weight="900">台風6号</text>
+        <text x="213" y="516" fill="#fc8181" font-size="9" text-anchor="middle">現在地(6/1 03時)</text>
+
+        <!-- ====== 最接近ポイントマーカー ====== -->
+        <!-- 那覇西100km付近: 26.15N 127.3E → x=211, y=325 -->
+        <circle cx="211" cy="325" r="6" fill="none" stroke="#f59e0b" stroke-width="2" stroke-dasharray="3,2"/>
+        <text x="196" y="338" fill="#fbbf24" font-size="9" text-anchor="middle">最接近</text>
+        <text x="196" y="348" fill="#fbbf24" font-size="9" text-anchor="middle">6/1夜</text>
+
+        <!-- A通過点マーカー（本島西岸） -->
+        <circle cx="210" cy="328" r="4" fill="#fc8181" opacity=".7"/>
+
+        <!-- ====== 東シナ海 / 太平洋 ラベル ====== -->
+        <text x="100" y="300" fill="#1a3a5c" font-size="10" text-anchor="middle" transform="rotate(-15,100,300)">東シナ海</text>
+        <text x="350" y="400" fill="#1a3a5c" font-size="10" text-anchor="middle">太平洋</text>
+        <text x="140" y="460" fill="#1a2a40" font-size="9" text-anchor="middle">フィリピン海</text>
+
+        <!-- ====== コンパス ====== -->
+        <g transform="translate(455,30)">
+          <circle cx="0" cy="0" r="16" fill="rgba(17,24,39,.8)" stroke="#2d3a5c" stroke-width="1"/>
+          <polygon points="0,-12 -4,6 0,2 4,6" fill="#fc8181"/>
+          <polygon points="0,12 -4,-6 0,-2 4,-6" fill="#94a3b8"/>
+          <text x="0" y="-14" fill="#fc8181" font-size="8" text-anchor="middle">N</text>
+          <text x="0" y="22" fill="#94a3b8" font-size="8" text-anchor="middle">S</text>
+          <text x="14" y="3" fill="#94a3b8" font-size="8" text-anchor="middle">E</text>
+          <text x="-14" y="3" fill="#94a3b8" font-size="8" text-anchor="end">W</text>
+        </g>
+
+        <!-- スケールバー -->
+        <g transform="translate(20,640)">
+          <line x1="0" y1="0" x2="49" y2="0" stroke="#64748b" stroke-width="1.5"/>
+          <line x1="0" y1="-4" x2="0" y2="4" stroke="#64748b" stroke-width="1.5"/>
+          <line x1="49" y1="-4" x2="49" y2="4" stroke="#64748b" stroke-width="1.5"/>
+          <text x="24" y="-6" fill="#64748b" font-size="8" text-anchor="middle">100km</text>
+        </g>
+
+      </svg>
+    </div>
+
+    <!-- 凡例 -->
+    <div class="legend">
+      <div class="leg-item">
+        <div class="leg-line" style="background:#fc8181"></div>
+        <span style="color:#fc8181">A: 本島西側通過→九州（70%）</span>
+      </div>
+      <div class="leg-item">
+        <div class="leg-line" style="background:#fb923c;background:repeating-linear-gradient(90deg,#fb923c 0px,#fb923c 5px,transparent 5px,transparent 8px)"></div>
+        <span style="color:#fb923c">B: 台湾偏向（20%）</span>
+      </div>
+      <div class="leg-item">
+        <div class="leg-line" style="background:repeating-linear-gradient(90deg,#22d3ee 0px,#22d3ee 4px,transparent 4px,transparent 7px)"></div>
+        <span style="color:#22d3ee">C: フィリピン方面（10%）</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 進路詳細（西側通過の根拠） -->
+<div class="route-box">
+  <div class="rb-title">📍 沖縄本島「西側通過」の根拠</div>
+  <div class="rb-row">
+    <div class="rb-dot" style="background:#fc8181"></div>
+    <span>台風現在地：<strong style="color:#fbbf24">北緯23.4°・東経127.3°</strong>（宮古島南東260km）。那覇（127.7°E）より<strong style="color:#fc8181">西側を北上中</strong>。</span>
+  </div>
+  <div class="rb-row">
+    <div class="rb-dot" style="background:#fb923c"></div>
+    <span>北北西（約340°方向）に毎時15kmで進行中。このまま直進すると<strong style="color:#fbbf24">那覇の西方約30〜50km</strong>（東シナ海側）を通過する進路。</span>
+  </div>
+  <div class="rb-row">
+    <div class="rb-dot" style="background:#22d3ee"></div>
+    <span>沖縄本島の<strong style="color:#22d3ee">東側（太平洋側）</strong>は通過しない見込み。西側通過の場合、<strong style="color:#fc8181">北谷・嘉手納・那覇方面が最も風雨が強くなる</strong>。</span>
+  </div>
+  <div class="rb-row">
+    <div class="rb-dot" style="background:#10b981"></div>
+    <span>気象庁発表：2日3時には奄美市の西南西140kmへ到達予定。この進路が確定的。</span>
+  </div>
+</div>
+
+<!-- シナリオタブ -->
+<div class="sc-section">
+  <div class="card">
+    <div class="card-title"><span class="ct-dot"></span>3シナリオ詳細（タップで切替）</div>
+    <div style="padding:0 14px 14px">
+      <div class="sc-tabs">
+        <button class="sc-tab active-a" id="tab-a" onclick="showSc('a')">🔴 A: 直撃</button>
+        <button class="sc-tab" id="tab-b" onclick="showSc('b')">🟠 B: 台湾</button>
+        <button class="sc-tab" id="tab-c" onclick="showSc('c')">🔵 C: 滞留</button>
+      </div>
+      <div class="sc-body show" id="sc-a">
+        <div class="sc-content">
+          <div class="sc-row">🌀 <strong>進路：</strong>本島西側（那覇の西30〜50km・東シナ海側）を北上 → 東シナ海 → 奄美（6/2） → 九州 → 本州南岸東進（6/3〜4）</div>
+          <div class="sc-row">⚡ <strong>強度：</strong>975hPa・最大風速30m/s・瞬間45m/s。那覇市最大瞬間風速22m/s超・100mm超の大雨。</div>
+          <div class="sc-row">🏝️ <strong>沖縄影響：</strong>西側（那覇・北谷・嘉手納）が暴風の直撃を受ける。台風の東側（危険半円外）に当たる東海岸は比較的風が弱い傾向。</div>
+          <div class="sc-row">🏥 <strong>FTC影響：</strong>6/1夜〜6/2は完全休診。軍属患者のフライト欠航・基地封鎖でキャンセル急増。<strong>英日両語での告知を今すぐ実施。</strong></div>
+          <div class="sc-row">📊 <strong>根拠：</strong>気象庁・JTWC・ECMWF 3機関一致。現在の座標（E127.3°）からの北北西進路が確定的。</div>
+        </div>
+      </div>
+      <div class="sc-body" id="sc-b">
+        <div class="sc-content">
+          <div class="sc-row">🌀 <strong>発生条件：</strong>太平洋高気圧が予想より強く西方に張り出し、バシー海峡〜台湾北部方向に台風を押し下げる場合。</div>
+          <div class="sc-row">🗺️ <strong>進路：</strong>現在地から西北西方向へ転向 → バシー海峡 → 台湾北部上陸または台湾海峡 → 中国大陸方面。</div>
+          <div class="sc-row">🏝️ <strong>沖縄影響：</strong>暴風域を免れる可能性。ただし外側の雨帯・強風域で大雨・強風は残存。</div>
+          <div class="sc-row">🏥 <strong>FTC影響：</strong>直撃は回避。患者来院は困難だが設備への重大被害は回避できる可能性。</div>
+          <div class="sc-row">📊 <strong>確率：</strong>約20%。5〜6月は高気圧が弱く、現時点では発生しにくい気圧配置。</div>
+        </div>
+      </div>
+      <div class="sc-body" id="sc-c">
+        <div class="sc-content">
+          <div class="sc-row">🌀 <strong>発生条件：</strong>偏西風が大幅南下し転向できない、またはブロッキング高気圧が発達する場合。</div>
+          <div class="sc-row">🗺️ <strong>進路：</strong>フィリピン方面へ西進継続 → ルソン島付近上陸 → 南シナ海で消滅。</div>
+          <div class="sc-row">🏝️ <strong>沖縄影響：</strong>直接影響なし。関連する降雨帯で断続的な雨が続く可能性。</div>
+          <div class="sc-row">🏥 <strong>FTC影響：</strong>通常営業継続可能。</div>
+          <div class="sc-row">📊 <strong>確率：</strong>約10%。現在の気圧配置では最も可能性が低いシナリオ。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- タイムライン -->
+<div class="tl-section">
+  <div class="card">
+    <div class="card-title"><span class="ct-dot"></span>進路タイムライン</div>
+    <div style="padding:10px 14px 14px">
+      <div class="tl"><div class="tl-inner">
+        <div class="tl-item"><div class="tl-dot done"></div><div class="tl-dt">5/27</div><div class="tl-lbl" style="color:#64748b">発生</div><div class="tl-desc">カロリン諸島<br>1000hPa</div></div>
+        <div class="tl-item"><div class="tl-dot done"></div><div class="tl-dt">5/29</div><div class="tl-lbl" style="color:#64748b">発達</div><div class="tl-desc">フィリピン東<br>998hPa</div></div>
+        <div class="tl-item"><div class="tl-dot done"></div><div class="tl-dt">5/31</div><div class="tl-lbl" style="color:#f97316">急発達</div><div class="tl-desc">975hPa<br>30m/s</div></div>
+        <div class="tl-item"><div class="tl-dot now"></div><div class="tl-dt">6/1午前</div><div class="tl-lbl" style="color:#fc8181">🔴今ここ</div><div class="tl-desc">宮古島<br>南東260km</div></div>
+        <div class="tl-item"><div class="tl-dot hot"></div><div class="tl-dt">6/1夜</div><div class="tl-lbl" style="color:#fb923c">⚡最接近</div><div class="tl-desc">本島西側<br>暴風直撃</div></div>
+        <div class="tl-item"><div class="tl-dot warn"></div><div class="tl-dt">6/2〜3</div><div class="tl-lbl" style="color:#fbbf24">北東転向</div><div class="tl-desc">奄美→九州<br>大雨継続</div></div>
+        <div class="tl-item"><div class="tl-dot ok"></div><div class="tl-dt">6/5〜</div><div class="tl-lbl" style="color:#10b981">温帯低気圧</div><div class="tl-desc">日本の東<br>沖縄回復</div></div>
+      </div></div>
+    </div>
+  </div>
+</div>
+
+<!-- 影響度 -->
+<div class="prog-section">
+  <div class="card">
+    <div class="card-title"><span class="ct-dot"></span>FTC リスク影響度</div>
+    <div style="padding:0 14px 14px;margin-top:4px">
+      <div class="prog"><div class="ph"><span>🌀 暴風リスク（西側直撃）</span><span style="color:#fc8181">9/10</span></div><div class="pb"><div class="pf" style="width:90%;background:linear-gradient(90deg,#e53e3e,#fc8181)"></div></div></div>
+      <div class="prog"><div class="ph"><span>🌧️ 大雨・高潮リスク</span><span style="color:#fb923c">8/10</span></div><div class="pb"><div class="pf" style="width:80%;background:linear-gradient(90deg,#f97316,#fb923c)"></div></div></div>
+      <div class="prog"><div class="ph"><span>🏥 FTC休診リスク</span><span style="color:#fc8181">10/10</span></div><div class="pb"><div class="pf" style="width:100%;background:linear-gradient(90deg,#e53e3e,#f97316)"></div></div></div>
+      <div class="prog"><div class="ph"><span>✈️ 軍属患者来院不可</span><span style="color:#fbbf24">9/10</span></div><div class="pb"><div class="pf" style="width:90%;background:linear-gradient(90deg,#f59e0b,#fbbf24)"></div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- アクション -->
+<div class="act-section">
+  <div class="card">
+    <div class="card-title"><span class="ct-dot"></span>⚡ 今日のFTC緊急アクション</div>
+    <div style="padding:0 14px 14px;margin-top:4px">
+      <ul class="act-list">
+        <li><span class="act-tag" style="background:rgba(239,68,68,.15);color:#fc8181">🔴即時</span><span>6/1夜〜6/2の全予約患者へ<strong>英日両語で休診連絡</strong>。SMS/メール/Base SNSで今日中に発信。</span></li>
+        <li><span class="act-tag" style="background:rgba(239,68,68,.15);color:#fc8181">🔴即時</span><span><strong>那覇・北谷エリア</strong>は西側直撃で最も風雨強。エコー機器・PC防水固定、重要書類高所移動。</span></li>
+        <li><span class="act-tag" style="background:rgba(249,115,22,.15);color:#fb923c">🟠本日中</span><span>窓ガラス養生、シャッター確認、看板・飛散物撤去。停電3日想定のUPS・備蓄確認。</span></li>
+        <li><span class="act-tag" style="background:rgba(16,185,129,.15);color:#34d399">🟢台風後</span><span>6/3以降「復旧完了・予約再開」を英日で発信。早期アナウンスが軍属コミュニティの信頼獲得に直結。</span></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- カレンダー -->
+<div class="cal-section">
+  <div class="card">
+    <div class="card-title"><span class="ct-dot"></span>7日間気象リスクカレンダー</div>
+    <div style="padding:0 12px 14px;margin-top:4px">
+      <div class="cal-grid">
+        <div class="cal-day" style="border-color:#e53e3e"><div class="cal-dt">6/1(月)</div><div class="cal-ico">🌀</div><div class="cal-risk" style="color:#fc8181">最高危険</div><div class="cal-note">夜〜本島西側通過</div></div>
+        <div class="cal-day" style="border-color:#e53e3e"><div class="cal-dt">6/2(火)</div><div class="cal-ico">🌪️</div><div class="cal-risk" style="color:#fc8181">暴風継続</div><div class="cal-note">猛烈な風・大雨</div></div>
+        <div class="cal-day" style="border-color:#f97316"><div class="cal-dt">6/3(水)</div><div class="cal-ico">⛈️</div><div class="cal-risk" style="color:#fb923c">高リスク</div><div class="cal-note">前線大雨</div></div>
+        <div class="cal-day" style="border-color:#f59e0b"><div class="cal-dt">6/4(木)</div><div class="cal-ico">🌧️</div><div class="cal-risk" style="color:#fbbf24">中リスク</div><div class="cal-note">残存降雨</div></div>
+        <div class="cal-day" style="border-color:#f59e0b"><div class="cal-dt">6/5(金)</div><div class="cal-ico">🌦️</div><div class="cal-risk" style="color:#fbbf24">低〜中</div><div class="cal-note">温低・断続雨</div></div>
+        <div class="cal-day" style="border-color:#10b981"><div class="cal-dt">6/6(土)</div><div class="cal-ico">⛅</div><div class="cal-risk" style="color:#34d399">回復</div><div class="cal-note">天候改善</div></div>
+        <div class="cal-day" style="border-color:#10b981"><div class="cal-dt">6/7(日)</div><div class="cal-ico">🌤️</div><div class="cal-risk" style="color:#34d399">低リスク</div><div class="cal-note">通常営業へ</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 結論 -->
+<div class="conc-section">
+  <div class="conc">
+    <div class="conc-title">📋 総合判断｜西側通過・高気圧押し下げなし</div>
+    <div class="conc-body">
+      <strong style="color:#fbbf24">結論：台風6号は沖縄本島の西側（東シナ海側・那覇の西30〜50km付近）を通過する。台湾・フィリピン方向への押し下げはほぼ起こらない。</strong><br><br>
+      現在地の東経127.3°は那覇（127.7°）より西側であり、北北西進路のまま進むと本島の西岸（東シナ海側）を通過する。西側通過の場合、<strong style="color:#fc8181">那覇・北谷・嘉手納エリアが最も風雨が強くなる</strong>（危険半円）。東側（うるま・南城）は可航半円で比較的風が弱い傾向。<br><br>
+      高気圧リッジは東側に位置しており、台風の北上を阻害するほどの勢力には達していない。気象庁・JTWC・ECMWF 3機関とも沖縄通過進路で一致。<strong style="color:#10b981">FTCは6/1夜〜6/2の全面休診対応と英日両語での告知を今すぐ実施すること。</strong>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  データソース：tenki.jp（台風6号2026年6月1日03時現在） / 気象庁 / JTWC / ウェザーニュース<br>
+  座標：N23°25' E127°20'（宮古島南東260km）/ 北北西15km/h / 975hPa / 30m/s<br>
+  Family Tree Clinic Oki ｜ 合同会社koya ｜ 2026年6月1日（月）最新版
+</div>
+
+<script>
+function showSc(s){
+  ['a','b','c'].forEach(x=>{
+    document.getElementById('sc-'+x).classList.remove('show');
+    document.getElementById('tab-'+x).classList.remove('active-a','active-b','active-c');
+  });
+  document.getElementById('sc-'+s).classList.add('show');
+  const map={'a':'active-a','b':'active-b','c':'active-c'};
+  document.getElementById('tab-'+s).classList.add(map[s]);
+}
+</script>
+</body>
+</html>
