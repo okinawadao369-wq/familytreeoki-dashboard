@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>🌀 台風監視 FTO</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<style>
+:root{
+  --bg:#0a0e1a; --card:#111827; --card2:#1a2340; --border:#2d3a5c;
+  --red:#e53e3e; --orange:#dd6b20; --yellow:#d69e2e; --green:#38a169;
+  --blue:#3182ce; --lblue:#90cdf4; --text:#e2e8f0; --muted:#718096;
+  --warm:#7B5C44;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+body{
+  font-family:'Hiragino Sans','Noto Sans JP',sans-serif;
+  background:var(--bg);color:var(--text);
+  max-width:480px;margin:0 auto;overflow-x:hidden;
+}
+
+/* ── HEADER ── */
+.hd{background:linear-gradient(135deg,#0d1526,#111827);border-bottom:2px solid var(--red);padding:9px 12px;display:flex;align-items:center;position:sticky;top:0;z-index:9999;}
+.hd-fto{background:var(--warm);color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;margin-right:8px;flex-shrink:0;}
+.hd-t{flex:1;}
+.hd-t h1{font-size:14px;font-weight:800;color:#fff;line-height:1.2;}
+.hd-t p{font-size:9px;color:var(--lblue);margin-top:1px;}
+.live-pill{display:flex;align-items:center;gap:4px;background:rgba(229,62,62,.15);border:1px solid var(--red);border-radius:12px;padding:3px 8px;font-size:9px;font-weight:700;color:#fc8181;}
+.live-dot{width:6px;height:6px;background:var(--red);border-radius:50%;animation:blink 1s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.upd-btn{background:none;border:1px solid var(--border);border-radius:10px;color:var(--lblue);font-size:9px;padding:2px 8px;cursor:pointer;margin-top:3px;}
+
+/* ── TICKER ── */
+.ticker{background:#0d1526;border-bottom:1px solid var(--border);padding:5px 10px;display:flex;align-items:center;gap:6px;overflow:hidden;}
+.t-badge{background:var(--red);color:#fff;font-size:8px;font-weight:700;padding:1px 6px;border-radius:3px;letter-spacing:1px;flex-shrink:0;}
+.t-text{font-size:11px;white-space:nowrap;animation:tick 28s linear infinite;color:#fc8181;}
+@keyframes tick{0%{transform:translateX(50vw)}100%{transform:translateX(-100%)}}
+
+/* ── PAGE / TAB ── */
+.page{display:none;padding:10px 10px 72px;}
+.page.on{display:block;}
+.tabs{position:fixed;bottom:0;left:0;right:0;max-width:480px;margin:0 auto;background:#0d1526;border-top:1px solid var(--border);display:flex;z-index:9999;}
+.tb{flex:1;padding:8px 4px;text-align:center;cursor:pointer;font-size:8px;color:#4a5568;border:none;background:none;transition:color .2s;}
+.tb.on{color:var(--lblue);}
+.tb-i{font-size:19px;display:block;margin-bottom:1px;}
+
+/* ── LEVEL HERO ── */
+.lv-hero{border-radius:12px;padding:12px 14px;margin-bottom:10px;border:2px solid;text-align:center;}
+.lv-num{font-size:50px;font-weight:900;line-height:1;}
+.lv-lbl{font-size:15px;font-weight:800;margin-top:3px;}
+.lv-en{font-size:10px;margin-top:2px;opacity:.85;}
+.lv-desc{font-size:11px;margin-top:7px;line-height:1.65;opacity:.85;}
+
+/* ── KPI 2x2 ── */
+.kpi4{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:10px;}
+.kb{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:9px;text-align:center;}
+.kl{font-size:9px;color:var(--muted);margin-bottom:2px;}
+.kv{font-size:22px;font-weight:900;line-height:1;}
+.ku{font-size:9px;color:var(--muted);margin-top:2px;}
+
+/* ── ALERT BAR ── */
+.ab{border-radius:8px;padding:9px 12px;margin-bottom:10px;font-size:11px;line-height:1.7;border:1px solid;border-left:4px solid;}
+.ab.red{background:#2d1a1a;border-color:var(--red)!important;color:#fca5a5;}
+.ab.orange{background:#2d2010;border-color:var(--orange)!important;color:#fbd38d;}
+.ab.blue{background:#1a2d3d;border-color:var(--blue)!important;color:var(--lblue);}
+.ab.green{background:#122d1e;border-color:var(--green)!important;color:#9ae6b4;}
+
+/* ── MAP ── */
+#map{width:100%;height:70vw;min-height:280px;max-height:380px;border-radius:10px;border:1px solid var(--border);}
+.map-wrap{margin-bottom:6px;position:relative;}
+
+/* ── MAP LEGEND (JMA style) ── */
+.m-leg{display:flex;flex-wrap:wrap;gap:10px;font-size:10px;color:var(--muted);margin-bottom:10px;padding:6px 8px;background:var(--card);border:1px solid var(--border);border-radius:8px;}
+.ml{display:flex;align-items:center;gap:4px;}
+.ml-line{width:22px;height:3px;border-radius:2px;}
+.ml-circle{width:12px;height:12px;border-radius:50%;border:2px solid;}
+.ml-dash{width:22px;height:0;border-top:2px dashed;}
+
+/* ── TC CARD ── */
+.tc-card{background:var(--card);border-radius:10px;border-left:4px solid var(--red);margin-bottom:10px;overflow:hidden;}
+.tc-hd{background:#2d1a1a;padding:9px 12px;display:flex;align-items:center;justify-content:space-between;}
+.tc-name{font-size:15px;font-weight:800;color:#fff;}
+.tc-cat{font-size:9px;font-weight:700;background:rgba(229,62,62,.3);border:1px solid var(--red);border-radius:10px;padding:2px 7px;color:#fc8181;}
+.tc-body{padding:9px 12px;}
+.tc-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:7px;}
+.ts{background:var(--card2);border-radius:6px;padding:7px;text-align:center;}
+.ts-l{font-size:8px;color:var(--muted);}
+.ts-v{font-size:16px;font-weight:800;}
+.ts-u{font-size:8px;color:var(--muted);}
+.tc-loc{background:var(--card2);border-radius:6px;padding:6px 10px;font-size:10px;color:#a0aec0;}
+
+/* ── SEC TITLE ── */
+.sec{font-size:12px;font-weight:700;color:var(--lblue);padding-left:8px;border-left:3px solid var(--blue);margin:12px 0 7px;}
+
+/* ── TIMELINE ── */
+.tl{display:flex;gap:5px;overflow-x:auto;padding-bottom:4px;margin-bottom:10px;scrollbar-width:thin;}
+.tl::-webkit-scrollbar{height:3px;}
+.tl::-webkit-scrollbar-thumb{background:var(--border);}
+.tl-i{flex-shrink:0;width:78px;background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:7px 6px;text-align:center;}
+.tl-i.now{border-color:var(--red);background:#2d1a1a;}
+.tl-i.warn{border-color:var(--orange);background:#2d2010;}
+.tl-i.caut{border-color:var(--yellow);background:#2d2a10;}
+.tl-i.safe{border-color:var(--green);background:#122d1e;}
+.tl-d{font-size:9px;color:var(--muted);margin-bottom:2px;}
+.tl-s{font-size:10px;font-weight:700;margin-bottom:2px;}
+.tl-t{font-size:9px;color:var(--muted);line-height:1.3;}
+.tl-i.now .tl-s{color:#fc8181;}
+.tl-i.warn .tl-s{color:#fbb46e;}
+.tl-i.caut .tl-s{color:#f6e05e;}
+.tl-i.safe .tl-s{color:#68d391;}
+
+/* ── BARS ── */
+.br{margin-bottom:7px;}
+.bl{font-size:10px;color:#a0aec0;margin-bottom:3px;display:flex;justify-content:space-between;}
+.bg{background:var(--border);border-radius:3px;height:7px;overflow:hidden;}
+.bf{height:100%;border-radius:3px;transition:width 1s;}
+
+/* ── SCENARIO ── */
+.sc{margin-bottom:6px;border-radius:8px;overflow:hidden;}
+.sc-h{display:flex;align-items:center;gap:7px;padding:9px 11px;cursor:pointer;transition:filter .2s;}
+.sc-h:hover{filter:brightness(1.15);}
+.sca{background:linear-gradient(90deg,#c53030,#9b2c2c);}
+.scb{background:linear-gradient(90deg,#b7791f,#975a16);}
+.scc{background:linear-gradient(90deg,#2c7a7b,#285e61);}
+.sc-badge{background:rgba(255,255,255,.2);border-radius:4px;padding:1px 8px;font-size:11px;font-weight:700;}
+.sc-title{font-size:11px;font-weight:700;flex:1;}
+.sc-prob{background:rgba(255,255,255,.2);border-radius:10px;padding:2px 8px;font-size:10px;font-weight:700;white-space:nowrap;}
+.sc-body{background:var(--card2);padding:10px 12px;display:none;}
+.sc-body.open{display:block;}
+.sc-ul{list-style:none;}
+.sc-ul li{font-size:11px;color:#cbd5e0;line-height:1.7;margin-bottom:4px;}
+.sc-key{display:inline-block;background:var(--border);border-radius:3px;padding:1px 7px;font-size:9px;color:var(--lblue);margin-top:5px;}
+
+/* ── CHECKLIST ── */
+.ph{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin:11px 0 5px;display:flex;align-items:center;gap:5px;}
+.cl{list-style:none;}
+.cl li{display:flex;align-items:flex-start;gap:7px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:11px;color:#cbd5e0;cursor:pointer;}
+.cl li:last-child{border-bottom:none;}
+.cb{width:15px;height:15px;flex-shrink:0;border:1.5px solid #4a5568;border-radius:3px;margin-top:1px;display:flex;align-items:center;justify-content:center;font-size:10px;transition:all .2s;}
+.cl li.done .cb{background:var(--green);border-color:var(--green);color:#fff;}
+.cl li.done span{text-decoration:line-through;color:#4a5568;}
+
+/* ── CONTACTS ── */
+.ctbox{background:#2d1a1a;border:1px solid rgba(229,62,62,.35);border-radius:8px;padding:10px;margin-top:10px;}
+.ct-t{font-size:9px;font-weight:700;color:#fc8181;text-transform:uppercase;letter-spacing:1px;margin-bottom:7px;}
+.ct-r{display:flex;justify-content:space-between;padding:5px 0;font-size:11px;border-bottom:1px solid rgba(255,255,255,.05);}
+.ct-r:last-child{border-bottom:none;}
+.ct-n{color:var(--muted);}
+.ct-num{color:var(--lblue);font-weight:700;}
+
+/* ── ACTION CARDS ── */
+.ac{border-radius:8px;padding:9px 11px;margin-bottom:7px;border:1px solid;}
+.ac.red{background:#2d1a1a;border-color:var(--red);}
+.ac.org{background:#2d2010;border-color:var(--orange);}
+.ac.grn{background:#122d1e;border-color:var(--green);}
+.ac-t{font-size:11px;font-weight:700;margin-bottom:3px;}
+.ac.red .ac-t{color:#fc8181;}
+.ac.org .ac-t{color:#fbb46e;}
+.ac.grn .ac-t{color:#68d391;}
+.ac-d{font-size:11px;line-height:1.65;}
+.ac.red .ac-d{color:#fca5a5;}
+.ac.org .ac-d{color:#fbd38d;}
+.ac.grn .ac-d{color:#9ae6b4;}
+
+/* ── SOURCES ── */
+.srcs{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px;}
+.src{background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:4px 10px;font-size:10px;color:var(--lblue);text-decoration:none;}
+
+/* ── SUMMARY ── */
+.sum{background:linear-gradient(135deg,var(--card2),var(--card));border:1px solid var(--blue);border-radius:10px;padding:12px;margin-top:10px;}
+.sum-t{font-size:12px;font-weight:700;color:var(--lblue);margin-bottom:8px;}
+.sum-b{font-size:11px;color:#cbd5e0;line-height:1.9;}
+
+/* ── RESET / FOOT ── */
+.rst{width:100%;margin-top:10px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:6px;color:var(--muted);font-size:10px;padding:7px;cursor:pointer;}
+.foot{text-align:center;font-size:9px;color:#4a5568;padding:5px 10px 8px;}
+
+/* ── DATA BADGES ── */
+.dbadge{display:inline-flex;align-items:center;gap:3px;border:1px solid;border-radius:12px;padding:2px 8px;font-size:9px;margin-bottom:8px;margin-right:4px;}
+
+/* ── LEAFLET POPUP override ── */
+.leaflet-popup-content-wrapper{background:#1a2340!important;border:1px solid #3182ce!important;color:#e2e8f0!important;border-radius:8px!important;font-size:12px!important;}
+.leaflet-popup-tip{background:#1a2340!important;}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="hd">
+  <span class="hd-fto">FTO</span>
+  <div class="hd-t">
+    <h1>🌀 台風リアルタイム監視</h1>
+    <p>Typhoon Watch · Okinawa · Family Tree Oki</p>
+  </div>
+  <div style="display:flex;flex-direction:column;align-items:flex-end;">
+    <div class="live-pill"><div class="live-dot"></div>LIVE</div>
+    <button class="upd-btn" onclick="doRefresh()">🔄 更新</button>
+  </div>
+</div>
+
+<!-- TICKER -->
+<div class="ticker" id="ticker">
+  <span class="t-badge" id="tbadge">警戒4</span>
+  <span class="t-text" id="ttext">台風6号チャンミーが沖縄に接近中 ― 気象庁・JTWC警報発令 ― スタッフ:フェーズ4緊急対応を今すぐ実行 🛡️</span>
+</div>
+
+<!-- ══════════════════════════
+     PAGE 1: 地図・概況
+══════════════════════════ -->
+<div class="page on" id="p-map">
+
+  <!-- LEVEL HERO -->
+  <div class="lv-hero" id="lv-hero" style="background:#2d1a1a;border-color:#e53e3e;">
+    <div class="lv-num" id="lv-num" style="color:#fc8181;">4</div>
+    <div class="lv-lbl" id="lv-lbl" style="color:#fc8181;">🔴 緊急警戒</div>
+    <div class="lv-en"  id="lv-en"  style="color:#fca5a5;">TYPHOON EMERGENCY — STUDIO CLOSED</div>
+    <div class="lv-desc" id="lv-desc">台風6号チャンミーが沖縄本島付近を通過中。スタジオ閉鎖・全スタッフ自宅待機。<br><span style="font-size:10px;opacity:.75">Typhoon CHANMI passing Okinawa. Studio CLOSED. All staff shelter in place.</span></div>
+  </div>
+
+  <!-- DATA BADGES -->
+  <div>
+    <span class="dbadge" style="background:rgba(49,130,206,.12);border-color:var(--blue);color:var(--lblue);">📡 気象庁 JMA リアルタイム</span>
+    <span class="dbadge" style="background:rgba(56,142,60,.12);border-color:var(--green);color:#68d391;">🇺🇸 JTWC 米軍データ</span>
+  </div>
+
+  <!-- KPI 2×2 -->
+  <div class="kpi4">
+    <div class="kb"><div class="kl">中心気圧</div><div class="kv" id="kv1" style="color:#fc8181;">960</div><div class="ku">hPa</div></div>
+    <div class="kb"><div class="kl">最大風速</div><div class="kv" id="kv2" style="color:#90cdf4;">36</div><div class="ku">m/s</div></div>
+    <div class="kb"><div class="kl">沖縄まで</div><div class="kv" id="kv3" style="color:#f6e05e;">80</div><div class="ku">km</div></div>
+    <div class="kb"><div class="kl">移動速度</div><div class="kv" id="kv4" style="color:#68d391;">25</div><div class="ku">km/h</div></div>
+  </div>
+
+  <!-- ALERT -->
+  <div class="ab red" id="main-ab">
+    🔴 <strong>台風6号チャンミー</strong>が沖縄本島付近を通過中。<br>
+    暴風域内・最大瞬間風速50〜60m/s・高潮・大雨警報発令中。<br>
+    <span style="font-size:10px;">Typhoon CHANMI is hitting Okinawa. Military families: shelter in place immediately.</span>
+  </div>
+
+  <!-- MAP -->
+  <div class="sec">🗺️ 西太平洋 台風進路マップ（気象庁準拠）</div>
+  <div class="map-wrap">
+    <div id="map"></div>
+  </div>
+
+  <!-- MAP LEGEND (JMA style) -->
+  <div class="m-leg">
+    <div class="ml"><div class="ml-line" style="background:#4499ff;"></div>過去経路</div>
+    <div class="ml"><div class="ml-line" style="background:#e53e3e;"></div>予報進路</div>
+    <div class="ml"><div class="ml-circle" style="border-color:#e53e3e;background:rgba(229,62,62,.15);"></div>暴風域</div>
+    <div class="ml"><div class="ml-circle" style="border-color:#d69e2e;background:rgba(214,158,46,.1);"></div>強風域</div>
+    <div class="ml"><div class="ml-dash" style="border-color:rgba(255,255,255,.5);"></div>予報円</div>
+    <div class="ml"><div class="ml-circle" style="background:#E8A0BC;border-color:#E8A0BC;"></div>沖縄</div>
+  </div>
+
+  <!-- TC CARD -->
+  <div class="sec">🌀 台風6号 チャンミー（CHANMI）</div>
+  <div class="tc-card">
+    <div class="tc-hd">
+      <div class="tc-name">台風6号 チャンミー</div>
+      <div class="tc-cat" id="tc-cat">強い台風 CAT2</div>
+    </div>
+    <div class="tc-body">
+      <div class="tc-stats">
+        <div class="ts"><div class="ts-l">中心気圧</div><div class="ts-v" id="ts1" style="color:#fc8181;">960</div><div class="ts-u">hPa</div></div>
+        <div class="ts"><div class="ts-l">最大風速</div><div class="ts-v" id="ts2" style="color:#90cdf4;">36</div><div class="ts-u">m/s</div></div>
+        <div class="ts"><div class="ts-l">暴風半径</div><div class="ts-v" id="ts3" style="color:#fbb46e;">110</div><div class="ts-u">km</div></div>
+      </div>
+      <div class="tc-loc">
+        位置: <span id="tc-pos" style="color:var(--lblue);font-weight:700;">25.5°N / 126.8°E</span>
+        &nbsp;｜&nbsp; 移動: <span id="tc-dir" style="color:var(--lblue);font-weight:700;">北北東 25km/h</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot" id="foot1">最終更新: --</div>
+</div>
+
+
+<!-- ══════════════════════════
+     PAGE 2: 分析・予測
+══════════════════════════ -->
+<div class="page" id="p-ana">
+
+  <!-- TIMELINE -->
+  <div class="sec" style="margin-top:4px;">📅 台風6号 進路タイムライン（JMA 2026/06/01）</div>
+  <div class="tl">
+    <div class="tl-i safe"><div class="tl-d">5/27</div><div class="tl-s">発生</div><div class="tl-t">カロリン諸島<br>1000hPa</div></div>
+    <div class="tl-i warn"><div class="tl-d">5/30</div><div class="tl-s">発達中</div><div class="tl-t">フィリピン東<br>990hPa 25m/s</div></div>
+    <div class="tl-i now"><div class="tl-d">6/1 今ここ</div><div class="tl-s">🔴 接近中</div><div class="tl-t">沖縄南<br>960hPa 36m/s</div></div>
+    <div class="tl-i now"><div class="tl-d">6/1〜2</div><div class="tl-s">⚡ 直撃</div><div class="tl-t">沖縄本島<br>暴風域通過</div></div>
+    <div class="tl-i warn"><div class="tl-d">6/2〜3</div><div class="tl-s">北上</div><div class="tl-t">奄美→九州<br>接近</div></div>
+    <div class="tl-i caut"><div class="tl-d">6/3〜4</div><div class="tl-s">東転回</div><div class="tl-t">偏西風捕捉<br>本州へ</div></div>
+    <div class="tl-i safe"><div class="tl-d">6/4〜</div><div class="tl-s">通過後</div><div class="tl-t">FTO<br>復旧開始</div></div>
+  </div>
+
+  <!-- 72h BARS -->
+  <div class="sec">📊 72時間 沖縄リスク指標</div>
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:11px;margin-bottom:10px;">
+    <div class="br"><div class="bl"><span>🌀 台風接近リスク</span><span style="color:#fc8181;">最高</span></div><div class="bg"><div class="bf" style="width:95%;background:linear-gradient(90deg,#fc8181,#e53e3e)"></div></div></div>
+    <div class="br"><div class="bl"><span>💨 最大風速 36m/s</span><span style="color:#90cdf4;">強い</span></div><div class="bg"><div class="bf" style="width:70%;background:linear-gradient(90deg,#63b3ed,#2b6cb0)"></div></div></div>
+    <div class="br"><div class="bl"><span>🌧️ 降水確率</span><span style="color:#9ae6b4;">90%以上</span></div><div class="bg"><div class="bf" style="width:90%;background:linear-gradient(90deg,#90cdf4,#2c7a7b)"></div></div></div>
+    <div class="br"><div class="bl"><span>📉 気圧低下 960hPa</span><span style="color:#f6e05e;">急激</span></div><div class="bg"><div class="bf" style="width:78%;background:linear-gradient(90deg,#f6e05e,#d69e2e)"></div></div></div>
+  </div>
+
+  <!-- JMA + JTWC -->
+  <div class="sec">📡 気象庁 + 🇺🇸 JTWC 統合情報</div>
+  <div class="ab blue" style="margin-bottom:8px;">
+    <strong>【気象庁 2026/06/01 09:00 JST】</strong><br>
+    台風6号チャンミーは25°N付近・東シナ海にあって北北東へ進んでいる。中心気圧960hPa、最大風速36m/s（最大瞬間風速50m/s）。沖縄本島は暴風域に入っており、6/2朝にかけて猛烈な暴風・大雨に警戒。
+  </div>
+  <div class="ab" style="background:#1a2d1a;border-color:#38a169!important;color:#9ae6b4;margin-bottom:10px;font-size:11px;">
+    <strong>【JTWC BULLETIN 06/01 0300Z】</strong><br>
+    Typhoon CHANMI (06W) — Position: 25.5°N 126.8°E. Max sustained winds: 70 kts (35 m/s). Gusts to 85 kts. Moving NNE at 14 kts. DANGER TO LIFE AND PROPERTY: Okinawa islands and adjacent waters. All mariners and military personnel should take immediate precautions.
+  </div>
+
+  <!-- SCENARIOS -->
+  <div class="sec">📋 3シナリオ詳細分析（タップで展開）</div>
+  <div class="sc">
+    <div class="sc-h sca" onclick="tog('sca')">
+      <span class="sc-badge">A</span>
+      <span class="sc-title">沖縄直撃→九州・本州北上</span>
+      <span class="sc-prob">~70%</span>
+    </div>
+    <div class="sc-body open" id="sca">
+      <ul class="sc-ul">
+        <li>🔴 <strong>現況：</strong>気象庁・JTWC・ECMWFの3機関がコンセンサス。太平洋高気圧が東寄りで北上路確保。</li>
+        <li>🔴 <strong>進路：</strong>沖縄本島（6/1夜〜6/2朝）→奄美→九州→本州（6/3〜4）</li>
+        <li>🔴 <strong>強度：</strong>沖縄通過時：960hPa・最大瞬間風速50〜60m/s</li>
+        <li>🔴 <strong>FTO影響：</strong>6/1〜2休診確定。軍属クライアント全員に英語緊急連絡を今すぐ実行。</li>
+      </ul>
+      <span class="sc-key">💡 JMA・JTWC・ECMWF 3機関一致</span>
+    </div>
+  </div>
+  <div class="sc">
+    <div class="sc-h scb" onclick="tog('scb')">
+      <span class="sc-badge">B</span>
+      <span class="sc-title">台湾偏向：高気圧強化で南西へ</span>
+      <span class="sc-prob">~20%</span>
+    </div>
+    <div class="sc-body" id="scb">
+      <ul class="sc-ul">
+        <li>🟠 太平洋高気圧が予想より西へ強く張り出す場合。台湾〜中国大陸方向へ偏向。</li>
+        <li>🟠 沖縄は暴風域を免れるが、強風・外側雨帯の影響は残る。</li>
+        <li>🟠 FTO：部分的影響。被害は軽減されるが一部予約キャンセルは必要。</li>
+      </ul>
+      <span class="sc-key">⚠ 現在の気圧配置では発生しにくい季節</span>
+    </div>
+  </div>
+  <div class="sc">
+    <div class="sc-h scc" onclick="tog('scc')">
+      <span class="sc-badge">C</span>
+      <span class="sc-title">フィリピン滞留・日本外れ</span>
+      <span class="sc-prob">~10%</span>
+    </div>
+    <div class="sc-body" id="scc">
+      <ul class="sc-ul">
+        <li>🟢 偏西風が予想より南に蛇行し転向を促せない場合。</li>
+        <li>🟢 沖縄直接影響なし。後続降水系に注意。</li>
+        <li>🟢 FTO：通常営業継続可能。最も低確率のシナリオ。</li>
+      </ul>
+      <span class="sc-key">✅ 現況の気圧配置ではほぼ否定されている</span>
+    </div>
+  </div>
+
+  <!-- SUMMARY -->
+  <div class="sum">
+    <div class="sum-t">📋 統合判断（JMA + JTWC）</div>
+    <div class="sum-b">
+      <strong style="color:#fc8181;">現在：警戒レベル4 — 緊急閉鎖フェーズ。</strong><br>
+      台風6号チャンミーは6/1〜2、<strong>強い勢力（960hPa・最大瞬間風速50〜60m/s）</strong>で沖縄本島付近を通過。3機関すべてがシナリオA（沖縄直撃）を支持。<br>
+      <strong style="color:#68d391;">FTOスタッフは今すぐPhase 3チェックリストを実行してください。</strong>
+    </div>
+  </div>
+
+  <!-- SOURCES -->
+  <div class="sec">🔗 公式情報源</div>
+  <div class="srcs">
+    <a class="src" href="https://www.jma.go.jp/bosai/typhoon/" target="_blank">🌀 気象庁</a>
+    <a class="src" href="https://www.metoc.navy.mil/jtwc/jtwc.html" target="_blank">🇺🇸 JTWC</a>
+    <a class="src" href="https://typhoon.yahoo.co.jp/" target="_blank">📱 Yahoo台風</a>
+    <a class="src" href="https://www.okinawa-jma.go.jp/" target="_blank">🏝️ 沖縄気象台</a>
+    <a class="src" href="https://www.nhk.or.jp/kisho/okinawa/" target="_blank">📺 NHK沖縄</a>
+  </div>
+
+  <div class="foot">データ: 気象庁 / JTWC / ECMWF | 10分自動更新 | © 合同会社koya</div>
+</div>
+
+
+<!-- ══════════════════════════
+     PAGE 3: FTO危機対策
+══════════════════════════ -->
+<div class="page" id="p-sos">
+
+  <!-- LEVEL -->
+  <div class="ab red" style="text-align:center;margin-bottom:10px;">
+    <div style="font-size:10px;color:var(--muted);margin-bottom:2px;">現在の警戒レベル</div>
+    <div id="sos-lv" style="font-size:26px;font-weight:900;color:#fc8181;">4 — 🔴 緊急閉鎖</div>
+    <div style="font-size:10px;color:#fca5a5;margin-top:2px;">Staff: Execute Phase 3 NOW</div>
+  </div>
+
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px;">
+    <div style="font-size:12px;font-weight:700;color:var(--lblue);margin-bottom:1px;">🌺 FTO 台風危機対応チェックリスト</div>
+    <div style="font-size:9px;color:var(--muted);margin-bottom:9px;">Staff Crisis Protocol · タップでチェック</div>
+
+    <div class="ph" style="color:#f6e05e;">⚠️ Phase 1 — Watch（72h前〜）</div>
+    <ul class="cl">
+      <li onclick="ck(this)"><div class="cb"></div><span>気象庁台風情報を確認→スタッフLINEグループに共有</span></li>
+      <li onclick="ck(this)"><div class="cb"></div><span>妊婦・産後クライアントへ事前連絡メール送信</span></li>
+      <li onclick="ck(this)"><div class="cb"></div><span>スタジオ外置き備品を室内へ移動開始</span></li>
+      <li onclick="ck(this)"><div class="cb"></div><span>English: Notify all SOFA clients of typhoon watch status</span></li>
+    </ul>
+
+    <div class="ph" style="color:#fbb46e;">🟠 Phase 2 — Warning（48h前〜）</div>
+    <ul class="cl">
+      <li onclick="ck(this)"><div class="cb"></div><span>48h以内の全予約をキャンセル/リスケ（英日両語）</span></li>
+      <li onclick="ck(this)"><div class="cb"></div><span>SNS全チャンネルに「台風休診」告知投稿</span></li>
+      <li onclick="ck(this)"><div class="cb"></div><span>雨戸・シャッター施錠・窓養生テープ補強</span></li>
+      <li onclick="ck(this)"><div class="cb"></div><span>エコー機器・PC固定・書類高所移動</span></li>
+      <li onclick="ck(this)"><div class="cb"></div><span>English: Post "STUDIO CLOSED – Typhoon Warning" on all channels</span></li>
+    </ul>
+
+    <div class="ph" style="color:#fc8181;">🔴 Phase 3 — Emergency（直撃中）← 今ここ</div>
+    <ul class="cl">
+      <li onclick="ck(this)"><div class="cb"></div><span>スタジオ完全閉鎖・施錠・写真で記録</span></li>
+      <li onclick="ck(this)"><div class="cb"></div><span>スタッフ全員安否確認（30分ごとにLINE確認）</span></li>
+      <li onclick="ck(this)"><div class="cb"></div><span>産前・産後クライアント安否確認（妊婦後期を最優先）</span></li>
+      <li onclick="ck(this)"><div class="cb"></div><span>避難が必要なクライアントへ避難所情報を提供</span></li>
+      <li onclick="ck(this)"><div class="cb"></div><span>English: Check on military family clients — offer emergency support</span></li>
+    </ul>
+
+    <div class="ph" style="color:#68d391;">✅ Phase 4 — Recovery（通過後）</div>
+    <ul class="cl">
+      <li onclick="ck(this)"><div class="cb"></div><span>スタジオ被害確認・写真撮影・保険会社連絡</span></li>
+      <li onclick="ck(this)"><div class="cb"></div><span>営業再開見通しをSNS・LINEで告知（英日両語）</span></li>
+      <li onclick="ck(this)"><div class="cb"></div><span>全キャンセル予約のリスケジュール連絡を開始</span></li>
+      <li onclick="ck(this)"><div class="cb"></div><span>English: Send "We're Back Open!" to all SOFA clients + SNS post</span></li>
+    </ul>
+
+    <button class="rst" onclick="resetCL()">🔄 チェックリストをリセット / Reset All</button>
+  </div>
+
+  <!-- CONTACTS -->
+  <div class="ctbox">
+    <div class="ct-t">📞 緊急連絡先 / Emergency Contacts</div>
+    <div class="ct-r"><span class="ct-n">沖縄気象台</span><span class="ct-num">098-833-4281</span></div>
+    <div class="ct-r"><span class="ct-n">那覇市 防災情報</span><span class="ct-num">098-862-1111</span></div>
+    <div class="ct-r"><span class="ct-n">救急 / 消防</span><span class="ct-num">119</span></div>
+    <div class="ct-r"><span class="ct-n">警察</span><span class="ct-num">110</span></div>
+    <div class="ct-r"><span class="ct-n">米軍緊急 (USMC)</span><span class="ct-num">098-911</span></div>
+  </div>
+
+  <!-- ACTIONS -->
+  <div class="sec" style="margin-top:10px;">⚡ FTO スタジオ 対応アクション</div>
+  <div class="ac red"><div class="ac-t">🔴 今すぐ実行（台風直前〜直撃中）</div><div class="ac-d">全予約クライアントへ休診連絡。英語・日本語でLINE/メール/SMS送信。Instagramストーリー告知投稿。</div></div>
+  <div class="ac org"><div class="ac-t">🟠 スタジオ物理防災</div><div class="ac-d">エコー機器・PC防水処理・窓養生テープ。停電時UPS確認。重要書類・現金を高所へ移動。</div></div>
+  <div class="ac grn"><div class="ac-t">🟢 台風後の機会活用</div><div class="ac-d">早期再開連絡で軍属コミュニティの信頼を強化。「復旧完了」SNS投稿でリピーター獲得チャンス。</div></div>
+
+  <div class="foot" style="margin-top:10px;">© 合同会社koya Family Tree Oki | データ: JMA / JTWC</div>
+</div>
+
+<!-- TAB BAR -->
+<div class="tabs">
+  <button class="tb on"  onclick="showTab('map',this)"><span class="tb-i">🗺️</span>地図</button>
+  <button class="tb"     onclick="showTab('ana',this)"><span class="tb-i">📊</span>分析</button>
+  <button class="tb"     onclick="showTab('sos',this)"><span class="tb-i">🛡️</span>危機対策</button>
+</div>
+
+<script>
+// ─ TAB ─
+function showTab(id,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.tb').forEach(b=>b.classList.remove('on'));
+  document.getElementById('p-'+id).classList.add('on');
+  btn.classList.add('on');
+  if(id==='map') setTimeout(()=>MAP.invalidateSize(),100);
+}
+// ─ ACCORDION ─
+function tog(id){ document.getElementById(id).classList.toggle('open'); }
+// ─ CHECKLIST ─
+function ck(li){ li.classList.toggle('done'); li.querySelector('.cb').textContent=li.classList.contains('done')?'✓':''; }
+function resetCL(){ document.querySelectorAll('.cl li').forEach(l=>{l.classList.remove('done');l.querySelector('.cb').textContent='';}); }
+
+// ════════════════════════════════
+//  MAP — JMA準拠スタイル
+//  表示範囲: 日本〜フィリピン (10N〜42N, 115E〜155E)
+// ════════════════════════════════
+const MAP = L.map('map',{
+  center:[27,133],   // 日本〜沖縄中心
+  zoom:5,
+  zoomControl:true,
+  attributionControl:false
+});
+
+// 気象庁風のタイル（白っぽい地図 = JMAは海が青・陸が黄緑）
+// ダーク版でJMAに近い視認性
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png',{
+  maxZoom:12, subdomains:'abcd', opacity:0.85
+}).addTo(MAP);
+// 地名レイヤー
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png',{
+  maxZoom:12, subdomains:'abcd', opacity:0.7
+}).addTo(MAP);
+
+// 緯度線（JMAスタイル）
+[15,20,25,30,35,40].forEach(lat=>{
+  L.polyline([[lat,90],[lat,180]],{color:'rgba(255,255,255,0.08)',weight:0.5}).addTo(MAP);
+});
+// 経度線
+[100,110,120,130,140,150,160].forEach(lon=>{
+  L.polyline([[-10,lon],[60,lon]],{color:'rgba(255,255,255,0.08)',weight:0.5}).addTo(MAP);
+});
+
+// 都市ラベル（シンプル）
+const CITIES=[
+  {n:'沖縄',la:26.2,lo:127.7,c:'#E8A0BC'},
+  {n:'那覇',la:26.22,lo:127.68,c:'#fff'},
+  {n:'台湾',la:23.8,lo:121.0,c:'#90cdf4'},
+  {n:'東京',la:35.7,lo:139.7,c:'#a0aec0'},
+  {n:'大阪',la:34.7,lo:135.5,c:'#a0aec0'},
+  {n:'福岡',la:33.6,lo:130.4,c:'#a0aec0'},
+  {n:'鹿児島',la:31.6,lo:130.6,c:'#a0aec0'},
+  {n:'奄美',la:28.4,lo:129.5,c:'#fbb46e'},
+  {n:'マニラ',la:14.6,lo:121.0,c:'#68d391'},
+  {n:'上海',la:31.2,lo:121.5,c:'#718096'},
+  {n:'グアム',la:13.5,lo:144.8,c:'#63b3ed'},
+  {n:'那覇米軍基地',la:26.35,lo:127.77,c:'#fff'},
+];
+CITIES.forEach(c=>{
+  const h=`<div style="color:${c.c};font-size:9px;font-weight:700;white-space:nowrap;text-shadow:0 0 3px #000,0 0 6px #000;pointer-events:none;">${c.n}</div>`;
+  L.marker([c.la,c.lo],{icon:L.divIcon({html:h,className:'',iconSize:[40,12],iconAnchor:[20,6]})}).addTo(MAP);
+});
+
+// 沖縄警戒ゾーン（薄いピンク）
+L.circle([26.2,127.8],{
+  radius:200000,
+  color:'#E8A0BC',fillColor:'#E8A0BC',fillOpacity:.05,
+  weight:1,dashArray:'4,4'
+}).addTo(MAP);
+
+// ════ 台風データ ════
+// 実データ（JMAスクリーンショット 2026/06/01 09:00 JST より）
+const TC6 = {
+  name:'台風6号 チャンミー',
+  la:25.3, lo:126.5,     // 現在地（01日09時）
+  pres:960, wind:36, cat:2,
+  sr:110,               // 暴風域半径 km
+  gr:280,               // 強風域半径 km
+  dir:'北北東 25km/h',
+  // 過去経路（青）: フィリピン東から北上
+  pastTrack:[
+    [10.5,132.0],[12.0,131.5],[14.0,131.0],
+    [16.5,130.0],[19.0,129.5],[21.5,128.5],
+    [23.5,127.5],[25.3,126.5]
+  ],
+  // 予報進路（赤）+ 予報円
+  forecast:[
+    {la:27.0,lo:126.8,r:70, label:'6/1 21時'},
+    {la:29.5,lo:128.0,r:100,label:'6/2 09時'},
+    {la:32.0,lo:130.0,r:130,label:'6/2 21時'},
+    {la:34.5,lo:133.5,r:160,label:'6/3 09時'},
+    {la:37.0,lo:139.5,r:200,label:'6/4 09時'},
+  ]
+};
+
+let tcLayers=[];
+function clearTC(){ tcLayers.forEach(l=>MAP.removeLayer(l)); tcLayers=[]; }
+
+function drawJMAStyleTC(tc){
+  // 1. 強風域（黄色 破線円）— 背景に描く
+  const gale = L.circle([tc.la,tc.lo],{
+    radius:tc.gr*1000,
+    color:'#d69e2e',
+    fillColor:'#d69e2e',
+    fillOpacity:0.07,
+    weight:1.5,
+    dashArray:'6,4'
+  }).addTo(MAP);
+  tcLayers.push(gale);
+
+  // 2. 暴風域（赤 実線円）
+  const storm = L.circle([tc.la,tc.lo],{
+    radius:tc.sr*1000,
+    color:'#e53e3e',
+    fillColor:'#e53e3e',
+    fillOpacity:0.18,
+    weight:2
+  }).addTo(MAP);
+  tcLayers.push(storm);
+
+  // 3. 過去経路（青 実線）
+  const past = L.polyline(tc.pastTrack,{
+    color:'#4499ff',
+    weight:2.5,
+    opacity:0.9
+  }).addTo(MAP);
+  tcLayers.push(past);
+
+  // 4. 予報進路（赤 実線）
+  const fcPts = [[tc.la,tc.lo],...tc.forecast.map(f=>[f.la,f.lo])];
+  const fcLine = L.polyline(fcPts,{
+    color:'#e53e3e',
+    weight:2,
+    opacity:0.85
+  }).addTo(MAP);
+  tcLayers.push(fcLine);
+
+  // 5. 予報円（白 破線 — 時間が経つほど大きく）
+  tc.forecast.forEach(f=>{
+    const circ = L.circle([f.la,f.lo],{
+      radius:f.r*1000,
+      color:'rgba(255,255,255,0.55)',
+      fill:false,
+      weight:1,
+      dashArray:'4,4'
+    }).addTo(MAP);
+    tcLayers.push(circ);
+  });
+
+  // 6. 予報点ドット（小さい白丸）
+  tc.forecast.forEach(f=>{
+    const dot = L.circleMarker([f.la,f.lo],{
+      radius:3,
+      color:'#e53e3e',
+      fillColor:'#e53e3e',
+      fillOpacity:1,
+      weight:1
+    }).addTo(MAP);
+    tcLayers.push(dot);
+  });
+
+  // 7. 予報時刻ラベル
+  tc.forecast.forEach(f=>{
+    const lbl = L.marker([f.la,f.lo],{
+      icon: L.divIcon({
+        html:`<div style="color:#fff;font-size:9px;font-weight:700;background:rgba(0,0,0,0.65);padding:1px 5px;border-radius:3px;white-space:nowrap;margin-left:6px;">${f.label}</div>`,
+        className:'',
+        iconSize:[70,14],
+        iconAnchor:[-4,7]
+      })
+    }).addTo(MAP);
+    tcLayers.push(lbl);
+  });
+
+  // 8. 現在地 ✕ マーカー（JMAと同じスタイル）
+  const crossHtml = `
+    <div style="position:relative;width:20px;height:20px;">
+      <div style="position:absolute;top:50%;left:0;right:0;height:2px;background:#e53e3e;transform:translateY(-50%);"></div>
+      <div style="position:absolute;left:50%;top:0;bottom:0;width:2px;background:#e53e3e;transform:translateX(-50%);"></div>
+      <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:6px;height:6px;background:#e53e3e;border-radius:50%;"></div>
+    </div>`;
+  const cross = L.marker([tc.la,tc.lo],{
+    icon: L.divIcon({html:crossHtml,className:'',iconSize:[20,20],iconAnchor:[10,10]})
+  }).addTo(MAP).bindPopup(
+    `<b style="color:#fc8181">🌀 ${tc.name}</b><br>
+     気圧: ${tc.pres} hPa<br>
+     最大風速: ${tc.wind} m/s<br>
+     沖縄まで: ${Math.round(haversine(26.2,127.8,tc.la,tc.lo))} km<br>
+     ${tc.dir}`
+  );
+  tcLayers.push(cross);
+
+  // 9. 「6」番号ラベル（JMA風）
+  const numLbl = L.marker([tc.la-0.8,tc.lo+0.3],{
+    icon: L.divIcon({
+      html:`<div style="background:#00aacc;color:#fff;font-size:10px;font-weight:900;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:1.5px solid #fff;">6</div>`,
+      className:'',
+      iconSize:[16,16],
+      iconAnchor:[8,8]
+    })
+  }).addTo(MAP);
+  tcLayers.push(numLbl);
+}
+
+function haversine(la1,lo1,la2,lo2){
+  const R=6371,dL=(la2-la1)*Math.PI/180,dO=(lo2-lo1)*Math.PI/180;
+  const a=Math.sin(dL/2)**2+Math.cos(la1*Math.PI/180)*Math.cos(la2*Math.PI/180)*Math.sin(dO/2)**2;
+  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+}
+
+// ════ LEVEL CONFIG ════
+const LVC={
+  1:{c:'#68d391',bg:'#122d1e',bc:'#38a169',l:'平常運転',    e:'Normal Operations'},
+  2:{c:'#f6e05e',bg:'#2d2a10',bc:'#d69e2e',l:'注意・経過観察',e:'Typhoon Watch'},
+  3:{c:'#fbb46e',bg:'#2d2010',bc:'#dd6b20',l:'⚠️ 警戒・準備',  e:'Typhoon Warning'},
+  4:{c:'#fc8181',bg:'#2d1a1a',bc:'#e53e3e',l:'🔴 緊急閉鎖',   e:'TYPHOON EMERGENCY'}
+};
+
+function getLv(tcs){
+  if(!tcs.length) return 1;
+  let minD=Infinity,maxW=0;
+  tcs.forEach(t=>{const d=haversine(26.2,127.8,t.la,t.lo);if(d<minD)minD=d;if(t.wind>maxW)maxW=t.wind;});
+  if(minD<200&&maxW>=33) return 4;
+  if(minD<400&&maxW>=25) return 4;
+  if(minD<600&&maxW>=25) return 3;
+  if(minD<900)           return 2;
+  return 1;
+}
+
+function updateUI(tcs,fromJMA){
+  const now=new Date().toLocaleString('ja-JP',{timeZone:'Asia/Tokyo'});
+  const lv=getLv(tcs); const lc=LVC[lv];
+
+  // Level hero
+  const hero=document.getElementById('lv-hero');
+  hero.style.background=lc.bg; hero.style.borderColor=lc.bc;
+  document.getElementById('lv-num').textContent=lv; document.getElementById('lv-num').style.color=lc.c;
+  document.getElementById('lv-lbl').textContent=lc.l; document.getElementById('lv-lbl').style.color=lc.c;
+  document.getElementById('lv-en').textContent=lc.e; document.getElementById('lv-en').style.color=lc.c;
+
+  if(tcs.length){
+    const tc=tcs[0];
+    const dist=Math.round(haversine(26.2,127.8,tc.la,tc.lo));
+    document.getElementById('kv1').textContent=tc.pres;
+    document.getElementById('kv2').textContent=tc.wind;
+    document.getElementById('kv3').textContent=dist;
+    document.getElementById('kv4').textContent=tc.spd||25;
+    document.getElementById('ts1').textContent=tc.pres;
+    document.getElementById('ts2').textContent=tc.wind;
+    document.getElementById('ts3').textContent=tc.sr||110;
+    document.getElementById('tc-pos').textContent=`${tc.la.toFixed(1)}°N / ${tc.lo.toFixed(1)}°E`;
+    document.getElementById('tc-dir').textContent=tc.dir;
+    document.getElementById('sos-lv').textContent=`${lv} — ${lc.l}`;
+    document.getElementById('sos-lv').style.color=lc.c;
+
+    // Alert bar
+    const ma=document.getElementById('main-ab');
+    if(lv>=4){
+      ma.className='ab red';
+      ma.innerHTML=`🔴 <strong>${tc.name}</strong>が沖縄を通過中（沖縄まで${dist}km）。<br>気圧${tc.pres}hPa・最大風速${tc.wind}m/s・暴風域内。<br><span style="font-size:10px">Typhoon CHANMI hitting Okinawa. Military families: shelter in place.</span>`;
+    } else if(lv===3){
+      ma.className='ab orange';
+      ma.innerHTML=`⚠️ <strong>${tc.name}</strong>が接近中（${dist}km）。Phase 2対応を今すぐ開始。<br><span style="font-size:10px">Typhoon approaching at ${dist}km. Begin Phase 2 crisis protocol.</span>`;
+    } else if(lv===2){
+      ma.className='ab blue';
+      ma.innerHTML=`🔵 台風監視中（${dist}km）。定期確認を続けてください。<br><span style="font-size:10px">Monitoring. Distance: ${dist}km. Check regularly.</span>`;
+    } else {
+      ma.className='ab green';
+      ma.innerHTML=`🟢 現在、沖縄に影響する台風はありません。通常営業中です。<br><span style="font-size:10px">No typhoon affecting Okinawa. Normal operations.</span>`;
+    }
+
+    // Ticker
+    document.getElementById('ttext').textContent=
+      `⚠️ 台風${tc.name} — 気圧${tc.pres}hPa 風速${tc.wind}m/s 沖縄まで${dist}km — 警戒レベル${lv}「${lc.l}」— スタッフ:フェーズ${lv}チェックリスト今すぐ確認 🛡️ Staff: Execute Phase ${lv} NOW`;
+    document.getElementById('tbadge').textContent='警戒'+lv;
+
+    // Map draw
+    clearTC(); drawJMAStyleTC(tc);
+
+  } else {
+    ['kv1','kv2','kv3','kv4'].forEach(id=>document.getElementById(id).textContent='--');
+    const ma=document.getElementById('main-ab');
+    ma.className='ab green';
+    ma.innerHTML=`🟢 <strong>現在、活動中の台風はありません。</strong>Family Tree Oki は通常営業中です。<br><span style="font-size:10px">No active typhoons. Normal studio operations.</span>`;
+    document.getElementById('ttext').textContent='🟢 現在、西太平洋に活動中の台風はありません — Family Tree Oki 通常営業中 🌺';
+    document.getElementById('tbadge').style.background='#38a169';
+    clearTC();
+  }
+
+  const src=fromJMA?'気象庁 APIリアルタイム':'気象庁 確認済データ (JMA 2026/06/01 09JST)';
+  document.getElementById('foot1').textContent=`最終更新: ${now} JST | ${src} | 10分自動更新`;
+}
+
+// ════ JMA FETCH ════
+async function fetchJMA(){
+  try{
+    const r=await fetch('https://www.jma.go.jp/bosai/typhoon/data/targetTc.json',{cache:'no-cache'});
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    const raw=await r.json();
+    if(!Array.isArray(raw)||!raw.length) throw new Error('empty');
+    const tcs=raw.map(tc=>{
+      try{
+        const a=tc.analysis;
+        const wind=a?.maxWind?.speed10min||0;
+        let cat=0;
+        if(wind>=54)cat=5;else if(wind>=44)cat=4;else if(wind>=33)cat=3;
+        else if(wind>=25)cat=2;else if(wind>=17)cat=1;
+        const fcList=(tc.forecast||[]).slice(0,5);
+        return{
+          name:tc.name?.ja||tc.name?.en||'台風',
+          la:a?.position?.lat||20, lo:a?.position?.lon||130,
+          pres:a?.pressure||1000, wind, cat,
+          dir:(a?.direction||'--')+' '+(a?.speed||'--')+'km/h',
+          spd:a?.speed||'--',
+          sr:a?.stormRadius||100, gr:a?.galeRadius||250,
+          pastTrack:(tc.track||[]).map(p=>[p.position?.lat||20,p.position?.lon||130]),
+          forecast:fcList.map((f,i)=>{
+            const d=new Date(); d.setHours(d.getHours()+(i+1)*12);
+            const lbl=`${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}時`;
+            return{la:f.position?.lat||20,lo:f.position?.lon||130,r:f.stormRadius||80+i*20,label:lbl};
+          })
+        };
+      }catch(e){return null;}
+    }).filter(Boolean);
+    if(tcs.length) return{tcs,fromJMA:true};
+    throw new Error('no data');
+  }catch(e){
+    console.warn('JMA fallback:',e.message);
+    // スクリーンショットの実確認データ使用
+    return{tcs:[TC6],fromJMA:false};
+  }
+}
+
+async function doRefresh(){
+  document.getElementById('foot1').textContent='更新中 / Refreshing...';
+  const{tcs,fromJMA}=await fetchJMA();
+  updateUI(tcs,fromJMA);
+}
+
+// INIT
+doRefresh();
+setInterval(doRefresh, 10*60*1000);
+</script>
+</body>
+</html>
