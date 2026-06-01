@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>🌀 台風監視システム — Family Tree Oki</title>
+
+<!-- Leaflet.js for map -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+
+<style>
+  /* ─── FTO Brand Colors ─── */
+  :root {
+    --warm-bark:    #7B5C44;
+    --blush-rose:   #E8A0BC;
+    --leaf-green:   #8FAF3A;
+    --sky-blue:     #7DB8E0;
+    --peach-glow:   #F0A870;
+    --linen-cream:  #FDF9F6;
+    --petal-white:  #FFF0F5;
+    --border:       #EDD8C8;
+
+    /* Alert colors */
+    --alert-red:    #D32F2F;
+    --alert-orange: #F57C00;
+    --alert-yellow: #F9A825;
+    --alert-green:  #388E3C;
+    --alert-blue:   #1565C0;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #0a1628;
+    color: #e8e8e8;
+    min-height: 100vh;
+  }
+
+  /* ─── Header ─── */
+  .header {
+    background: linear-gradient(135deg, #0d1f3c 0%, #1a2f50 100%);
+    border-bottom: 2px solid var(--warm-bark);
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+  }
+  .header-left { display: flex; align-items: center; gap: 10px; }
+  .header-logo {
+    background: var(--warm-bark);
+    color: white;
+    font-size: 11px;
+    font-weight: bold;
+    padding: 4px 8px;
+    border-radius: 6px;
+    letter-spacing: 0.5px;
+  }
+  .header-title { font-size: 15px; font-weight: bold; color: #fff; }
+  .header-subtitle { font-size: 10px; color: #aab; margin-top: 1px; }
+
+  .live-badge {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(211,47,47,0.2);
+    border: 1px solid var(--alert-red);
+    border-radius: 20px;
+    padding: 3px 10px;
+    font-size: 11px;
+    color: #ff6b6b;
+    font-weight: bold;
+  }
+  .live-dot {
+    width: 7px; height: 7px;
+    background: var(--alert-red);
+    border-radius: 50%;
+    animation: pulse 1.2s infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50%      { opacity: 0.4; transform: scale(0.7); }
+  }
+
+  /* ─── Alert Banner ─── */
+  .alert-banner {
+    background: linear-gradient(90deg, #1a0a0a, #2d1010, #1a0a0a);
+    border-bottom: 1px solid var(--alert-red);
+    padding: 6px 16px;
+    font-size: 12px;
+    color: #ff9999;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    overflow: hidden;
+  }
+  .alert-banner .scroll-text {
+    animation: scroll-left 30s linear infinite;
+    white-space: nowrap;
+  }
+  @keyframes scroll-left {
+    0%   { transform: translateX(100vw); }
+    100% { transform: translateX(-100%); }
+  }
+
+  /* ─── Main Layout ─── */
+  .main-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  /* ─── Status Cards Row ─── */
+  .status-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    padding: 10px 10px 0;
+  }
+  .status-card {
+    background: #0d1f3c;
+    border-radius: 8px;
+    border: 1px solid #1e3a5f;
+    padding: 10px;
+    text-align: center;
+  }
+  .status-card .label { font-size: 9px; color: #6b8; letter-spacing: 0.1em; text-transform: uppercase; }
+  .status-card .value { font-size: 18px; font-weight: bold; margin: 3px 0; }
+  .status-card .unit  { font-size: 9px; color: #888; }
+
+  /* ─── Map Container ─── */
+  .map-section { padding: 10px; }
+  .map-label {
+    font-size: 10px;
+    color: var(--sky-blue);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  #typhoon-map {
+    width: 100%;
+    height: 58vw;
+    min-height: 240px;
+    max-height: 400px;
+    border-radius: 10px;
+    border: 1px solid #1e3a5f;
+  }
+
+  /* ─── Typhoon Info Cards ─── */
+  .info-section { padding: 0 10px 10px; }
+  .section-title {
+    font-size: 11px;
+    color: var(--blush-rose);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .typhoon-cards { display: flex; flex-direction: column; gap: 8px; }
+  .typhoon-card {
+    background: #0d1f3c;
+    border-radius: 10px;
+    border-left: 4px solid var(--alert-red);
+    padding: 12px;
+  }
+  .typhoon-card.moderate { border-left-color: var(--alert-orange); }
+  .typhoon-card.watch    { border-left-color: var(--alert-yellow); }
+  .typhoon-card.none     { border-left-color: var(--alert-green); }
+
+  .tc-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+  .tc-name { font-size: 16px; font-weight: bold; color: #fff; }
+  .tc-cat {
+    font-size: 10px;
+    font-weight: bold;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: rgba(211,47,47,0.3);
+    color: #ff7070;
+    border: 1px solid var(--alert-red);
+  }
+  .tc-cat.cat-3 { background: rgba(245,124,0,0.3); color: #ffb060; border-color: var(--alert-orange); }
+  .tc-cat.cat-2 { background: rgba(249,168,37,0.3); color: #ffe060; border-color: var(--alert-yellow); }
+
+  .tc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .tc-item { }
+  .tc-item-label { font-size: 9px; color: #6b8; text-transform: uppercase; }
+  .tc-item-val   { font-size: 13px; font-weight: bold; color: #eee; }
+
+  .tc-track {
+    margin-top: 8px;
+    font-size: 10px;
+    color: #aab;
+    background: rgba(255,255,255,0.04);
+    border-radius: 5px;
+    padding: 6px 8px;
+  }
+
+  /* ─── Okinawa Alert Level ─── */
+  .okinawa-section { padding: 0 10px 10px; }
+  .oki-alert-box {
+    border-radius: 10px;
+    padding: 14px;
+    text-align: center;
+    border: 2px solid;
+  }
+  .oki-alert-box.level-4 { background: rgba(211,47,47,0.15); border-color: var(--alert-red); }
+  .oki-alert-box.level-3 { background: rgba(245,124,0,0.12); border-color: var(--alert-orange); }
+  .oki-alert-box.level-2 { background: rgba(249,168,37,0.10); border-color: var(--alert-yellow); }
+  .oki-alert-box.level-1 { background: rgba(56,142,60,0.10);  border-color: var(--alert-green); }
+
+  .oki-level-num { font-size: 42px; font-weight: bold; line-height: 1; }
+  .oki-level-label { font-size: 14px; font-weight: bold; margin-top: 4px; }
+  .oki-level-en { font-size: 11px; color: #aab; margin-top: 2px; }
+  .oki-detail { font-size: 11px; color: #ccc; margin-top: 8px; line-height: 1.5; }
+
+  /* ─── FTO Crisis Panel ─── */
+  .crisis-section { padding: 0 10px 10px; }
+  .crisis-panel {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    border: 1px solid var(--warm-bark);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .crisis-header {
+    background: var(--warm-bark);
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .crisis-header-text { }
+  .crisis-header-title { font-size: 13px; font-weight: bold; color: #fff; }
+  .crisis-header-sub   { font-size: 10px; color: #EDD8C8; }
+
+  .crisis-body { padding: 12px; }
+  .crisis-phase { margin-bottom: 12px; }
+  .phase-label {
+    font-size: 10px;
+    font-weight: bold;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--blush-rose);
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .checklist { list-style: none; }
+  .checklist li {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 5px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    font-size: 12px;
+    color: #ccc;
+    cursor: pointer;
+  }
+  .checklist li:last-child { border-bottom: none; }
+  .checklist li .check-box {
+    width: 16px; height: 16px;
+    border: 1.5px solid #557;
+    border-radius: 3px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    transition: all 0.2s;
+  }
+  .checklist li.done .check-box {
+    background: var(--leaf-green);
+    border-color: var(--leaf-green);
+    color: #fff;
+  }
+  .checklist li.done span { text-decoration: line-through; color: #666; }
+
+  .emergency-contacts {
+    background: rgba(211,47,47,0.08);
+    border: 1px solid rgba(211,47,47,0.3);
+    border-radius: 8px;
+    padding: 10px;
+    margin-top: 10px;
+  }
+  .ec-title { font-size: 10px; font-weight: bold; color: #ff8888; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; }
+  .ec-item { display: flex; justify-content: space-between; padding: 4px 0; font-size: 11px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .ec-item:last-child { border-bottom: none; }
+  .ec-name { color: #aab; }
+  .ec-num  { color: var(--sky-blue); font-weight: bold; }
+
+  /* ─── Wind/Rain Timeline ─── */
+  .timeline-section { padding: 0 10px 10px; }
+  .timeline-bar-wrap { margin-bottom: 10px; }
+  .tl-label { font-size: 10px; color: #88a; margin-bottom: 4px; display: flex; justify-content: space-between; }
+  .tl-bar-bg { background: #0d1f3c; border-radius: 4px; height: 10px; overflow: hidden; }
+  .tl-bar-fill { height: 100%; border-radius: 4px; transition: width 1s; }
+
+  /* ─── Update Time ─── */
+  .update-info {
+    text-align: center;
+    font-size: 10px;
+    color: #556;
+    padding: 8px;
+  }
+
+  /* ─── Source Links ─── */
+  .sources {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 0 10px 16px;
+    justify-content: center;
+  }
+  .src-btn {
+    background: #0d1f3c;
+    border: 1px solid #1e3a5f;
+    border-radius: 15px;
+    padding: 4px 12px;
+    font-size: 10px;
+    color: var(--sky-blue);
+    text-decoration: none;
+    transition: background 0.2s;
+  }
+  .src-btn:hover { background: #1e3a5f; }
+
+  /* ─── Tab Bar (bottom) ─── */
+  .tab-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: #0d1f3c;
+    border-top: 1px solid #1e3a5f;
+    display: flex;
+    z-index: 1000;
+  }
+  .tab-btn {
+    flex: 1;
+    padding: 8px 4px;
+    text-align: center;
+    cursor: pointer;
+    font-size: 9px;
+    color: #556;
+    transition: color 0.2s;
+    border: none;
+    background: none;
+  }
+  .tab-btn.active { color: var(--sky-blue); }
+  .tab-btn .tab-icon { font-size: 18px; display: block; }
+
+  /* Hide sections for tab switching */
+  .tab-section { display: none; }
+  .tab-section.active { display: block; }
+  .always-visible { display: block; }
+
+  body { padding-bottom: 60px; }
+
+  /* Map legend */
+  .map-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 6px 0 0;
+    font-size: 10px;
+    color: #aab;
+  }
+  .legend-item { display: flex; align-items: center; gap: 4px; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+  /* ─── Refresh button ─── */
+  .refresh-btn {
+    background: none;
+    border: 1px solid #1e3a5f;
+    border-radius: 15px;
+    color: var(--sky-blue);
+    font-size: 10px;
+    padding: 3px 10px;
+    cursor: pointer;
+  }
+
+  /* no typhoon message */
+  .no-typhoon {
+    background: rgba(56,142,60,0.10);
+    border: 1px solid var(--alert-green);
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    color: #8dc;
+  }
+  .no-typhoon .big { font-size: 36px; margin-bottom: 8px; }
+  .no-typhoon p { font-size: 12px; }
+</style>
+</head>
+<body>
+
+<!-- ─── Header ─── -->
+<div class="header">
+  <div class="header-left">
+    <div class="header-logo">FTO</div>
+    <div>
+      <div class="header-title">🌀 台風監視システム</div>
+      <div class="header-subtitle">Typhoon Watch — Family Tree Oki</div>
+    </div>
+  </div>
+  <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px;">
+    <div class="live-badge"><div class="live-dot"></div>LIVE</div>
+    <button class="refresh-btn" onclick="refreshAll()">🔄 更新</button>
+  </div>
+</div>
+
+<!-- ─── Alert Ticker ─── -->
+<div class="alert-banner" id="alertBanner">
+  <span>⚠️</span>
+  <div class="scroll-text" id="alertTicker">台風情報を取得中... 気象庁データ連携中...</div>
+</div>
+
+<!-- ─── Status Cards (Always visible) ─── -->
+<div class="status-row always-visible">
+  <div class="status-card">
+    <div class="label">活動台風</div>
+    <div class="value" id="activeCount" style="color:#ff6b6b">--</div>
+    <div class="unit">個</div>
+  </div>
+  <div class="status-card">
+    <div class="label">沖縄警戒</div>
+    <div class="value" id="okiAlert" style="color:#ffb060">--</div>
+    <div class="unit">レベル</div>
+  </div>
+  <div class="status-card">
+    <div class="label">最強風速</div>
+    <div class="value" id="maxWind" style="color:#7DB8E0">--</div>
+    <div class="unit">m/s</div>
+  </div>
+</div>
+
+<!-- ─── TAB: 地図 ─── -->
+<div class="tab-section active" id="tab-map">
+  <div class="map-section">
+    <div class="map-label">
+      🗺️ 西太平洋 リアルタイム台風地図
+      <span style="color:#556;font-size:9px;margin-left:auto" id="mapUpdateTime"></span>
+    </div>
+    <div id="typhoon-map"></div>
+    <div class="map-legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#ff3333"></div>猛烈な台風</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#ff9900"></div>強い台風</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#ffff00"></div>台風</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#00ccff"></div>熱帯低気圧</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#ff69b4;opacity:0.4;width:16px;height:16px;border-radius:50%"></div>暴風域</div>
+    </div>
+  </div>
+
+  <div class="info-section">
+    <div class="section-title">🌀 現在の台風情報</div>
+    <div class="typhoon-cards" id="typhoonCards">
+      <div style="text-align:center;padding:20px;color:#556;font-size:12px">データ取得中...</div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── TAB: 沖縄 ─── -->
+<div class="tab-section" id="tab-okinawa">
+  <div class="okinawa-section" style="padding-top:10px">
+    <div class="section-title">🌺 沖縄県 台風警戒レベル</div>
+    <div class="oki-alert-box level-1" id="okiAlertBox">
+      <div class="oki-level-num" id="okiLevelNum" style="color:#4caf50">1</div>
+      <div class="oki-level-label" id="okiLevelLabel" style="color:#4caf50">平常運転</div>
+      <div class="oki-level-en" id="okiLevelEn">Normal Operations</div>
+      <div class="oki-detail" id="okiDetail">現在、沖縄本島に影響する台風はありません。通常通り営業します。</div>
+    </div>
+  </div>
+
+  <div class="timeline-section" style="margin-top:10px">
+    <div class="section-title">📊 72時間予報 (Okinawa)</div>
+    <div class="timeline-bar-wrap">
+      <div class="tl-label"><span>風速 / Wind Speed</span><span id="windVal">--</span></div>
+      <div class="tl-bar-bg"><div class="tl-bar-fill" id="windBar" style="width:0%;background:#7DB8E0"></div></div>
+    </div>
+    <div class="timeline-bar-wrap">
+      <div class="tl-label"><span>降水確率 / Rain Chance</span><span id="rainVal">--</span></div>
+      <div class="tl-bar-bg"><div class="tl-bar-fill" id="rainBar" style="width:0%;background:#E8A0BC"></div></div>
+    </div>
+    <div class="timeline-bar-wrap">
+      <div class="tl-label"><span>台風接近リスク / Approach Risk</span><span id="riskVal">--</span></div>
+      <div class="tl-bar-bg"><div class="tl-bar-fill" id="riskBar" style="width:0%;background:#F0A870"></div></div>
+    </div>
+  </div>
+
+  <div style="padding: 0 10px 10px">
+    <div class="section-title">🔗 気象庁公式リンク</div>
+    <div class="sources">
+      <a class="src-btn" href="https://www.jma.go.jp/bosai/typhoon/" target="_blank">🌀 気象庁 台風情報</a>
+      <a class="src-btn" href="https://www.jma.go.jp/bosai/forecast/#area_type=offices&area_code=470000" target="_blank">🌧️ 沖縄天気予報</a>
+      <a class="src-btn" href="https://www.okinawa-jma.go.jp/" target="_blank">🏝️ 沖縄気象台</a>
+      <a class="src-btn" href="https://www.nhk.or.jp/kisho/okinawa/" target="_blank">📺 NHK沖縄気象</a>
+      <a class="src-btn" href="https://typhoon.yahoo.co.jp/weather/jp/typhoon/" target="_blank">📱 Yahoo台風情報</a>
+    </div>
+  </div>
+</div>
+
+<!-- ─── TAB: 危機対策 (FTO Staff) ─── -->
+<div class="tab-section" id="tab-crisis">
+  <div class="crisis-section" style="padding-top:10px">
+    <div class="crisis-panel">
+      <div class="crisis-header">
+        <span style="font-size:22px">🌺</span>
+        <div class="crisis-header-text">
+          <div class="crisis-header-title">Family Tree Oki — 台風危機対応チェックリスト</div>
+          <div class="crisis-header-sub">Staff Crisis Management / スタッフ対応手順</div>
+        </div>
+      </div>
+      <div class="crisis-body">
+
+        <!-- Phase 1: Watch -->
+        <div class="crisis-phase">
+          <div class="phase-label" style="color:var(--alert-yellow)">⚠️ Phase 1 — 注意報 (72時間前〜) Watch</div>
+          <ul class="checklist" id="checklist-1">
+            <li onclick="toggleCheck(this)">
+              <div class="check-box"></div>
+              <span>気象庁・台風情報を確認し、スタッフLINEグループに共有する</span>
+            </li>
+            <li onclick="toggleCheck(this)">
+              <div class="check-box"></div>
+              <span>予約クライアント（特に妊婦さん）に事前連絡メールを送る</span>
+            </li>
+            <li onclick="toggleCheck(this)">
+              <div class="check-box"></div>
+              <span>スタジオの備品・外置きアイテムを室内へ移動開始</span>
+            </li>
+            <li onclick="toggleCheck(this)">
+              <div class="check-box"></div>
+              <span>緊急連絡先リストを最新版に更新する</span>
+            </li>
+            <li onclick="toggleCheck(this)">
+              <div class="check-box"></div>
+              <span>English: Notify SOFA clients via email/LINE about typhoon watch</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Phase 2: Warning -->
+        <div class="crisis-phase">
+          <div class="phase-label" style="color:var(--alert-orange)">🟠 Phase 2 — 警報 (48時間前〜) Warning</div>
+          <ul class="checklist" id="checklist-2">
+            <li onclick="toggleCheck(this)">
+              <div class="check-box"></div>
+              <span>48時間以内の予約をすべてキャンセル/リスケ連絡</span>
+            </li>
+            <li onclick="toggleCheck(this)">
+              <div class="check-box"></div>
+              <span>SNS（Instagram・Facebook）に台風対応の告知を投稿</span>
+            </li>
+            <li onclick="toggleCheck(this)">
+              <div class="check-box"></div>
+              <span>スタジオの雨戸・シャッターを確認・施錠</span>
+            </li>
+            <li onclick="toggleCheck(this)">
+              <div class="check-box"></div>
+              <span>非常食・水・救急セットを確認（スタジオ保管分）</span>
+            </li>
+            <li onclick="toggleCheck(this)">
+              <div class="check-box"></div>
+              <span>全スタッフの安全確認・自宅待機を指示</span>
+            </li>
+            <li onclick="toggleCheck(this)">
+              <div class="check-box"></div>
+              <span>English: Post "Studio CLOSED due to Typhoon Warning" on all channels</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Phase 3: Emergency -->
+        <div class="crisis-phase">
+          <div class="phase-label" style="color:var(--alert-red)">🔴 Phase 3 — 緊急 (上陸・直撃) Emergency</div>
+          <ul class="checklist" id="checklist-3">
+            <li onclick="toggleCheck(this)">
+              <div class="check-box"></div>
+              <span>スタジオ完全閉鎖・施錠完了を確認</span>
+            </li>
+            <li onclick="toggleCheck(this)">
+              <div class="check-box"></div>
+              <span>スタッフ全員の安否確認（30分ごと）</span>
+            </li>
+            <li onclick="toggleCheck(this)">
+              <div class="check-box"></div>
+              <span>産前・産後クライアントの安否を確認（特に妊娠後期の方）</span>
+            </li>
+            <li onclick="toggleCheck(this)">
+              <div class="check-box"></div>
+              <span>避難が必要なクライアントの避難所情報を提供</span>
+            </li>
+            <li onclick="toggleCheck(this)">
+              <div class="check-box"></div>
+              <span>English: Check on all military family clients — offer emergency support if needed</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Phase 4: Recovery -->
+        <div class="crisis-phase">
+          <div class="phase-label" style="color:var(--leaf-green)">✅ Phase 4 — 復旧 (台風通過後) Recovery</div>
+          <ul class="checklist" id="checklist-4">
+            <li onclick="toggleCheck(this)">
+              <div class="check-box"></div>
+              <span>スタジオの被害確認・写真撮影</span>
+            </li>
+            <li onclick="toggleCheck(this)">
+              <div class="check-box"></div>
+              <span>営業再開の見通しをSNS・LINEで告知</span>
+            </li>
+            <li onclick="toggleCheck(this)">
+              <div class="check-box"></div>
+              <span>キャンセルした予約のリスケジュール連絡</span>
+            </li>
+            <li onclick="toggleCheck(this)">
+              <div class="check-box"></div>
+              <span>保険会社への連絡（被害がある場合）</span>
+            </li>
+            <li onclick="toggleCheck(this)">
+              <div class="check-box"></div>
+              <span>English: Send "We're Back Open!" message to all SOFA clients</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Emergency Contacts -->
+        <div class="emergency-contacts">
+          <div class="ec-title">📞 緊急連絡先 / Emergency Contacts</div>
+          <div class="ec-item"><span class="ec-name">沖縄気象台</span><span class="ec-num">098-833-4281</span></div>
+          <div class="ec-item"><span class="ec-name">那覇市 避難情報</span><span class="ec-num">098-862-1111</span></div>
+          <div class="ec-item"><span class="ec-name">救急・警察</span><span class="ec-num">110 / 119</span></div>
+          <div class="ec-item"><span class="ec-name">米軍 緊急回線 (USMC)</span><span class="ec-num">098-911</span></div>
+          <div class="ec-item"><span class="ec-name">沖縄県 台風情報</span><span class="ec-num">okinawa-ama.jp</span></div>
+        </div>
+
+        <!-- Reset button -->
+        <button onclick="resetAllChecks()" style="
+          margin-top:12px;
+          width:100%;
+          background:rgba(255,255,255,0.05);
+          border:1px solid #334;
+          border-radius:6px;
+          color:#667;
+          font-size:11px;
+          padding:8px;
+          cursor:pointer;
+        ">🔄 チェックリストをリセット</button>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── Footer ─── -->
+<div class="update-info" id="updateInfo">最終更新: --</div>
+
+<!-- ─── Tab Bar ─── -->
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="showTab('map',this)">
+    <span class="tab-icon">🗺️</span>地図
+  </button>
+  <button class="tab-btn" onclick="showTab('okinawa',this)">
+    <span class="tab-icon">🌺</span>沖縄
+  </button>
+  <button class="tab-btn" onclick="showTab('crisis',this)">
+    <span class="tab-icon">🛡️</span>危機対策
+  </button>
+</div>
+
+<script>
+// ─────────────────────────────────────────
+//  TAB SWITCHING
+// ─────────────────────────────────────────
+function showTab(id, btn) {
+  document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  btn.classList.add('active');
+  if (id === 'map') { setTimeout(() => map.invalidateSize(), 100); }
+}
+
+// ─────────────────────────────────────────
+//  CHECKLIST
+// ─────────────────────────────────────────
+function toggleCheck(li) {
+  li.classList.toggle('done');
+  li.querySelector('.check-box').textContent = li.classList.contains('done') ? '✓' : '';
+}
+function resetAllChecks() {
+  document.querySelectorAll('.checklist li').forEach(li => {
+    li.classList.remove('done');
+    li.querySelector('.check-box').textContent = '';
+  });
+}
+
+// ─────────────────────────────────────────
+//  LEAFLET MAP SETUP
+// ─────────────────────────────────────────
+const map = L.map('typhoon-map', {
+  center: [20, 130],
+  zoom: 4,
+  zoomControl: true,
+  attributionControl: false
+});
+
+// Dark satellite-style tile
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+  maxZoom: 12,
+  subdomains: 'abcd'
+}).addTo(map);
+
+// Key locations
+const locations = [
+  { name: 'Okinawa', lat: 26.5, lng: 127.9, icon: '🌺', color: '#E8A0BC' },
+  { name: 'Taiwan',  lat: 23.7, lng: 121.0, icon: '🏝️', color: '#7DB8E0' },
+  { name: 'Philippines (Manila)', lat: 14.6, lng: 121.0, icon: '🌴', color: '#8FAF3A' },
+  { name: 'Shanghai', lat: 31.2, lng: 121.5, icon: '🏙️', color: '#F0A870' },
+  { name: 'Tokyo', lat: 35.7, lng: 139.7, icon: '🗼', color: '#aab' },
+];
+
+locations.forEach(loc => {
+  const markerHtml = `<div style="
+    background:${loc.color};
+    color:#000;
+    border-radius:50%;
+    width:22px;height:22px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:13px;
+    border:2px solid rgba(255,255,255,0.6);
+    box-shadow:0 0 6px rgba(0,0,0,0.5);
+  ">${loc.icon}</div>`;
+  const icon = L.divIcon({ html: markerHtml, className: '', iconSize: [22,22], iconAnchor: [11,11] });
+  L.marker([loc.lat, loc.lng], { icon })
+    .addTo(map)
+    .bindPopup(`<b>${loc.name}</b>`);
+});
+
+// Okinawa highlight circle (storm warning zone)
+L.circle([26.5, 127.9], {
+  radius: 200000,
+  color: '#E8A0BC',
+  fillColor: '#E8A0BC',
+  fillOpacity: 0.06,
+  weight: 1,
+  dashArray: '6,4'
+}).addTo(map);
+
+// Map label
+L.control.attribution({ prefix: '© OpenStreetMap | 気象庁データ' }).addTo(map);
+
+// ─────────────────────────────────────────
+//  TYPHOON DATA LAYER
+// ─────────────────────────────────────────
+let typhoonLayers = [];
+
+function clearTyphoonLayers() {
+  typhoonLayers.forEach(l => map.removeLayer(l));
+  typhoonLayers = [];
+}
+
+function addTyphoonToMap(tc) {
+  const color = tc.category >= 4 ? '#ff3333'
+              : tc.category >= 3 ? '#ff9900'
+              : tc.category >= 1 ? '#ffff00'
+              : '#00ccff';
+
+  // Storm circle
+  const circle = L.circle([tc.lat, tc.lng], {
+    radius: (tc.stormRadius || 150) * 1000,
+    color: color,
+    fillColor: color,
+    fillOpacity: 0.12,
+    weight: 1.5
+  }).addTo(map);
+  typhoonLayers.push(circle);
+
+  // Track line
+  if (tc.track && tc.track.length > 1) {
+    const line = L.polyline(tc.track, { color, weight: 2, opacity: 0.7, dashArray: '4,3' }).addTo(map);
+    typhoonLayers.push(line);
+    // Forecast dashes
+    if (tc.forecast && tc.forecast.length > 0) {
+      const fLine = L.polyline([[tc.lat, tc.lng], ...tc.forecast.map(f => [f.lat, f.lng])],
+        { color, weight: 1.5, opacity: 0.4, dashArray: '6,5' }).addTo(map);
+      typhoonLayers.push(fLine);
+    }
+  }
+
+  // Center marker
+  const icon = L.divIcon({
+    html: `<div style="
+      background:${color};
+      border-radius:50%;
+      width:18px;height:18px;
+      border:2px solid #fff;
+      box-shadow:0 0 10px ${color};
+      animation:pulse 1.2s infinite;
+    "></div>`,
+    className: '',
+    iconSize: [18,18],
+    iconAnchor: [9,9]
+  });
+  const marker = L.marker([tc.lat, tc.lng], { icon })
+    .addTo(map)
+    .bindPopup(`
+      <b style="color:${color}">${tc.name}</b><br>
+      中心気圧: ${tc.pressure} hPa<br>
+      最大風速: ${tc.windSpeed} m/s<br>
+      移動: ${tc.direction} ${tc.speed} km/h
+    `);
+  typhoonLayers.push(marker);
+}
+
+// ─────────────────────────────────────────
+//  DATA FETCH — JMA TYPHOON JSON
+//  (Uses JMA's official typhoon data API)
+// ─────────────────────────────────────────
+let currentData = null;
+
+async function fetchTyphoonData() {
+  // Try JMA official API
+  const JMA_URL = 'https://www.jma.go.jp/bosai/typhoon/data/targetTc.json';
+
+  try {
+    const resp = await fetch(JMA_URL, { cache: 'no-cache' });
+    if (!resp.ok) throw new Error('JMA API error');
+    const raw = await resp.json();
+    return parseJMAData(raw);
+  } catch(e) {
+    console.warn('JMA API unavailable, using fallback data:', e.message);
+    return getFallbackData();
+  }
+}
+
+function parseJMAData(raw) {
+  const typhoons = [];
+  if (!raw || !Array.isArray(raw)) return typhoons;
+  raw.forEach(tc => {
+    try {
+      const anl = tc.analysis;
+      if (!anl) return;
+      const lat = anl.position?.lat || 20;
+      const lng = anl.position?.lon || 130;
+      const wind = anl.maxWind?.speed10min || 0;
+      const pres = anl.pressure || 1000;
+      const name = tc.name?.ja || tc.name?.en || '台風';
+
+      let category = 0;
+      if (wind >= 54) category = 5;
+      else if (wind >= 44) category = 4;
+      else if (wind >= 33) category = 3;
+      else if (wind >= 25) category = 2;
+      else if (wind >= 17) category = 1;
+
+      const track = (tc.track || []).map(p => [p.position?.lat || lat, p.position?.lon || lng]);
+      const forecast = (tc.forecast || []).map(f => ({ lat: f.position?.lat || lat, lng: f.position?.lon || lng }));
+
+      typhoons.push({ name, lat, lng, pressure: pres, windSpeed: wind, category,
+        direction: anl.direction || '--', speed: anl.speed || '--',
+        stormRadius: anl.stormRadius || 150, track, forecast });
+    } catch(e) { /* skip malformed */ }
+  });
+  return typhoons;
+}
+
+function getFallbackData() {
+  // Returns empty or synthetic if no real data
+  // Check today's date for typhoon season hints
+  const month = new Date().getMonth() + 1;
+  const inSeason = month >= 6 && month <= 11;
+  if (!inSeason) return [];
+  // Return empty — no synthetic fake typhoons
+  return [];
+}
+
+// ─────────────────────────────────────────
+//  UI UPDATE
+// ─────────────────────────────────────────
+function getOkinawaLevel(typhoons) {
+  if (!typhoons.length) return 1;
+  let minDist = Infinity;
+  let maxWind = 0;
+  typhoons.forEach(tc => {
+    const dist = haversine(26.5, 127.9, tc.lat, tc.lng);
+    if (dist < minDist) minDist = dist;
+    if (tc.windSpeed > maxWind) maxWind = tc.windSpeed;
+  });
+  if (minDist < 300 && maxWind >= 33) return 4;
+  if (minDist < 500 && maxWind >= 25) return 3;
+  if (minDist < 800) return 2;
+  return 1;
+}
+
+function haversine(lat1, lon1, lat2, lon2) {
+  const R = 6371;
+  const dLat = (lat2-lat1)*Math.PI/180;
+  const dLon = (lon2-lon1)*Math.PI/180;
+  const a = Math.sin(dLat/2)*Math.sin(dLat/2)
+          + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)
+          * Math.sin(dLon/2)*Math.sin(dLon/2);
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+
+const levelConfig = {
+  1: { color:'#4caf50', cls:'level-1', label:'平常運転', en:'Normal Operations',
+       detail:'現在、沖縄本島に影響する台風はありません。通常通り営業します。\nNo typhoon affecting Okinawa. Normal studio operations.' },
+  2: { color:'#f9a825', cls:'level-2', label:'注意・経過観察', en:'Typhoon Watch',
+       detail:'沖縄接近の可能性がある台風を監視中。予約確認・準備を開始します。\nMonitoring approaching typhoon. Beginning preparation checklist.' },
+  3: { color:'#f57c00', cls:'level-3', label:'警戒・準備開始', en:'Typhoon Warning',
+       detail:'台風が接近中。スタッフ準備・クライアント連絡を開始。営業短縮の可能性あり。\nTyphoon approaching. Initiating staff protocol & client notifications.' },
+  4: { color:'#d32f2f', cls:'level-4', label:'🔴 緊急閉鎖', en:'EMERGENCY CLOSURE',
+       detail:'台風直撃または暴風圏内。スタジオ閉鎖。全スタッフ自宅待機。\nDirect typhoon hit / inside storm radius. STUDIO CLOSED. All staff shelter in place.' }
+};
+
+function updateUI(typhoons) {
+  currentData = typhoons;
+  const now = new Date().toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' });
+
+  // Status row
+  document.getElementById('activeCount').textContent = typhoons.length || '0';
+  const level = getOkinawaLevel(typhoons);
+  document.getElementById('okiAlert').textContent = level;
+  document.getElementById('okiAlert').style.color =
+    level >= 4 ? '#ff3333' : level >= 3 ? '#ff9900' : level >= 2 ? '#ffff00' : '#4caf50';
+  const maxW = typhoons.length ? Math.max(...typhoons.map(t => t.windSpeed)) : 0;
+  document.getElementById('maxWind').textContent = maxW || '--';
+
+  // Okinawa alert box
+  const lc = levelConfig[level];
+  const box = document.getElementById('okiAlertBox');
+  box.className = `oki-alert-box ${lc.cls}`;
+  document.getElementById('okiLevelNum').textContent = level;
+  document.getElementById('okiLevelNum').style.color = lc.color;
+  document.getElementById('okiLevelLabel').textContent = lc.label;
+  document.getElementById('okiLevelLabel').style.color = lc.color;
+  document.getElementById('okiLevelEn').textContent = lc.en;
+  document.getElementById('okiDetail').textContent = lc.detail;
+
+  // Progress bars
+  const windPct = Math.min(maxW / 60 * 100, 100);
+  const rainPct = level >= 3 ? 80 : level >= 2 ? 50 : 20;
+  const riskPct = (level - 1) / 3 * 100;
+  document.getElementById('windBar').style.width = windPct + '%';
+  document.getElementById('rainBar').style.width = rainPct + '%';
+  document.getElementById('riskBar').style.width = riskPct + '%';
+  document.getElementById('windVal').textContent = maxW ? `${maxW} m/s` : '穏やか';
+  document.getElementById('rainVal').textContent = `${Math.round(rainPct)}%`;
+  document.getElementById('riskVal').textContent = ['低', '低', '中', '高'][level-1];
+
+  // Typhoon cards
+  const cardsEl = document.getElementById('typhoonCards');
+  if (!typhoons.length) {
+    cardsEl.innerHTML = `
+      <div class="no-typhoon">
+        <div class="big">🌸</div>
+        <p>現在、活動中の台風はありません</p>
+        <p style="margin-top:4px;color:#6b8">No active typhoons in the Western Pacific</p>
+      </div>`;
+  } else {
+    cardsEl.innerHTML = typhoons.map(tc => {
+      const catLabel = tc.category >= 4 ? 'CAT 4-5' : tc.category >= 3 ? 'CAT 3' : tc.category >= 1 ? '台風' : 'TD';
+      const catCls   = tc.category >= 4 ? '' : tc.category >= 3 ? 'cat-3' : 'cat-2';
+      const cardCls  = tc.category >= 4 ? '' : tc.category >= 3 ? 'moderate' : 'watch';
+      const dist = Math.round(haversine(26.5, 127.9, tc.lat, tc.lng));
+      return `
+        <div class="typhoon-card ${cardCls}">
+          <div class="tc-header">
+            <div class="tc-name">🌀 ${tc.name}</div>
+            <div class="tc-cat ${catCls}">${catLabel}</div>
+          </div>
+          <div class="tc-grid">
+            <div class="tc-item">
+              <div class="tc-item-label">中心気圧</div>
+              <div class="tc-item-val">${tc.pressure} hPa</div>
+            </div>
+            <div class="tc-item">
+              <div class="tc-item-label">最大風速</div>
+              <div class="tc-item-val">${tc.windSpeed} m/s</div>
+            </div>
+            <div class="tc-item">
+              <div class="tc-item-label">位置</div>
+              <div class="tc-item-val">${tc.lat.toFixed(1)}°N ${tc.lng.toFixed(1)}°E</div>
+            </div>
+            <div class="tc-item">
+              <div class="tc-item-label">沖縄まで</div>
+              <div class="tc-item-val">${dist} km</div>
+            </div>
+          </div>
+          <div class="tc-track">
+            移動: ${tc.direction} / ${tc.speed} km/h
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  // Map update
+  clearTyphoonLayers();
+  typhoons.forEach(addTyphoonToMap);
+  document.getElementById('mapUpdateTime').textContent = now + ' JST';
+
+  // Ticker
+  if (!typhoons.length) {
+    document.getElementById('alertTicker').textContent =
+      '🟢 現在、西太平洋に活動中の台風はありません — Family Tree Oki は通常営業中です ☘️ No active typhoons — Normal Operations at Family Tree Oki 🌺';
+    document.getElementById('alertBanner').style.background = 'linear-gradient(90deg,#0a1a0a,#0f2a0f,#0a1a0a)';
+    document.getElementById('alertBanner').style.borderBottomColor = '#388e3c';
+    document.getElementById('alertTicker').style.color = '#88cc88';
+  } else {
+    const names = typhoons.map(t => `台風${t.name} (${t.windSpeed}m/s)`).join(' / ');
+    document.getElementById('alertTicker').textContent =
+      `⚠️ 活動中の台風: ${names} — 沖縄警戒レベル: ${level} — スタッフの皆さん、フェーズ${level}のチェックリストを確認してください`;
+  }
+
+  document.getElementById('updateInfo').textContent = `最終更新 / Last updated: ${now} (JST) — 気象庁データ`;
+}
+
+// ─────────────────────────────────────────
+//  AUTO REFRESH
+// ─────────────────────────────────────────
+async function refreshAll() {
+  document.getElementById('updateInfo').textContent = '更新中...';
+  const data = await fetchTyphoonData();
+  updateUI(data);
+}
+
+// Initial load
+refreshAll();
+
+// Auto refresh every 10 minutes
+setInterval(refreshAll, 10 * 60 * 1000);
+</script>
+</body>
+</html>
