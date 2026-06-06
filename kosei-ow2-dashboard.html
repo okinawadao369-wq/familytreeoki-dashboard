@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Kosei Gaming Lab | OW2 VOD診断ダッシュボード v3</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#07090F;--bg2:#0C1018;--card:#0F1624;--card2:#141D2E;
+  --border:#1C2A40;--border2:#253850;
+  --orange:#F97316;--blue:#38BDF8;--purple:#A855F7;
+  --gold:#EAB308;--green:#22C55E;--red:#EF4444;--cyan:#06B6D4;
+  --text:#E2E8F0;--text2:#94A3B8;--text3:#475569;
+}
+body{background:var(--bg);color:var(--text);font-family:system-ui,'Segoe UI',sans-serif;min-height:100vh;overflow-x:hidden;font-size:14px}
+.app{display:flex;min-height:100vh}
+.sidebar{width:220px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;bottom:0;left:0;z-index:100;overflow-y:auto}
+.main{margin-left:220px;flex:1;display:flex;flex-direction:column;min-height:100vh}
+.topbar{background:rgba(7,9,15,0.95);border-bottom:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;backdrop-filter:blur(8px)}
+.content{padding:20px;flex:1}
+.logo{padding:16px;border-bottom:1px solid var(--border)}
+.logo-name{font-size:12px;font-weight:900;letter-spacing:3px;color:var(--orange);text-transform:uppercase}
+.logo-sub{font-size:9px;color:var(--text3);letter-spacing:2px;margin-top:2px;text-transform:uppercase}
+.nav{padding:10px 6px;flex:1}
+.nav-section-title{font-size:9px;font-weight:700;letter-spacing:2px;color:var(--text3);text-transform:uppercase;padding:6px 8px 4px}
+.nav-item{display:flex;align-items:center;gap:8px;padding:9px 10px;border-radius:7px;cursor:pointer;font-size:12px;color:var(--text2);border:1px solid transparent;margin-bottom:1px;transition:all .15s;user-select:none}
+.nav-item:hover{background:rgba(56,189,248,.07);color:var(--text)}
+.nav-item.active{background:rgba(249,115,22,.12);color:var(--orange);border-color:rgba(249,115,22,.25)}
+.nav-icon{width:18px;text-align:center;font-size:14px;flex-shrink:0}
+.sidebar-footer{padding:12px;border-top:1px solid var(--border);font-size:10px;color:var(--text3);line-height:1.5}
+.topbar-title{font-size:13px;font-weight:700;color:var(--blue);letter-spacing:.5px}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.rank-badge{background:linear-gradient(135deg,#D97706,#F59E0B);color:#000;padding:2px 10px;border-radius:20px;font-size:10px;font-weight:800;letter-spacing:1px}
+.score-chip{font-size:13px;font-weight:800;font-variant-numeric:tabular-nums}
+.card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px;position:relative;overflow:hidden}
+.card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--orange),var(--blue),var(--purple));opacity:.6}
+.card-title{font-size:11px;font-weight:700;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:6px}
+.card-title::before{content:'';width:2px;height:12px;background:var(--orange);border-radius:2px;display:inline-block;flex-shrink:0}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.sc{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center;transition:transform .2s}
+.sc:hover{transform:translateY(-2px)}
+.sc-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.sc-val{font-size:30px;font-weight:900;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-1px}
+.sc-sub{font-size:10px;color:var(--text3);margin-top:5px}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;border:none;transition:all .15s;letter-spacing:.3px}
+.btn-p{background:linear-gradient(135deg,var(--orange),#DC2626);color:#fff}
+.btn-p:hover{opacity:.9;transform:translateY(-1px)}
+.btn-s{background:rgba(56,189,248,.1);color:var(--blue);border:1px solid rgba(56,189,248,.25)}
+.btn-s:hover{background:rgba(56,189,248,.18)}
+.btn-g{background:rgba(255,255,255,.04);color:var(--text2);border:1px solid var(--border)}
+.btn-g:hover{background:rgba(255,255,255,.08);color:var(--text)}
+.btn-grn{background:rgba(34,197,94,.12);color:var(--green);border:1px solid rgba(34,197,94,.25)}
+.tag{display:inline-flex;align-items:center;padding:2px 9px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:.3px}
+.t-o{background:rgba(249,115,22,.14);color:var(--orange);border:1px solid rgba(249,115,22,.28)}
+.t-b{background:rgba(56,189,248,.1);color:var(--blue);border:1px solid rgba(56,189,248,.22)}
+.t-p{background:rgba(168,85,247,.1);color:var(--purple);border:1px solid rgba(168,85,247,.22)}
+.t-g{background:rgba(34,197,94,.1);color:var(--green);border:1px solid rgba(34,197,94,.22)}
+.t-r{background:rgba(239,68,68,.1);color:var(--red);border:1px solid rgba(239,68,68,.22)}
+.t-gold{background:rgba(234,179,8,.1);color:var(--gold);border:1px solid rgba(234,179,8,.22)}
+.pb-wrap{margin-bottom:10px}
+.pb-row{display:flex;justify-content:space-between;margin-bottom:4px;font-size:11px}
+.pb-name{color:var(--text2)}
+.pb-val{font-weight:700;font-variant-numeric:tabular-nums}
+.pb{height:5px;background:rgba(255,255,255,.05);border-radius:3px;overflow:hidden}
+.pb-fill{height:100%;border-radius:3px;transition:width .8s ease}
+.fg{margin-bottom:14px}
+.fl{display:block;font-size:10px;font-weight:700;color:var(--text3);margin-bottom:5px;text-transform:uppercase;letter-spacing:.8px}
+.fi,.fs,.ft{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:7px;padding:9px 12px;color:var(--text);font-size:13px;transition:all .15s;outline:none}
+.fi:focus,.fs:focus,.ft:focus{border-color:var(--blue);box-shadow:0 0 0 2px rgba(56,189,248,.1)}
+.fs option{background:#141D2E;color:var(--text)}
+.ft{resize:vertical;min-height:72px}
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{background:rgba(255,255,255,.03);padding:8px 12px;text-align:left;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--border);white-space:nowrap}
+.tbl td{padding:9px 12px;font-size:11px;border-bottom:1px solid rgba(255,255,255,.03);color:var(--text2)}
+.tbl tr:hover td{background:rgba(56,189,248,.03)}
+.alert{padding:10px 14px;border-radius:8px;font-size:12px;margin-bottom:14px;display:flex;align-items:flex-start;gap:8px;line-height:1.5}
+.a-warn{background:rgba(234,179,8,.07);border:1px solid rgba(234,179,8,.18);color:var(--gold)}
+.a-info{background:rgba(56,189,248,.07);border:1px solid rgba(56,189,248,.18);color:var(--blue)}
+.a-ok{background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.18);color:var(--green)}
+.a-err{background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.18);color:var(--red)}
+.hc{background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:14px;margin-bottom:12px;border-left:3px solid var(--purple)}
+.conf-bar{display:flex;align-items:center;gap:8px;margin-top:10px}
+.conf-track{flex:1;height:4px;background:rgba(255,255,255,.05);border-radius:2px}
+.conf-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--purple),var(--blue))}
+.sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+.st{font-size:18px;font-weight:800;letter-spacing:.3px}
+.tl-row{display:flex;gap:12px;margin-bottom:8px;align-items:flex-start;padding:10px;border-radius:8px;background:var(--card2);border:1px solid var(--border)}
+.tl-time{font-size:11px;font-weight:700;color:var(--blue);font-variant-numeric:tabular-nums;min-width:48px;margin-top:2px}
+.tl-body{flex:1}
+.tl-evt{font-size:12px;font-weight:700;margin-bottom:3px}
+.tl-note{font-size:11px;color:var(--text3);line-height:1.5}
+.badge-new{background:linear-gradient(135deg,var(--orange),var(--purple));color:#fff;font-size:9px;font-weight:800;padding:1px 6px;border-radius:20px;letter-spacing:1px;vertical-align:middle;margin-left:5px}
+.imp-task{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:7px;cursor:pointer;border:1px solid var(--border);background:var(--card2);margin-bottom:6px;transition:all .15s;font-size:12px;color:var(--text2)}
+.imp-task:hover{border-color:var(--blue);color:var(--text)}
+.imp-task.done{opacity:.55;text-decoration:line-through}
+.chk{width:16px;height:16px;border-radius:4px;border:2px solid var(--border2);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:900;color:var(--green);transition:all .15s}
+.chk.on{background:var(--green);border-color:var(--green);color:#000}
+.export-pre{font-family:'Courier New',monospace;font-size:11px;color:var(--text2);line-height:1.7;white-space:pre-wrap;word-break:break-word;background:rgba(0,0,0,.3);padding:14px;border-radius:7px;max-height:400px;overflow-y:auto;border:1px solid var(--border)}
+.toast{position:fixed;bottom:20px;right:20px;background:var(--green);color:#000;padding:10px 18px;border-radius:8px;font-size:13px;font-weight:700;z-index:9999;opacity:0;transition:opacity .3s;pointer-events:none}
+.toast.show{opacity:1}
+/* VIDEO PAGE */
+.video-drop{border:2px dashed var(--border2);border-radius:12px;padding:40px;text-align:center;cursor:pointer;transition:all .2s;background:var(--card);position:relative}
+.video-drop:hover,.video-drop.drag-over{border-color:var(--orange);background:rgba(249,115,22,.05)}
+.video-drop input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.video-wrap{position:relative;background:#000;border-radius:10px;overflow:hidden;border:1px solid var(--border)}
+.video-wrap video{width:100%;max-height:360px;display:block}
+.video-controls{background:var(--bg2);border-top:1px solid var(--border);padding:10px 14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.vc-time{font-size:12px;font-weight:700;color:var(--blue);font-variant-numeric:tabular-nums;min-width:80px}
+.vc-progress{flex:1;min-width:120px;height:6px;background:rgba(255,255,255,.08);border-radius:3px;cursor:pointer;position:relative}
+.vc-fill{height:100%;background:linear-gradient(90deg,var(--orange),var(--blue));border-radius:3px;pointer-events:none;transition:width .1s}
+.hotkey-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.hk{background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:10px;text-align:center;transition:all .15s}
+.hk.active-key{background:rgba(249,115,22,.2);border-color:var(--orange);transform:scale(1.05)}
+.hk-key{font-size:18px;font-weight:900;color:var(--orange);display:block;margin-bottom:3px}
+.hk-label{font-size:10px;color:var(--text3)}
+.evt-list{max-height:280px;overflow-y:auto}
+.evt-row{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:6px;border:1px solid var(--border);background:var(--card2);margin-bottom:4px;font-size:11px}
+.evt-ts{font-weight:700;color:var(--blue);font-variant-numeric:tabular-nums;min-width:52px}
+.evt-type{font-weight:700;min-width:60px}
+.evt-del{color:var(--red);cursor:pointer;margin-left:auto;padding:2px 6px;border-radius:4px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);font-size:10px}
+/* VIDEO TIMELINE */
+.vtl{position:relative;height:40px;background:rgba(0,0,0,.3);border-radius:6px;border:1px solid var(--border);overflow:hidden;cursor:pointer;margin-top:6px}
+.vtl-marker{position:absolute;top:0;bottom:0;width:3px;border-radius:2px;transform:translateX(-50%)}
+.vtl-tooltip{position:absolute;bottom:calc(100%+4px);background:var(--card);border:1px solid var(--border);padding:3px 7px;border-radius:4px;font-size:10px;white-space:nowrap;pointer-events:none;transform:translateX(-50%)}
+/* STATS PAGE */
+.kpi-card{background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:14px;display:flex;flex-direction:column;gap:4px}
+.kpi-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px}
+.kpi-val{font-size:24px;font-weight:900;font-variant-numeric:tabular-nums;line-height:1}
+.kpi-bench{font-size:10px;margin-top:3px}
+.kpi-pass{color:var(--green)}
+.kpi-fail{color:var(--red)}
+.kpi-warn{color:var(--gold)}
+.bench-row{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-radius:7px;border:1px solid var(--border);background:var(--card2);margin-bottom:5px;font-size:12px}
+.bench-name{color:var(--text2);flex:1}
+.bench-target{color:var(--text3);font-size:11px;min-width:90px;text-align:center}
+.bench-actual{font-weight:800;font-variant-numeric:tabular-nums;min-width:70px;text-align:right}
+.status-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-right:6px}
+/* KNOWLEDGE PAGE */
+.rank-bar-wrap{margin-bottom:6px}
+.rank-bar{height:22px;border-radius:4px;display:flex;align-items:center;padding:0 8px;font-size:10px;font-weight:700;color:#fff;min-width:20px;transition:width .8s ease;text-shadow:0 1px 2px rgba(0,0,0,.5)}
+.ws-code{background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.ws-code-val{font-size:20px;font-weight:900;letter-spacing:4px;color:var(--gold);font-family:'Courier New',monospace}
+.ws-code-desc{font-size:11px;color:var(--text3);margin-top:2px}
+.copy-btn{font-size:10px;padding:4px 10px;border-radius:5px;background:rgba(234,179,8,.1);color:var(--gold);border:1px solid rgba(234,179,8,.2);cursor:pointer}
+.death-type-card{background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:14px;border-left:3px solid var(--red);margin-bottom:8px}
+.vpos-result{font-size:36px;font-weight:900;font-variant-numeric:tabular-nums;text-align:center;padding:16px;background:var(--card2);border-radius:8px;border:1px solid var(--border)}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="sidebar">
+    <div class="logo">
+      <div class="logo-name">⚡ Kosei Gaming</div>
+      <div class="logo-sub">OW2 Coaching Lab v3</div>
+    </div>
+    <div class="nav" id="nav"></div>
+    <div class="sidebar-footer">
+      ランク代行・アカウント共有・<br>チート支援は一切行いません
+    </div>
+  </div>
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-title" id="topbar-title">Overview</div>
+      <div class="topbar-right">
+        <div class="rank-badge" id="topbar-rank">GOLD</div>
+        <div class="score-chip" id="topbar-score" style="color:var(--gold)">--/100</div>
+      </div>
+    </div>
+    <div class="content" id="content"></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+// ============================================================
+// CONSTANTS
+// ============================================================
+const RANKS=['Bronze 5','Bronze 4','Bronze 3','Bronze 2','Bronze 1','Silver 5','Silver 4','Silver 3','Silver 2','Silver 1','Gold 5','Gold 4','Gold 3','Gold 2','Gold 1','Platinum 5','Platinum 4','Platinum 3','Platinum 2','Platinum 1','Diamond 5','Diamond 4','Diamond 3','Diamond 2','Diamond 1','Master','Grandmaster','Champion'];
+const ROLES=['Tank','Damage','Support'];
+const EVT_TYPES={
+  death:{label:'💀 デス',color:'var(--red)'},
+  kill:{label:'⚔️ キル',color:'var(--orange)'},
+  goodPos:{label:'✅ 良ポジ',color:'var(--green)'},
+  badPos:{label:'⚠️ 悪ポジ',color:'var(--gold)'},
+  lateReset:{label:'🔄 リセット遅',color:'var(--purple)'},
+  ultUsed:{label:'💥 ウルト',color:'var(--blue)'},
+  abilityWasted:{label:'🚫 CD無駄',color:'var(--red)'},
+  goodDecision:{label:'🎯 判断良',color:'var(--cyan)'},
+  clutch:{label:'🏆 クラッチ',color:'var(--gold)'},
+};
+const RANK_DIST=[
+  {rank:'Bronze',pct:2.4,color:'#CD7F32'},{rank:'Silver',pct:12.6,color:'#C0C0C0'},
+  {rank:'Gold',pct:31.7,color:'#FFD700'},{rank:'Platinum',pct:34.9,color:'#4FC3F7'},
+  {rank:'Diamond',pct:14.9,color:'#4DD0E1'},{rank:'Master',pct:3.2,color:'#FF8C00'},
+  {rank:'GM+Champion',pct:0.3,color:'#E040FB'},
+];
+const ANA_BENCHMARKS=[
+  {key:'healing10m',label:'ヒーリング /10分',target:7411,unit:'/10m',dir:'gte',role:'Support/Ana'},
+  {key:'deaths10m',label:'デス /10分',target:5.9,unit:'/10m',dir:'lte',role:'Support/Ana'},
+  {key:'defAssists',label:'防御アシスト /10分',target:10.26,unit:'/10m',dir:'gte',role:'Support/Ana'},
+  {key:'offAssists',label:'攻撃アシスト /10分',target:6.66,unit:'/10m',dir:'gte',role:'Support/Ana'},
+  {key:'sleepDarts',label:'スリープダーツ /10分',target:2.84,unit:'/10m',dir:'gte',role:'Support/Ana'},
+  {key:'nanoBoosts',label:'ナノブースト /10分',target:2.70,unit:'/10m',dir:'gte',role:'Support/Ana'},
+];
+const GENERAL_KPI=[
+  {key:'elimsPerDeath',label:'エリミネーション/デス',target:3.0,unit:'',dir:'gte',desc:'プロ基準 ≥3.0'},
+  {key:'finalBlowsPerDeath',label:'ファイナルブロー/デス',target:2.0,unit:'',dir:'gte',desc:'プロ基準 ≥2.0'},
+  {key:'deaths10m',label:'デス /10分',target:5.0,unit:'/10m',dir:'lte',desc:'理想 <4.0, 上限 5.0'},
+  {key:'assistsPerElim',label:'アシスト/エリミネーション',target:1.5,unit:'x',dir:'gte',desc:'サポート基準 ≥1.5'},
+];
+const WORKSHOP_CODES=[
+  {code:'VAXTA',desc:'遮蔽物チャレンジ（Cover Training）',detail:'射線と遮蔽物の意識トレーニング'},
+  {code:'THNX8',desc:'アイムトレーニング（Aim Lab OW2）',detail:'精密エイム・追跡練習'},
+  {code:'4GAAD',desc:'ポジショニング練習（Positioning Workshop）',detail:'ポジション判断・リセット練習'},
+  {code:'VXEAT',desc:'アビリティタイミング（Ability Timing Drill）',detail:'CD管理・コンボ最適化'},
+];
+const DEATH_TYPES=[
+  {name:'空間把握エラー',en:'Spatial Error',icon:'📐',desc:'遮蔽物から1.5m以上離れた状態でのデス。射線内に立ち続けることが根本原因。',cue:'カバーチェックせず前進',fix:'歩くたびに「今遮蔽物から何歩？」を確認するルーティンを作る'},
+  {name:'射線管理エラー',en:'Sightline Error',icon:'👁️',desc:'2本以上の射線にさらされた状態でのデス。角度管理の失敗。',cue:'1vs2の角度でスタック',fix:'常に1方向のみ敵に晒す。クリアリング順序を意識する'},
+  {name:'リソース管理エラー',en:'Resource Error',icon:'⚡',desc:'防御CD（アンチ/フェード/シールド等）を使い切った状態でのデス。',cue:'キーCDを前のファイトで消費',fix:'CD温存ルール：自分に危険がない限りCD先打ちしない'},
+];
+
+// ============================================================
+// DATABASE
+// ============================================================
+const DEFAULT_DATA={
+  player:{playerName:'Player-001',discordName:'',contact:'',playHours:500,sensitivity:'5.0',platform:'PC',currentRank:'Gold 3',targetRank:'Platinum 2',role:'Support',mainHero:'Ana',coachingGoal:'遮蔽物管理とデス15秒前の意識を改善する',minorStatus:'adult',consentForAnonymousUse:false},
+  scores:{death15:42,positioning:45,ability:55,heroPool:72,aim:60,teamfight:48,mental:68,training:50},
+  events:[
+    {id:1,timestamp:'03:24',eventType:'death',cause15s:'タンクのシールドに隠れず射線に晒された',directCause:'集中砲火',coverDist:8,sightlines:2,cdWasted:true,inferredHabit:'遮蔽物外サポート（推定癖）',improvement:'タンクの後方1m以内に常に位置取る',confidence:0.82},
+    {id:2,timestamp:'07:11',eventType:'death',cause15s:'ファイト後のリセットが遅く、敵に刺された',directCause:'リセット遅延',coverDist:3,sightlines:1,cdWasted:false,inferredHabit:'ファイト後の後退判断が遅い（推定癖）',improvement:'キル確認後0.5秒以内に後退開始を習慣化',confidence:0.75},
+    {id:3,timestamp:'12:45',eventType:'goodPos',cause15s:'',directCause:'',coverDist:0,sightlines:0,cdWasted:false,inferredHabit:'',improvement:'',confidence:0},
+    {id:4,timestamp:'15:30',eventType:'lateReset',cause15s:'ファイト後の後退タイミングが2秒遅かった',directCause:'',coverDist:0,sightlines:0,cdWasted:false,inferredHabit:'',improvement:'',confidence:0},
+    {id:5,timestamp:'18:02',eventType:'abilityWasted',cause15s:'スリープダーツをキャリー以外に使用',directCause:'',coverDist:0,sightlines:0,cdWasted:true,inferredHabit:'',improvement:'スリープはキャリーへの優先使用を徹底',confidence:0},
+    {id:6,timestamp:'22:17',eventType:'death',cause15s:'前進しすぎてアンチグレネードを先出し、CDなしで囲まれた',directCause:'リソース枯渇',coverDist:5,sightlines:3,cdWasted:true,inferredHabit:'アンチの先打ち癖（推定癖）',improvement:'アンチは自分が攻撃を受けてから使う',confidence:0.88},
+  ],
+  videoEvents:[],
+  matchStats:{elims:18,deaths:6,finalBlows:12,healing:42000,assists:24,matchDuration:9,defAssists:9,offAssists:6,sleepDarts:3,nanoBoosts:2},
+  tasks:{},
+};
+
+function loadDB(){
+  try{
+    const s=localStorage.getItem('ow2_kosei_v3');
+    return s?JSON.parse(s):JSON.parse(JSON.stringify(DEFAULT_DATA));
+  }catch{return JSON.parse(JSON.stringify(DEFAULT_DATA));}
+}
+function saveDB(d){localStorage.setItem('ow2_kosei_v3',JSON.stringify(d));}
+let DB=loadDB();
+
+// ============================================================
+// SCORING
+// ============================================================
+function calcOverall(s){
+  return Math.round(s.death15*0.20+s.positioning*0.20+s.ability*0.15+s.heroPool*0.10+s.aim*0.10+s.teamfight*0.10+s.mental*0.10+s.training*0.05);
+}
+function scoreColor(v){if(v>=75)return'var(--green)';if(v>=55)return'var(--blue)';if(v>=40)return'var(--gold)';return'var(--red)';}
+function scoreLabel(v){
+  if(v>=85)return{l:'昇格準備完了',c:'var(--green)'};
+  if(v>=70)return{l:'改善すれば昇格圏',c:'var(--blue)'};
+  if(v>=55)return{l:'停滞要因あり',c:'var(--gold)'};
+  if(v>=40)return{l:'基礎改善が必要',c:'var(--orange)'};
+  return{l:'最優先で基礎再設計',c:'var(--red)'};
+}
+
+// ============================================================
+// CHARTS (inline SVG)
+// ============================================================
+function radarChart(data,w,h){
+  const cx=w/2,cy=h/2,r=Math.min(w,h)*0.38;
+  const n=data.length;
+  const angles=data.map((_,i)=>((i*2*Math.PI)/n)-Math.PI/2);
+  const gridLevels=[20,40,60,80,100];
+  let svg=`<svg viewBox="0 0 ${w} ${h}" style="width:100%;height:auto">`;
+  gridLevels.forEach(lv=>{
+    const pts=angles.map(a=>`${cx+r*(lv/100)*Math.cos(a)},${cy+r*(lv/100)*Math.sin(a)}`).join(' ');
+    svg+=`<polygon points="${pts}" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>`;
+  });
+  angles.forEach(a=>{svg+=`<line x1="${cx}" y1="${cy}" x2="${cx+r*Math.cos(a)}" y2="${cy+r*Math.sin(a)}" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>`;});
+  const pts=data.map((d,i)=>`${cx+r*(d.value/100)*Math.cos(angles[i])},${cy+r*(d.value/100)*Math.sin(angles[i])}`).join(' ');
+  svg+=`<polygon points="${pts}" fill="rgba(56,189,248,0.18)" stroke="#38BDF8" stroke-width="2"/>`;
+  data.forEach((d,i)=>{
+    const x=cx+r*(d.value/100)*Math.cos(angles[i]),y=cy+r*(d.value/100)*Math.sin(angles[i]);
+    svg+=`<circle cx="${x}" cy="${y}" r="4" fill="${scoreColor(d.value)}" stroke="var(--bg)" stroke-width="2"/>`;
+    const lx=cx+(r+22)*Math.cos(angles[i]),ly=cy+(r+22)*Math.sin(angles[i]);
+    svg+=`<text x="${lx}" y="${ly}" text-anchor="middle" dominant-baseline="middle" font-size="9" fill="#94A3B8">${d.label}</text>`;
+    const vx=cx+(r*(d.value/100)+16)*Math.cos(angles[i]),vy=cy+(r*(d.value/100)+16)*Math.sin(angles[i]);
+    svg+=`<text x="${vx}" y="${vy}" text-anchor="middle" dominant-baseline="middle" font-size="9" font-weight="700" fill="${scoreColor(d.value)}">${d.value}</text>`;
+  });
+  svg+=`</svg>`;return svg;
+}
+function barChart(labels,values,colors,w,h){
+  const pad={l:30,r:10,t:10,b:30};
+  const bw=(w-pad.l-pad.r)/labels.length;
+  const maxV=Math.max(...values,1);
+  let svg=`<svg viewBox="0 0 ${w} ${h}" style="width:100%;height:auto">`;
+  [0,25,50,75,100].forEach(v=>{
+    const y=pad.t+(h-pad.t-pad.b)*(1-v/100);
+    svg+=`<line x1="${pad.l}" y1="${y}" x2="${w-pad.r}" y2="${y}" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>`;
+    svg+=`<text x="${pad.l-4}" y="${y}" text-anchor="end" dominant-baseline="middle" font-size="8" fill="#475569">${v}</text>`;
+  });
+  values.forEach((v,i)=>{
+    const bh=(h-pad.t-pad.b)*(v/Math.max(maxV,100));
+    const x=pad.l+i*bw+bw*0.15,y=h-pad.b-bh;
+    const bwActual=bw*0.7;
+    svg+=`<rect x="${x}" y="${y}" width="${bwActual}" height="${bh}" fill="${colors[i]||'#38BDF8'}" rx="3" opacity="0.85"/>`;
+    svg+=`<text x="${x+bwActual/2}" y="${y-5}" text-anchor="middle" font-size="9" font-weight="700" fill="${colors[i]||'#38BDF8'}">${v}</text>`;
+    svg+=`<text x="${x+bwActual/2}" y="${h-pad.b+12}" text-anchor="middle" font-size="8" fill="#475569">${labels[i]}</text>`;
+  });
+  svg+=`</svg>`;return svg;
+}
+function lineChart(points,w,h){
+  if(!points||points.length<2)return`<svg viewBox="0 0 ${w} ${h}"><text x="${w/2}" y="${h/2}" text-anchor="middle" fill="#475569" font-size="12">データなし</text></svg>`;
+  const pad={l:30,r:15,t:15,b:25};
+  const maxV=Math.max(...points.map(p=>p.v),1);
+  const scaleX=(i)=>pad.l+(w-pad.l-pad.r)*(i/(points.length-1));
+  const scaleY=(v)=>pad.t+(h-pad.t-pad.b)*(1-v/Math.max(maxV,100));
+  const pathD=points.map((p,i)=>`${i?'L':'M'}${scaleX(i)},${scaleY(p.v)}`).join(' ');
+  const areaD=pathD+` L${scaleX(points.length-1)},${h-pad.b} L${scaleX(0)},${h-pad.b} Z`;
+  let svg=`<svg viewBox="0 0 ${w} ${h}" style="width:100%;height:auto">`;
+  svg+=`<defs><linearGradient id="lg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#38BDF8" stop-opacity="0.3"/><stop offset="100%" stop-color="#38BDF8" stop-opacity="0"/></linearGradient></defs>`;
+  svg+=`<path d="${areaD}" fill="url(#lg)"/>`;
+  svg+=`<path d="${pathD}" fill="none" stroke="#38BDF8" stroke-width="2.5" stroke-linejoin="round"/>`;
+  points.forEach((p,i)=>{
+    svg+=`<circle cx="${scaleX(i)}" cy="${scaleY(p.v)}" r="3.5" fill="${scoreColor(p.v)}" stroke="var(--bg)" stroke-width="1.5"/>`;
+    svg+=`<text x="${scaleX(i)}" y="${h-pad.b+12}" text-anchor="middle" font-size="8" fill="#475569">${p.label}</text>`;
+  });
+  svg+=`</svg>`;return svg;
+}
+function circleRing(score,size){
+  const r=(size-8)/2,cx=size/2,cy=size/2;
+  const circ=2*Math.PI*r;
+  const dash=circ*(score/100);
+  const c=scoreColor(score);
+  return `<svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}">
+    <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="6"/>
+    <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${c}" stroke-width="6" stroke-dasharray="${dash} ${circ}" stroke-linecap="round" transform="rotate(-90 ${cx} ${cy})"/>
+    <text x="${cx}" y="${cy}" text-anchor="middle" dominant-baseline="middle" font-size="${size*0.22}" font-weight="900" fill="${c}">${score}</text>
+  </svg>`;
+}
+
+// ============================================================
+// UTILS
+// ============================================================
+function fmtTime(s){
+  s=Math.floor(s||0);
+  const m=Math.floor(s/60),sec=s%60;
+  return `${m}:${String(sec).padStart(2,'0')}`;
+}
+function showToast(msg,dur=2200){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),dur);
+}
+function updateTopbar(){
+  const s=DB.scores,ov=calcOverall(s),{c}=scoreLabel(ov);
+  const el=document.getElementById('topbar-score');
+  if(el){el.textContent=`${ov}/100`;el.style.color=c;}
+  const rb=document.getElementById('topbar-rank');
+  if(rb)rb.textContent=DB.player.currentRank||'GOLD';
+}
+
+// ============================================================
+// NAV
+// ============================================================
+let currentPage='overview';
+const NAV_ITEMS=[
+  {section:'コアページ'},
+  {id:'overview',icon:'🏠',label:'オーバービュー'},
+  {id:'death15',icon:'💀',label:'デス15秒前分析'},
+  {id:'habits',icon:'🧠',label:'癖・パターン分析'},
+  {id:'timeline',icon:'📋',label:'タイムライン'},
+  {id:'scores',icon:'📊',label:'スコア管理'},
+  {section:'動画・データ',badge:'NEW'},
+  {id:'video',icon:'🎬',label:'動画分析',badge:'NEW'},
+  {id:'stats',icon:'📈',label:'スタッツ入力'},
+  {id:'knowledge',icon:'📚',label:'OW2知識ベース'},
+  {section:'ツール'},
+  {id:'improvement',icon:'📅',label:'1週間改善プラン'},
+  {id:'report',icon:'📤',label:'レポート出力'},
+  {id:'profile',icon:'👤',label:'プロフィール'},
+];
+function buildNav(){
+  const nav=document.getElementById('nav');
+  nav.innerHTML=NAV_ITEMS.map(item=>{
+    if(item.section)return`<div class="nav-section-title">${item.section}${item.badge?`<span class="badge-new">${item.badge}</span>`:''}</div>`;
+    return`<div class="nav-item${item.id===currentPage?' active':''}" onclick="goPage('${item.id}')">
+      <span class="nav-icon">${item.icon}</span>
+      <span>${item.label}</span>
+      ${item.badge?`<span class="badge-new">${item.badge}</span>`:''}
+    </div>`;
+  }).join('');
+}
+function goPage(id){currentPage=id;buildNav();render();}
+
+// ============================================================
+// PAGE: OVERVIEW
+// ============================================================
+function pageOverview(){
+  const s=DB.scores,ov=calcOverall(s),{l,c}=scoreLabel(ov);
+  const deaths=DB.events.filter(e=>e.eventType==='death');
+  const cats=[
+    {label:'D-15',value:s.death15,w:20},{label:'POS',value:s.positioning,w:20},
+    {label:'CD',value:s.ability,w:15},{label:'POOL',value:s.heroPool,w:10},
+    {label:'AIM',value:s.aim,w:10},{label:'TF',value:s.teamfight,w:10},
+    {label:'メンタル',value:s.mental,w:10},{label:'練習',value:s.training,w:5},
+  ];
+  return`
+  <div class="sh"><div class="st">🏠 オーバービュー</div></div>
+  <div class="g4" style="margin-bottom:16px">
+    <div class="sc"><div class="sc-label">総合スコア</div><div class="sc-val" style="color:${c}">${ov}</div><div class="sc-sub" style="color:${c}">${l}</div></div>
+    <div class="sc"><div class="sc-label">デス分析</div><div class="sc-val" style="color:${scoreColor(s.death15)}">${s.death15}</div><div class="sc-sub">配点 20pt</div></div>
+    <div class="sc"><div class="sc-label">ポジション</div><div class="sc-val" style="color:${scoreColor(s.positioning)}">${s.positioning}</div><div class="sc-sub">配点 20pt</div></div>
+    <div class="sc"><div class="sc-label">VODイベント</div><div class="sc-val" style="color:var(--blue)">${DB.events.length}</div><div class="sc-sub">登録件数</div></div>
+  </div>
+  <div class="g2" style="margin-bottom:16px">
+    <div class="card">
+      <div class="card-title">⬡ 能力レーダー</div>
+      ${radarChart(cats.map(c=>({label:c.label,value:c.value})),320,300)}
+    </div>
+    <div class="card">
+      <div class="card-title">📊 スコア内訳</div>
+      ${barChart(cats.map(c=>c.label),cats.map(c=>c.value),cats.map(c=>scoreColor(c.value)),320,300)}
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">📋 能力別スコア詳細</div>
+    ${cats.map(cat=>`
+      <div class="pb-wrap">
+        <div class="pb-row"><span class="pb-name">${cat.label} <span style="color:var(--text3);font-size:10px">(配点${cat.w}pt)</span></span><span class="pb-val" style="color:${scoreColor(cat.value)}">${cat.value}/100</span></div>
+        <div class="pb"><div class="pb-fill" style="width:${cat.value}%;background:${scoreColor(cat.value)}"></div></div>
+      </div>`).join('')}
+  </div>
+  <div class="alert a-info" style="margin-top:14px">💡 <div>最優先改善：<strong>デス15秒前分析(${s.death15}pt)</strong> と <strong>ポジショニング(${s.positioning}pt)</strong> が最大の得点ロスです。「動画分析」ページで実際の動画タグ付けを行ってください。</div></div>`;
+}
+
+// ============================================================
+// PAGE: DEATH15
+// ============================================================
+function pageDeath15(){
+  const deaths=DB.events.filter(e=>e.eventType==='death');
+  const errCounts={空間把握:deaths.filter(e=>e.coverDist>6).length,射線管理:deaths.filter(e=>e.sightlines>=2).length,リソース管理:deaths.filter(e=>e.cdWasted).length};
+  return`
+  <div class="sh">
+    <div class="st">💀 デス15秒前分析</div>
+    <button class="btn btn-p" onclick="addDeathEvent()">＋ デスを記録</button>
+  </div>
+  <div class="alert a-warn">⚠️ <div><strong>「デスの瞬間」を分析するのではなく、「デスの15秒前」に何が起きていたかを分析します。</strong><br>3つのエラータイプ：空間把握エラー（遮蔽物距離）・射線管理エラー（露出角度）・リソース管理エラー（CD状態）</div></div>
+  <div class="g3" style="margin-bottom:16px">
+    ${Object.entries(errCounts).map(([k,v])=>`<div class="sc"><div class="sc-label">${k}エラー</div><div class="sc-val" style="color:${v>0?'var(--red)':'var(--green)'}">${v}</div><div class="sc-sub">${deaths.length?Math.round(v/deaths.length*100):0}%</div></div>`).join('')}
+  </div>
+  ${deaths.length===0?`<div class="card"><div style="text-align:center;padding:30px;color:var(--text3)">デスイベントがありません。「＋ デスを記録」か「動画分析」ページでタグ付けしてください。</div></div>`:''}
+  ${deaths.map((e,i)=>`
+    <div class="card" style="margin-bottom:12px;border-left:3px solid var(--red)">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:16px">💀</span>
+          <span style="font-weight:800;color:var(--text)">${e.timestamp}</span>
+          ${e.coverDist>6?'<span class="tag t-r">空間把握エラー</span>':''}
+          ${e.sightlines>=2?'<span class="tag t-o">射線管理エラー</span>':''}
+          ${e.cdWasted?'<span class="tag t-p">リソース管理エラー</span>':''}
+        </div>
+        <button class="btn btn-g" style="font-size:10px;padding:4px 8px" onclick="deleteEvent(${e.id})">削除</button>
+      </div>
+      <div class="g2" style="font-size:12px;gap:10px">
+        <div><div style="color:var(--text3);font-size:10px;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px">15秒前の状況</div><div style="color:var(--text)">${e.cause15s||'—'}</div></div>
+        <div><div style="color:var(--text3);font-size:10px;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px">直接的死因</div><div style="color:var(--red)">${e.directCause||'—'}</div></div>
+      </div>
+      <div class="g3" style="margin-top:10px;font-size:11px">
+        <div style="background:rgba(239,68,68,.05);border-radius:6px;padding:8px"><span style="color:var(--text3)">遮蔽物距離</span><br><span style="font-size:16px;font-weight:800;color:${e.coverDist>6?'var(--red)':'var(--green)'}">${e.coverDist}m</span></div>
+        <div style="background:rgba(249,115,22,.05);border-radius:6px;padding:8px"><span style="color:var(--text3)">射線本数</span><br><span style="font-size:16px;font-weight:800;color:${e.sightlines>=2?'var(--red)':'var(--green)'}">${e.sightlines}本</span></div>
+        <div style="background:rgba(168,85,247,.05);border-radius:6px;padding:8px"><span style="color:var(--text3)">CD無駄使い</span><br><span style="font-size:16px;font-weight:800;color:${e.cdWasted?'var(--red)':'var(--green)'}">${e.cdWasted?'あり':'なし'}</span></div>
+      </div>
+      ${e.inferredHabit?`<div style="margin-top:10px;padding:8px 12px;background:rgba(168,85,247,.06);border-radius:7px;border:1px solid rgba(168,85,247,.15)">
+        <span class="tag t-p" style="margin-bottom:6px">推定癖 (confidence: ${Math.round(e.confidence*100)}%)</span>
+        <div style="font-size:12px;color:var(--text);margin-top:5px">${e.inferredHabit}</div>
+        <div class="conf-bar"><div class="conf-track"><div class="conf-fill" style="width:${e.confidence*100}%"></div></div><span style="font-size:10px;color:var(--purple)">${Math.round(e.confidence*100)}%</span></div>
+      </div>`:''}
+      ${e.improvement?`<div style="margin-top:8px;padding:8px 12px;background:rgba(34,197,94,.05);border-radius:7px;border:1px solid rgba(34,197,94,.15);font-size:12px;color:var(--green)">→ ${e.improvement}</div>`:''}
+    </div>`).join('')}`;
+}
+function addDeathEvent(){
+  const ts=prompt('タイムスタンプ (例: 03:24):','');if(!ts)return;
+  const cause=prompt('15秒前の状況:','');
+  const direct=prompt('直接的死因:','');
+  const coverDist=parseFloat(prompt('遮蔽物からの距離(m):','0')||0);
+  const sightlines=parseInt(prompt('晒されていた射線本数:','1')||1);
+  const cdWasted=confirm('防御CDを無駄に使っていた？');
+  const habit=prompt('推定癖（なければ空欄）:','');
+  const imp=prompt('改善アクション:','');
+  const conf=parseFloat(prompt('信頼度 0.0-1.0:','0.7')||0.7);
+  const ev={id:Date.now(),timestamp:ts,eventType:'death',cause15s:cause||'',directCause:direct||'',coverDist,sightlines,cdWasted,inferredHabit:habit||'',improvement:imp||'',confidence:conf};
+  DB.events.push(ev);saveDB(DB);render();showToast('デスイベントを追加しました');
+}
+function deleteEvent(id){
+  DB.events=DB.events.filter(e=>e.id!==id);saveDB(DB);render();showToast('削除しました');
+}
+
+// ============================================================
+// PAGE: HABITS
+// ============================================================
+function pageHabits(){
+  const habits=DB.events.filter(e=>e.inferredHabit).sort((a,b)=>b.confidence-a.confidence);
+  const habMap={};
+  habits.forEach(e=>{
+    const k=e.inferredHabit;
+    if(!habMap[k])habMap[k]={count:0,maxConf:0,improvements:[]};
+    habMap[k].count++;
+    habMap[k].maxConf=Math.max(habMap[k].maxConf,e.confidence);
+    if(e.improvement&&!habMap[k].improvements.includes(e.improvement))habMap[k].improvements.push(e.improvement);
+  });
+  return`
+  <div class="sh"><div class="st">🧠 癖・パターン分析</div></div>
+  <div class="alert a-info">🔍 <div>以下はVODデータから<strong>推定</strong>された癖です。断定ではありません。<strong>「推定意図」「推定癖」</strong>として参考にし、自己分析と照合してください。</div></div>
+  ${Object.entries(habMap).length===0?`<div class="card"><div style="text-align:center;padding:30px;color:var(--text3)">デスイベントを登録すると自動的に癖が分析されます。</div></div>`:''}
+  ${Object.entries(habMap).map(([habit,data])=>`
+    <div class="hc">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px">
+        <div>
+          <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px">${habit}</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <span class="tag t-p">推定癖</span>
+            <span class="tag t-o">出現${data.count}回</span>
+          </div>
+        </div>
+        <div style="text-align:right;flex-shrink:0">
+          <div style="font-size:20px;font-weight:900;color:var(--purple)">${Math.round(data.maxConf*100)}%</div>
+          <div style="font-size:9px;color:var(--text3)">信頼度</div>
+        </div>
+      </div>
+      <div class="conf-bar"><div class="conf-track"><div class="conf-fill" style="width:${data.maxConf*100}%"></div></div><span style="font-size:10px;color:var(--purple)">${Math.round(data.maxConf*100)}%</span></div>
+      ${data.improvements.map(imp=>`<div style="margin-top:8px;padding:7px 10px;background:rgba(34,197,94,.05);border-radius:6px;border-left:2px solid var(--green);font-size:12px;color:var(--green)">→ ${imp}</div>`).join('')}
+    </div>`).join('')}`;
+}
+
+// ============================================================
+// PAGE: TIMELINE
+// ============================================================
+function pageTimeline(){
+  const evts=[...DB.events,...DB.videoEvents].sort((a,b)=>{
+    const ta=a.timestamp||'0:00',tb=b.timestamp||'0:00';
+    const toSec=t=>{const[m,s]=(t+'').split(':').map(Number);return(m||0)*60+(s||0);};
+    return toSec(ta)-toSec(tb);
+  });
+  const EVT_COLORS={death:'var(--red)',kill:'var(--orange)',goodPos:'var(--green)',badPos:'var(--gold)',lateReset:'var(--purple)',ultUsed:'var(--blue)',abilityWasted:'var(--red)',goodDecision:'var(--cyan)',clutch:'var(--gold)'};
+  return`
+  <div class="sh"><div class="st">📋 タイムライン</div></div>
+  <div class="card">
+    <div class="card-title">イベントタイムライン（${evts.length}件）</div>
+    ${evts.length===0?`<div style="text-align:center;padding:20px;color:var(--text3)">イベントがありません</div>`:''}
+    ${evts.map(e=>{
+      const et=EVT_TYPES[e.eventType]||{label:e.eventType,color:'var(--text3)'};
+      return`<div class="tl-row">
+        <div class="tl-time">${e.timestamp||'?:??'}</div>
+        <div class="tl-body">
+          <div class="tl-evt" style="color:${et.color}">${et.label}</div>
+          ${e.cause15s?`<div class="tl-note">${e.cause15s}</div>`:''}
+          ${e.note?`<div class="tl-note">${e.note}</div>`:''}
+          ${e.inferredHabit?`<div class="tl-note" style="color:var(--purple)">推定癖: ${e.inferredHabit}</div>`:''}
+        </div>
+        ${e.source==='video'?'<span class="tag t-b">動画</span>':''}
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+
+// ============================================================
+// PAGE: SCORES
+// ============================================================
+function pageScores(){
+  const s=DB.scores,ov=calcOverall(s);
+  const cats=[
+    {key:'death15',label:'デス15秒前分析',max:20,desc:'死因の根本原因特定精度'},
+    {key:'positioning',label:'ポジショニング',max:20,desc:'V_pos スコア・空間把握'},
+    {key:'ability',label:'アビリティ管理',max:15,desc:'CD使用タイミング・効率'},
+    {key:'heroPool',label:'ヒーロープール',max:10,desc:'習熟度・適応力'},
+    {key:'aim',label:'エイム基礎',max:10,desc:'精度・追跡・ゲームセンス'},
+    {key:'teamfight',label:'チームファイト判断',max:10,desc:'主体性・参加判断'},
+    {key:'mental',label:'メンタル・連携',max:10,desc:'VP思考・callout品質'},
+    {key:'training',label:'練習継続性',max:5,desc:'1日15-30分 deliberate practice'},
+  ];
+  return`
+  <div class="sh">
+    <div class="st">📊 スコア管理</div>
+    <button class="btn btn-p" onclick="saveScores()">💾 スコア保存</button>
+  </div>
+  <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;flex-wrap:wrap">
+    ${circleRing(ov,90)}
+    <div>
+      <div style="font-size:28px;font-weight:900;color:${scoreLabel(ov).c}">${scoreLabel(ov).l}</div>
+      <div style="font-size:13px;color:var(--text3)">総合スコア ${ov}/100</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">スコア編集</div>
+    ${cats.map(cat=>`
+      <div class="fg">
+        <label class="fl">${cat.label} <span style="color:var(--text3)">(配点${cat.max}pt)</span></label>
+        <div style="font-size:10px;color:var(--text3);margin-bottom:5px">${cat.desc}</div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <input type="range" id="sc-${cat.key}" min="0" max="100" value="${s[cat.key]||50}" oninput="document.getElementById('sv-${cat.key}').textContent=this.value" style="flex:1;accent-color:${scoreColor(s[cat.key]||50)}"/>
+          <span id="sv-${cat.key}" style="font-size:16px;font-weight:800;min-width:36px;color:${scoreColor(s[cat.key]||50)}">${s[cat.key]||50}</span>
+        </div>
+      </div>`).join('')}
+  </div>`;
+}
+function saveScores(){
+  ['death15','positioning','ability','heroPool','aim','teamfight','mental','training'].forEach(k=>{
+    const el=document.getElementById('sc-'+k);if(el)DB.scores[k]=parseInt(el.value);
+  });
+  saveDB(DB);updateTopbar();render();showToast('スコアを保存しました！');
+}
+
+// ============================================================
+// PAGE: VIDEO ANALYSIS
+// ============================================================
+let videoEl=null,videoEvents=[],activeKey=null;
+
+function pageVideo(){
+  const evts=DB.videoEvents||[];
+  return`
+  <div class="sh"><div class="st">🎬 動画分析 <span class="badge-new">NEW</span></div></div>
+  <div class="alert a-info">🎮 <div>ローカルの動画ファイルを読み込み、再生しながらキーでイベントをタグ付けします。タグ付けしたイベントはタイムラインページにも表示されます。</div></div>
+
+  <div class="card" style="margin-bottom:16px" id="video-card">
+    <div class="card-title">🎥 動画ファイル読み込み</div>
+    <div class="video-drop" id="video-drop">
+      <input type="file" accept="video/*" id="video-file-input" onchange="loadVideoFile(this)"/>
+      <div style="font-size:40px;margin-bottom:10px">🎮</div>
+      <div style="font-size:14px;font-weight:700;color:var(--text)">クリックまたはドラッグ&ドロップ</div>
+      <div style="font-size:11px;color:var(--text3);margin-top:5px">対応形式: MP4, MOV, AVI, WebM, MKV 等</div>
+    </div>
+    <div id="video-player-wrap" style="display:none;margin-top:12px">
+      <div class="video-wrap">
+        <video id="vod-video" preload="metadata" onclick="togglePlay()" style="cursor:pointer"></video>
+      </div>
+      <div class="video-controls">
+        <button class="btn btn-g" onclick="togglePlay()" id="play-btn" style="min-width:60px">▶ 再生</button>
+        <span class="vc-time" id="vc-current">0:00</span>
+        <div class="vc-progress" id="vc-progress" onclick="seekVideo(event)">
+          <div class="vc-fill" id="vc-fill" style="width:0%"></div>
+        </div>
+        <span class="vc-time" id="vc-total">0:00</span>
+        <input type="range" id="vc-speed" min="0.25" max="2" step="0.25" value="1" style="width:70px;accent-color:var(--orange)" oninput="setSpeed(this.value)" title="再生速度"/>
+        <span id="vc-speed-label" style="font-size:10px;color:var(--text3);min-width:30px">1x</span>
+      </div>
+      <div class="vtl" id="video-timeline" onclick="seekFromTimeline(event)"></div>
+      <div style="font-size:10px;color:var(--text3);margin-top:4px;text-align:right">▲ タイムラインをクリックでシーク</div>
+    </div>
+  </div>
+
+  <div class="g2" style="margin-bottom:16px">
+    <div class="card">
+      <div class="card-title">⌨️ ホットキー（再生中に押す）</div>
+      <div class="hotkey-grid">
+        ${[
+          {key:'D',label:'💀 デス',color:'var(--red)',evt:'death'},
+          {key:'K',label:'⚔️ キル',color:'var(--orange)',evt:'kill'},
+          {key:'G',label:'✅ 良ポジ',color:'var(--green)',evt:'goodPos'},
+          {key:'B',label:'⚠️ 悪ポジ',color:'var(--gold)',evt:'badPos'},
+          {key:'L',label:'🔄 リセット遅',color:'var(--purple)',evt:'lateReset'},
+          {key:'U',label:'💥 ウルト',color:'var(--blue)',evt:'ultUsed'},
+          {key:'A',label:'🚫 CD無駄',color:'var(--red)',evt:'abilityWasted'},
+          {key:'J',label:'🎯 判断良',color:'var(--cyan)',evt:'goodDecision'},
+        ].map(h=>`<div class="hk" id="hk-${h.key}">
+          <span class="hk-key" style="color:${h.color}">${h.key}</span>
+          <span class="hk-label">${h.label}</span>
+        </div>`).join('')}
+      </div>
+      <div style="font-size:11px;color:var(--text3);margin-top:10px;background:rgba(255,255,255,.03);padding:8px;border-radius:6px">
+        <strong style="color:var(--text)">Space</strong> = 一時停止/再生 &nbsp;|&nbsp; <strong style="color:var(--text)">← →</strong> = ±5秒スキップ
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">📌 タグ付けイベント（${DB.videoEvents.length}件）</div>
+      <div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap">
+        <button class="btn btn-g" onclick="clearVideoEvents()" style="font-size:11px">🗑 クリア</button>
+        <button class="btn btn-s" onclick="exportVideoEvents()" style="font-size:11px">📤 エクスポート</button>
+        <button class="btn btn-grn" onclick="mergeVideoEvents()" style="font-size:11px">✔ タイムラインに追加</button>
+      </div>
+      <div class="evt-list" id="evt-list">
+        ${renderVideoEventList()}
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📊 動画タグ集計</div>
+    ${renderVideoStats()}
+  </div>`;
+}
+
+function renderVideoEventList(){
+  if(!DB.videoEvents||DB.videoEvents.length===0)return`<div style="text-align:center;padding:20px;color:var(--text3);font-size:12px">再生中にホットキーを押してタグ付け</div>`;
+  return DB.videoEvents.slice().sort((a,b)=>a.rawTime-b.rawTime).map((e,i)=>{
+    const et=EVT_TYPES[e.eventType]||{label:e.eventType,color:'var(--text3)'};
+    return`<div class="evt-row">
+      <span class="evt-ts">${e.timestamp}</span>
+      <span class="evt-type" style="color:${et.color}">${et.label}</span>
+      <span style="flex:1;color:var(--text3);font-size:10px">${e.note||''}</span>
+      <span class="evt-del" onclick="deleteVideoEvent(${e.id})">×</span>
+    </div>`;
+  }).join('');
+}
+
+function renderVideoStats(){
+  const evts=DB.videoEvents||[];
+  if(evts.length===0)return`<div style="text-align:center;padding:20px;color:var(--text3);font-size:12px">動画タグ付け後に集計が表示されます</div>`;
+  const counts={};
+  evts.forEach(e=>{counts[e.eventType]=(counts[e.eventType]||0)+1;});
+  const total=evts.length;
+  return`<div class="g4">
+    ${Object.entries(counts).map(([type,cnt])=>{
+      const et=EVT_TYPES[type]||{label:type,color:'var(--text3)'};
+      return`<div class="sc" style="padding:10px">
+        <div class="sc-label" style="font-size:9px">${et.label}</div>
+        <div class="sc-val" style="font-size:22px;color:${et.color}">${cnt}</div>
+        <div class="sc-sub">${Math.round(cnt/total*100)}%</div>
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+
+function loadVideoFile(input){
+  const file=input.files[0];if(!file)return;
+  const url=URL.createObjectURL(file);
+  const wrap=document.getElementById('video-player-wrap');
+  const drop=document.getElementById('video-drop');
+  drop.style.display='none';
+  wrap.style.display='block';
+  videoEl=document.getElementById('vod-video');
+  videoEl.src=url;
+  videoEl.addEventListener('timeupdate',updateVideoProgress);
+  videoEl.addEventListener('loadedmetadata',()=>{
+    document.getElementById('vc-total').textContent=fmtTime(videoEl.duration);
+    updateVideoTimeline();
+  });
+  showToast('動画を読み込みました。再生してホットキーでタグ付けしてください！',3000);
+}
+
+function togglePlay(){
+  if(!videoEl)return;
+  if(videoEl.paused){videoEl.play();document.getElementById('play-btn').textContent='⏸ 停止';}
+  else{videoEl.pause();document.getElementById('play-btn').textContent='▶ 再生';}
+}
+function setSpeed(v){
+  if(videoEl)videoEl.playbackRate=parseFloat(v);
+  const lbl=document.getElementById('vc-speed-label');
+  if(lbl)lbl.textContent=v+'x';
+}
+function updateVideoProgress(){
+  if(!videoEl)return;
+  const pct=videoEl.duration?videoEl.currentTime/videoEl.duration*100:0;
+  const fill=document.getElementById('vc-fill');
+  const cur=document.getElementById('vc-current');
+  if(fill)fill.style.width=pct+'%';
+  if(cur)cur.textContent=fmtTime(videoEl.currentTime);
+}
+function seekVideo(e){
+  if(!videoEl)return;
+  const bar=document.getElementById('vc-progress');
+  const rect=bar.getBoundingClientRect();
+  const pct=(e.clientX-rect.left)/rect.width;
+  videoEl.currentTime=pct*videoEl.duration;
+}
+function seekFromTimeline(e){
+  if(!videoEl)return;
+  const tl=document.getElementById('video-timeline');
+  const rect=tl.getBoundingClientRect();
+  const pct=(e.clientX-rect.left)/rect.width;
+  videoEl.currentTime=pct*videoEl.duration;
+}
+function updateVideoTimeline(){
+  const tl=document.getElementById('video-timeline');if(!tl)return;
+  const evts=DB.videoEvents||[];
+  const dur=videoEl?videoEl.duration:1;
+  tl.innerHTML=evts.map(e=>{
+    const pct=dur?(e.rawTime/dur*100):0;
+    const et=EVT_TYPES[e.eventType]||{label:e.eventType,color:'var(--text3)'};
+    return`<div class="vtl-marker" style="left:${pct}%;background:${et.color}" title="${e.timestamp} ${et.label}"></div>`;
+  }).join('');
+}
+
+function tagVideoEvent(eventType,note=''){
+  if(!videoEl)return;
+  const t=videoEl.currentTime;
+  const ev={id:Date.now(),timestamp:fmtTime(t),rawTime:t,eventType,note,source:'video'};
+  if(!DB.videoEvents)DB.videoEvents=[];
+  DB.videoEvents.push(ev);
+  saveDB(DB);
+  // flash hotkey
+  const keyMap={death:'D',kill:'K',goodPos:'G',badPos:'B',lateReset:'L',ultUsed:'U',abilityWasted:'A',goodDecision:'J'};
+  const hkEl=document.getElementById('hk-'+keyMap[eventType]);
+  if(hkEl){hkEl.classList.add('active-key');setTimeout(()=>hkEl.classList.remove('active-key'),300);}
+  // update list
+  const listEl=document.getElementById('evt-list');
+  if(listEl)listEl.innerHTML=renderVideoEventList();
+  updateVideoTimeline();
+  showToast(`🎯 ${EVT_TYPES[eventType]?.label||eventType} @ ${fmtTime(t)}`,1200);
+}
+
+function deleteVideoEvent(id){
+  DB.videoEvents=(DB.videoEvents||[]).filter(e=>e.id!==id);
+  saveDB(DB);
+  const listEl=document.getElementById('evt-list');
+  if(listEl)listEl.innerHTML=renderVideoEventList();
+  updateVideoTimeline();
+}
+function clearVideoEvents(){
+  if(!confirm('動画タグをすべてクリアしますか？'))return;
+  DB.videoEvents=[];saveDB(DB);
+  const listEl=document.getElementById('evt-list');
+  if(listEl)listEl.innerHTML=renderVideoEventList();
+  updateVideoTimeline();
+}
+function mergeVideoEvents(){
+  const videoOnlyEvts=(DB.videoEvents||[]).filter(e=>e.source==='video');
+  videoOnlyEvts.forEach(ve=>{
+    if(!DB.events.find(e=>e.id===ve.id)){
+      DB.events.push({...ve,cause15s:ve.note||'',directCause:'',coverDist:0,sightlines:0,cdWasted:false,inferredHabit:'',improvement:'',confidence:0});
+    }
+  });
+  saveDB(DB);showToast(`${videoOnlyEvts.length}件をタイムラインに追加しました！`);
+}
+function exportVideoEvents(){
+  const csv=['タイムスタンプ,秒数,イベントタイプ,メモ'].concat((DB.videoEvents||[]).map(e=>`${e.timestamp},${e.rawTime.toFixed(1)},${e.eventType},${e.note||''}`)).join('\n');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+  a.download='video_events.csv';a.click();showToast('CSVをエクスポートしました');
+}
+
+// VIDEO KEYBOARD HANDLER
+const KEY_MAP={
+  KeyD:'death',KeyK:'kill',KeyG:'goodPos',KeyB:'badPos',
+  KeyL:'lateReset',KeyU:'ultUsed',KeyA:'abilityWasted',KeyJ:'goodDecision',
+};
+document.addEventListener('keydown',e=>{
+  if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'||e.target.tagName==='SELECT')return;
+  if(currentPage!=='video')return;
+  if(e.code==='Space'){e.preventDefault();togglePlay();return;}
+  if(e.code==='ArrowRight'&&videoEl){videoEl.currentTime=Math.min(videoEl.duration,videoEl.currentTime+5);return;}
+  if(e.code==='ArrowLeft'&&videoEl){videoEl.currentTime=Math.max(0,videoEl.currentTime-5);return;}
+  if(KEY_MAP[e.code]){e.preventDefault();tagVideoEvent(KEY_MAP[e.code]);}
+});
+
+// ============================================================
+// PAGE: STATS INPUT
+// ============================================================
+function pageStats(){
+  const ms=DB.matchStats||{};
+  const dur=parseFloat(ms.matchDuration||9);
+  function per10(v){return dur>0?Math.round((parseFloat(v||0)/dur)*10*10)/10:0;}
+  const kpis={
+    elimsPerDeath:ms.deaths>0?Math.round((ms.elims||0)/(ms.deaths||1)*10)/10:0,
+    finalBlowsPerDeath:ms.deaths>0?Math.round((ms.finalBlows||0)/(ms.deaths||1)*10)/10:0,
+    deaths10m:per10(ms.deaths),
+    assistsPerElim:ms.elims>0?Math.round((ms.assists||0)/(ms.elims||1)*10)/10:0,
+    healing10m:per10(ms.healing),
+    defAssists:per10(ms.defAssists||0),
+    offAssists:per10(ms.offAssists||0),
+    sleepDarts:per10(ms.sleepDarts||0),
+    nanoBoosts:per10(ms.nanoBoosts||0),
+  };
+
+  function bench(kpiKey,val,benchmarks){
+    const b=benchmarks.find(x=>x.key===kpiKey);if(!b)return{pass:null,target:null};
+    const pass=b.dir==='gte'?val>=b.target:val<=b.target;
+    return{pass,target:b.target,unit:b.unit};
+  }
+  function kpiRow(label,val,bKey,benchArr,desc){
+    const {pass,target,unit}=bench(bKey,val,benchArr);
+    const color=pass===null?'var(--text)':pass?'var(--green)':'var(--red)';
+    const icon=pass===null?'—':pass?'✅':'❌';
+    return`<div class="bench-row">
+      <div style="width:10px;height:10px;border-radius:50%;background:${color};flex-shrink:0;margin-right:8px"></div>
+      <span class="bench-name">${label}</span>
+      <span class="bench-target" style="color:var(--text3)">${target!=null?`目標: ${target}${unit||''}`:'—'}</span>
+      <span class="bench-actual" style="color:${color}">${val} ${icon}</span>
+    </div>`;
+  }
+
+  return`
+  <div class="sh">
+    <div class="st">📈 スタッツ入力</div>
+    <button class="btn btn-p" onclick="saveMatchStats()">💾 保存 & 計算</button>
+  </div>
+  <div class="alert a-info">📊 <div>試合終了後のスコアボードからデータを入力してください。PDFベースのベンチマークと自動比較します。</div></div>
+
+  <div class="g2" style="margin-bottom:16px">
+    <div class="card">
+      <div class="card-title">📥 スコアボード入力</div>
+      <div class="g2">
+        ${[
+          ['elims','エリミネーション','number',ms.elims||0],
+          ['deaths','デス','number',ms.deaths||0],
+          ['finalBlows','ファイナルブロー','number',ms.finalBlows||0],
+          ['assists','アシスト','number',ms.assists||0],
+          ['healing','ヒーリング','number',ms.healing||0],
+          ['matchDuration','試合時間(分)','number',ms.matchDuration||9],
+        ].map(([k,l,t,v])=>`<div class="fg"><label class="fl">${l}</label><input id="ms-${k}" class="fi" type="${t}" value="${v}" min="0"/></div>`).join('')}
+      </div>
+      <div style="font-size:11px;font-weight:700;color:var(--orange);margin-bottom:8px;text-transform:uppercase;letter-spacing:1px">Anaスタッツ（サポート専用）</div>
+      <div class="g2">
+        ${[
+          ['defAssists','防御アシスト',ms.defAssists||0],
+          ['offAssists','攻撃アシスト',ms.offAssists||0],
+          ['sleepDarts','スリープダーツ',ms.sleepDarts||0],
+          ['nanoBoosts','ナノブースト',ms.nanoBoosts||0],
+        ].map(([k,l,v])=>`<div class="fg"><label class="fl">${l}</label><input id="ms-${k}" class="fi" type="number" value="${v}" min="0"/></div>`).join('')}
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🎯 V_pos ポジショニングスコア計算</div>
+      <div class="alert a-info" style="margin-bottom:10px">📐 <div>V_pos = Value_potential ÷ Risk_incurred<br>V_pos ≥1.0: リスクに見合う価値あり</div></div>
+      <div class="fg"><label class="fl">Value Potential (生み出した価値: 0-10)</label><input id="vpos-value" class="fi" type="number" min="0" max="10" value="6" step="0.5"/></div>
+      <div class="fg"><label class="fl">Risk Incurred (受けたリスク: 0-10)</label><input id="vpos-risk" class="fi" type="number" min="0.1" max="10" value="5" step="0.5"/></div>
+      <button class="btn btn-s" onclick="calcVpos()" style="width:100%;justify-content:center">V_pos 計算</button>
+      <div class="vpos-result" id="vpos-result" style="margin-top:12px;font-size:28px;color:var(--text3)">—</div>
+      <div id="vpos-label" style="text-align:center;font-size:12px;color:var(--text3);margin-top:6px"></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-title">📊 汎用KPI ベンチマーク比較</div>
+    ${kpiRow('エリミネーション / デス',kpis.elimsPerDeath,'elimsPerDeath',GENERAL_KPI,'プロ基準 ≥3.0')}
+    ${kpiRow('ファイナルブロー / デス',kpis.finalBlowsPerDeath,'finalBlowsPerDeath',GENERAL_KPI,'プロ基準 ≥2.0')}
+    ${kpiRow('デス / 10分',kpis.deaths10m,'deaths10m',GENERAL_KPI,'理想 <4.0')}
+    ${kpiRow('アシスト / エリミネーション',kpis.assistsPerElim,'assistsPerElim',GENERAL_KPI,'サポート ≥1.5x')}
+  </div>
+
+  <div class="card">
+    <div class="card-title">💉 Ana Master+ ベンチマーク比較</div>
+    <div class="alert a-warn" style="margin-bottom:10px">📌 <div>Anaデータ（Master帯平均）。/10分換算で比較します。</div></div>
+    ${kpiRow('ヒーリング / 10分',kpis.healing10m,'healing10m',ANA_BENCHMARKS,'Master+ 平均 7,411')}
+    ${kpiRow('デス / 10分',kpis.deaths10m,'deaths10m',ANA_BENCHMARKS,'Master+ 平均 5.9')}
+    ${kpiRow('防御アシスト / 10分',kpis.defAssists,'defAssists',ANA_BENCHMARKS,'Master+ 平均 10.26')}
+    ${kpiRow('攻撃アシスト / 10分',kpis.offAssists,'offAssists',ANA_BENCHMARKS,'Master+ 平均 6.66')}
+    ${kpiRow('スリープダーツ / 10分',kpis.sleepDarts,'sleepDarts',ANA_BENCHMARKS,'Master+ 平均 2.84')}
+    ${kpiRow('ナノブースト / 10分',kpis.nanoBoosts,'nanoBoosts',ANA_BENCHMARKS,'Master+ 平均 2.70')}
+  </div>`;
+}
+
+function saveMatchStats(){
+  const keys=['elims','deaths','finalBlows','assists','healing','matchDuration','defAssists','offAssists','sleepDarts','nanoBoosts'];
+  const ms={};
+  keys.forEach(k=>{const el=document.getElementById('ms-'+k);if(el)ms[k]=parseFloat(el.value)||0;});
+  DB.matchStats=ms;saveDB(DB);render();showToast('スタッツを保存しました！');
+}
+function calcVpos(){
+  const v=parseFloat(document.getElementById('vpos-value').value)||0;
+  const r=parseFloat(document.getElementById('vpos-risk').value)||1;
+  const vpos=Math.round(v/r*100)/100;
+  const el=document.getElementById('vpos-result');
+  const lbl=document.getElementById('vpos-label');
+  let color,text;
+  if(vpos>=2.0){color='var(--green)';text='🏆 優秀 — リスクに対し非常に高い価値';}
+  else if(vpos>=1.0){color='var(--blue)';text='✅ 良好 — リスクに見合う価値あり';}
+  else if(vpos>=0.7){color='var(--gold)';text='⚠️ 注意 — リスクがやや価値を上回る';}
+  else{color='var(--red)';text='❌ 危険 — ポジションを見直してください';}
+  el.style.color=color;el.textContent=vpos.toFixed(2);
+  lbl.style.color=color;lbl.textContent=text;
+}
+
+// ============================================================
+// PAGE: OW2 KNOWLEDGE BASE
+// ============================================================
+function pageKnowledge(){
+  const maxPct=Math.max(...RANK_DIST.map(r=>r.pct));
+  return`
+  <div class="sh"><div class="st">📚 OW2 知識ベース</div></div>
+
+  <div class="g2" style="margin-bottom:16px">
+    <div class="card">
+      <div class="card-title">🏆 ランク分布（OW2公式データ）</div>
+      ${RANK_DIST.map(r=>`
+        <div class="rank-bar-wrap">
+          <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px">
+            <span style="color:${r.color};font-weight:700">${r.rank}</span>
+            <span style="color:var(--text3)">${r.pct}%</span>
+          </div>
+          <div style="background:rgba(255,255,255,.05);border-radius:4px;overflow:hidden">
+            <div class="rank-bar" style="width:${r.pct/maxPct*100}%;background:${r.color};opacity:0.85">${r.pct}%</div>
+          </div>
+        </div>`).join('')}
+      <div style="font-size:10px;color:var(--text3);margin-top:8px">Platinum以下 = 上位81.6%。Masterは上位3.5%。</div>
+    </div>
+    <div class="card">
+      <div class="card-title">⚙️ ワークショップコード</div>
+      ${WORKSHOP_CODES.map(ws=>`
+        <div class="ws-code">
+          <div>
+            <div class="ws-code-val">${ws.code}</div>
+            <div class="ws-code-desc">${ws.desc}</div>
+            <div style="font-size:10px;color:var(--text3);margin-top:2px">${ws.detail}</div>
+          </div>
+          <button class="copy-btn" onclick="navigator.clipboard.writeText('${ws.code}').then(()=>showToast('コピーしました！'))">コピー</button>
+        </div>`).join('')}
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-title">💀 3つのデスエラータイプ</div>
+    ${DEATH_TYPES.map(dt=>`
+      <div class="death-type-card">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+          <span style="font-size:24px">${dt.icon}</span>
+          <div>
+            <div style="font-weight:800;color:var(--text)">${dt.name}</div>
+            <div style="font-size:10px;color:var(--text3)">${dt.en}</div>
+          </div>
+        </div>
+        <div style="font-size:12px;color:var(--text2);margin-bottom:8px">${dt.desc}</div>
+        <div style="font-size:11px;padding:6px 10px;background:rgba(249,115,22,.05);border-radius:5px;border-left:2px solid var(--orange);margin-bottom:5px"><strong style="color:var(--orange)">サイン:</strong> ${dt.cue}</div>
+        <div style="font-size:11px;padding:6px 10px;background:rgba(34,197,94,.05);border-radius:5px;border-left:2px solid var(--green)"><strong style="color:var(--green)">修正:</strong> ${dt.fix}</div>
+      </div>`).join('')}
+  </div>
+
+  <div class="g2" style="margin-bottom:16px">
+    <div class="card">
+      <div class="card-title">📊 真のKPI基準値</div>
+      <table class="tbl">
+        <tr><th>KPI</th><th>基準値</th><th>理想値</th></tr>
+        <tr><td>エリミネーション/デス</td><td style="color:var(--blue)">≥3.0</td><td style="color:var(--green)">≥4.0</td></tr>
+        <tr><td>ファイナルブロー/デス</td><td style="color:var(--blue)">≥2.0</td><td style="color:var(--green)">≥2.5</td></tr>
+        <tr><td>デス/10分</td><td style="color:var(--blue)">≤5.0</td><td style="color:var(--green)">&lt;4.0</td></tr>
+        <tr><td>アシスト/エリミネーション</td><td style="color:var(--blue)">≥1.5x</td><td style="color:var(--green)">≥2.0x</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-title">💉 Ana Master+ 平均（/10分）</div>
+      <table class="tbl">
+        <tr><th>スタッツ</th><th>Master+ 平均</th></tr>
+        <tr><td>ヒーリング</td><td style="color:var(--green)">7,411</td></tr>
+        <tr><td>デス</td><td style="color:var(--blue)">5.9</td></tr>
+        <tr><td>防御アシスト</td><td style="color:var(--blue)">10.26</td></tr>
+        <tr><td>攻撃アシスト</td><td style="color:var(--blue)">6.66</td></tr>
+        <tr><td>スリープダーツ</td><td style="color:var(--orange)">2.84</td></tr>
+        <tr><td>ナノブースト</td><td style="color:var(--orange)">2.70</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🎯 意図的練習メソッド (Deliberate Practice)</div>
+    <div class="g2">
+      <div>
+        <div style="font-size:12px;font-weight:700;color:var(--orange);margin-bottom:8px">✅ 推奨: 毎日15-30分</div>
+        ${['エイム練習 5-10分（THNX8）','遮蔽物チャレンジ 5分（VAXTA）','直近デス3回分析 5分','翌日のテーマを1つ決める'].map(t=>`<div style="font-size:12px;color:var(--text2);padding:5px 10px;background:rgba(249,115,22,.05);border-radius:5px;margin-bottom:4px;border-left:2px solid var(--orange)">→ ${t}</div>`).join('')}
+      </div>
+      <div>
+        <div style="font-size:12px;font-weight:700;color:var(--red);margin-bottom:8px">❌ NG: 週1回3時間セッション</div>
+        ${['疲労によるパフォーマンス低下','学習効率が毎日練習の1/3以下','モチベーション維持が困難','体系的な改善につながらない'].map(t=>`<div style="font-size:12px;color:var(--text2);padding:5px 10px;background:rgba(239,68,68,.05);border-radius:5px;margin-bottom:4px;border-left:2px solid var(--red)">× ${t}</div>`).join('')}
+      </div>
+    </div>
+  </div>`;
+}
+
+// ============================================================
+// PAGE: IMPROVEMENT PLAN
+// ============================================================
+function pageImprovement(){
+  const s=DB.scores;
+  const tasks=DB.tasks||{};
+  const sorted=[
+    {key:'death15',label:'デス15秒前分析',score:s.death15,w:20},
+    {key:'positioning',label:'ポジショニング',score:s.positioning,w:20},
+    {key:'ability',label:'アビリティ管理',score:s.ability,w:15},
+    {key:'teamfight',label:'チームファイト判断',score:s.teamfight,w:10},
+    {key:'aim',label:'エイム基礎',score:s.aim,w:10},
+    {key:'mental',label:'メンタル・連携',score:s.mental,w:10},
+    {key:'heroPool',label:'ヒーロープール',score:s.heroPool,w:10},
+    {key:'training',label:'練習継続性',score:s.training,w:5},
+  ].sort((a,b)=>a.score-b.score);
+
+  const weeks=[
+    {
+      week:'Week 1',theme:'遮蔽物意識の構造化',targetKey:'death15',
+      tasks:['デス後すぐに「15秒前何してた？」と声に出す','カバーから1m以内でヒールを行うルールを徹底','VAXTA 5分×毎日実施','死因ではなく15秒前の原因を3つ書く習慣']
+    },
+    {
+      week:'Week 2',theme:'射線管理と角度管理',targetKey:'positioning',
+      tasks:['ファイト中は常に1方向のみ敵に晒す','前進前に「今何本の射線？」を確認','4GAAD ポジショニング練習 5分×毎日','試合後にポジションミスを1つ書き出す']
+    },
+    {
+      week:'Week 3',theme:'アビリティCD最適化',targetKey:'ability',
+      tasks:['防御CDは自分に攻撃を受けてから使うルール','スリープはキャリー限定使用を意識','アビリティ無駄使いをVODでカウント','VXEAT CDタイミング練習']
+    },
+  ];
+
+  return`
+  <div class="sh"><div class="st">📅 1週間改善プラン</div></div>
+  <div class="alert a-ok">🎯 <div>スコアの低い項目から自動的に優先度を計算しています。チェックボックスで完了を記録できます。</div></div>
+  <div class="g3" style="margin-bottom:16px">
+    ${sorted.slice(0,3).map((cat,i)=>`
+      <div class="sc" style="border-left:3px solid var(--red)">
+        <div class="sc-label">優先度 #${i+1}</div>
+        <div style="font-size:14px;font-weight:800;color:var(--red)">${cat.label}</div>
+        <div class="sc-val" style="font-size:24px;color:${scoreColor(cat.score)}">${cat.score}</div>
+      </div>`).join('')}
+  </div>
+  ${weeks.map(w=>`
+    <div class="card" style="margin-bottom:14px">
+      <div class="card-title" style="color:var(--orange)">${w.week}: ${w.theme}</div>
+      ${w.tasks.map(task=>`
+        <div class="imp-task ${tasks[`${w.theme}::${task}`]?'done':''}" onclick="toggleTask('${w.theme}','${task.replace(/'/g,"\\'")}')">
+          <div class="chk ${tasks[`${w.theme}::${task}`]?'on':''}">${tasks[`${w.theme}::${task}`]?'✓':''}</div>
+          <span>${task}</span>
+        </div>`).join('')}
+    </div>`).join('')}
+  <div class="card">
+    <div class="card-title">🎯 ランク前後ルーティン</div>
+    <div class="g2">
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--orange);margin-bottom:8px;text-transform:uppercase">ランク前</div>
+        ${['今日の改善テーマを1つだけ決める','「今日は遮蔽物を意識する」と声に出す','ウォームアップ10分は必ず実施'].map(t=>`<div style="font-size:12px;color:var(--text2);padding:6px 10px;background:rgba(249,115,22,0.05);border-radius:5px;margin-bottom:4px;border-left:2px solid var(--orange)">→ ${t}</div>`).join('')}
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--blue);margin-bottom:8px;text-transform:uppercase">ランク後</div>
+        ${['死因ではなく15秒前の原因を3つ書く','改善テーマを達成できたか○×で評価','次の試合に持ち越す課題を1つ決める'].map(t=>`<div style="font-size:12px;color:var(--text2);padding:6px 10px;background:rgba(56,189,248,0.05);border-radius:5px;margin-bottom:4px;border-left:2px solid var(--blue)">→ ${t}</div>`).join('')}
+      </div>
+    </div>
+  </div>`;
+}
+function toggleTask(theme,task){
+  const key=`${theme}::${task}`;
+  DB.tasks[key]=!DB.tasks[key];
+  saveDB(DB);render();
+}
+
+// ============================================================
+// PAGE: REPORT
+// ============================================================
+function pageReport(){
+  const p=DB.player,s=DB.scores;
+  const ov=calcOverall(s),{l}=scoreLabel(ov);
+  const deaths=DB.events.filter(e=>e.eventType==='death');
+  const habits=[...new Set(DB.events.filter(e=>e.inferredHabit).map(e=>e.inferredHabit))];
+  const improvements=[...new Set(DB.events.filter(e=>e.improvement).map(e=>e.improvement))];
+  const md=`# Kosei Gaming Lab | OW2 VOD診断レポート
+生成日: ${new Date().toLocaleDateString('ja-JP')}
+
+## 基本情報
+| 項目 | 内容 |
+|------|------|
+| プレイヤー名 | ${p.playerName} |
+| 現在ランク | ${p.currentRank} |
+| 目標ランク | ${p.targetRank} |
+| ロール/ヒーロー | ${p.role}/${p.mainHero} |
+
+## 総合スコア: ${ov}/100 — ${l}
+
+## スコア内訳
+| カテゴリ | スコア |
+|---------|-------|
+| デス15秒前分析 | ${s.death15}/100 |
+| ポジショニング | ${s.positioning}/100 |
+| アビリティ管理 | ${s.ability}/100 |
+| ヒーロープール | ${s.heroPool}/100 |
+| エイム基礎 | ${s.aim}/100 |
+| チームファイト判断 | ${s.teamfight}/100 |
+| メンタル・連携 | ${s.mental}/100 |
+| 練習継続性 | ${s.training}/100 |
+
+## デス分析 (${deaths.length}件)
+${deaths.map(d=>`- ${d.timestamp}: ${d.cause15s||'—'} → ${d.directCause||'—'}`).join('\n')||'なし'}
+
+## 推定癖
+${habits.map((h,i)=>`${i+1}. ${h}`).join('\n')||'なし'}
+
+## 改善優先順位
+${improvements.slice(0,5).map((a,i)=>`${i+1}. ${a}`).join('\n')||'なし'}
+
+---
+*ランク代行・アカウント共有・チート支援は一切行いません。*`;
+  const json=JSON.stringify({generatedAt:new Date().toISOString(),player:p,scores:{...s,overall:ov,label:l},deathCount:deaths.length,habits,improvements:improvements.slice(0,5)},null,2);
+  const csv=['カテゴリ,スコア,配点',`デス15秒前,${s.death15},20`,`ポジショニング,${s.positioning},20`,`アビリティ管理,${s.ability},15`,`ヒーロープール,${s.heroPool},10`,`エイム,${s.aim},10`,`チームファイト,${s.teamfight},10`,`メンタル,${s.mental},10`,`練習継続性,${s.training},5`,`総合,${ov},100`].join('\n');
+  return`
+  <div class="sh"><div class="st">📤 レポート出力</div></div>
+  <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
+    <button class="btn btn-p" onclick="dlFile(\`${md.replace(/`/g,'\\`')}\`,'${p.playerName}_report.md','text/markdown')">📝 Markdown</button>
+    <button class="btn btn-s" onclick="dlFile(\`${json.replace(/`/g,'\\`')}\`,'${p.playerName}_report.json','application/json')">🔧 JSON</button>
+    <button class="btn btn-g" onclick="dlFile(\`${csv}\`,'${p.playerName}_scores.csv','text/csv')">📊 CSV</button>
+  </div>
+  <div class="card"><div class="card-title">プレビュー</div><div class="export-pre">${md.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div></div>`;
+}
+function dlFile(content,name,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([content],{type}));a.download=name;a.click();}
+
+// ============================================================
+// PAGE: PROFILE
+// ============================================================
+function pageProfile(){
+  const p=DB.player;
+  return`
+  <div class="sh"><div class="st">👤 プロフィール</div><button class="btn btn-p" onclick="saveProfile()">💾 保存</button></div>
+  <div class="card">
+    <div class="g2">
+      ${[['playerName','プレイヤー名','text'],['discordName','Discord名','text'],['contact','連絡先','email'],['playHours','プレイ時間(h)','number'],['sensitivity','感度設定','text'],['platform','プラットフォーム','text']].map(([k,l,t])=>`<div class="fg"><label class="fl">${l}</label><input id="pf-${k}" class="fi" type="${t}" value="${p[k]||''}"/></div>`).join('')}
+    </div>
+    <div class="g2">
+      <div class="fg"><label class="fl">現在ランク</label><select id="pf-currentRank" class="fs">${RANKS.map(r=>`<option value="${r}"${p.currentRank===r?' selected':''}>${r}</option>`).join('')}</select></div>
+      <div class="fg"><label class="fl">目標ランク</label><select id="pf-targetRank" class="fs">${RANKS.map(r=>`<option value="${r}"${p.targetRank===r?' selected':''}>${r}</option>`).join('')}</select></div>
+      <div class="fg"><label class="fl">メインロール</label><select id="pf-role" class="fs">${ROLES.map(r=>`<option value="${r}"${p.role===r?' selected':''}>${r}</option>`).join('')}</select></div>
+      <div class="fg"><label class="fl">メインヒーロー</label><input id="pf-mainHero" class="fi" type="text" value="${p.mainHero||''}"/></div>
+    </div>
+    <div class="fg"><label class="fl">コーチング目標</label><textarea id="pf-coachingGoal" class="ft">${p.coachingGoal||''}</textarea></div>
+    <div class="fg"><label class="fl">未成年ステータス</label>
+      <select id="pf-minorStatus" class="fs">
+        <option value="adult"${p.minorStatus==='adult'?' selected':''}>成人</option>
+        <option value="minor_with_consent"${p.minorStatus==='minor_with_consent'?' selected':''}>未成年（保護者同意あり）</option>
+        <option value="minor_without_consent"${p.minorStatus==='minor_without_consent'?' selected':''}>未成年（保護者同意なし）</option>
+      </select>
+    </div>
+    <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:13px;color:var(--text2)">
+      <input type="checkbox" id="pf-consent" ${p.consentForAnonymousUse?'checked':''}/>
+      匿名データとしての分析利用に同意する
+    </label>
+  </div>`;
+}
+function saveProfile(){
+  ['playerName','discordName','contact','playHours','sensitivity','platform','currentRank','targetRank','role','mainHero','coachingGoal','minorStatus'].forEach(k=>{const el=document.getElementById('pf-'+k);if(el)DB.player[k]=el.value;});
+  const c=document.getElementById('pf-consent');if(c)DB.player.consentForAnonymousUse=c.checked;
+  saveDB(DB);updateTopbar();showToast('プロフィールを保存しました！');
+}
+
+// ============================================================
+// RENDER
+// ============================================================
+function render(){
+  const c=document.getElementById('content');
+  const pages={
+    overview:pageOverview,death15:pageDeath15,habits:pageHabits,
+    timeline:pageTimeline,scores:pageScores,improvement:pageImprovement,
+    report:pageReport,profile:pageProfile,
+    video:pageVideo,stats:pageStats,knowledge:pageKnowledge,
+  };
+  c.innerHTML=(pages[currentPage]||pageOverview)();
+  updateTopbar();
+}
+
+// INIT
+buildNav();
+render();
+updateTopbar();
+</script>
+</body>
+</html>
