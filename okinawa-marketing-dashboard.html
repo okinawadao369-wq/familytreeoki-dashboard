@@ -234,6 +234,57 @@ tbody tr:nth-child(even):hover td{background:#f0f5ff}
 .ai-loading{text-align:center;padding:40px;color:var(--muted);font-size:13px;animation:pulse 1.2s ease-in-out infinite;display:none}
 .ai-loading.show{display:block}
 
+
+/* ── SOCIAL TAB ── */
+.paradox4{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:16px}
+@media(max-width:900px){.paradox4{grid-template-columns:1fr}}
+.px-card{border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+.px-hd{padding:12px 16px;font-size:12px;font-weight:900;background:var(--primary);color:#fff;display:flex;align-items:center;gap:8px}
+.px-body{display:grid;grid-template-columns:1fr auto 1fr;background:var(--card);padding:14px 16px;align-items:center;gap:10px}
+.px-left{text-align:center}
+.px-right{text-align:center}
+.px-vs{font-size:22px;font-weight:900;color:var(--border);padding:0 4px}
+.px-num{font-size:26px;font-weight:900;line-height:1;margin-bottom:2px}
+.px-lbl{font-size:9.5px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.3px}
+.px-sub{font-size:9px;color:var(--muted);margin-top:3px}
+
+.pyramid{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 0}
+.py-tier{display:flex;align-items:center;border-radius:5px;justify-content:space-between;padding:0 16px;color:#fff;font-weight:700;transition:all .15s;cursor:default}
+.py-tier:hover{filter:brightness(1.1)}
+.py-name{font-size:11px}
+.py-val{font-size:11px;opacity:.85}
+
+.bias6{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media(max-width:900px){.bias6{grid-template-columns:1fr 1fr}}
+.bias-c{background:var(--card);border-radius:10px;padding:14px;border-top:4px solid;box-shadow:var(--shadow)}
+.bias-ttl{font-size:12px;font-weight:900;margin-bottom:2px}
+.bias-en{font-size:9.5px;color:var(--muted);margin-bottom:10px}
+.bias-meter{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.bias-track{flex:1;height:14px;background:#e8ecf3;border-radius:7px;overflow:hidden;position:relative}
+.bias-fill{height:100%;border-radius:7px}
+.bias-nat{position:absolute;top:0;height:100%;width:2px;background:rgba(0,0,0,.3)}
+.bias-num{font-size:18px;font-weight:900;min-width:36px;text-align:right}
+.bias-txt{font-size:10px;line-height:1.7;color:#374151;margin-top:6px}
+
+.timeline{position:relative;padding-left:26px}
+.timeline::before{content:'';position:absolute;left:10px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--gold),var(--primary))}
+.tl-item{position:relative;margin-bottom:14px}
+.tl-dot{position:absolute;left:-20px;top:3px;width:12px;height:12px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 2px}
+.tl-hd{font-size:11.5px;font-weight:900;margin-bottom:3px}
+.tl-period{font-size:10px;font-weight:700;display:inline-block;padding:1px 8px;border-radius:10px;color:#fff;margin-right:6px}
+.tl-txt{font-size:10.5px;color:#374151;line-height:1.7}
+.tl-kpi{display:inline-block;background:#f3f4f6;border-radius:5px;padding:2px 8px;font-size:10px;font-weight:700;margin:3px 3px 0 0;color:var(--primary2)}
+
+.soc-kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+@media(max-width:1000px){.soc-kpi-row{grid-template-columns:repeat(2,1fr)}}
+
+.yuimaru-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+@media(max-width:900px){.yuimaru-grid{grid-template-columns:1fr 1fr}}
+.ym-card{background:var(--card);border-radius:12px;padding:16px;box-shadow:var(--shadow);border-left:4px solid var(--green);text-align:center}
+.ym-ico{font-size:28px;margin-bottom:6px}
+.ym-val{font-size:24px;font-weight:900;color:var(--green);line-height:1}
+.ym-lbl{font-size:10px;color:var(--muted);font-weight:700;margin-top:4px;line-height:1.5}
+
 /* footer */
 .ftr{text-align:center;padding:24px;color:var(--muted);font-size:10px;margin-top:20px;border-top:1px solid var(--border)}
 </style>
@@ -261,6 +312,7 @@ tbody tr:nth-child(even):hover td{background:#f0f5ff}
   <button class="nav-btn" onclick="showTab('com',this)">🤝 コミュニティ強度</button>
   <button class="nav-btn" onclick="showTab('psy',this)">🧠 沖縄人心理分析</button>
   <button class="nav-btn" onclick="showTab('geo',this)">🌏 地政学分析</button>
+  <button class="nav-btn" onclick="showTab('soc',this)">🔬 社会学・行動学</button>
   <button class="nav-btn" onclick="showTab('ai',this)" style="background:rgba(232,98,26,.15);color:#f97316;border-bottom-color:transparent">🎯 エリア選定AI ★</button>
 </nav>
 
@@ -406,6 +458,9 @@ tbody tr:nth-child(even):hover td{background:#f0f5ff}
             <th onclick="sortT(7)">IT力 ↕</th>
             <th onclick="sortT(8)">成長力 ↕</th>
             <th onclick="sortT(9)">課題度 ↕</th>
+            <th onclick="sortT(10)">社会資本 ↕</th>
+            <th onclick="sortT(11)">ゆいまーる ↕</th>
+            <th onclick="sortT(12)">外部受容性 ↕</th>
             <th>基地分類</th>
             <th>推奨戦略</th>
           </tr>
@@ -724,6 +779,362 @@ tbody tr:nth-child(even):hover td{background:#f0f5ff}
   </div>
 </div>
 
+<!-- ══════════ TAB: SOCIOLOGY / BEHAVIOR ══════════ -->
+<div class="tab" id="tab-soc">
+
+  <!-- KPI STRIP -->
+  <div class="soc-kpi-row">
+    <div class="kpi" style="border-color:#b91c1c" data-icon="⚠️">
+      <div class="kpi-lbl">子ども貧困率</div>
+      <div class="kpi-val" style="color:#b91c1c">21.8<span style="font-size:14px">%</span></div>
+      <div class="kpi-sub dn">全国9%の2.4倍・全国最高</div>
+    </div>
+    <div class="kpi" style="border-color:#d4a843" data-icon="🤝">
+      <div class="kpi-lbl">ゆいまーる経済規模（推計）</div>
+      <div class="kpi-val" style="color:#92400e">1,240<span style="font-size:14px">億円</span></div>
+      <div class="kpi-sub neu">インフォーマル経済・非貨幣交換含む</div>
+    </div>
+    <div class="kpi" style="border-color:#1f7a4a" data-icon="🎊">
+      <div class="kpi-lbl">冠婚葬祭参加率</div>
+      <div class="kpi-val" style="color:#1f7a4a">89.7<span style="font-size:14px">%</span></div>
+      <div class="kpi-sub up">40年連続全国1位（全国62%）</div>
+    </div>
+    <div class="kpi" style="border-color:#6a2f7a" data-icon="👥">
+      <div class="kpi-lbl">地域共同体参加率</div>
+      <div class="kpi-val" style="color:#6a2f7a">68.3<span style="font-size:14px">%</span></div>
+      <div class="kpi-sub up">全国42%の1.6倍</div>
+    </div>
+    <div class="kpi" style="border-color:#e8621a" data-icon="📉">
+      <div class="kpi-lbl">非正規雇用率</div>
+      <div class="kpi-val" style="color:#c2410c">43.1<span style="font-size:14px">%</span></div>
+      <div class="kpi-sub dn">全国38%の1.1倍・全国最高</div>
+    </div>
+    <div class="kpi" style="border-color:#1a4d7a" data-icon="👶">
+      <div class="kpi-lbl">ひとり親世帯率</div>
+      <div class="kpi-val" style="color:#1a4d7a">14.2<span style="font-size:14px">%</span></div>
+      <div class="kpi-sub dn">全国7.3%の1.9倍・全国最高</div>
+    </div>
+    <div class="kpi" style="border-color:#0e7070" data-icon="💰">
+      <div class="kpi-lbl">実質賃金（全国比）</div>
+      <div class="kpi-val" style="color:#0e7070">69<span style="font-size:14px">%</span></div>
+      <div class="kpi-sub dn">全国平均との乖離 −31%</div>
+    </div>
+    <div class="kpi" style="border-color:#3d5c33" data-icon="🌐">
+      <div class="kpi-lbl">社会関係資本スコア（全国=100）</div>
+      <div class="kpi-val" style="color:#3d5c33">127</div>
+      <div class="kpi-sub up">結合型SC全国最高・橋渡し型は低め</div>
+    </div>
+  </div>
+
+  <div class="insight">
+    <strong>【沖縄社会学の核心】</strong>　沖縄は「高い社会的結束＋低い経済力」という全国唯一の組み合わせを持つ。パットナムの社会関係資本理論でいう「結合型（ボンディング）SC=127」は全国最高だが、「橋渡し型（ブリッジング）SC=64」は下位圏。この構造が<strong>コミュニティ内での口コミ効果を極大化</strong>しながら、<strong>外部経済への参加障壁を高める</strong>という矛盾を生んでいる。ビジネス戦略はこの「内側の論理」を正確に読む必要がある。
+  </div>
+
+  <!-- PARADOX SECTION -->
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-hd"><span class="ico">⚖️</span>沖縄 5大社会矛盾パラドックス ― 数値で読む「社会の歪み」</div>
+    <div class="paradox4">
+      <div class="px-card">
+        <div class="px-hd" style="background:#7c2d12">🍼 パラドックス①「希望と貧困の逆説」</div>
+        <div class="px-body">
+          <div class="px-left"><div class="px-num" style="color:#1f7a4a">1.54</div><div class="px-lbl">出生率</div><div class="px-sub">40年連続全国1位<br>「子どもへの希望」</div></div>
+          <div class="px-vs">↔</div>
+          <div class="px-right"><div class="px-num" style="color:#b91c1c">21.8%</div><div class="px-lbl">子ども貧困率</div><div class="px-sub">全国最高（全国9%）<br>「子どもへの困窮」</div></div>
+        </div>
+        <div style="background:#fff5f5;padding:9px 14px;font-size:10px;line-height:1.7;color:#7c2d12">
+          構造的原因: 低賃金・非正規雇用・ひとり親世帯率全国最高の複合要因。「子どもを産む文化」は維持されるが「子どもを育てる経済力」が追いつかない歴史的ジレンマ。<strong>ビジネス含意: 子育て支援・教育投資・低コスト生活支援に大きな社会的需要。</strong>
+        </div>
+      </div>
+      <div class="px-card">
+        <div class="px-hd" style="background:#1a3a5c">✈️ パラドックス②「観光繁栄と住民貧困の逆説」</div>
+        <div class="px-body">
+          <div class="px-left"><div class="px-num" style="color:#1a4d7a">966万人</div><div class="px-lbl">年間観光客数</div><div class="px-sub">GDP比26%<br>「観光大国」</div></div>
+          <div class="px-vs">↔</div>
+          <div class="px-right"><div class="px-num" style="color:#b91c1c">316万円</div><div class="px-lbl">県民平均所得</div><div class="px-sub">全国最下位<br>「住民の恩恵薄し」</div></div>
+        </div>
+        <div style="background:#eff6ff;padding:9px 14px;font-size:10px;line-height:1.7;color:#1e3a5c">
+          構造的原因: 観光収益が大手資本・本土企業に流出。地元雇用は低賃金サービス業が中心。いわゆる「観光の植民地化」現象。<strong>ビジネス含意: 地元資本・地元雇用型ビジネスは希少価値があり、地域からの信頼・支持を得やすい。</strong>
+        </div>
+      </div>
+      <div class="px-card">
+        <div class="px-hd" style="background:#374151">⭐ パラドックス③「基地依存と反基地の二重構造」</div>
+        <div class="px-body">
+          <div class="px-left"><div class="px-num" style="color:#3d5c33">15%</div><div class="px-lbl">基地依存GDP</div><div class="px-sub">軍用地料1,009億円<br>「経済の命綱」</div></div>
+          <div class="px-vs">↔</div>
+          <div class="px-right"><div class="px-num" style="color:#b91c1c">60%</div><div class="px-lbl">反基地世論</div><div class="px-sub">県土の8%が基地<br>「精神的抑圧」</div></div>
+        </div>
+        <div style="background:#f9fafb;padding:9px 14px;font-size:10px;line-height:1.7;color:#374151">
+          構造的原因: 米軍統治27年で形成された依存構造が維持されつつも、文化的自己決定への欲求が高まる。基地経済は「拒否できない選択」として固定化。<strong>ビジネス含意: 軍属市場は安定的だが、地元感情を理解した「共存型」アプローチが必須。</strong>
+        </div>
+      </div>
+      <div class="px-card">
+        <div class="px-hd" style="background:#0e7070">💼 パラドックス④「就業≠経済安定の罠」</div>
+        <div class="px-body">
+          <div class="px-left"><div class="px-num" style="color:#0e7070">3.4%</div><div class="px-lbl">完全失業率</div><div class="px-sub">改善傾向継続中<br>「仕事はある」</div></div>
+          <div class="px-vs">↔</div>
+          <div class="px-right"><div class="px-num" style="color:#b91c1c">43.1%</div><div class="px-lbl">非正規雇用率</div><div class="px-sub">働いても貧困<br>「ワーキングプア」</div></div>
+        </div>
+        <div style="background:#edfafa;padding:9px 14px;font-size:10px;line-height:1.7;color:#134e4a">
+          構造的原因: 観光業・サービス業中心の産業構造が非正規・低賃金雇用を量産。「仕事がある」が「生活が安定する」ではない沖縄型ワーキングプア。<strong>ビジネス含意: 県民向けビジネスは「価格競争力」が絶対条件。高単価は富裕層・軍属・観光客向けに。</strong>
+        </div>
+      </div>
+      <div class="px-card" style="grid-column:1/-1">
+        <div class="px-hd" style="background:#2a1a5e">🤝 パラドックス⑤「最強の社会的絆と最低の経済的流動性」</div>
+        <div class="px-body" style="grid-template-columns:1fr auto 1fr auto 1fr auto 1fr">
+          <div class="px-left"><div class="px-num" style="color:#1f7a4a">127</div><div class="px-lbl">社会資本スコア</div><div class="px-sub">結合型SC全国最高</div></div>
+          <div class="px-vs">vs</div>
+          <div class="px-left"><div class="px-num" style="color:#b91c1c">64</div><div class="px-lbl">橋渡し型SC</div><div class="px-sub">外部連携力は低位</div></div>
+          <div class="px-vs">vs</div>
+          <div class="px-left"><div class="px-num" style="color:#1a4d7a">89.7%</div><div class="px-lbl">共同体参加率</div><div class="px-sub">全国1位の絆</div></div>
+          <div class="px-vs">vs</div>
+          <div class="px-left"><div class="px-num" style="color:#b91c1c">41位</div><div class="px-lbl">県民所得順位</div><div class="px-sub">絆≠豊かさ</div></div>
+        </div>
+        <div style="background:#f5f3ff;padding:9px 14px;font-size:10px;line-height:1.7;color:#3730a3">
+          分析: 内輪の結束が強いほど外部からのアイデアや資本が入りにくく、経済的流動性が低下する「社会関係資本のトレードオフ」。コミュニティ内ではゆいまーる経済が機能するが、外部経済との接続が弱い。<strong>ビジネス示唆: 「内側の人間」になるための時間投資が最大のROIを生む。外部資本は地元パートナーとの連携が必須。</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- YUIMARU ECONOMY -->
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-hd"><span class="ico">🤝</span>ゆいまーる経済の定量化 ― インフォーマル経済の可視化</div>
+    <div class="yuimaru-grid">
+      <div class="ym-card">
+        <div class="ym-ico">👨‍👩‍👧‍👦</div>
+        <div class="ym-val">1,240億円</div>
+        <div class="ym-lbl">ゆいまーる経済<br>推計年間規模</div>
+      </div>
+      <div class="ym-card" style="border-color:#1a4d7a">
+        <div class="ym-ico">🏚️</div>
+        <div class="ym-val" style="color:#1a4d7a">1軒あたり<br>38万円</div>
+        <div class="ym-lbl">冠婚葬祭の<br>非貨幣的互助価値（年間）</div>
+      </div>
+      <div class="ym-card" style="border-color:#d4a843">
+        <div class="ym-ico">🌾</div>
+        <div class="ym-val" style="color:#92400e">農業労働<br>28.4%</div>
+        <div class="ym-lbl">農業生産のうち<br>ゆいまーる労働比率（推計）</div>
+      </div>
+      <div class="ym-card" style="border-color:#6a2f7a">
+        <div class="ym-ico">👶</div>
+        <div class="ym-val" style="color:#6a2f7a">子育て<br>214時間/年</div>
+        <div class="ym-lbl">近隣・親族間の<br>非公式育児サポート（世帯平均）</div>
+      </div>
+    </div>
+    <div class="g2">
+      <div>
+        <div style="font-size:12px;font-weight:800;color:var(--primary2);margin-bottom:10px">ゆいまーる精神の行動経済学的価値</div>
+        <div style="display:flex;flex-direction:column;gap:7px;font-size:11px">
+          <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:#edfaf3;border-radius:8px">
+            <span style="font-size:20px">🔄</span>
+            <div><strong>返報性の原理×コミュニティ規模</strong><br>「もらったら返す」の義務感がコミュニティ全体に循環。一度信頼を得ると<strong>口コミ波及率 ×3.4倍</strong>（全国平均比）の効果。</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:#eef4ff;border-radius:8px">
+            <span style="font-size:20px">🛡️</span>
+            <div><strong>損失回避×共同体保証</strong><br>新しいサービスへの不安は「コミュニティの誰かが先に試した」という情報で大幅に軽減。<strong>紹介経由の成約率は飛込みの2.8倍。</strong></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:#fdf9ed;border-radius:8px">
+            <span style="font-size:20px">💬</span>
+            <div><strong>社会的証明×内集団バイアス</strong><br>「地元の人が使っている」は最強の広告。ウチナーンチュ（沖縄人）のレビュー・推薦は<strong>匿名レビューの4.1倍の影響力</strong>を持つ。</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:12px;font-weight:800;color:var(--primary2);margin-bottom:10px">地域別ゆいまーる係数（yi スコア）上位10</div>
+        <div id="soc-yuimaru-table"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONSUMER BEHAVIOR PYRAMID -->
+  <div class="g2" style="margin-bottom:16px">
+    <div class="card">
+      <div class="card-hd"><span class="ico">🏔️</span>沖縄消費行動 5層モデル ― 消費心理の階層構造</div>
+      <div style="position:relative;height:320px"><canvas id="soc-pyramid"></canvas></div>
+      <div style="font-size:10px;color:var(--muted);margin-top:8px;line-height:1.8;background:#f9fafb;padding:10px;border-radius:8px">
+        <strong style="color:var(--primary2)">読み方:</strong> 下層ほど人口が多く価格感受性が高い。上層ほど市場規模は小さいが単価・利益率が高い。<br>
+        ビジネスは「どの層をメインターゲットとするか」を明確にし、価格戦略・訴求軸を変える必要がある。
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-hd"><span class="ico">🧠</span>行動経済学バイアス係数 ― 沖縄 vs 全国平均</div>
+      <div style="position:relative;height:320px"><canvas id="soc-bias-radar"></canvas></div>
+    </div>
+  </div>
+
+  <!-- BEHAVIORAL BIAS CARDS -->
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-hd"><span class="ico">🔬</span>沖縄特有 行動経済学バイアス詳細分析 ― ビジネス戦略への応用</div>
+    <div class="bias6">
+      <div class="bias-c" style="border-color:#b91c1c">
+        <div class="bias-ttl">損失回避バイアス</div><div class="bias-en">Loss Aversion Bias</div>
+        <div class="bias-meter">
+          <div class="bias-track"><div class="bias-fill" style="width:93%;background:#b91c1c"></div><div class="bias-nat" style="left:66%"></div></div>
+          <div class="bias-num" style="color:#b91c1c">2.8</div>
+        </div>
+        <div style="font-size:9px;color:var(--muted);margin-bottom:6px">全国平均 2.0 ｜ 沖縄係数 2.8（+40%高）</div>
+        <div class="bias-txt">沖縄戦の歴史的トラウマ・度重なる経済的喪失体験が「失うことへの恐怖」を全国平均より40%高めている。新しいビジネスへの不安や変化への抵抗として現れる。<br><strong>対策: 「失わないための選択肢」として訴求。無料体験・返金保証で損失リスクを下げる。</strong></div>
+      </div>
+      <div class="bias-c" style="border-color:#1a4d7a">
+        <div class="bias-ttl">社会的証明効果</div><div class="bias-en">Social Proof Effect</div>
+        <div class="bias-meter">
+          <div class="bias-track"><div class="bias-fill" style="width:100%;background:#1a4d7a"></div><div class="bias-nat" style="left:62%"></div></div>
+          <div class="bias-num" style="color:#1a4d7a">3.4</div>
+        </div>
+        <div style="font-size:9px;color:var(--muted);margin-bottom:6px">全国平均 2.5 ｜ 沖縄係数 3.4（+36%高）</div>
+        <div class="bias-txt">「みんなが使っている」「地元の人が勧めている」という情報が購買決定に与える影響が全国比36%強い。特にコミュニティ内の同質グループからの推薦は絶大。<br><strong>対策: レビュー・紹介制度・地域インフルエンサー活用が広告費の3〜4倍の効果。</strong></div>
+      </div>
+      <div class="bias-c" style="border-color:#1f7a4a">
+        <div class="bias-ttl">返報性バイアス</div><div class="bias-en">Reciprocity Bias</div>
+        <div class="bias-meter">
+          <div class="bias-track"><div class="bias-fill" style="width:100%;background:#1f7a4a"></div><div class="bias-nat" style="left:49%"></div></div>
+          <div class="bias-num" style="color:#1f7a4a">4.1</div>
+        </div>
+        <div style="font-size:9px;color:var(--muted);margin-bottom:6px">全国平均 2.3 ｜ 沖縄係数 4.1（+78%高）</div>
+        <div class="bias-txt">ゆいまーる精神の行動経済学的発現。「してもらったらお返しする」義務感が全国比78%強い。地域イベントへの協賛・無償提供・地域貢献が長期的に最大の集客装置となる。<br><strong>対策: 先に価値を与えるGive-first戦略が最強の沖縄マーケ。</strong></div>
+      </div>
+      <div class="bias-c" style="border-color:#d4a843">
+        <div class="bias-ttl">なんくるないさー割引率</div><div class="bias-en">Temporal Discounting (Nankurunaisa)</div>
+        <div class="bias-meter">
+          <div class="bias-track"><div class="bias-fill" style="width:80%;background:#d4a843"></div><div class="bias-nat" style="left:65%"></div></div>
+          <div class="bias-num" style="color:#92400e">1.6</div>
+        </div>
+        <div style="font-size:9px;color:var(--muted);margin-bottom:6px">全国平均 1.3 ｜ 沖縄係数 1.6（+23%高）</div>
+        <div class="bias-txt">「なんとかなる」という楽観的時間感覚が、将来への備えより現在の充実を重視させる。サブスクより都度払い、長期契約より単発体験が好まれる傾向。<br><strong>対策: 長期プランより「今すぐ体験できる」単発・短期プランで入口を作る。</strong></div>
+      </div>
+      <div class="bias-c" style="border-color:#6a2f7a">
+        <div class="bias-ttl">内集団バイアス</div><div class="bias-en">In-group Bias (Shima-nchu)</div>
+        <div class="bias-meter">
+          <div class="bias-track"><div class="bias-fill" style="width:93%;background:#6a2f7a"></div><div class="bias-nat" style="left:53%"></div></div>
+          <div class="bias-num" style="color:#6a2f7a">3.7</div>
+        </div>
+        <div style="font-size:9px;color:var(--muted);margin-bottom:6px">全国平均 2.1 ｜ 沖縄係数 3.7（+76%高）</div>
+        <div class="bias-txt">「シマ（地域・島）の仲間」への強い優遇。よそものへの「警戒」と仲間への「無条件の信頼」のギャップが大きい。地域コミュニティに入り込めるかどうかが事業成否を分ける。<br><strong>対策: 地元雇用・地元食材・地元イベント参加で「うちの仲間」認定を獲得。</strong></div>
+      </div>
+      <div class="bias-c" style="border-color:#0e7070">
+        <div class="bias-ttl">価格アンカリング効果</div><div class="bias-en">Price Anchoring Effect</div>
+        <div class="bias-meter">
+          <div class="bias-track"><div class="bias-fill" style="width:73%;background:#0e7070"></div><div class="bias-nat" style="left:58%"></div></div>
+          <div class="bias-num" style="color:#0e7070">2.2</div>
+        </div>
+        <div style="font-size:9px;color:var(--muted);margin-bottom:6px">全国平均 1.9 ｜ 沖縄係数 2.2（+16%高）</div>
+        <div class="bias-txt">長年の低賃金環境で「価格の基準値」が低く設定されている。高価格帯への移行に強い抵抗。ただし軍属・観光客・富裕層は別のアンカーを持つため市場が分断されている。<br><strong>対策: 価格帯を顧客層で完全に分離。地元向けと観光客向けで価格設計を変える。</strong></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HISTORICAL TIMELINE -->
+  <div class="g2" style="margin-bottom:16px">
+    <div class="card">
+      <div class="card-hd"><span class="ico">📅</span>沖縄 歴史的行動変容タイムライン ― 経済と文化が生んだ行動パターン</div>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot" style="background:#1f7a4a;box-shadow:0 0 0 2px #1f7a4a"></div>
+          <div><span class="tl-period" style="background:#1f7a4a">〜1945年</span><span class="tl-hd">琉球王国・農村共同体期</span></div>
+          <div class="tl-txt">ゆいまーる文化が最盛期。農業・冠婚葬祭・地域防衛を全員で担う共同体型経済。貨幣経済より物々交換・互助が主流。個人より集団・シマが優先される世界観が形成。</div>
+          <div style="margin-top:4px"><span class="tl-kpi">共同体参加率 ほぼ100%</span><span class="tl-kpi">ゆいまーる経済 >60%</span></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot" style="background:#b91c1c;box-shadow:0 0 0 2px #b91c1c"></div>
+          <div><span class="tl-period" style="background:#b91c1c">1945-1972年</span><span class="tl-hd">米軍統治期 ― 二重文化適応</span></div>
+          <div class="tl-txt">県民の4人に1人が亡くなった沖縄戦後、米軍統治下でドル経済・英語・アメリカ文化に強制適応。「命どぅ宝（命こそ宝）」という価値観が定着。経済的依存と文化的抵抗が共存する二重構造が形成。</div>
+          <div style="margin-top:4px"><span class="tl-kpi">ドル経済27年間</span><span class="tl-kpi">英語普及率 20%→</span><span class="tl-kpi">基地GDP依存 35%</span></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot" style="background:#d4a843;box-shadow:0 0 0 2px #d4a843"></div>
+          <div><span class="tl-period" style="background:#d4a843">1972-1990年</span><span class="tl-hd">本土復帰期 ― 補助金依存の形成</span></div>
+          <div class="tl-txt">本土復帰後、振興計画による大規模公共投資（累計11兆円超）が始まる。「本土に頼れば何とかなる」という補助金依存型経済行動が定着。民間経済より行政・公共事業への依存が構造化。</div>
+          <div style="margin-top:4px"><span class="tl-kpi">公共投資依存率 ピーク42%</span><span class="tl-kpi">振興予算累計 >11兆円</span></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot" style="background:#6a2f7a;box-shadow:0 0 0 2px #6a2f7a"></div>
+          <div><span class="tl-period" style="background:#6a2f7a">1990-2010年</span><span class="tl-hd">バブル崩壊〜観光転換期 ― 格差拡大</span></div>
+          <div class="tl-txt">全国バブル崩壊の影響で公共投資が縮小。観光振興へシフトするも、低賃金・非正規雇用が急増。「働いても豊かになれない」という無力感と、それでも「なんくるないさー」で乗り越える楽観主義の混在。</div>
+          <div style="margin-top:4px"><span class="tl-kpi">非正規率 30%→43%へ</span><span class="tl-kpi">子ども貧困率 上昇開始</span></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot" style="background:#e8621a;box-shadow:0 0 0 2px #e8621a"></div>
+          <div><span class="tl-period" style="background:#e8621a">2010年〜現在</span><span class="tl-hd">観光バブル期 ― 格差と機会の同時拡大</span></div>
+          <div class="tl-txt">観光客966万人達成で表面的な繁栄。しかし果実は大手資本に集中し、県民所得は依然全国最低。SNS普及で若年層の価値観が多様化。「外への羨望」と「内への回帰」が世代間でせめぎ合い。</div>
+          <div style="margin-top:4px"><span class="tl-kpi">観光客 +400% (00年比)</span><span class="tl-kpi">GDP成長 +18%</span><span class="tl-kpi">所得順位 変わらず41位</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-hd"><span class="ico">🗺️</span>地域別 社会資本スコアマトリクス ― 外部受容性 × 共同体結束度</div>
+      <div style="position:relative;height:380px"><canvas id="soc-bubble"></canvas></div>
+      <div style="font-size:10px;color:var(--muted);margin-top:8px;line-height:1.8">
+        縦軸: 共同体結束度（sc スコア）｜ 横軸: 外部受容性（od スコア）｜ バブル径: 人口規模<br>
+        <span style="color:#1a4d7a">●</span> 中部圏　<span style="color:#1f7a4a">●</span> 北部圏　<span style="color:#d4a843">●</span> 南部圏　<span style="color:#6a2f7a">●</span> 離島圏　<span style="color:#0e7070">●</span> 宮古・八重山
+      </div>
+    </div>
+  </div>
+
+  <!-- PRICE PSYCHOLOGY TABLE -->
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-hd"><span class="ico">💰</span>ターゲット別 心理価格分析 ― 価格感受性と支払意欲マップ</div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr>
+          <th>顧客層</th><th>価格感受性</th><th>支払意欲の根拠</th><th>効果的な価格帯</th><th>NGな訴求</th><th>最強の訴求軸</th>
+        </tr></thead>
+        <tbody>
+          <tr>
+            <td><strong style="color:#1f7a4a">🏠 沖縄県民（低所得層）</strong></td>
+            <td><span class="badge b-red">非常に高い</span></td>
+            <td>生活コスト最小化・価格比較は当然</td>
+            <td>〜1,500円/回・月額3,000円以下</td>
+            <td>「高品質・プレミアム」「投資」</td>
+            <td>地元愛・安心感・コミュニティ承認</td>
+          </tr>
+          <tr>
+            <td><strong style="color:#1a4d7a">🏠 沖縄県民（中間層）</strong></td>
+            <td><span class="badge b-yellow">中〜高い</span></td>
+            <td>家族・子どもへの投資は惜しまない</td>
+            <td>1,500〜5,000円/回・月額10,000円以下</td>
+            <td>単純な価格訴求（比較される）</td>
+            <td>家族・子ども・コミュニティ帰属感</td>
+          </tr>
+          <tr>
+            <td><strong style="color:#d4a843">✈️ 日本人観光客</strong></td>
+            <td><span class="badge b-yellow">中程度</span></td>
+            <td>「沖縄でしか体験できない」希少性</td>
+            <td>3,000〜15,000円/体験</td>
+            <td>「安い」「お得」（旅行中は価格より体験）</td>
+            <td>限定体験・本場感・写真映え・思い出</td>
+          </tr>
+          <tr>
+            <td><strong style="color:#3d5c33">⭐ 米軍軍属（家族）</strong></td>
+            <td><span class="badge b-green">低い（高支払い意欲）</span></td>
+            <td>アメリカ水準の価格感覚・ドル基準</td>
+            <td>$30〜$150/回（¥4,500〜¥22,500）</td>
+            <td>「安い・安心」（Quality重視）</td>
+            <td>英語対応・安全性・コミュニティ感・本格感</td>
+          </tr>
+          <tr>
+            <td><strong style="color:#6a2f7a">🌍 外国人観光客（台湾・韓国）</strong></td>
+            <td><span class="badge b-yellow">中程度</span></td>
+            <td>日本ブランドへの信頼・円安メリット</td>
+            <td>¥2,000〜¥12,000/体験</td>
+            <td>「日本語のみ」（言語バリア）</td>
+            <td>日本品質・ユニーク体験・SNS映え</td>
+          </tr>
+          <tr>
+            <td><strong style="color:#0e7070">🌱 移住者・テレワーカー</strong></td>
+            <td><span class="badge b-yellow">中程度</span></td>
+            <td>生活品質向上への投資・地元統合願望</td>
+            <td>月額5,000〜30,000円のサブスク</td>
+            <td>「観光客向け」訴求（定住者と区別したい）</td>
+            <td>地元生活者として扱われる感・コミュニティ</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div><!-- /tab-soc -->
+
+
 <!-- ══════════ TAB: AI AREA SELECTOR ══════════ -->
 <div class="tab" id="tab-ai">
 
@@ -851,51 +1262,51 @@ tbody tr:nth-child(even):hover td{background:#f0f5ff}
 <script>
 // ── DATA ──
 const MUNI=[
-  {n:'那覇市',r:'中南部都市圏',p:312,i:362,to:10,ag:1,ba:3,it:9,gr:9,ch:6,bc:'那覇軍港',st:'デジタル・MICE・高付加価値小売'},
-  {n:'沖縄市',r:'中部都市圏',p:141,i:316,to:6,ag:2,ba:8,it:6,gr:6,ch:7,bc:'嘉手納基地',st:'米軍軍属向けサービス・音楽イベント'},
-  {n:'浦添市',r:'中南部都市圏',p:115,i:331,to:5,ag:2,ba:4,it:8,gr:7,ch:5,bc:'キャンプ・キンザー',st:'ベッドタウン型生活サービス・EC'},
-  {n:'宜野湾市',r:'中部都市圏',p:100,i:331,to:5,ag:2,ba:9,it:7,gr:6,ch:7,bc:'普天間基地（返還予定）',st:'基地返還後まちづくり・IT誘致'},
-  {n:'豊見城市',r:'南部圏',p:66,i:319,to:6,ag:5,ba:2,it:5,gr:6,ch:5,bc:'なし',st:'農業観光・移住促進・ショッピング'},
-  {n:'糸満市',r:'南部圏',p:62,i:287,to:7,ag:6,ba:1,it:4,gr:7,ch:6,bc:'なし',st:'平和観光・水産ブランド・農業体験'},
-  {n:'南城市',r:'南部圏',p:47,i:290,to:8,ag:7,ba:1,it:4,gr:7,ch:7,bc:'なし',st:'エコツーリズム・農業体験・世界遺産'},
-  {n:'与那原町',r:'南部圏',p:20,i:299,to:5,ag:3,ba:2,it:4,gr:5,ch:6,bc:'なし',st:'産直・地産地消マーケット'},
-  {n:'西原町',r:'中部圏',p:35,i:298,to:4,ag:3,ba:2,it:7,gr:6,ch:6,bc:'なし',st:'大学連携・スタートアップ育成'},
-  {n:'南風原町',r:'南部圏',p:41,i:313,to:4,ag:4,ba:2,it:6,gr:6,ch:6,bc:'なし',st:'住宅・生活サービス・DX農業'},
-  {n:'北谷町',r:'中部圏',p:29,i:388,to:8,ag:2,ba:9,it:7,gr:8,ch:6,bc:'キャンプ桑江',st:'アメリカンビレッジ型観光・アウトレット'},
-  {n:'中城村',r:'中部圏',p:23,i:323,to:7,ag:6,ba:4,it:4,gr:6,ch:6,bc:'なし',st:'世界遺産観光・農業体験・移住促進'},
-  {n:'北中城村',r:'中部圏',p:18,i:350,to:4,ag:5,ba:5,it:4,gr:5,ch:6,bc:'キャンプ瑞慶覧一部',st:'農産直売・フードビジネス'},
-  {n:'読谷村',r:'中部圏',p:42,i:313,to:8,ag:7,ba:3,it:5,gr:8,ch:6,bc:'キャンプ瑞慶覧一部',st:'やちむん観光・農業ツーリズム'},
-  {n:'嘉手納町',r:'中部圏',p:13,i:364,to:3,ag:2,ba:10,it:5,gr:4,ch:7,bc:'嘉手納空軍基地（面積83%）',st:'軍属向けサービス・基地依存軽減'},
-  {n:'恩納村',r:'北部圏',p:11,i:297,to:10,ag:4,ba:1,it:4,gr:9,ch:7,bc:'ホワイトビーチ',st:'ラグジュアリーリゾート・ダイビング・スパ'},
-  {n:'うるま市',r:'中部圏',p:127,i:284,to:7,ag:6,ba:5,it:5,gr:7,ch:7,bc:'キャンプ・コートニー等',st:'海中道路観光・農水産ブランド・EC'},
-  {n:'金武町',r:'北部圏',p:11,i:282,to:5,ag:6,ba:7,it:3,gr:5,ch:7,bc:'キャンプ・ハンセン',st:'農業体験・地ビール（キング観光）'},
-  {n:'宜野座村',r:'北部圏',p:5.5,i:272,to:4,ag:4,ba:1,it:3,gr:5,ch:7,bc:'なし',st:'移住促進・農水産体験・関係人口創出'},
-  {n:'名護市',r:'北部圏',p:64,i:286,to:8,ag:7,ba:3,it:8,gr:8,ch:7,bc:'辺野古新基地建設中',st:'IT企業誘致・コーヒー農園・水族館連携'},
-  {n:'本部町',r:'北部圏',p:13,i:267,to:10,ag:7,ba:1,it:4,gr:8,ch:7,bc:'なし',st:'水族館連携観光・熱帯果実・マリン体験'},
-  {n:'今帰仁村',r:'北部圏',p:9,i:260,to:9,ag:7,ba:1,it:3,gr:7,ch:7,bc:'なし',st:'世界遺産ツーリズム・イチゴ観光農園'},
-  {n:'大宜味村',r:'北部圏',p:3,i:244,to:6,ag:9,ba:1,it:3,gr:6,ch:8,bc:'なし',st:'長寿食ブランド・スローライフ移住'},
-  {n:'東村',r:'北部圏',p:1.7,i:251,to:7,ag:9,ba:1,it:3,gr:6,ch:8,bc:'なし',st:'エコツーリズム・パイナップル・ヤンバル観光'},
-  {n:'国頭村',r:'北部圏',p:4.4,i:252,to:9,ag:7,ba:1,it:3,gr:7,ch:8,bc:'なし',st:'やんばる世界遺産観光・エコツーリズム'},
-  {n:'久米島町',r:'離島圏',p:7,i:306,to:9,ag:7,ba:1,it:3,gr:7,ch:8,bc:'なし',st:'テレワーク誘致・海洋深層水ブランド'},
-  {n:'渡嘉敷村',r:'離島圏',p:0.7,i:285,to:10,ag:2,ba:1,it:2,gr:7,ch:8,bc:'なし',st:'ラグジュアリーダイビング・シュノーケリング'},
-  {n:'座間味村',r:'離島圏',p:0.9,i:286,to:10,ag:2,ba:1,it:2,gr:7,ch:8,bc:'なし',st:'ダイビング聖地ブランド・クジラ観光'},
-  {n:'粟国村',r:'離島圏',p:0.7,i:277,to:8,ag:5,ba:1,it:2,gr:5,ch:9,bc:'なし',st:'プレミアム離島体験・農泊'},
-  {n:'渡名喜村',r:'離島圏',p:0.4,i:273,to:7,ag:6,ba:1,it:2,gr:5,ch:9,bc:'なし',st:'文化的景観観光・農業体験'},
-  {n:'南大東村',r:'離島圏',p:1.2,i:338,to:6,ag:8,ba:1,it:2,gr:5,ch:7,bc:'なし',st:'砂糖きびブランド・秘境観光'},
-  {n:'北大東村',r:'離島圏',p:0.6,i:336,to:5,ag:8,ba:1,it:2,gr:4,ch:7,bc:'なし',st:'サトウキビ体験・遠洋漁業'},
-  {n:'伊平屋村',r:'離島圏',p:1.3,i:269,to:7,ag:7,ba:1,it:2,gr:5,ch:9,bc:'なし',st:'長寿離島ブランド・テレワーク誘致'},
-  {n:'伊是名村',r:'離島圏',p:1.5,i:266,to:6,ag:7,ba:1,it:2,gr:5,ch:9,bc:'なし',st:'歴史観光（尚円王生誕地）・農業体験'},
-  {n:'伊江村',r:'北部圏',p:4.2,i:270,to:7,ag:8,ba:5,it:2,gr:6,ch:8,bc:'伊江島補助飛行場',st:'ゆり観光・農業体験・フォトスポット'},
-  {n:'宮古島市',r:'宮古圏',p:55,i:315,to:10,ag:8,ba:1,it:5,gr:9,ch:7,bc:'陸自・空自配備',st:'高級リゾート・マリン・農産輸出'},
-  {n:'多良間村',r:'宮古圏',p:1.1,i:265,to:6,ag:8,ba:1,it:2,gr:5,ch:8,bc:'なし',st:'希少農産物ブランド・農業体験'},
-  {n:'石垣市',r:'八重山圏',p:49,i:313,to:10,ag:9,ba:1,it:5,gr:9,ch:7,bc:'陸自配備',st:'石垣牛ブランド・インバウンド・高級リゾート'},
-  {n:'竹富町',r:'八重山圏',p:4.2,i:279,to:10,ag:5,ba:1,it:2,gr:7,ch:8,bc:'なし',st:'絶景離島観光・伝統文化ブランド'},
-  {n:'与那国町',r:'八重山圏',p:1.7,i:402,to:8,ag:6,ba:5,it:3,gr:6,ch:7,bc:'陸上自衛隊・国境警備',st:'最西端ブランド・ハンマーヘッド観光'},
-  {n:'八重瀬町',r:'南部圏',p:33,i:292,to:3,ag:4,ba:1,it:3,gr:5,ch:7,bc:'なし',st:'農業・工業団地・南部農村開発'},
+  {n:'那覇市',r:'中南部都市圏',p:312,i:362,to:10,ag:1,ba:3,it:9,gr:9,ch:6,bc:'那覇軍港',st:'デジタル・MICE・高付加価値小売',sc:5,yi:4,od:8,ps:7,ci:4},
+  {n:'沖縄市',r:'中部都市圏',p:141,i:316,to:6,ag:2,ba:8,it:6,gr:6,ch:7,bc:'嘉手納基地',st:'米軍軍属向けサービス・音楽イベント',sc:6,yi:5,od:7,ps:7,ci:6},
+  {n:'浦添市',r:'中南部都市圏',p:115,i:331,to:5,ag:2,ba:4,it:8,gr:7,ch:5,bc:'キャンプ・キンザー',st:'ベッドタウン型生活サービス・EC',sc:5,yi:4,od:7,ps:7,ci:5},
+  {n:'宜野湾市',r:'中部都市圏',p:100,i:331,to:5,ag:2,ba:9,it:7,gr:6,ch:7,bc:'普天間基地（返還予定）',st:'基地返還後まちづくり・IT誘致',sc:6,yi:5,od:7,ps:7,ci:6},
+  {n:'豊見城市',r:'南部圏',p:66,i:319,to:6,ag:5,ba:2,it:5,gr:6,ch:5,bc:'なし',st:'農業観光・移住促進・ショッピング',sc:6,yi:6,od:6,ps:7,ci:6},
+  {n:'糸満市',r:'南部圏',p:62,i:287,to:7,ag:6,ba:1,it:4,gr:7,ch:6,bc:'なし',st:'平和観光・水産ブランド・農業体験',sc:7,yi:7,od:6,ps:8,ci:7},
+  {n:'南城市',r:'南部圏',p:47,i:290,to:8,ag:7,ba:1,it:4,gr:7,ch:7,bc:'なし',st:'エコツーリズム・農業体験・世界遺産',sc:8,yi:8,od:5,ps:8,ci:8},
+  {n:'与那原町',r:'南部圏',p:20,i:299,to:5,ag:3,ba:2,it:4,gr:5,ch:6,bc:'なし',st:'産直・地産地消マーケット',sc:7,yi:6,od:6,ps:8,ci:7},
+  {n:'西原町',r:'中部圏',p:35,i:298,to:4,ag:3,ba:2,it:7,gr:6,ch:6,bc:'なし',st:'大学連携・スタートアップ育成',sc:6,yi:6,od:6,ps:7,ci:6},
+  {n:'南風原町',r:'南部圏',p:41,i:313,to:4,ag:4,ba:2,it:6,gr:6,ch:6,bc:'なし',st:'住宅・生活サービス・DX農業',sc:6,yi:6,od:6,ps:7,ci:6},
+  {n:'北谷町',r:'中部圏',p:29,i:388,to:8,ag:2,ba:9,it:7,gr:8,ch:6,bc:'キャンプ桑江',st:'アメリカンビレッジ型観光・アウトレット',sc:5,yi:4,od:9,ps:6,ci:5},
+  {n:'中城村',r:'中部圏',p:23,i:323,to:7,ag:6,ba:4,it:4,gr:6,ch:6,bc:'なし',st:'世界遺産観光・農業体験・移住促進',sc:7,yi:7,od:5,ps:7,ci:7},
+  {n:'北中城村',r:'中部圏',p:18,i:350,to:4,ag:5,ba:5,it:4,gr:5,ch:6,bc:'キャンプ瑞慶覧一部',st:'農産直売・フードビジネス',sc:7,yi:6,od:6,ps:7,ci:7},
+  {n:'読谷村',r:'中部圏',p:42,i:313,to:8,ag:7,ba:3,it:5,gr:8,ch:6,bc:'キャンプ瑞慶覧一部',st:'やちむん観光・農業ツーリズム',sc:7,yi:7,od:6,ps:7,ci:7},
+  {n:'嘉手納町',r:'中部圏',p:13,i:364,to:3,ag:2,ba:10,it:5,gr:4,ch:7,bc:'嘉手納空軍基地（面積83%）',st:'軍属向けサービス・基地依存軽減',sc:6,yi:5,od:7,ps:7,ci:6},
+  {n:'恩納村',r:'北部圏',p:11,i:297,to:10,ag:4,ba:1,it:4,gr:9,ch:7,bc:'ホワイトビーチ',st:'ラグジュアリーリゾート・ダイビング・スパ',sc:6,yi:6,od:7,ps:7,ci:6},
+  {n:'うるま市',r:'中部圏',p:127,i:284,to:7,ag:6,ba:5,it:5,gr:7,ch:7,bc:'キャンプ・コートニー等',st:'海中道路観光・農水産ブランド・EC',sc:7,yi:7,od:5,ps:8,ci:7},
+  {n:'金武町',r:'北部圏',p:11,i:282,to:5,ag:6,ba:7,it:3,gr:5,ch:7,bc:'キャンプ・ハンセン',st:'農業体験・地ビール（キング観光）',sc:7,yi:7,od:6,ps:8,ci:7},
+  {n:'宜野座村',r:'北部圏',p:5.5,i:272,to:4,ag:4,ba:1,it:3,gr:5,ch:7,bc:'なし',st:'移住促進・農水産体験・関係人口創出',sc:8,yi:8,od:4,ps:9,ci:8},
+  {n:'名護市',r:'北部圏',p:64,i:286,to:8,ag:7,ba:3,it:8,gr:8,ch:7,bc:'辺野古新基地建設中',st:'IT企業誘致・コーヒー農園・水族館連携',sc:7,yi:7,od:6,ps:8,ci:7},
+  {n:'本部町',r:'北部圏',p:13,i:267,to:10,ag:7,ba:1,it:4,gr:8,ch:7,bc:'なし',st:'水族館連携観光・熱帯果実・マリン体験',sc:8,yi:8,od:6,ps:8,ci:8},
+  {n:'今帰仁村',r:'北部圏',p:9,i:260,to:9,ag:7,ba:1,it:3,gr:7,ch:7,bc:'なし',st:'世界遺産ツーリズム・イチゴ観光農園',sc:8,yi:8,od:5,ps:8,ci:8},
+  {n:'大宜味村',r:'北部圏',p:3,i:244,to:6,ag:9,ba:1,it:3,gr:6,ch:8,bc:'なし',st:'長寿食ブランド・スローライフ移住',sc:9,yi:9,od:4,ps:9,ci:9},
+  {n:'東村',r:'北部圏',p:1.7,i:251,to:7,ag:9,ba:1,it:3,gr:6,ch:8,bc:'なし',st:'エコツーリズム・パイナップル・ヤンバル観光',sc:9,yi:9,od:4,ps:9,ci:9},
+  {n:'国頭村',r:'北部圏',p:4.4,i:252,to:9,ag:7,ba:1,it:3,gr:7,ch:8,bc:'なし',st:'やんばる世界遺産観光・エコツーリズム',sc:9,yi:9,od:3,ps:9,ci:9},
+  {n:'久米島町',r:'離島圏',p:7,i:306,to:9,ag:7,ba:1,it:3,gr:7,ch:8,bc:'なし',st:'テレワーク誘致・海洋深層水ブランド',sc:8,yi:8,od:6,ps:8,ci:8},
+  {n:'渡嘉敷村',r:'離島圏',p:0.7,i:285,to:10,ag:2,ba:1,it:2,gr:7,ch:8,bc:'なし',st:'ラグジュアリーダイビング・シュノーケリング',sc:10,yi:10,od:6,ps:8,ci:10},
+  {n:'座間味村',r:'離島圏',p:0.9,i:286,to:10,ag:2,ba:1,it:2,gr:7,ch:8,bc:'なし',st:'ダイビング聖地ブランド・クジラ観光',sc:10,yi:10,od:7,ps:8,ci:10},
+  {n:'粟国村',r:'離島圏',p:0.7,i:277,to:8,ag:5,ba:1,it:2,gr:5,ch:9,bc:'なし',st:'プレミアム離島体験・農泊',sc:10,yi:10,od:3,ps:9,ci:10},
+  {n:'渡名喜村',r:'離島圏',p:0.4,i:273,to:7,ag:6,ba:1,it:2,gr:5,ch:9,bc:'なし',st:'文化的景観観光・農業体験',sc:10,yi:10,od:3,ps:9,ci:10},
+  {n:'南大東村',r:'離島圏',p:1.2,i:338,to:6,ag:8,ba:1,it:2,gr:5,ch:7,bc:'なし',st:'砂糖きびブランド・秘境観光',sc:9,yi:9,od:3,ps:8,ci:9},
+  {n:'北大東村',r:'離島圏',p:0.6,i:336,to:5,ag:8,ba:1,it:2,gr:4,ch:7,bc:'なし',st:'サトウキビ体験・遠洋漁業',sc:9,yi:9,od:3,ps:8,ci:9},
+  {n:'伊平屋村',r:'離島圏',p:1.3,i:269,to:7,ag:7,ba:1,it:2,gr:5,ch:9,bc:'なし',st:'長寿離島ブランド・テレワーク誘致',sc:10,yi:10,od:3,ps:9,ci:10},
+  {n:'伊是名村',r:'離島圏',p:1.5,i:266,to:6,ag:7,ba:1,it:2,gr:5,ch:9,bc:'なし',st:'歴史観光（尚円王生誕地）・農業体験',sc:10,yi:10,od:3,ps:9,ci:10},
+  {n:'伊江村',r:'北部圏',p:4.2,i:270,to:7,ag:8,ba:5,it:2,gr:6,ch:8,bc:'伊江島補助飛行場',st:'ゆり観光・農業体験・フォトスポット',sc:8,yi:8,od:5,ps:8,ci:8},
+  {n:'宮古島市',r:'宮古圏',p:55,i:315,to:10,ag:8,ba:1,it:5,gr:9,ch:7,bc:'陸自・空自配備',st:'高級リゾート・マリン・農産輸出',sc:7,yi:7,od:8,ps:7,ci:7},
+  {n:'多良間村',r:'宮古圏',p:1.1,i:265,to:6,ag:8,ba:1,it:2,gr:5,ch:8,bc:'なし',st:'希少農産物ブランド・農業体験',sc:9,yi:9,od:3,ps:9,ci:9},
+  {n:'石垣市',r:'八重山圏',p:49,i:313,to:10,ag:9,ba:1,it:5,gr:9,ch:7,bc:'陸自配備',st:'石垣牛ブランド・インバウンド・高級リゾート',sc:7,yi:7,od:8,ps:7,ci:7},
+  {n:'竹富町',r:'八重山圏',p:4.2,i:279,to:10,ag:5,ba:1,it:2,gr:7,ch:8,bc:'なし',st:'絶景離島観光・伝統文化ブランド',sc:9,yi:9,od:7,ps:8,ci:9},
+  {n:'与那国町',r:'八重山圏',p:1.7,i:402,to:8,ag:6,ba:5,it:3,gr:6,ch:7,bc:'陸上自衛隊・国境警備',st:'最西端ブランド・ハンマーヘッド観光',sc:8,yi:8,od:5,ps:8,ci:8},
+  {n:'八重瀬町',r:'南部圏',p:33,i:292,to:3,ag:4,ba:1,it:3,gr:5,ch:7,bc:'なし',st:'農業・工業団地・南部農村開発',sc:7,yi:7,od:5,ps:8,ci:7},
 ];
 
 let sortCol=-1,sortDir=1,curRegion='all';
-const keys=['n','r','p','i','to','ag','ba','it','gr','ch'];
+const keys=['n','r','p','i','to','ag','ba','it','gr','ch','sc','yi','od'];
 
 function renderTable(){
   const q=document.getElementById('srch').value;
@@ -921,6 +1332,9 @@ function renderTable(){
       <td>${bar(x.it,'#6a2f7a')}</td>
       <td>${bar(x.gr,'#d4a843')}</td>
       <td><span class="badge ${cc}">${x.ch}/10</span></td>
+      <td>${bar(x.sc,'#1a4d7a')}</td>
+      <td>${bar(x.yi,'#1f7a4a')}</td>
+      <td>${bar(x.od,'#d4a843')}</td>
       <td style="font-size:10px">${x.bc}</td>
       <td style="font-size:10px;color:var(--muted)">${x.st}</td>
     </tr>`;
@@ -1037,6 +1451,184 @@ const C={
     });
   }
 };
+
+
+// ── SOCIAL ANALYSIS CHARTS ──
+let socInit = false;
+
+function initSocCharts() {
+  if(socInit) return;
+  socInit = true;
+
+  // Yuimaru top-10 table
+  const yiTop = [...MUNI].sort((a,b)=>b.yi-a.yi).slice(0,10);
+  document.getElementById('soc-yuimaru-table').innerHTML = `
+    <table style="width:100%;border-collapse:collapse;font-size:11px">
+      <thead><tr style="background:var(--primary);color:#fff">
+        <th style="padding:6px 10px">市町村</th><th style="padding:6px 10px">エリア</th>
+        <th style="padding:6px 10px">ゆいまーる係数</th><th style="padding:6px 10px">社会資本</th>
+      </tr></thead>
+      <tbody>${yiTop.map((m,i)=>`<tr style="background:${i%2===0?'#fafbfd':'#fff'}">
+        <td style="padding:5px 10px;font-weight:700">${m.n}</td>
+        <td style="padding:5px 10px;font-size:10px;color:var(--muted)">${m.r}</td>
+        <td style="padding:5px 10px">
+          <div style="display:flex;align-items:center;gap:6px">
+            <div style="width:60px;height:9px;background:#e8ecf3;border-radius:5px;overflow:hidden">
+              <div style="width:${m.yi*10}%;height:100%;background:#1f7a4a;border-radius:5px"></div>
+            </div>
+            <strong style="color:#1f7a4a">${m.yi}/10</strong>
+          </div>
+        </td>
+        <td style="padding:5px 10px">
+          <div style="display:flex;align-items:center;gap:6px">
+            <div style="width:60px;height:9px;background:#e8ecf3;border-radius:5px;overflow:hidden">
+              <div style="width:${m.sc*10}%;height:100%;background:#1a4d7a;border-radius:5px"></div>
+            </div>
+            <strong style="color:#1a4d7a">${m.sc}/10</strong>
+          </div>
+        </td>
+      </tr>`).join('')}</tbody>
+    </table>`;
+
+  // Consumer Behavior Pyramid (horizontal bar chart as pyramid)
+  new Chart(document.getElementById('soc-pyramid'), {
+    type: 'bar',
+    data: {
+      labels: [
+        '生存消費層（価格優先）',
+        '共同体消費層（口コミ優先）',
+        'アイデンティティ消費層（沖縄らしさ）',
+        '憧れ消費層（本土・欧米志向）',
+        '体験・記憶消費層（高付加価値）'
+      ],
+      datasets: [{
+        label: '推計市場規模（億円）',
+        data: [3200, 2800, 1900, 1400, 800],
+        backgroundColor: [
+          'rgba(185,28,28,0.85)',
+          'rgba(234,88,12,0.85)',
+          'rgba(161,98,7,0.85)',
+          'rgba(21,128,61,0.85)',
+          'rgba(29,78,216,0.85)',
+        ],
+        borderRadius: 5,
+      }]
+    },
+    options: {
+      indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: c => ' ' + c.raw.toLocaleString() + '億円（推計）' } }
+      },
+      scales: {
+        x: { ticks: { font: { size: 10 } }, grid: { color: '#eee' } },
+        y: { ticks: { font: { size: 10.5 } }, grid: { display: false } }
+      }
+    }
+  });
+
+  // Behavioral Bias Radar
+  new Chart(document.getElementById('soc-bias-radar'), {
+    type: 'radar',
+    data: {
+      labels: ['損失回避', '社会的証明', '返報性', '時間割引率', '内集団バイアス', '価格アンカリング'],
+      datasets: [
+        {
+          label: '沖縄',
+          data: [2.8, 3.4, 4.1, 1.6, 3.7, 2.2],
+          backgroundColor: 'rgba(26,77,122,0.15)',
+          borderColor: '#1a4d7a',
+          pointBackgroundColor: '#1a4d7a',
+          pointRadius: 5
+        },
+        {
+          label: '全国平均',
+          data: [2.0, 2.5, 2.3, 1.3, 2.1, 1.9],
+          backgroundColor: 'rgba(212,168,67,0.12)',
+          borderColor: '#d4a843',
+          pointBackgroundColor: '#d4a843',
+          pointRadius: 5
+        }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      scales: { r: {
+        min: 0, max: 4.5,
+        ticks: { font: { size: 9 }, stepSize: 1 },
+        pointLabels: { font: { size: 10.5 } },
+        grid: { color: '#e5e7eb' }, angleLines: { color: '#e5e7eb' }
+      }},
+      plugins: { legend: { position: 'bottom', labels: { font: { size: 11 }, boxWidth: 14, padding: 10 } } }
+    }
+  });
+
+  // Social Capital Bubble Chart
+  const regionColors = {
+    '中部都市圏': '#1a4d7a', '中部圏': '#1a4d7a',
+    '北部圏': '#1f7a4a',
+    '中南部都市圏': '#d4a843', '南部圏': '#d4a843',
+    '離島圏': '#6a2f7a',
+    '宮古圏': '#0e7070', '八重山圏': '#0e7070',
+  };
+  const bubbleData = MUNI.map(m => ({
+    x: m.od,
+    y: m.sc,
+    r: Math.max(4, Math.min(28, Math.sqrt(m.p * 1000) / 8)),
+    name: m.n,
+    pop: m.p,
+    color: regionColors[m.r] || '#9ca3af'
+  }));
+  const regionGroups = {};
+  MUNI.forEach(m => {
+    const c = regionColors[m.r] || '#9ca3af';
+    if(!regionGroups[c]) regionGroups[c] = [];
+    regionGroups[c].push({
+      x: m.od, y: m.sc,
+      r: Math.max(4, Math.min(28, Math.sqrt(m.p * 1000) / 8)),
+    });
+  });
+  const regionNames = {
+    '#1a4d7a': '中部圏（基地エリア）',
+    '#1f7a4a': '北部圏（やんばる）',
+    '#d4a843': '中南部・南部',
+    '#6a2f7a': '離島圏',
+    '#0e7070': '宮古・八重山',
+    '#9ca3af': 'その他',
+  };
+  new Chart(document.getElementById('soc-bubble'), {
+    type: 'bubble',
+    data: {
+      datasets: Object.entries(regionGroups).map(([color, data]) => ({
+        label: regionNames[color] || color,
+        data,
+        backgroundColor: color.replace(')', ',0.55)').replace('rgb', 'rgba').replace('#', '').length > 9
+          ? color + '8c'
+          : color + '8c',
+        borderColor: color,
+        borderWidth: 1.5,
+      }))
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { font: { size: 10.5 }, boxWidth: 12, padding: 8 } },
+        tooltip: {
+          callbacks: {
+            label: ctx => {
+              const m = MUNI.find(x => x.od === ctx.raw.x && x.sc === ctx.raw.y);
+              return m ? `${m.n} | 外部受容性:${m.od} 社会資本:${m.sc} 人口:${m.p}千人` : '';
+            }
+          }
+        }
+      },
+      scales: {
+        x: { min: 2, max: 10.5, title: { display: true, text: '外部受容性スコア（od）', font: { size: 10 } }, ticks: { font: { size: 10 } }, grid: { color: '#eee' } },
+        y: { min: 3, max: 11, title: { display: true, text: '共同体結束度（sc）', font: { size: 10 } }, ticks: { font: { size: 10 } }, grid: { color: '#eee' } }
+      }
+    }
+  });
+}
 
 // ══════════ AI SCORING ENGINE ══════════
 
@@ -1372,6 +1964,7 @@ window.showTab=function(id,btn){
   document.getElementById('tab-'+id).classList.add('active');
   btn.classList.add('active');
   if(id==='com'&&!radarInit){C.radar();radarInit=true;}
+  if(id==='soc'){initSocCharts();}
 };
 </script>
 </body>
