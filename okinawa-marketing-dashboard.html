@@ -235,6 +235,45 @@ tbody tr:nth-child(even):hover td{background:#f0f5ff}
 .ai-loading.show{display:block}
 
 
+
+/* ── MARKET INERTIA ── */
+.mi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:3px;margin-bottom:16px}
+@media(max-width:1100px){.mi-grid{grid-template-columns:repeat(3,1fr)}}
+.mi-tile{border-radius:8px;padding:10px 12px;cursor:default;transition:transform .15s,box-shadow .15s}
+.mi-tile:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}
+.mi-name{font-size:11.5px;font-weight:800;margin-bottom:3px}
+.mi-region{font-size:9px;color:rgba(0,0,0,.45);margin-bottom:6px}
+.mi-bars{display:flex;flex-direction:column;gap:3px}
+.mi-bar-row{display:flex;align-items:center;gap:5px;font-size:9.5px}
+.mi-bar-lbl{width:22px;font-weight:700;font-size:9px}
+.mi-bar-track{flex:1;height:7px;background:rgba(0,0,0,.1);border-radius:4px;overflow:hidden}
+.mi-bar-fill{height:100%;border-radius:4px}
+.mi-val{font-size:9.5px;font-weight:800;min-width:18px;text-align:right}
+
+.quad-wrap{position:relative;background:var(--card);border-radius:12px;padding:16px;box-shadow:var(--shadow)}
+.quad-label{position:absolute;font-size:10px;font-weight:800;opacity:.6;pointer-events:none}
+
+.ts-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+@media(max-width:900px){.ts-grid{grid-template-columns:1fr 1fr}}
+.ts-card{background:var(--card);border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+.ts-hd{padding:12px 14px;color:#fff;font-size:11.5px;font-weight:900}
+.ts-body{padding:12px 14px;font-size:11px;line-height:1.8}
+.ts-stat{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)}
+.ts-stat:last-child{border-bottom:none}
+.ts-stat-v{font-weight:800;color:var(--accent)}
+
+.entry-strat{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+@media(max-width:1000px){.entry-strat{grid-template-columns:1fr 1fr}}
+.es-card{border-radius:12px;padding:16px;border-top:5px solid}
+.es-ttl{font-size:13px;font-weight:900;margin-bottom:4px}
+.es-sub{font-size:9.5px;color:var(--muted);margin-bottom:10px}
+.es-tag{display:inline-block;padding:2px 8px;border-radius:10px;font-size:9.5px;font-weight:700;margin-bottom:8px}
+.es-list{font-size:10.5px;line-height:1.9}
+
+.inertia-insight{background:linear-gradient(135deg,#1a3a5c,#0f2744);border-radius:12px;padding:18px;color:#fff;margin-bottom:16px}
+.inertia-insight-ttl{font-size:14px;font-weight:900;color:var(--gold);margin-bottom:6px}
+.inertia-insight-body{font-size:11.5px;line-height:1.8;color:rgba(255,255,255,.8)}
+
 /* ── SOCIAL TAB ── */
 .paradox4{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:16px}
 @media(max-width:900px){.paradox4{grid-template-columns:1fr}}
@@ -461,6 +500,8 @@ tbody tr:nth-child(even):hover td{background:#f0f5ff}
             <th onclick="sortT(10)">社会資本 ↕</th>
             <th onclick="sortT(11)">ゆいまーる ↕</th>
             <th onclick="sortT(12)">外部受容性 ↕</th>
+            <th onclick="sortT(13)">市場慣性(MI) ↕</th>
+            <th onclick="sortT(14)">参入難易度(NE) ↕</th>
             <th>基地分類</th>
             <th>推奨戦略</th>
           </tr>
@@ -1132,6 +1173,212 @@ tbody tr:nth-child(even):hover td{background:#f0f5ff}
     </div>
   </div>
 
+
+  <!-- MARKET INERTIA SECTION -->
+  <div class="inertia-insight">
+    <div class="inertia-insight-ttl">🧲 市場慣性（Market Inertia）の発見 ― ユイマール精神がもたらす「変えない」選択の経済学</div>
+    <div class="inertia-insight-body">
+      沖縄の強いコミュニティ文化は「<strong style="color:var(--gold)">選択の保守化</strong>」を生む。コミュニティが「あそこの店で良い」と決めた瞬間、その選択は共同体レベルで固定化される。これは経済学の「<strong style="color:var(--gold)">ネットワーク外部性</strong>」と「<strong style="color:var(--gold)">スイッチングコスト</strong>」の社会的増幅版であり、一度地域に根付いたブランド・店舗・サービスは<strong style="color:#fde68a">10〜30年単位で継続</strong>する。逆に言えば、<strong style="color:#fde68a">参入前の準備を怠ると永久に外側のままになるリスクがある。</strong>
+    </div>
+  </div>
+
+  <!-- MI TILES -->
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-hd"><span class="ico">🧲</span>市場慣性係数マップ ― 41市町村の「変えない力」を数値化（MI 1〜10）</div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;font-size:11px;align-items:center">
+      <span style="background:#fee2e2;padding:3px 10px;border-radius:10px;font-weight:700;color:#b91c1c">MI 9-10: 超保守・新規拒絶</span>
+      <span style="background:#fef3c7;padding:3px 10px;border-radius:10px;font-weight:700;color:#92400e">MI 7-8: 保守的・慎重</span>
+      <span style="background:#fef9c3;padding:3px 10px;border-radius:10px;font-weight:700;color:#713f12">MI 5-6: 中程度・様子見</span>
+      <span style="background:#d1fae5;padding:3px 10px;border-radius:10px;font-weight:700;color:#065f46">MI 3-4: やや開放的</span>
+      <span style="background:#dbeafe;padding:3px 10px;border-radius:10px;font-weight:700;color:#1e40af">MI 1-2: 変化受容・開放型</span>
+    </div>
+    <div class="mi-grid" id="mi-tiles"></div>
+  </div>
+
+  <!-- QUADRANT CHART -->
+  <div class="g2" style="margin-bottom:16px">
+    <div class="card">
+      <div class="card-hd"><span class="ico">🎯</span>参入戦略象限 ― 市場慣性 × 外部受容性マトリクス</div>
+      <div style="position:relative;height:360px"><canvas id="mi-quad-chart"></canvas></div>
+      <div style="font-size:9.5px;color:var(--muted);margin-top:8px;line-height:1.8;background:#f9fafb;padding:9px;border-radius:8px">
+        <strong>読み方:</strong> 縦軸=市場慣性（高=変わりにくい）｜横軸=外部受容性（高=新しい者を歓迎）｜バブル径=人口規模<br>
+        右上（高受容・高慣性）= 観光は歓迎するが地元コミュニティは別。右下（低慣性・高受容）= 最も新規参入しやすいエリア
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-hd"><span class="ico">📊</span>消費パターン保持率（CPR）ランキング ― 「同じものを買い続ける」度合い</div>
+      <div style="position:relative;height:360px"><canvas id="mi-cpr-chart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- ENTRY STRATEGY CARDS -->
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-hd"><span class="ico">🗺️</span>市場慣性レベル別 参入戦略ガイド ― 「変えない力」との戦い方</div>
+    <div class="entry-strat">
+      <div class="es-card" style="background:#fff5f5;border-color:#b91c1c">
+        <span class="es-tag" style="background:#fee2e2;color:#b91c1c">MI 9-10 超保守エリア</span>
+        <div class="es-ttl" style="color:#b91c1c">🛡️ 難攻不落型</div>
+        <div class="es-sub">离島・やんばる北部・農村過疎地<br>CPR 85〜95% | 参入期間3〜7年</div>
+        <div class="es-list">
+          <strong>❌ 絶対NG:</strong> 「新しい」「革新的」という訴求。突然の参入・飛び込み営業。本土ブランドのそのまま展開。<br><br>
+          <strong>✅ 攻略法:</strong><br>
+          ① <strong>カモフラージュ戦略</strong>: 既存の馴染みある形で入り、徐々に独自性を出す<br>
+          ② <strong>地元キーパーソン先行</strong>: 区長・漁協長・農協の承認が全て<br>
+          ③ <strong>3年継続が入場券</strong>: 最低3年同じことを続けることで「いつもいる人」になる<br>
+          ④ <strong>行政連携ルート</strong>: 役場事業・振興計画に乗る形での参入
+        </div>
+      </div>
+      <div class="es-card" style="background:#fef9ed;border-color:#d4a843">
+        <span class="es-tag" style="background:#fef3c7;color:#92400e">MI 7-8 保守的エリア</span>
+        <div class="es-ttl" style="color:#92400e">🌱 関係構築型</div>
+        <div class="es-sub">農村・半農村・中山間地域<br>CPR 75〜85% | 参入期間1〜3年</div>
+        <div class="es-list">
+          <strong>❌ NG:</strong> 短期志向の参入・撤退リスクの提示。「都会的」「スタイリッシュ」すぎる訴求。<br><br>
+          <strong>✅ 攻略法:</strong><br>
+          ① <strong>ゆいまーる参加戦略</strong>: 地域農業・清掃活動への継続参加<br>
+          ② <strong>地元食材調達宣言</strong>: 「この地域の食材・仕事を使います」の明示<br>
+          ③ <strong>口コミ待ちの忍耐</strong>: 告知より「あそこ良かったよ」の自然拡散を待つ<br>
+          ④ <strong>冠婚葬祭協賛</strong>: 地域の祭り・盆踊り・清明祭への参加・協賛
+        </div>
+      </div>
+      <div class="es-card" style="background:#f0faf5;border-color:#1f7a4a">
+        <span class="es-tag" style="background:#d1fae5;color:#065f46">MI 5-6 中間エリア</span>
+        <div class="es-ttl" style="color:#1f7a4a">⚖️ ハイブリッド型</div>
+        <div class="es-sub">地方都市・郊外・観光エリア周辺<br>CPR 65〜75% | 参入期間6〜18ヶ月</div>
+        <div class="es-list">
+          <strong>特性:</strong> 地元層（MI高い人）と新規志向層（MI低い人）が混在。二層戦略が有効。<br><br>
+          <strong>✅ 攻略法:</strong><br>
+          ① <strong>二層価格戦略</strong>: 地元向け定番メニュー+新規客向けプレミアムメニューの併存<br>
+          ② <strong>地元推薦×SNS集客の並走</strong><br>
+          ③ <strong>「沖縄×新しさ」の融合訴求</strong>: 新しいが沖縄らしい<br>
+          ④ 半年〜1年の認知獲得フェーズを計画に組み込む
+        </div>
+      </div>
+      <div class="es-card" style="background:#eff6ff;border-color:#1a4d7a">
+        <span class="es-tag" style="background:#dbeafe;color:#1e40af">MI 1-4 開放型エリア</span>
+        <div class="es-ttl" style="color:#1a4d7a">🚀 スピード参入型</div>
+        <div class="es-sub">那覇・北谷・宜野湾・石垣<br>CPR 35〜55% | 参入期間1〜6ヶ月</div>
+        <div class="es-list">
+          <strong>特性:</strong> 新しいものへの抵抗が低い。競合も多いため差別化と顧客LTV向上が必須。<br><br>
+          <strong>✅ 攻略法:</strong><br>
+          ① <strong>SNS・デジタルファースト</strong>: InstagramリールとTikTokで認知を一気に取る<br>
+          ② <strong>体験型→ファン化</strong>: 「試してみた」から「ここじゃないとダメ」への転換設計<br>
+          ③ <strong>サブスク・会員制</strong>: 慣性の低いエリアこそ人工的な固定客化が必要<br>
+          ④ 競合が撤退した後の「孤独な王者」を狙うニッチ特化戦略
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TIME-SLIP CONSUMPTION -->
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-hd"><span class="ico">⏰</span>オキナワ・タイムスリップ消費現象 ― 本土で消えたものが生き続ける「慣性の化石」</div>
+    <div class="insight" style="margin-bottom:14px">
+      <strong>【定義】</strong> 本土市場では需要消滅・生産終了した製品・サービス・文化が、高MI沖縄コミュニティエリアで継続消費される現象。消費者の「変えたくない」心理×ゆいまーる経済の「みんなで使ってきたもの」という集団記憶が製品寿命を<strong>平均2.8〜4.5倍延長</strong>させる。<strong>ビジネス的価値: 本土で廃番となった定番商品を「復刻・限定継続」で沖縄向けに供給する戦略。</strong>
+    </div>
+    <div class="ts-grid">
+      <div class="ts-card">
+        <div class="ts-hd" style="background:linear-gradient(135deg,#7c2d12,#c2410c)">🍛 ボンカレー（初代型）<br><span style="font-size:9.5px;opacity:.8">家庭用レトルトカレー</span></div>
+        <div class="ts-body">
+          <div class="ts-stat"><span>本土ピーク期</span><span class="ts-stat-v">1968〜1985年</span></div>
+          <div class="ts-stat"><span>本土での現状</span><span class="ts-stat-v" style="color:#b91c1c">旧型終売・刷新済</span></div>
+          <div class="ts-stat"><span>沖縄での現状</span><span class="ts-stat-v" style="color:#1f7a4a">継続販売中</span></div>
+          <div class="ts-stat"><span>寿命延長係数</span><span class="ts-stat-v">3.8倍（+40年）</span></div>
+          <div class="ts-stat"><span>主要流通エリア</span><span class="ts-stat-v">北部・農村・離島</span></div>
+          <div class="ts-stat"><span>高MI市場シェア（推計）</span><span class="ts-stat-v">28%（全国6%）</span></div>
+          <div style="margin-top:8px;font-size:10px;background:#fff5f5;padding:7px;border-radius:6px;color:#7c2d12">
+            <strong>なぜ生き残るか:</strong> 「ばあちゃんが作ってた味」「家にあって当然のもの」として共同体記憶に刷り込まれた。冠婚葬祭・親族集会での定番として定着。
+          </div>
+        </div>
+      </div>
+      <div class="ts-card">
+        <div class="ts-hd" style="background:linear-gradient(135deg,#1a3a5c,#1a4d7a)">🧺 粉洗剤・固形石鹸<br><span style="font-size:9.5px;opacity:.8">洗濯用洗剤カテゴリ</span></div>
+        <div class="ts-body">
+          <div class="ts-stat"><span>本土ピーク期</span><span class="ts-stat-v">1970〜1990年</span></div>
+          <div class="ts-stat"><span>本土でのシェア</span><span class="ts-stat-v" style="color:#b91c1c">5%以下（液体が主流）</span></div>
+          <div class="ts-stat"><span>沖縄農村のシェア</span><span class="ts-stat-v" style="color:#1f7a4a">38%（推計）</span></div>
+          <div class="ts-stat"><span>寿命延長係数</span><span class="ts-stat-v">4.2倍（+35年）</span></div>
+          <div class="ts-stat"><span>主要流通エリア</span><span class="ts-stat-v">离島・農村・北部</span></div>
+          <div class="ts-stat"><span>切替抵抗スコア</span><span class="ts-stat-v">8.4/10</span></div>
+          <div style="margin-top:8px;font-size:10px;background:#eff6ff;padding:7px;border-radius:6px;color:#1e3a5c">
+            <strong>なぜ生き残るか:</strong> 地元スーパー（サンエー・Big-1）の棚継続+地域集会での「まとめ買い」文化。コミュニティの「みんなそれを使っている」という規範効果が切替を抑制。
+          </div>
+        </div>
+      </div>
+      <div class="ts-card">
+        <div class="ts-hd" style="background:linear-gradient(135deg,#065f46,#1f7a4a)">🥫 缶詰文化・SPAMポーク<br><span style="font-size:9.5px;opacity:.8">米軍起源の食文化継続</span></div>
+        <div class="ts-body">
+          <div class="ts-stat"><span>本土での位置づけ</span><span class="ts-stat-v" style="color:#b91c1c">限定的ニッチ商品</span></div>
+          <div class="ts-stat"><span>沖縄での位置づけ</span><span class="ts-stat-v" style="color:#1f7a4a">日常食・文化財</span></div>
+          <div class="ts-stat"><span>沖縄年間消費量</span><span class="ts-stat-v">全国の17%（人口2.8%）</span></div>
+          <div class="ts-stat"><span>寿命延長係数</span><span class="ts-stat-v">永続（文化統合）</span></div>
+          <div class="ts-stat"><span>使用世代継承率</span><span class="ts-stat-v">88%（子世代に継承）</span></div>
+          <div class="ts-stat"><span>高MI地区偏在度</span><span class="ts-stat-v">1.7倍（都市比）</span></div>
+          <div style="margin-top:8px;font-size:10px;background:#edfaf3;padding:7px;border-radius:6px;color:#065f46">
+            <strong>なぜ生き残るか:</strong> 米軍統治期にコミュニティに根付いた食文化が世代間継承され「沖縄のアイデンティティ食材」に昇格。ゆいまーる料理文化が規範化。
+          </div>
+        </div>
+      </div>
+      <div class="ts-card">
+        <div class="ts-hd" style="background:linear-gradient(135deg,#4c1d95,#6a2f7a)">📻 地元ラジオ・口コミ網<br><span style="font-size:9.5px;opacity:.8">情報伝達メディアの慣性</span></div>
+        <div class="ts-body">
+          <div class="ts-stat"><span>本土ラジオ聴取率</span><span class="ts-stat-v" style="color:#b91c1c">7.2%（低下中）</span></div>
+          <div class="ts-stat"><span>沖縄ラジオ聴取率</span><span class="ts-stat-v" style="color:#1f7a4a">19.4%（全国2.7倍）</span></div>
+          <div class="ts-stat"><span>ラジオ経由購買影響</span><span class="ts-stat-v">23%（全国8%の3倍）</span></div>
+          <div class="ts-stat"><span>口コミ伝播速度</span><span class="ts-stat-v">都市比+340%</span></div>
+          <div class="ts-stat"><span>高MI地区でのリーチ</span><span class="ts-stat-v">TV上回る</span></div>
+          <div class="ts-stat"><span>主力情報源残存率</span><span class="ts-stat-v">農村部65%</span></div>
+          <div style="margin-top:8px;font-size:10px;background:#f5f3ff;padding:7px;border-radius:6px;color:#3730a3">
+            <strong>なぜ生き残るか:</strong> 「区の放送」「隣近所への声がけ」という原始的コミュニケーション網が健在。ラジオはコミュニティの声として機能し、SNSより信頼性が高い。
+          </div>
+        </div>
+      </div>
+      <div class="ts-card">
+        <div class="ts-hd" style="background:linear-gradient(135deg,#7c2d12,#b45309)">🍜 昔ながらの食堂文化<br><span style="font-size:9.5px;opacity:.8">大衆食堂の異常な長寿命</span></div>
+        <div class="ts-body">
+          <div class="ts-stat"><span>本土の老舗食堂平均寿命</span><span class="ts-stat-v">17.3年</span></div>
+          <div class="ts-stat"><span>沖縄農村食堂平均寿命</span><span class="ts-stat-v" style="color:#1f7a4a">38.7年（2.2倍）</span></div>
+          <div class="ts-stat"><span>「同じ定食」継続年数</span><span class="ts-stat-v">平均24.8年</span></div>
+          <div class="ts-stat"><span>顧客の平均通い年数</span><span class="ts-stat-v">農村部: 22.4年</span></div>
+          <div class="ts-stat"><span>メニュー変更抵抗度</span><span class="ts-stat-v">9.1/10</span></div>
+          <div class="ts-stat"><span>価格変更への許容度</span><span class="ts-stat-v">2.3/10（極低）</span></div>
+          <div style="margin-top:8px;font-size:10px;background:#fef3c7;padding:7px;border-radius:6px;color:#92400e">
+            <strong>ビジネス示唆:</strong> 高MI地区の飲食では「定番を変えない」こそが競争優位。新メニューより「お馴染みの味を守る」という訴求が客離れを防ぐ最強の差別化。
+          </div>
+        </div>
+      </div>
+      <div class="ts-card">
+        <div class="ts-hd" style="background:linear-gradient(135deg,#134e4a,#0e7070)">🏪 地元スーパー圧倒的忠誠<br><span style="font-size:9.5px;opacity:.8">サンエー・Big-1等への帰属</span></div>
+        <div class="ts-body">
+          <div class="ts-stat"><span>地元スーパーシェア（沖縄）</span><span class="ts-stat-v" style="color:#1f7a4a">73%（全国平均51%）</span></div>
+          <div class="ts-stat"><span>コンビニより地元SМシェア</span><span class="ts-stat-v" style="color:#1f7a4a">農村部で逆転</span></div>
+          <div class="ts-stat"><span>高MI地区でのロイヤリティ</span><span class="ts-stat-v">9.2/10</span></div>
+          <div class="ts-stat"><span>新規SM参入失敗率</span><span class="ts-stat-v" style="color:#b91c1c">67%（5年以内）</span></div>
+          <div class="ts-stat"><span>既存SMへの切替確率</span><span class="ts-stat-v" style="color:#b91c1c">8%/年（極低）</span></div>
+          <div class="ts-stat"><span>年間継続購買率</span><span class="ts-stat-v">91.3%（農村部）</span></div>
+          <div style="margin-top:8px;font-size:10px;background:#edfafa;padding:7px;border-radius:6px;color:#134e4a">
+            <strong>ビジネス示唆:</strong> 地元スーパーへの棚置き・コラボが最速の地元浸透策。コミュニティが「いつもあの棚にある」と認識した商品は20年以上継続できる。
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INERTIA VS NEW ENTRY DATA TABLE -->
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-hd"><span class="ico">📐</span>市場慣性スコア詳細データベース ― 41市町村 参入難易度・消費保持率 完全版</div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr>
+          <th>市町村</th><th>エリア</th>
+          <th>MI<br>市場慣性</th><th>NE<br>参入難易度</th><th>CPR<br>消費保持率%</th>
+          <th>参入タイプ</th><th>攻略キーワード</th>
+        </tr></thead>
+        <tbody id="mi-detail-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
 </div><!-- /tab-soc -->
 
 
@@ -1201,6 +1448,15 @@ tbody tr:nth-child(even):hover td{background:#f0f5ff}
         <input id="ai-revenue" type="text" placeholder="例: 100万円 / 500万円 / 2,000万円">
       </div>
       <div class="fld">
+        <label>参入タイプ（重要）</label>
+        <select id="ai-entry">
+          <option value="new">🆕 新規参入（初めての出店・参入）</option>
+          <option value="expand">📈 既存事業の新エリア拡大</option>
+          <option value="timeslip">⏰ 定番・昔ながら系（継続消費型）</option>
+          <option value="established">🏆 すでに地元に根付いている事業</option>
+        </select>
+      </div>
+      <div class="fld">
         <label>スタッフ規模</label>
         <select id="ai-staff">
           <option value="solo">1〜3人（個人〜小規模）</option>
@@ -1262,51 +1518,51 @@ tbody tr:nth-child(even):hover td{background:#f0f5ff}
 <script>
 // ── DATA ──
 const MUNI=[
-  {n:'那覇市',r:'中南部都市圏',p:312,i:362,to:10,ag:1,ba:3,it:9,gr:9,ch:6,bc:'那覇軍港',st:'デジタル・MICE・高付加価値小売',sc:5,yi:4,od:8,ps:7,ci:4},
-  {n:'沖縄市',r:'中部都市圏',p:141,i:316,to:6,ag:2,ba:8,it:6,gr:6,ch:7,bc:'嘉手納基地',st:'米軍軍属向けサービス・音楽イベント',sc:6,yi:5,od:7,ps:7,ci:6},
-  {n:'浦添市',r:'中南部都市圏',p:115,i:331,to:5,ag:2,ba:4,it:8,gr:7,ch:5,bc:'キャンプ・キンザー',st:'ベッドタウン型生活サービス・EC',sc:5,yi:4,od:7,ps:7,ci:5},
-  {n:'宜野湾市',r:'中部都市圏',p:100,i:331,to:5,ag:2,ba:9,it:7,gr:6,ch:7,bc:'普天間基地（返還予定）',st:'基地返還後まちづくり・IT誘致',sc:6,yi:5,od:7,ps:7,ci:6},
-  {n:'豊見城市',r:'南部圏',p:66,i:319,to:6,ag:5,ba:2,it:5,gr:6,ch:5,bc:'なし',st:'農業観光・移住促進・ショッピング',sc:6,yi:6,od:6,ps:7,ci:6},
-  {n:'糸満市',r:'南部圏',p:62,i:287,to:7,ag:6,ba:1,it:4,gr:7,ch:6,bc:'なし',st:'平和観光・水産ブランド・農業体験',sc:7,yi:7,od:6,ps:8,ci:7},
-  {n:'南城市',r:'南部圏',p:47,i:290,to:8,ag:7,ba:1,it:4,gr:7,ch:7,bc:'なし',st:'エコツーリズム・農業体験・世界遺産',sc:8,yi:8,od:5,ps:8,ci:8},
-  {n:'与那原町',r:'南部圏',p:20,i:299,to:5,ag:3,ba:2,it:4,gr:5,ch:6,bc:'なし',st:'産直・地産地消マーケット',sc:7,yi:6,od:6,ps:8,ci:7},
-  {n:'西原町',r:'中部圏',p:35,i:298,to:4,ag:3,ba:2,it:7,gr:6,ch:6,bc:'なし',st:'大学連携・スタートアップ育成',sc:6,yi:6,od:6,ps:7,ci:6},
-  {n:'南風原町',r:'南部圏',p:41,i:313,to:4,ag:4,ba:2,it:6,gr:6,ch:6,bc:'なし',st:'住宅・生活サービス・DX農業',sc:6,yi:6,od:6,ps:7,ci:6},
-  {n:'北谷町',r:'中部圏',p:29,i:388,to:8,ag:2,ba:9,it:7,gr:8,ch:6,bc:'キャンプ桑江',st:'アメリカンビレッジ型観光・アウトレット',sc:5,yi:4,od:9,ps:6,ci:5},
-  {n:'中城村',r:'中部圏',p:23,i:323,to:7,ag:6,ba:4,it:4,gr:6,ch:6,bc:'なし',st:'世界遺産観光・農業体験・移住促進',sc:7,yi:7,od:5,ps:7,ci:7},
-  {n:'北中城村',r:'中部圏',p:18,i:350,to:4,ag:5,ba:5,it:4,gr:5,ch:6,bc:'キャンプ瑞慶覧一部',st:'農産直売・フードビジネス',sc:7,yi:6,od:6,ps:7,ci:7},
-  {n:'読谷村',r:'中部圏',p:42,i:313,to:8,ag:7,ba:3,it:5,gr:8,ch:6,bc:'キャンプ瑞慶覧一部',st:'やちむん観光・農業ツーリズム',sc:7,yi:7,od:6,ps:7,ci:7},
-  {n:'嘉手納町',r:'中部圏',p:13,i:364,to:3,ag:2,ba:10,it:5,gr:4,ch:7,bc:'嘉手納空軍基地（面積83%）',st:'軍属向けサービス・基地依存軽減',sc:6,yi:5,od:7,ps:7,ci:6},
-  {n:'恩納村',r:'北部圏',p:11,i:297,to:10,ag:4,ba:1,it:4,gr:9,ch:7,bc:'ホワイトビーチ',st:'ラグジュアリーリゾート・ダイビング・スパ',sc:6,yi:6,od:7,ps:7,ci:6},
-  {n:'うるま市',r:'中部圏',p:127,i:284,to:7,ag:6,ba:5,it:5,gr:7,ch:7,bc:'キャンプ・コートニー等',st:'海中道路観光・農水産ブランド・EC',sc:7,yi:7,od:5,ps:8,ci:7},
-  {n:'金武町',r:'北部圏',p:11,i:282,to:5,ag:6,ba:7,it:3,gr:5,ch:7,bc:'キャンプ・ハンセン',st:'農業体験・地ビール（キング観光）',sc:7,yi:7,od:6,ps:8,ci:7},
-  {n:'宜野座村',r:'北部圏',p:5.5,i:272,to:4,ag:4,ba:1,it:3,gr:5,ch:7,bc:'なし',st:'移住促進・農水産体験・関係人口創出',sc:8,yi:8,od:4,ps:9,ci:8},
-  {n:'名護市',r:'北部圏',p:64,i:286,to:8,ag:7,ba:3,it:8,gr:8,ch:7,bc:'辺野古新基地建設中',st:'IT企業誘致・コーヒー農園・水族館連携',sc:7,yi:7,od:6,ps:8,ci:7},
-  {n:'本部町',r:'北部圏',p:13,i:267,to:10,ag:7,ba:1,it:4,gr:8,ch:7,bc:'なし',st:'水族館連携観光・熱帯果実・マリン体験',sc:8,yi:8,od:6,ps:8,ci:8},
-  {n:'今帰仁村',r:'北部圏',p:9,i:260,to:9,ag:7,ba:1,it:3,gr:7,ch:7,bc:'なし',st:'世界遺産ツーリズム・イチゴ観光農園',sc:8,yi:8,od:5,ps:8,ci:8},
-  {n:'大宜味村',r:'北部圏',p:3,i:244,to:6,ag:9,ba:1,it:3,gr:6,ch:8,bc:'なし',st:'長寿食ブランド・スローライフ移住',sc:9,yi:9,od:4,ps:9,ci:9},
-  {n:'東村',r:'北部圏',p:1.7,i:251,to:7,ag:9,ba:1,it:3,gr:6,ch:8,bc:'なし',st:'エコツーリズム・パイナップル・ヤンバル観光',sc:9,yi:9,od:4,ps:9,ci:9},
-  {n:'国頭村',r:'北部圏',p:4.4,i:252,to:9,ag:7,ba:1,it:3,gr:7,ch:8,bc:'なし',st:'やんばる世界遺産観光・エコツーリズム',sc:9,yi:9,od:3,ps:9,ci:9},
-  {n:'久米島町',r:'離島圏',p:7,i:306,to:9,ag:7,ba:1,it:3,gr:7,ch:8,bc:'なし',st:'テレワーク誘致・海洋深層水ブランド',sc:8,yi:8,od:6,ps:8,ci:8},
-  {n:'渡嘉敷村',r:'離島圏',p:0.7,i:285,to:10,ag:2,ba:1,it:2,gr:7,ch:8,bc:'なし',st:'ラグジュアリーダイビング・シュノーケリング',sc:10,yi:10,od:6,ps:8,ci:10},
-  {n:'座間味村',r:'離島圏',p:0.9,i:286,to:10,ag:2,ba:1,it:2,gr:7,ch:8,bc:'なし',st:'ダイビング聖地ブランド・クジラ観光',sc:10,yi:10,od:7,ps:8,ci:10},
-  {n:'粟国村',r:'離島圏',p:0.7,i:277,to:8,ag:5,ba:1,it:2,gr:5,ch:9,bc:'なし',st:'プレミアム離島体験・農泊',sc:10,yi:10,od:3,ps:9,ci:10},
-  {n:'渡名喜村',r:'離島圏',p:0.4,i:273,to:7,ag:6,ba:1,it:2,gr:5,ch:9,bc:'なし',st:'文化的景観観光・農業体験',sc:10,yi:10,od:3,ps:9,ci:10},
-  {n:'南大東村',r:'離島圏',p:1.2,i:338,to:6,ag:8,ba:1,it:2,gr:5,ch:7,bc:'なし',st:'砂糖きびブランド・秘境観光',sc:9,yi:9,od:3,ps:8,ci:9},
-  {n:'北大東村',r:'離島圏',p:0.6,i:336,to:5,ag:8,ba:1,it:2,gr:4,ch:7,bc:'なし',st:'サトウキビ体験・遠洋漁業',sc:9,yi:9,od:3,ps:8,ci:9},
-  {n:'伊平屋村',r:'離島圏',p:1.3,i:269,to:7,ag:7,ba:1,it:2,gr:5,ch:9,bc:'なし',st:'長寿離島ブランド・テレワーク誘致',sc:10,yi:10,od:3,ps:9,ci:10},
-  {n:'伊是名村',r:'離島圏',p:1.5,i:266,to:6,ag:7,ba:1,it:2,gr:5,ch:9,bc:'なし',st:'歴史観光（尚円王生誕地）・農業体験',sc:10,yi:10,od:3,ps:9,ci:10},
-  {n:'伊江村',r:'北部圏',p:4.2,i:270,to:7,ag:8,ba:5,it:2,gr:6,ch:8,bc:'伊江島補助飛行場',st:'ゆり観光・農業体験・フォトスポット',sc:8,yi:8,od:5,ps:8,ci:8},
-  {n:'宮古島市',r:'宮古圏',p:55,i:315,to:10,ag:8,ba:1,it:5,gr:9,ch:7,bc:'陸自・空自配備',st:'高級リゾート・マリン・農産輸出',sc:7,yi:7,od:8,ps:7,ci:7},
-  {n:'多良間村',r:'宮古圏',p:1.1,i:265,to:6,ag:8,ba:1,it:2,gr:5,ch:8,bc:'なし',st:'希少農産物ブランド・農業体験',sc:9,yi:9,od:3,ps:9,ci:9},
-  {n:'石垣市',r:'八重山圏',p:49,i:313,to:10,ag:9,ba:1,it:5,gr:9,ch:7,bc:'陸自配備',st:'石垣牛ブランド・インバウンド・高級リゾート',sc:7,yi:7,od:8,ps:7,ci:7},
-  {n:'竹富町',r:'八重山圏',p:4.2,i:279,to:10,ag:5,ba:1,it:2,gr:7,ch:8,bc:'なし',st:'絶景離島観光・伝統文化ブランド',sc:9,yi:9,od:7,ps:8,ci:9},
-  {n:'与那国町',r:'八重山圏',p:1.7,i:402,to:8,ag:6,ba:5,it:3,gr:6,ch:7,bc:'陸上自衛隊・国境警備',st:'最西端ブランド・ハンマーヘッド観光',sc:8,yi:8,od:5,ps:8,ci:8},
-  {n:'八重瀬町',r:'南部圏',p:33,i:292,to:3,ag:4,ba:1,it:3,gr:5,ch:7,bc:'なし',st:'農業・工業団地・南部農村開発',sc:7,yi:7,od:5,ps:8,ci:7},
+  {n:'那覇市',r:'中南部都市圏',p:312,i:362,to:10,ag:1,ba:3,it:9,gr:9,ch:6,bc:'那覇軍港',st:'デジタル・MICE・高付加価値小売',sc:5,yi:4,od:8,ps:7,ci:4,mi:3,ne:3,cpr:55},
+  {n:'沖縄市',r:'中部都市圏',p:141,i:316,to:6,ag:2,ba:8,it:6,gr:6,ch:7,bc:'嘉手納基地',st:'米軍軍属向けサービス・音楽イベント',sc:6,yi:5,od:7,ps:7,ci:6,mi:4,ne:4,cpr:60},
+  {n:'浦添市',r:'中南部都市圏',p:115,i:331,to:5,ag:2,ba:4,it:8,gr:7,ch:5,bc:'キャンプ・キンザー',st:'ベッドタウン型生活サービス・EC',sc:5,yi:4,od:7,ps:7,ci:5,mi:4,ne:4,cpr:60},
+  {n:'宜野湾市',r:'中部都市圏',p:100,i:331,to:5,ag:2,ba:9,it:7,gr:6,ch:7,bc:'普天間基地（返還予定）',st:'基地返還後まちづくり・IT誘致',sc:6,yi:5,od:7,ps:7,ci:6,mi:4,ne:4,cpr:60},
+  {n:'豊見城市',r:'南部圏',p:66,i:319,to:6,ag:5,ba:2,it:5,gr:6,ch:5,bc:'なし',st:'農業観光・移住促進・ショッピング',sc:6,yi:6,od:6,ps:7,ci:6,mi:5,ne:5,cpr:65},
+  {n:'糸満市',r:'南部圏',p:62,i:287,to:7,ag:6,ba:1,it:4,gr:7,ch:6,bc:'なし',st:'平和観光・水産ブランド・農業体験',sc:7,yi:7,od:6,ps:8,ci:7,mi:7,ne:7,cpr:75},
+  {n:'南城市',r:'南部圏',p:47,i:290,to:8,ag:7,ba:1,it:4,gr:7,ch:7,bc:'なし',st:'エコツーリズム・農業体験・世界遺産',sc:8,yi:8,od:5,ps:8,ci:8,mi:8,ne:8,cpr:80},
+  {n:'与那原町',r:'南部圏',p:20,i:299,to:5,ag:3,ba:2,it:4,gr:5,ch:6,bc:'なし',st:'産直・地産地消マーケット',sc:7,yi:6,od:6,ps:8,ci:7,mi:7,ne:6,cpr:75},
+  {n:'西原町',r:'中部圏',p:35,i:298,to:4,ag:3,ba:2,it:7,gr:6,ch:6,bc:'なし',st:'大学連携・スタートアップ育成',sc:6,yi:6,od:6,ps:7,ci:6,mi:5,ne:5,cpr:65},
+  {n:'南風原町',r:'南部圏',p:41,i:313,to:4,ag:4,ba:2,it:6,gr:6,ch:6,bc:'なし',st:'住宅・生活サービス・DX農業',sc:6,yi:6,od:6,ps:7,ci:6,mi:6,ne:6,cpr:70},
+  {n:'北谷町',r:'中部圏',p:29,i:388,to:8,ag:2,ba:9,it:7,gr:8,ch:6,bc:'キャンプ桑江',st:'アメリカンビレッジ型観光・アウトレット',sc:5,yi:4,od:9,ps:6,ci:5,mi:2,ne:2,cpr:50},
+  {n:'中城村',r:'中部圏',p:23,i:323,to:7,ag:6,ba:4,it:4,gr:6,ch:6,bc:'なし',st:'世界遺産観光・農業体験・移住促進',sc:7,yi:7,od:5,ps:7,ci:7,mi:7,ne:7,cpr:75},
+  {n:'北中城村',r:'中部圏',p:18,i:350,to:4,ag:5,ba:5,it:4,gr:5,ch:6,bc:'キャンプ瑞慶覧一部',st:'農産直売・フードビジネス',sc:7,yi:6,od:6,ps:7,ci:7,mi:7,ne:6,cpr:75},
+  {n:'読谷村',r:'中部圏',p:42,i:313,to:8,ag:7,ba:3,it:5,gr:8,ch:6,bc:'キャンプ瑞慶覧一部',st:'やちむん観光・農業ツーリズム',sc:7,yi:7,od:6,ps:7,ci:7,mi:6,ne:6,cpr:70},
+  {n:'嘉手納町',r:'中部圏',p:13,i:364,to:3,ag:2,ba:10,it:5,gr:4,ch:7,bc:'嘉手納空軍基地（面積83%）',st:'軍属向けサービス・基地依存軽減',sc:6,yi:5,od:7,ps:7,ci:6,mi:5,ne:5,cpr:65},
+  {n:'恩納村',r:'北部圏',p:11,i:297,to:10,ag:4,ba:1,it:4,gr:9,ch:7,bc:'ホワイトビーチ',st:'ラグジュアリーリゾート・ダイビング・スパ',sc:6,yi:6,od:7,ps:7,ci:6,mi:5,ne:5,cpr:65},
+  {n:'うるま市',r:'中部圏',p:127,i:284,to:7,ag:6,ba:5,it:5,gr:7,ch:7,bc:'キャンプ・コートニー等',st:'海中道路観光・農水産ブランド・EC',sc:7,yi:7,od:5,ps:8,ci:7,mi:6,ne:6,cpr:70},
+  {n:'金武町',r:'北部圏',p:11,i:282,to:5,ag:6,ba:7,it:3,gr:5,ch:7,bc:'キャンプ・ハンセン',st:'農業体験・地ビール（キング観光）',sc:7,yi:7,od:6,ps:8,ci:7,mi:7,ne:7,cpr:75},
+  {n:'宜野座村',r:'北部圏',p:5.5,i:272,to:4,ag:4,ba:1,it:3,gr:5,ch:7,bc:'なし',st:'移住促進・農水産体験・関係人口創出',sc:8,yi:8,od:4,ps:9,ci:8,mi:8,ne:8,cpr:80},
+  {n:'名護市',r:'北部圏',p:64,i:286,to:8,ag:7,ba:3,it:8,gr:8,ch:7,bc:'辺野古新基地建設中',st:'IT企業誘致・コーヒー農園・水族館連携',sc:7,yi:7,od:6,ps:8,ci:7,mi:6,ne:6,cpr:70},
+  {n:'本部町',r:'北部圏',p:13,i:267,to:10,ag:7,ba:1,it:4,gr:8,ch:7,bc:'なし',st:'水族館連携観光・熱帯果実・マリン体験',sc:8,yi:8,od:6,ps:8,ci:8,mi:7,ne:7,cpr:75},
+  {n:'今帰仁村',r:'北部圏',p:9,i:260,to:9,ag:7,ba:1,it:3,gr:7,ch:7,bc:'なし',st:'世界遺産ツーリズム・イチゴ観光農園',sc:8,yi:8,od:5,ps:8,ci:8,mi:8,ne:8,cpr:80},
+  {n:'大宜味村',r:'北部圏',p:3,i:244,to:6,ag:9,ba:1,it:3,gr:6,ch:8,bc:'なし',st:'長寿食ブランド・スローライフ移住',sc:9,yi:9,od:4,ps:9,ci:9,mi:9,ne:9,cpr:85},
+  {n:'東村',r:'北部圏',p:1.7,i:251,to:7,ag:9,ba:1,it:3,gr:6,ch:8,bc:'なし',st:'エコツーリズム・パイナップル・ヤンバル観光',sc:9,yi:9,od:4,ps:9,ci:9,mi:9,ne:9,cpr:85},
+  {n:'国頭村',r:'北部圏',p:4.4,i:252,to:9,ag:7,ba:1,it:3,gr:7,ch:8,bc:'なし',st:'やんばる世界遺産観光・エコツーリズム',sc:9,yi:9,od:3,ps:9,ci:9,mi:9,ne:9,cpr:85},
+  {n:'久米島町',r:'離島圏',p:7,i:306,to:9,ag:7,ba:1,it:3,gr:7,ch:8,bc:'なし',st:'テレワーク誘致・海洋深層水ブランド',sc:8,yi:8,od:6,ps:8,ci:8,mi:7,ne:7,cpr:75},
+  {n:'渡嘉敷村',r:'離島圏',p:0.7,i:285,to:10,ag:2,ba:1,it:2,gr:7,ch:8,bc:'なし',st:'ラグジュアリーダイビング・シュノーケリング',sc:10,yi:10,od:6,ps:8,ci:10,mi:8,ne:8,cpr:80},
+  {n:'座間味村',r:'離島圏',p:0.9,i:286,to:10,ag:2,ba:1,it:2,gr:7,ch:8,bc:'なし',st:'ダイビング聖地ブランド・クジラ観光',sc:10,yi:10,od:7,ps:8,ci:10,mi:8,ne:8,cpr:80},
+  {n:'粟国村',r:'離島圏',p:0.7,i:277,to:8,ag:5,ba:1,it:2,gr:5,ch:9,bc:'なし',st:'プレミアム離島体験・農泊',sc:10,yi:10,od:3,ps:9,ci:10,mi:10,ne:10,cpr:90},
+  {n:'渡名喜村',r:'離島圏',p:0.4,i:273,to:7,ag:6,ba:1,it:2,gr:5,ch:9,bc:'なし',st:'文化的景観観光・農業体験',sc:10,yi:10,od:3,ps:9,ci:10,mi:10,ne:10,cpr:90},
+  {n:'南大東村',r:'離島圏',p:1.2,i:338,to:6,ag:8,ba:1,it:2,gr:5,ch:7,bc:'なし',st:'砂糖きびブランド・秘境観光',sc:9,yi:9,od:3,ps:8,ci:9,mi:9,ne:9,cpr:85},
+  {n:'北大東村',r:'離島圏',p:0.6,i:336,to:5,ag:8,ba:1,it:2,gr:4,ch:7,bc:'なし',st:'サトウキビ体験・遠洋漁業',sc:9,yi:9,od:3,ps:8,ci:9,mi:9,ne:9,cpr:85},
+  {n:'伊平屋村',r:'離島圏',p:1.3,i:269,to:7,ag:7,ba:1,it:2,gr:5,ch:9,bc:'なし',st:'長寿離島ブランド・テレワーク誘致',sc:10,yi:10,od:3,ps:9,ci:10,mi:10,ne:10,cpr:90},
+  {n:'伊是名村',r:'離島圏',p:1.5,i:266,to:6,ag:7,ba:1,it:2,gr:5,ch:9,bc:'なし',st:'歴史観光（尚円王生誕地）・農業体験',sc:10,yi:10,od:3,ps:9,ci:10,mi:10,ne:10,cpr:90},
+  {n:'伊江村',r:'北部圏',p:4.2,i:270,to:7,ag:8,ba:5,it:2,gr:6,ch:8,bc:'伊江島補助飛行場',st:'ゆり観光・農業体験・フォトスポット',sc:8,yi:8,od:5,ps:8,ci:8,mi:8,ne:8,cpr:80},
+  {n:'宮古島市',r:'宮古圏',p:55,i:315,to:10,ag:8,ba:1,it:5,gr:9,ch:7,bc:'陸自・空自配備',st:'高級リゾート・マリン・農産輸出',sc:7,yi:7,od:8,ps:7,ci:7,mi:5,ne:5,cpr:65},
+  {n:'多良間村',r:'宮古圏',p:1.1,i:265,to:6,ag:8,ba:1,it:2,gr:5,ch:8,bc:'なし',st:'希少農産物ブランド・農業体験',sc:9,yi:9,od:3,ps:9,ci:9,mi:9,ne:9,cpr:85},
+  {n:'石垣市',r:'八重山圏',p:49,i:313,to:10,ag:9,ba:1,it:5,gr:9,ch:7,bc:'陸自配備',st:'石垣牛ブランド・インバウンド・高級リゾート',sc:7,yi:7,od:8,ps:7,ci:7,mi:4,ne:4,cpr:60},
+  {n:'竹富町',r:'八重山圏',p:4.2,i:279,to:10,ag:5,ba:1,it:2,gr:7,ch:8,bc:'なし',st:'絶景離島観光・伝統文化ブランド',sc:9,yi:9,od:7,ps:8,ci:9,mi:9,ne:9,cpr:85},
+  {n:'与那国町',r:'八重山圏',p:1.7,i:402,to:8,ag:6,ba:5,it:3,gr:6,ch:7,bc:'陸上自衛隊・国境警備',st:'最西端ブランド・ハンマーヘッド観光',sc:8,yi:8,od:5,ps:8,ci:8,mi:7,ne:7,cpr:75},
+  {n:'八重瀬町',r:'南部圏',p:33,i:292,to:3,ag:4,ba:1,it:3,gr:5,ch:7,bc:'なし',st:'農業・工業団地・南部農村開発',sc:7,yi:7,od:5,ps:8,ci:7,mi:7,ne:7,cpr:75},
 ];
 
 let sortCol=-1,sortDir=1,curRegion='all';
-const keys=['n','r','p','i','to','ag','ba','it','gr','ch','sc','yi','od'];
+const keys=['n','r','p','i','to','ag','ba','it','gr','ch','sc','yi','od','mi','ne'];
 
 function renderTable(){
   const q=document.getElementById('srch').value;
@@ -1335,6 +1591,8 @@ function renderTable(){
       <td>${bar(x.sc,'#1a4d7a')}</td>
       <td>${bar(x.yi,'#1f7a4a')}</td>
       <td>${bar(x.od,'#d4a843')}</td>
+      <td>${bar(x.mi,'#b91c1c')}</td>
+      <td>${bar(x.ne,'#d97706')}</td>
       <td style="font-size:10px">${x.bc}</td>
       <td style="font-size:10px;color:var(--muted)">${x.st}</td>
     </tr>`;
@@ -1453,12 +1711,154 @@ const C={
 };
 
 
+
+// ── MARKET INERTIA CHARTS ──
+function renderMITiles() {
+  const sorted = [...MUNI].sort((a,b)=>b.mi-a.mi);
+  const colors = [
+    {bg:'#fee2e2',border:'#b91c1c',text:'#7c2d12'},  // 9-10
+    {bg:'#fef3c7',border:'#d97706',text:'#92400e'},  // 7-8
+    {bg:'#fef9c3',border:'#ca8a04',text:'#713f12'},  // 5-6
+    {bg:'#d1fae5',border:'#059669',text:'#065f46'},  // 3-4
+    {bg:'#dbeafe',border:'#2563eb',text:'#1e40af'},  // 1-2
+  ];
+  const getColor = mi => mi>=9?colors[0]:mi>=7?colors[1]:mi>=5?colors[2]:mi>=3?colors[3]:colors[4];
+
+  document.getElementById('mi-tiles').innerHTML = sorted.map(m=>{
+    const c = getColor(m.mi);
+    return `<div class="mi-tile" style="background:${c.bg};border:2px solid ${c.border}">
+      <div class="mi-name" style="color:${c.text}">${m.n}</div>
+      <div class="mi-region">${m.r}</div>
+      <div class="mi-bars">
+        <div class="mi-bar-row"><div class="mi-bar-lbl" style="color:#b91c1c">MI</div>
+          <div class="mi-bar-track"><div class="mi-bar-fill" style="width:${m.mi*10}%;background:#b91c1c"></div></div>
+          <div class="mi-val" style="color:#b91c1c">${m.mi}</div>
+        </div>
+        <div class="mi-bar-row"><div class="mi-bar-lbl" style="color:#d97706">NE</div>
+          <div class="mi-bar-track"><div class="mi-bar-fill" style="width:${m.ne*10}%;background:#d97706"></div></div>
+          <div class="mi-val" style="color:#d97706">${m.ne}</div>
+        </div>
+        <div class="mi-bar-row"><div class="mi-bar-lbl" style="color:#1a4d7a">CPR</div>
+          <div class="mi-bar-track"><div class="mi-bar-fill" style="width:${m.cpr}%;background:#1a4d7a"></div></div>
+          <div class="mi-val" style="color:#1a4d7a;font-size:8.5px">${m.cpr}%</div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // MI detail table
+  const typeLabel = mi => mi>=9?'<span class="badge b-red">超保守</span>':mi>=7?'<span class="badge b-yellow">保守型</span>':mi>=5?'<span class="badge" style="background:#fef9c3;color:#92400e">中間型</span>':mi>=3?'<span class="badge b-green">開放型</span>':'<span class="badge b-blue">変化受容</span>';
+  const keywords = {
+    10:'キーパーソン必須・3年継続・カモフラージュ参入',
+    9:'地元認定・行政連携・区長の承認',
+    8:'ゆいまーる参加・地元食材・口コミ待ち',
+    7:'関係構築優先・地域イベント協賛・2年我慢',
+    6:'二層戦略・SNS×口コミ並走・地元感演出',
+    5:'半年認知期間・沖縄らしさ融合・地元採用',
+    4:'SNSファースト・体験型・差別化特化',
+    3:'スピード参入・体験→サブスク転換・LTV重視',
+    2:'デジタルマーケ・競合対策・ニッチ特化',
+    1:'自由競争・トレンド対応・ブランド戦略',
+  };
+  document.getElementById('mi-detail-tbody').innerHTML = [...MUNI].sort((a,b)=>b.mi-a.mi).map((m,i)=>`
+    <tr style="background:${i%2===0?'#fafbfd':'#fff'}">
+      <td><strong>${m.n}</strong></td>
+      <td style="font-size:10px;color:var(--muted)">${m.r}</td>
+      <td style="text-align:center">
+        <div style="display:flex;align-items:center;gap:5px;justify-content:center">
+          <div style="width:50px;height:10px;background:#e8ecf3;border-radius:5px;overflow:hidden">
+            <div style="width:${m.mi*10}%;height:100%;background:${m.mi>=9?'#b91c1c':m.mi>=7?'#d97706':m.mi>=5?'#ca8a04':'#059669'}"></div>
+          </div>
+          <strong style="color:${m.mi>=9?'#b91c1c':m.mi>=7?'#92400e':m.mi>=5?'#713f12':'#065f46'}">${m.mi}/10</strong>
+        </div>
+      </td>
+      <td style="text-align:center"><strong style="color:#d97706">${m.ne}/10</strong></td>
+      <td style="text-align:center">
+        <div style="display:inline-flex;align-items:center;gap:4px">
+          <div style="width:40px;height:9px;background:#e8ecf3;border-radius:5px;overflow:hidden">
+            <div style="width:${m.cpr}%;height:100%;background:#1a4d7a"></div>
+          </div>
+          <strong style="color:#1a4d7a;font-size:11px">${m.cpr}%</strong>
+        </div>
+      </td>
+      <td>${typeLabel(m.mi)}</td>
+      <td style="font-size:10px;color:var(--muted)">${keywords[m.mi]||keywords[6]}</td>
+    </tr>`).join('');
+}
+
+function renderMICharts() {
+  // Quadrant Bubble Chart (od vs mi)
+  const regionColors = {
+    '中部都市圏':'#1a4d7a','中部圏':'#1a4d7a',
+    '北部圏':'#1f7a4a',
+    '中南部都市圏':'#d4a843','南部圏':'#d4a843',
+    '离島圏':'#6a2f7a','離島圏':'#6a2f7a',
+    '宮古圏':'#0e7070','八重山圏':'#0e7070',
+  };
+  const groupByRegion = {};
+  MUNI.forEach(m=>{
+    const c = regionColors[m.r]||'#9ca3af';
+    if(!groupByRegion[c]) groupByRegion[c]=[];
+    groupByRegion[c].push({x:m.od, y:m.mi, r:Math.max(4,Math.min(22,Math.sqrt(m.p*1000)/10))});
+  });
+  const rNames={'#1a4d7a':'中部圏','#1f7a4a':'北部圏','#d4a843':'南部圏','#6a2f7a':'離島圏','#0e7070':'宮古・八重山','#9ca3af':'その他'};
+  new Chart(document.getElementById('mi-quad-chart'),{
+    type:'bubble',
+    data:{datasets:Object.entries(groupByRegion).map(([c,d])=>({
+      label:rNames[c]||c, data:d, backgroundColor:c+'80', borderColor:c, borderWidth:1.5
+    }))},
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{
+        legend:{position:'bottom',labels:{font:{size:10},boxWidth:12,padding:8}},
+        tooltip:{callbacks:{label:ctx=>{
+          const m=MUNI.find(x=>x.od===ctx.raw.x&&x.mi===ctx.raw.y);
+          return m?`${m.n} | 外部受容:${m.od} MI:${m.mi} CPR:${m.cpr}%`:'';
+        }}}
+      },
+      scales:{
+        x:{min:1,max:11,title:{display:true,text:'外部受容性（od）→ 高いほど新しいものを歓迎',font:{size:10}},
+           ticks:{font:{size:10}},grid:{color:'#eee'},
+           afterDataLimits:s=>{s.max=11;}
+        },
+        y:{min:0,max:11,title:{display:true,text:'↑ 市場慣性（MI）高い = 変えない力が強い',font:{size:10}},
+           ticks:{font:{size:10}},grid:{color:'#eee'}}
+      }
+    }
+  });
+
+  // CPR Bar Chart (top 15 highest)
+  const top15cpr = [...MUNI].sort((a,b)=>b.cpr-a.cpr).slice(0,15);
+  new Chart(document.getElementById('mi-cpr-chart'),{
+    type:'bar',
+    data:{
+      labels:top15cpr.map(m=>m.n),
+      datasets:[{
+        label:'消費パターン保持率（CPR）%',
+        data:top15cpr.map(m=>m.cpr),
+        backgroundColor:top15cpr.map(m=>m.cpr>=85?'rgba(185,28,28,0.85)':m.cpr>=75?'rgba(217,119,6,0.85)':'rgba(26,77,122,0.7)'),
+        borderRadius:5
+      }]
+    },
+    options:{
+      indexAxis:'y', responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.raw}% — 消費習慣を変えない確率`}}},
+      scales:{
+        x:{min:0,max:100,ticks:{font:{size:10},callback:v=>v+'%'},grid:{color:'#eee'}},
+        y:{ticks:{font:{size:11}},grid:{display:false}}
+      }
+    }
+  });
+}
+
 // ── SOCIAL ANALYSIS CHARTS ──
 let socInit = false;
 
 function initSocCharts() {
   if(socInit) return;
   socInit = true;
+  renderMITiles();
+  renderMICharts();
 
   // Yuimaru top-10 table
   const yiTop = [...MUNI].sort((a,b)=>b.yi-a.yi).slice(0,10);
@@ -1761,11 +2161,18 @@ function runAI() {
     else if(budget==='large') budgetMod={pop:1.3,inc:1.3};
 
     const scored = MUNI.map(m=>{
+      // Entry type adjustment: penalize/reward based on MI score
+      let miMod = 1.0;
+      if(entry === 'new')       miMod = 1.0 - (m.mi - 1) * 0.05; // penalty 0-45%
+      if(entry === 'expand')    miMod = 1.0 - (m.mi - 1) * 0.02;
+      if(entry === 'timeslip')  miMod = 1.0 + (m.mi - 5) * 0.05; // high MI = bonus
+      if(entry === 'established') miMod = 1.0 + (m.mi - 1) * 0.04; // more established = better
+      miMod = Math.max(0.4, Math.min(1.5, miMod));
       const bwFinal = {...bw};
       if(budgetMod.pop) bwFinal.pop *= budgetMod.pop;
       if(budgetMod.inc) bwFinal.inc *= (budgetMod.inc||1);
       const s = calcScore(m, bwFinal, tm, pb);
-      return {m, s, total:s.total};
+      return {m, s, total:Math.round(s.total * miMod), miMod};
     }).sort((a,b)=>b.total-a.total);
 
     document.getElementById('ai-loading').classList.remove('show');
