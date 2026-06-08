@@ -2035,38 +2035,66 @@ function initSocCharts() {
 // Weight profiles per business type
 // Keys: pop(人口), inc(所得), to(観光), ag(農業), ba(基地), it(IT), gr(成長), ch(課題逆)
 const BIZ_W = {
-  restaurant: {pop:0.25,inc:0.20,to:0.20,ag:0.05,ba:0.05,it:0.03,gr:0.12,ch:0.10},
-  service:    {pop:0.22,inc:0.25,to:0.10,ag:0.03,ba:0.10,it:0.07,gr:0.13,ch:0.10},
-  retail:     {pop:0.28,inc:0.22,to:0.15,ag:0.05,ba:0.07,it:0.05,gr:0.10,ch:0.08},
-  office:     {pop:0.15,inc:0.15,to:0.05,ag:0.02,ba:0.05,it:0.28,gr:0.20,ch:0.10},
-  tourism:    {pop:0.10,inc:0.10,to:0.35,ag:0.10,ba:0.05,it:0.05,gr:0.15,ch:0.10},
-  wellness:   {pop:0.18,inc:0.28,to:0.08,ag:0.02,ba:0.22,it:0.05,gr:0.10,ch:0.07},
-  education:  {pop:0.28,inc:0.20,to:0.05,ag:0.02,ba:0.15,it:0.10,gr:0.12,ch:0.08},
-  agriculture:{pop:0.08,inc:0.10,to:0.20,ag:0.30,ba:0.03,it:0.05,gr:0.14,ch:0.10},
-  realestate: {pop:0.15,inc:0.18,to:0.12,ag:0.08,ba:0.08,it:0.07,gr:0.22,ch:0.10},
-  medical:    {pop:0.30,inc:0.15,to:0.05,ag:0.03,ba:0.10,it:0.08,gr:0.15,ch:0.14},
+  //                    ←── 経済8次元 ──→                            ←── 社会・行動5次元 ──→
+  //                  pop   inc   to    ag    ba    it    gr    ch    od    sc    yi    ci    ps
+  restaurant: {pop:0.22,inc:0.17,to:0.17,ag:0.04,ba:0.04,it:0.03,gr:0.10,ch:0.09,
+               od:0.04,sc:0.04,yi:0.07,ci:0.04,ps:0.03},  // 口コミ×地域密着×集客立地
+  service:    {pop:0.18,inc:0.20,to:0.08,ag:0.02,ba:0.09,it:0.06,gr:0.11,ch:0.09,
+               od:0.05,sc:0.05,yi:0.09,ci:0.05,ps:0.06},  // 信頼×紹介×価格受容
+  retail:     {pop:0.22,inc:0.18,to:0.12,ag:0.04,ba:0.06,it:0.05,gr:0.09,ch:0.07,
+               od:0.05,sc:0.03,yi:0.06,ci:0.03,ps:0.08},  // 集客×購買力×価格感度
+  office:     {pop:0.12,inc:0.13,to:0.04,ag:0.02,ba:0.05,it:0.25,gr:0.18,ch:0.09,
+               od:0.09,sc:0.02,yi:0.03,ci:0.02,ps:0.02},  // 開放性×IT集積×成長
+  tourism:    {pop:0.09,inc:0.09,to:0.30,ag:0.09,ba:0.04,it:0.05,gr:0.13,ch:0.09,
+               od:0.10,sc:0.02,yi:0.05,ci:0.02,ps:0.04},  // 観光×開放性×成長
+  wellness:   {pop:0.14,inc:0.22,to:0.06,ag:0.02,ba:0.18,it:0.05,gr:0.09,ch:0.06,
+               od:0.06,sc:0.06,yi:0.07,ci:0.06,ps:0.10},  // 所得×基地×プレミアム市場×信頼
+  education:  {pop:0.22,inc:0.16,to:0.04,ag:0.02,ba:0.13,it:0.09,gr:0.10,ch:0.07,
+               od:0.05,sc:0.07,yi:0.08,ci:0.07,ps:0.06},  // 人口×基地×コミュニティ信頼
+  agriculture:{pop:0.06,inc:0.08,to:0.17,ag:0.26,ba:0.03,it:0.05,gr:0.12,ch:0.09,
+               od:0.03,sc:0.08,yi:0.10,ci:0.08,ps:0.03},  // 農業力×ゆいまーる×観光連携
+  realestate: {pop:0.12,inc:0.15,to:0.10,ag:0.07,ba:0.07,it:0.06,gr:0.20,ch:0.09,
+               od:0.07,sc:0.03,yi:0.03,ci:0.03,ps:0.04},  // 成長×開放性×人口基盤
+  medical:    {pop:0.24,inc:0.12,to:0.04,ag:0.02,ba:0.09,it:0.07,gr:0.13,ch:0.12,
+               od:0.04,sc:0.05,yi:0.07,ci:0.07,ps:0.04},  // 人口×コミュニティ信頼×参入環境
 };
 
-// Target multipliers
+// Target multipliers (expanded: od=外部受容性 sc=社会資本 yi=ゆいまーる ci=コミュニティ ps=premium親和性)
 const TGT_M = {
-  resident:  {pop:1.4,inc:1.2,to:0.6,ag:1.0,ba:0.7,it:1.0,gr:1.1,ch:0.9},
-  domestic:  {pop:0.8,inc:1.0,to:1.8,ag:1.1,ba:0.6,it:0.8,gr:1.2,ch:1.0},
-  military:  {pop:0.7,inc:1.5,to:0.7,ag:0.5,ba:2.5,it:0.8,gr:1.0,ch:0.9},
-  foreign:   {pop:0.7,inc:1.0,to:2.0,ag:0.8,ba:0.6,it:0.9,gr:1.3,ch:1.0},
-  mixed:     {pop:1.2,inc:1.1,to:1.3,ag:0.9,ba:0.9,it:0.9,gr:1.2,ch:1.0},
-  business:  {pop:1.0,inc:1.2,to:0.7,ag:0.7,ba:0.9,it:1.5,gr:1.3,ch:0.9},
-  migrant:   {pop:0.6,inc:1.0,to:1.1,ag:1.0,ba:0.5,it:1.2,gr:1.4,ch:0.8},
+  //           pop   inc   to    ag    ba    it    gr    ch    od    sc    yi    ci    ps
+  resident:  {pop:1.4,inc:1.2,to:0.6,ag:1.0,ba:0.7,it:1.0,gr:1.1,ch:0.9,
+              od:0.9,sc:1.4,yi:1.5,ci:1.4,ps:1.0}, // 地元民=コミュニティ重視・ゆいまーる効果大
+  domestic:  {pop:0.8,inc:1.0,to:1.8,ag:1.1,ba:0.6,it:0.8,gr:1.2,ch:1.0,
+              od:1.4,sc:0.8,yi:0.9,ci:0.7,ps:0.9}, // 国内観光客=開放エリア好む
+  military:  {pop:0.7,inc:1.5,to:0.7,ag:0.5,ba:2.5,it:0.8,gr:1.0,ch:0.9,
+              od:1.5,sc:0.6,yi:0.5,ci:0.5,ps:1.4}, // 軍属=開放エリア必須・プレミアム消費
+  foreign:   {pop:0.7,inc:1.0,to:2.0,ag:0.8,ba:0.6,it:0.9,gr:1.3,ch:1.0,
+              od:1.8,sc:0.5,yi:0.4,ci:0.4,ps:1.2}, // 外国人=最高開放性必要
+  mixed:     {pop:1.2,inc:1.1,to:1.3,ag:0.9,ba:0.9,it:0.9,gr:1.2,ch:1.0,
+              od:1.2,sc:1.0,yi:1.1,ci:0.9,ps:1.0}, // 混合=バランス型
+  business:  {pop:1.0,inc:1.2,to:0.7,ag:0.7,ba:0.9,it:1.5,gr:1.3,ch:0.9,
+              od:1.3,sc:0.7,yi:0.6,ci:0.5,ps:1.1}, // B2B=開放性・IT集積重視
+  migrant:   {pop:0.6,inc:1.0,to:1.1,ag:1.0,ba:0.5,it:1.2,gr:1.4,ch:0.8,
+              od:1.4,sc:0.8,yi:0.9,ci:0.7,ps:0.9}, // 移住者=開放エリア・成長重視
 };
 
-// Priority boosts
+// Priority boosts (expanded with social dimensions)
 const PRI_B = {
-  population: {pop:1.8,inc:1.0,to:1.0,ag:1.0,ba:1.0,it:1.0,gr:1.0,ch:1.0},
-  income:     {pop:1.0,inc:1.8,to:1.0,ag:1.0,ba:1.2,it:1.0,gr:1.0,ch:1.0},
-  growth:     {pop:1.0,inc:1.0,to:1.0,ag:1.0,ba:1.0,it:1.2,gr:2.0,ch:1.0},
-  competition:{pop:0.6,inc:1.0,to:0.7,ag:1.2,ba:0.8,it:1.0,gr:1.3,ch:1.5}, // prefer low challenge = niche
-  cost:       {pop:0.5,inc:0.5,to:0.8,ag:1.0,ba:0.7,it:0.8,gr:1.0,ch:2.0}, // prefer low pop/income = low rent
-  tourism:    {pop:0.8,inc:1.0,to:2.0,ag:1.0,ba:0.7,it:0.8,gr:1.2,ch:1.0},
-  base:       {pop:0.8,inc:1.2,to:0.7,ag:0.6,ba:2.5,it:0.8,gr:1.0,ch:0.9},
+  //             pop   inc   to    ag    ba    it    gr    ch    od    sc    yi    ci    ps
+  population: {pop:1.8,inc:1.0,to:1.0,ag:1.0,ba:1.0,it:1.0,gr:1.0,ch:1.0,
+               od:1.0,sc:1.0,yi:1.0,ci:1.0,ps:1.0},
+  income:     {pop:1.0,inc:1.8,to:1.0,ag:1.0,ba:1.2,it:1.0,gr:1.0,ch:1.0,
+               od:1.0,sc:0.8,yi:0.8,ci:0.8,ps:1.5}, // 高所得優先=プレミアム市場重視
+  growth:     {pop:1.0,inc:1.0,to:1.0,ag:1.0,ba:1.0,it:1.2,gr:2.0,ch:1.0,
+               od:1.3,sc:0.8,yi:0.8,ci:0.7,ps:1.0}, // 成長優先=開放性重視
+  competition:{pop:0.6,inc:1.0,to:0.7,ag:1.2,ba:0.8,it:1.0,gr:1.3,ch:1.5,
+               od:1.0,sc:1.2,yi:1.3,ci:1.3,ps:0.9}, // 競合回避=コミュニティ信頼で差別化
+  cost:       {pop:0.5,inc:0.5,to:0.8,ag:1.0,ba:0.7,it:0.8,gr:1.0,ch:2.0,
+               od:0.9,sc:1.3,yi:1.2,ci:1.2,ps:0.7}, // コスト重視=地域密着で安く入る
+  tourism:    {pop:0.8,inc:1.0,to:2.0,ag:1.0,ba:0.7,it:0.8,gr:1.2,ch:1.0,
+               od:1.5,sc:0.7,yi:0.8,ci:0.6,ps:1.0}, // 観光優先=開放性最重要
+  base:       {pop:0.8,inc:1.2,to:0.7,ag:0.6,ba:2.5,it:0.8,gr:1.0,ch:0.9,
+               od:1.3,sc:0.6,yi:0.5,ci:0.5,ps:1.3}, // 基地優先=開放性+プレミアム
 };
 
 // Normalize income: 244~402 → 0~10
@@ -2083,9 +2111,15 @@ function calcScore(m, bw, tm, pb) {
     ba:  m.ba,
     it:  m.it,
     gr:  m.gr,
-    ch:  (10 - m.ch), // invert: lower challenge = better
+    ch:  (10 - m.ch),   // 参入障壁(逆転): 低い=よい
+    // ── 社会・行動・文化 5次元 ──
+    od:  m.od,            // 外部受容性: 高い=新規歓迎
+    sc:  m.sc,            // 社会資本: コミュニティ信頼度
+    yi:  m.yi,            // ユイマール指数: 口コミ拡散力
+    ci:  m.ci,            // コミュニティ強度: 固定客化力
+    ps:  (10 - m.ps),     // 心理価格感度(逆転): 高い=プレミアム市場親和性
   };
-  const dims = ['pop','inc','to','ag','ba','it','gr','ch'];
+  const dims = ['pop','inc','to','ag','ba','it','gr','ch','od','sc','yi','ci','ps'];
   let total = 0, maxPossible = 0;
   const scores = {};
   dims.forEach(k => {
@@ -2097,15 +2131,20 @@ function calcScore(m, bw, tm, pb) {
   return { total: Math.round(total/maxPossible*100), raw, scores };
 }
 
-// Dimension labels
+// Dimension labels (13 dimensions: 8 economic + 5 social/behavioral)
 const DIM_LABELS = {
   pop:'人口集積力', inc:'所得・購買力', to:'観光集客力',
   ag:'農業・1次産業', ba:'基地経済力', it:'IT・デジタル力',
-  gr:'成長ポテンシャル', ch:'参入しやすさ'
+  gr:'成長ポテンシャル', ch:'参入しやすさ',
+  // ── 社会・行動・文化 ──
+  od:'外部受容性', sc:'社会資本指数', yi:'ユイマール指数',
+  ci:'コミュニティ強度', ps:'プレミアム市場性'
 };
 const DIM_COLORS = {
   pop:'#1a4d7a', inc:'#d4a843', to:'#1f7a4a', ag:'#0e7070',
-  ba:'#3d5c33', it:'#6a2f7a', gr:'#e8621a', ch:'#b45309'
+  ba:'#3d5c33', it:'#6a2f7a', gr:'#e8621a', ch:'#b45309',
+  // social dims
+  od:'#0369a1', sc:'#7c3aed', yi:'#b45309', ci:'#0f766e', ps:'#be185d'
 };
 
 // Why texts per business type
@@ -2151,7 +2190,7 @@ function runAI() {
   document.getElementById('ai-loading').classList.add('show');
   document.getElementById('ai-result').classList.remove('show');
 
-  setTimeout(()=>{
+  setTimeout(()=>{ try {
     const bw = BIZ_W[biz] || BIZ_W.service;
     const tm = TGT_M[target] || TGT_M.resident;
     const pb = PRI_B[pri] || PRI_B.population;
@@ -2162,13 +2201,37 @@ function runAI() {
     else if(budget==='large') budgetMod={pop:1.3,inc:1.3};
 
     const scored = MUNI.map(m=>{
-      // Entry type adjustment: penalize/reward based on MI score
-      let miMod = 1.0;
-      if(entry === 'new')       miMod = 1.0 - (m.mi - 1) * 0.05; // penalty 0-45%
-      if(entry === 'expand')    miMod = 1.0 - (m.mi - 1) * 0.02;
-      if(entry === 'timeslip')  miMod = 1.0 + (m.mi - 5) * 0.05; // high MI = bonus
-      if(entry === 'established') miMod = 1.0 + (m.mi - 1) * 0.04; // more established = better
-      miMod = Math.max(0.4, Math.min(1.5, miMod));
+      // ── 参入タイプ×市場慣性×参入難易度×外部受容性×消費保持率 統合補正 ──
+      // mi=市場慣性 ne=参入難易度 od=外部受容性 cpr=消費パターン保持率
+      const cprNorm = (m.cpr - 40) / 55; // 0〜1に正規化
+      let entryMod = 1.0;
+      if(entry === 'new') {
+        // 新規参入: 高MI・高NEはペナルティ、高ODはボーナス
+        entryMod = 1.0
+          - (m.mi - 1) * 0.04   // MI penalty: max -36%
+          - (m.ne - 1) * 0.025  // NE penalty: max -22.5%
+          + (m.od - 5) * 0.02;  // OD bonus: ±10%
+      } else if(entry === 'expand') {
+        // 既存拡大: 半分のペナルティ
+        entryMod = 1.0
+          - (m.mi - 1) * 0.02
+          - (m.ne - 1) * 0.012
+          + (m.od - 5) * 0.015;
+      } else if(entry === 'timeslip') {
+        // 定番型: 高MI・高CPRはボーナス (「いつもの」で既存習慣に乗れる)
+        entryMod = 1.0
+          + (m.mi - 1) * 0.03   // high MI = locals stay loyal to known brands
+          + cprNorm * 0.30       // high CPR = habits persist
+          - (m.od - 5) * 0.01;  // too-open areas already changed
+      } else if(entry === 'established') {
+        // 根付き済み: CPRとコミュニティ強度がボーナス
+        entryMod = 1.0
+          + cprNorm * 0.25
+          + (m.mi - 1) * 0.02
+          + (m.ci  - 5) * 0.01; // strong community = loyal base
+      }
+      entryMod = Math.max(0.4, Math.min(1.7, entryMod));
+      const miMod = entryMod; // alias for compatibility
       const bwFinal = {...bw};
       if(budgetMod.pop) bwFinal.pop *= budgetMod.pop;
       if(budgetMod.inc) bwFinal.inc *= (budgetMod.inc||1);
@@ -2180,6 +2243,12 @@ function runAI() {
     document.getElementById('ai-result').classList.add('show');
 
     renderResults(scored, biz, target, budget, pri, revenue, desc);
+  } catch(e) {
+    document.getElementById('ai-loading').classList.remove('show');
+    document.getElementById('ai-result').classList.add('show');
+    document.getElementById('ai-summary-banner').innerHTML = '<div style="color:#b91c1c;font-weight:800;padding:12px">⚠️ エラー: ' + e.message + '</div>';
+    console.error('runAI error:', e);
+  }
   }, 900);
 }
 
@@ -2199,6 +2268,7 @@ function renderResults(scored, biz, target, budget, pri, revenue, desc) {
       <span class="ai-tag t-orange">優先: ${priLabel.replace(/^.+?　/,'')}</span>
       <span class="ai-tag t-blue">予算: ${budget==='small'?'小規模':budget==='medium'?'中規模':'大規模'}</span>
       <span class="ai-tag t-green">月商目標: ${revenue}</span>
+      <span class="ai-tag" style="background:#f5f3ff;color:#5b21b6">参入タイプ: ${document.getElementById('ai-entry').options[document.getElementById('ai-entry').selectedIndex].text.replace(/^.+?（/,'（')}</span>
     </div>
     <div style="font-size:11.5px;color:rgba(255,255,255,.75);line-height:1.8">
       沖縄全41市町村を8次元・多重重みスコアリングで分析した結果、
@@ -2214,7 +2284,7 @@ function renderResults(scored, biz, target, budget, pri, revenue, desc) {
     const {m,s} = item;
     const whyFn = WHY_TEMPLATES[biz] || WHY_TEMPLATES.service;
     const riskFn= RISK_TEXTS[biz] || RISK_TEXTS.service;
-    const dims = ['pop','inc','to','gr','ba','it'];
+    const dims = ['pop','inc','to','gr','ba','it','od','sc','yi'];
     const dimBars = dims.map(k=>`
       <div class="sdim">
         <div class="sdim-lbl">${DIM_LABELS[k].slice(0,5)}</div>
@@ -2237,6 +2307,12 @@ function renderResults(scored, biz, target, budget, pri, revenue, desc) {
         <div class="rank-row"><span class="rank-row-lbl">基地経済</span><span class="rank-row-val">${m.ba}/10</span></div>
         <div class="rank-row"><span class="rank-row-lbl">成長力</span><span class="rank-row-val">${m.gr}/10</span></div>
         <div class="rank-row"><span class="rank-row-lbl">IT力</span><span class="rank-row-val">${m.it}/10</span></div>
+        <div style="margin:6px 0 2px;font-size:9.5px;font-weight:800;color:#5b21b6;letter-spacing:.4px">▼ 社会・行動・文化スコア</div>
+        <div class="rank-row"><span class="rank-row-lbl" style="color:#0369a1">外部受容</span><span class="rank-row-val" style="color:#0369a1">${m.od}/10</span></div>
+        <div class="rank-row"><span class="rank-row-lbl" style="color:#7c3aed">社会資本</span><span class="rank-row-val" style="color:#7c3aed">${m.sc}/10</span></div>
+        <div class="rank-row"><span class="rank-row-lbl" style="color:#b45309">ゆいまーる</span><span class="rank-row-val" style="color:#b45309">${m.yi}/10</span></div>
+        <div class="rank-row"><span class="rank-row-lbl" style="color:#0f766e">コミュニティ</span><span class="rank-row-val" style="color:#0f766e">${m.ci}/10</span></div>
+        <div class="rank-row"><span class="rank-row-lbl" style="color:#be185d">市場慣性MI</span><span class="rank-row-val" style="color:#be185d">${m.mi}/10</span></div>
         <div style="margin:10px 0 4px;font-size:10px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.4px">スコア内訳</div>
         ${dimBars}
         <div class="rank-why">💡 <strong>選定理由:</strong> ${whyFn(m,s)}<br>推奨戦略: ${m.st}</div>
@@ -2270,7 +2346,7 @@ function renderResults(scored, biz, target, budget, pri, revenue, desc) {
 
   // ── RADAR CHART
   if(aiRadarChart) aiRadarChart.destroy();
-  const rdims = ['pop','inc','to','ba','it','gr'];
+  const rdims = ['pop','inc','to','ba','it','gr','od','sc','yi'];
   const rColors = ['rgba(180,83,9,.8)','rgba(107,114,128,.8)','rgba(26,77,122,.8)'];
   const rBg    = ['rgba(180,83,9,.1)','rgba(107,114,128,.1)','rgba(26,77,122,.1)'];
   aiRadarChart = new Chart(document.getElementById('ai-chart-radar'),{
@@ -2294,7 +2370,7 @@ function renderResults(scored, biz, target, budget, pri, revenue, desc) {
   });
 
   // ── DIMENSION TABLE
-  const allDims = ['pop','inc','to','ag','ba','it','gr','ch'];
+  const allDims = ['pop','inc','to','ag','ba','it','gr','ch','od','sc','yi','ci','ps'];
   let tbl = `<table style="width:100%;border-collapse:collapse;font-size:11.5px">
     <thead><tr style="background:var(--primary);color:#fff">
       <th style="padding:9px 12px;text-align:left;font-size:10.5px">評価軸</th>
@@ -2304,7 +2380,10 @@ function renderResults(scored, biz, target, budget, pri, revenue, desc) {
   const weightMeaning = {
     pop:'集客基盤となる人口規模',inc:'顧客の消費・購買力水準',to:'観光客流入による上乗せ効果',
     ag:'農産物・食材の地元調達力',ba:'米軍軍属市場へのアクセス',it:'デジタル・IT人材集積度',
-    gr:'エリアの将来成長ポテンシャル',ch:'競合少なく参入しやすい環境'
+    gr:'エリアの将来成長ポテンシャル',ch:'競合少なく参入しやすい環境',
+    od:'新規ビジネスへの地域の開放性・受容度',sc:'コミュニティ信頼・社会関係資本の厚み',
+    yi:'ゆいまーる口コミ拡散力・紹介経済の強さ',ci:'固定客化しやすいコミュニティ結束度',
+    ps:'プレミアム・高単価サービスへの市場親和性'
   };
   allDims.forEach((k,ri)=>{
     const bestVal = Math.max(...top3.map(x=>x.s.raw[k]));
