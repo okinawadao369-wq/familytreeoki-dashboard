@@ -170,6 +170,70 @@ tbody tr:nth-child(even):hover td{background:#f0f5ff}
 .scen-bar{display:flex;height:20px;border-radius:10px;overflow:hidden;margin:10px 0}
 .scen-seg{display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff}
 
+/* ── AI SELECTOR ── */
+.ai-hero{background:linear-gradient(135deg,#0f2744,#1a3a5c,#2a1a5e);border-radius:14px;padding:24px 28px;color:#fff;margin-bottom:18px;position:relative;overflow:hidden}
+.ai-hero::before{content:'🎯';position:absolute;right:28px;top:50%;transform:translateY(-50%);font-size:72px;opacity:.07}
+.ai-hero-ttl{font-size:20px;font-weight:900;color:var(--gold);margin-bottom:4px}
+.ai-hero-sub{font-size:11.5px;color:rgba(255,255,255,.65);line-height:1.7}
+.ai-form{background:var(--card);border-radius:14px;padding:22px;box-shadow:var(--shadow);margin-bottom:18px}
+.ai-form-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px}
+@media(max-width:900px){.ai-form-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.ai-form-grid{grid-template-columns:1fr}}
+.fld{display:flex;flex-direction:column;gap:5px}
+.fld label{font-size:11px;font-weight:800;color:var(--primary2);text-transform:uppercase;letter-spacing:.4px}
+.fld select,.fld input,.fld textarea{border:1.5px solid var(--border);border-radius:8px;padding:9px 12px;font-size:12.5px;font-family:inherit;outline:none;transition:border-color .15s;background:#fafbfd}
+.fld select:focus,.fld input:focus,.fld textarea:focus{border-color:var(--primary2);background:#fff}
+.fld textarea{resize:vertical;min-height:70px;line-height:1.6}
+.ai-run-btn{width:100%;padding:15px;background:linear-gradient(135deg,#e8621a,#c2410c);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:900;cursor:pointer;letter-spacing:.3px;transition:all .18s;box-shadow:0 4px 12px rgba(232,98,26,.35)}
+.ai-run-btn:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(232,98,26,.45)}
+.ai-run-btn:active{transform:translateY(0)}
+
+/* result area */
+.ai-result{display:none}
+.ai-result.show{display:block}
+.rank3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px}
+@media(max-width:900px){.rank3{grid-template-columns:1fr}}
+.rank-card{border-radius:14px;overflow:hidden;box-shadow:var(--shadow-lg)}
+.rank-hd{padding:14px 16px;color:#fff;position:relative}
+.rank-hd.r1{background:linear-gradient(135deg,#b45309,#d97706)}
+.rank-hd.r2{background:linear-gradient(135deg,#374151,#6b7280)}
+.rank-hd.r3{background:linear-gradient(135deg,#1a4d7a,#2563eb)}
+.rank-num{font-size:36px;font-weight:900;opacity:.25;position:absolute;right:12px;top:6px;line-height:1}
+.rank-crown{font-size:18px;margin-right:6px}
+.rank-name{font-size:18px;font-weight:900;margin-bottom:1px}
+.rank-region{font-size:10px;opacity:.75}
+.rank-score-big{font-size:38px;font-weight:900;line-height:1;margin-top:2px}
+.rank-score-lbl{font-size:9.5px;opacity:.7}
+.rank-body{padding:14px 16px;background:var(--card)}
+.rank-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--border);font-size:11px}
+.rank-row:last-of-type{border-bottom:none}
+.rank-row-lbl{color:var(--muted);font-weight:600}
+.rank-row-val{font-weight:800;color:var(--primary2)}
+.rank-why{background:#eff6ff;border-left:3px solid #1a4d7a;border-radius:0 7px 7px 0;padding:9px 12px;font-size:10.5px;line-height:1.75;margin-top:10px;color:#1e3a5c}
+.rank-risk{background:#fff5f5;border-left:3px solid #e8621a;border-radius:0 7px 7px 0;padding:8px 12px;font-size:10px;line-height:1.7;margin-top:7px;color:#7c2d12}
+
+/* score bars in result */
+.sdim{display:flex;align-items:center;gap:7px;padding:4px 0;font-size:10.5px}
+.sdim-lbl{width:70px;flex-shrink:0;color:var(--muted);font-weight:600;font-size:10px}
+.sdim-track{flex:1;height:10px;background:#e8ecf3;border-radius:5px;overflow:hidden}
+.sdim-fill{height:100%;border-radius:5px;transition:width .8s ease}
+.sdim-val{width:28px;text-align:right;font-weight:800;font-size:11px}
+
+/* comparison chart */
+.cmp-wrap{background:var(--card);border-radius:12px;padding:18px;box-shadow:var(--shadow);margin-bottom:16px}
+.cmp-wrap .card-hd{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:800;color:var(--primary2);padding-bottom:12px;margin-bottom:14px;border-bottom:1px solid var(--border)}
+
+/* tags */
+.ai-tag{display:inline-block;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;margin:2px}
+.t-green{background:#d1fae5;color:#065f46}
+.t-orange{background:#ffedd5;color:#c2410c}
+.t-blue{background:#dbeafe;color:#1e40af}
+
+/* loading pulse */
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.ai-loading{text-align:center;padding:40px;color:var(--muted);font-size:13px;animation:pulse 1.2s ease-in-out infinite;display:none}
+.ai-loading.show{display:block}
+
 /* footer */
 .ftr{text-align:center;padding:24px;color:var(--muted);font-size:10px;margin-top:20px;border-top:1px solid var(--border)}
 </style>
@@ -197,6 +261,7 @@ tbody tr:nth-child(even):hover td{background:#f0f5ff}
   <button class="nav-btn" onclick="showTab('com',this)">🤝 コミュニティ強度</button>
   <button class="nav-btn" onclick="showTab('psy',this)">🧠 沖縄人心理分析</button>
   <button class="nav-btn" onclick="showTab('geo',this)">🌏 地政学分析</button>
+  <button class="nav-btn" onclick="showTab('ai',this)" style="background:rgba(232,98,26,.15);color:#f97316;border-bottom-color:transparent">🎯 エリア選定AI ★</button>
 </nav>
 
 <div class="main">
@@ -659,6 +724,127 @@ tbody tr:nth-child(even):hover td{background:#f0f5ff}
   </div>
 </div>
 
+<!-- ══════════ TAB: AI AREA SELECTOR ══════════ -->
+<div class="tab" id="tab-ai">
+
+  <div class="ai-hero">
+    <div class="ai-hero-ttl">🎯 エリア選定AIエンジン — あなたのビジネスに最適な3エリアを分析</div>
+    <div class="ai-hero-sub">業種・ターゲット顧客・予算規模・ビジネス内容を入力するだけで、沖縄41市町村の全データ（人口・所得・観光力・基地経済・成長力・課題度など）を多次元スコアリングし、<strong style="color:var(--gold)">最適エリアTOP3</strong>を数値根拠つきで自動選定します。</div>
+  </div>
+
+  <!-- FORM -->
+  <div class="ai-form">
+    <div class="card-hd" style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:900;color:var(--primary2);padding-bottom:14px;margin-bottom:16px;border-bottom:1px solid var(--border)">
+      <span style="font-size:18px">📋</span> ビジネス情報を入力してください
+    </div>
+    <div class="ai-form-grid">
+      <div class="fld">
+        <label>業種カテゴリ</label>
+        <select id="ai-biz">
+          <option value="restaurant">🍽️ 飲食業（カフェ・レストラン・居酒屋等）</option>
+          <option value="service">💆 サービス業（ウェルネス・美容・スポーツ等）</option>
+          <option value="retail">🛍️ 小売店舗（物販・専門店・雑貨等）</option>
+          <option value="office">🏢 事務所・オフィス（IT・コンサル・事務等）</option>
+          <option value="tourism">🏖️ 観光・体験業（アクティビティ・宿泊等）</option>
+          <option value="wellness">🌺 ウェルネス・マタニティ（FTO系）</option>
+          <option value="education">📚 教育・スクール（英語・塾・資格等）</option>
+          <option value="agriculture">🌾 農業・6次産業（農産加工・直売等）</option>
+          <option value="realestate">🏠 不動産・移住支援</option>
+          <option value="medical">🏥 医療・介護・福祉</option>
+        </select>
+      </div>
+      <div class="fld">
+        <label>メイン顧客ターゲット</label>
+        <select id="ai-target">
+          <option value="resident">🏠 沖縄県民（地元住民）</option>
+          <option value="domestic">✈️ 日本人観光客</option>
+          <option value="military">⭐ 米軍軍属・家族（SOFA）</option>
+          <option value="foreign">🌍 外国人観光客・在留外国人</option>
+          <option value="mixed">🎯 複合（県民＋観光客）</option>
+          <option value="business">💼 法人・B2B</option>
+          <option value="migrant">🌱 移住者・テレワーカー</option>
+        </select>
+      </div>
+      <div class="fld">
+        <label>予算・投資規模</label>
+        <select id="ai-budget">
+          <option value="small">💴 小規模（〜500万円）</option>
+          <option value="medium">💴💴 中規模（500〜3,000万円）</option>
+          <option value="large">💴💴💴 大規模（3,000万円〜）</option>
+        </select>
+      </div>
+      <div class="fld">
+        <label>こだわり・優先重視項目</label>
+        <select id="ai-priority">
+          <option value="population">👥 人口集積・集客数を最重視</option>
+          <option value="income">💰 顧客の購買力・所得水準を最重視</option>
+          <option value="growth">📈 エリアの成長性・将来性を最重視</option>
+          <option value="competition">🏆 競合が少ない穴場エリアを最重視</option>
+          <option value="cost">💡 家賃・コストの安さを最重視</option>
+          <option value="tourism">🌺 観光集客・インバウンドを最重視</option>
+          <option value="base">⭐ 基地経済・米軍軍属との近さを最重視</option>
+        </select>
+      </div>
+      <div class="fld">
+        <label>月商目標（目安）</label>
+        <input id="ai-revenue" type="text" placeholder="例: 100万円 / 500万円 / 2,000万円">
+      </div>
+      <div class="fld">
+        <label>スタッフ規模</label>
+        <select id="ai-staff">
+          <option value="solo">1〜3人（個人〜小規模）</option>
+          <option value="small">4〜10人（小規模チーム）</option>
+          <option value="medium">11〜30人（中規模）</option>
+          <option value="large">31人以上（大規模）</option>
+        </select>
+      </div>
+    </div>
+    <div class="fld" style="margin-bottom:16px">
+      <label>ビジネス内容・強み・特徴（自由記述）</label>
+      <textarea id="ai-desc" placeholder="例: 英語対応のマタニティヨガスタジオ。産前産後ケアに特化。米軍軍属の妻向けにコミュニティ作りも行う。ドル決済・英語スタッフあり。"></textarea>
+    </div>
+    <button class="ai-run-btn" onclick="runAI()">🔍 全41市町村を分析して最適エリアTOP3を選定する</button>
+  </div>
+
+  <!-- LOADING -->
+  <div class="ai-loading" id="ai-loading">⚙️ 41市町村データをスコアリング中... しばらくお待ちください</div>
+
+  <!-- RESULT -->
+  <div class="ai-result" id="ai-result">
+
+    <!-- SUMMARY BANNER -->
+    <div id="ai-summary-banner" style="background:linear-gradient(135deg,#0f2744,#1a3a5c);border-radius:12px;padding:16px 20px;color:#fff;margin-bottom:16px;font-size:12px;line-height:1.8"></div>
+
+    <!-- TOP 3 CARDS -->
+    <div class="rank3" id="ai-rank3"></div>
+
+    <!-- COMPARISON CHART + SCORE TABLE -->
+    <div class="g2" style="margin-bottom:16px">
+      <div class="cmp-wrap">
+        <div class="card-hd"><span style="font-size:18px">📊</span>全市町村 総合スコアランキング（上位15）</div>
+        <div style="position:relative;height:340px"><canvas id="ai-chart-bar"></canvas></div>
+      </div>
+      <div class="cmp-wrap">
+        <div class="card-hd"><span style="font-size:18px">🕸️</span>TOP3エリア 多次元比較レーダー</div>
+        <div style="position:relative;height:340px"><canvas id="ai-chart-radar"></canvas></div>
+      </div>
+    </div>
+
+    <!-- DIMENSION SCORE TABLE -->
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-hd"><span style="font-size:18px">📐</span>スコアリング根拠 — 評価軸別スコア詳細（TOP3比較）</div>
+      <div id="ai-dim-table" style="overflow-x:auto"></div>
+    </div>
+
+    <!-- ACTION PLAN -->
+    <div class="card">
+      <div class="card-hd"><span style="font-size:18px">🚀</span>koya 戦略提言 — 選定エリアへの参入アクションプラン</div>
+      <div id="ai-action-plan"></div>
+    </div>
+
+  </div>
+</div><!-- /tab-ai -->
+
 </div><!-- .main -->
 <div class="ftr">koya 沖縄エリアマーケティング戦略インテリジェンス・ダッシュボード v2.1 ｜ データ出典: 沖縄県統計局・内閣府・防衛省・沖縄観光コンベンションビューロー ｜ 分析フレームワーク: 社会学・行動経済学・ミアシャイマー攻撃的リアリズム理論 ｜ © 2026 合同会社koya</div>
 
@@ -852,12 +1038,334 @@ const C={
   }
 };
 
-// init
+// ══════════ AI SCORING ENGINE ══════════
+
+// Weight profiles per business type
+// Keys: pop(人口), inc(所得), to(観光), ag(農業), ba(基地), it(IT), gr(成長), ch(課題逆)
+const BIZ_W = {
+  restaurant: {pop:0.25,inc:0.20,to:0.20,ag:0.05,ba:0.05,it:0.03,gr:0.12,ch:0.10},
+  service:    {pop:0.22,inc:0.25,to:0.10,ag:0.03,ba:0.10,it:0.07,gr:0.13,ch:0.10},
+  retail:     {pop:0.28,inc:0.22,to:0.15,ag:0.05,ba:0.07,it:0.05,gr:0.10,ch:0.08},
+  office:     {pop:0.15,inc:0.15,to:0.05,ag:0.02,ba:0.05,it:0.28,gr:0.20,ch:0.10},
+  tourism:    {pop:0.10,inc:0.10,to:0.35,ag:0.10,ba:0.05,it:0.05,gr:0.15,ch:0.10},
+  wellness:   {pop:0.18,inc:0.28,to:0.08,ag:0.02,ba:0.22,it:0.05,gr:0.10,ch:0.07},
+  education:  {pop:0.28,inc:0.20,to:0.05,ag:0.02,ba:0.15,it:0.10,gr:0.12,ch:0.08},
+  agriculture:{pop:0.08,inc:0.10,to:0.20,ag:0.30,ba:0.03,it:0.05,gr:0.14,ch:0.10},
+  realestate: {pop:0.15,inc:0.18,to:0.12,ag:0.08,ba:0.08,it:0.07,gr:0.22,ch:0.10},
+  medical:    {pop:0.30,inc:0.15,to:0.05,ag:0.03,ba:0.10,it:0.08,gr:0.15,ch:0.14},
+};
+
+// Target multipliers
+const TGT_M = {
+  resident:  {pop:1.4,inc:1.2,to:0.6,ag:1.0,ba:0.7,it:1.0,gr:1.1,ch:0.9},
+  domestic:  {pop:0.8,inc:1.0,to:1.8,ag:1.1,ba:0.6,it:0.8,gr:1.2,ch:1.0},
+  military:  {pop:0.7,inc:1.5,to:0.7,ag:0.5,ba:2.5,it:0.8,gr:1.0,ch:0.9},
+  foreign:   {pop:0.7,inc:1.0,to:2.0,ag:0.8,ba:0.6,it:0.9,gr:1.3,ch:1.0},
+  mixed:     {pop:1.2,inc:1.1,to:1.3,ag:0.9,ba:0.9,it:0.9,gr:1.2,ch:1.0},
+  business:  {pop:1.0,inc:1.2,to:0.7,ag:0.7,ba:0.9,it:1.5,gr:1.3,ch:0.9},
+  migrant:   {pop:0.6,inc:1.0,to:1.1,ag:1.0,ba:0.5,it:1.2,gr:1.4,ch:0.8},
+};
+
+// Priority boosts
+const PRI_B = {
+  population: {pop:1.8,inc:1.0,to:1.0,ag:1.0,ba:1.0,it:1.0,gr:1.0,ch:1.0},
+  income:     {pop:1.0,inc:1.8,to:1.0,ag:1.0,ba:1.2,it:1.0,gr:1.0,ch:1.0},
+  growth:     {pop:1.0,inc:1.0,to:1.0,ag:1.0,ba:1.0,it:1.2,gr:2.0,ch:1.0},
+  competition:{pop:0.6,inc:1.0,to:0.7,ag:1.2,ba:0.8,it:1.0,gr:1.3,ch:1.5}, // prefer low challenge = niche
+  cost:       {pop:0.5,inc:0.5,to:0.8,ag:1.0,ba:0.7,it:0.8,gr:1.0,ch:2.0}, // prefer low pop/income = low rent
+  tourism:    {pop:0.8,inc:1.0,to:2.0,ag:1.0,ba:0.7,it:0.8,gr:1.2,ch:1.0},
+  base:       {pop:0.8,inc:1.2,to:0.7,ag:0.6,ba:2.5,it:0.8,gr:1.0,ch:0.9},
+};
+
+// Normalize income: 244~402 → 0~10
+function normInc(i){ return Math.round((i-244)/(402-244)*10*10)/10; }
+// Normalize population: log scale
+function normPop(p){ return Math.min(10, Math.round(Math.log10(p*1000+1)/Math.log10(312001)*100)/10); }
+
+function calcScore(m, bw, tm, pb) {
+  const raw = {
+    pop: normPop(m.p),
+    inc: normInc(m.i),
+    to:  m.to,
+    ag:  m.ag,
+    ba:  m.ba,
+    it:  m.it,
+    gr:  m.gr,
+    ch:  (10 - m.ch), // invert: lower challenge = better
+  };
+  const dims = ['pop','inc','to','ag','ba','it','gr','ch'];
+  let total = 0, maxPossible = 0;
+  const scores = {};
+  dims.forEach(k => {
+    const w = (bw[k]||0) * (tm[k]||1) * (pb[k]||1);
+    scores[k] = raw[k];
+    total += raw[k] * w;
+    maxPossible += 10 * w;
+  });
+  return { total: Math.round(total/maxPossible*100), raw, scores };
+}
+
+// Dimension labels
+const DIM_LABELS = {
+  pop:'人口集積力', inc:'所得・購買力', to:'観光集客力',
+  ag:'農業・1次産業', ba:'基地経済力', it:'IT・デジタル力',
+  gr:'成長ポテンシャル', ch:'参入しやすさ'
+};
+const DIM_COLORS = {
+  pop:'#1a4d7a', inc:'#d4a843', to:'#1f7a4a', ag:'#0e7070',
+  ba:'#3d5c33', it:'#6a2f7a', gr:'#e8621a', ch:'#b45309'
+};
+
+// Why texts per business type
+const WHY_TEMPLATES = {
+  restaurant: (m,s)=>`人口${m.p}千人・所得スコア${s.raw.inc.toFixed(1)}・観光力${m.to}/10。飲食需要が${m.p>50?'高く':'安定して'}あり、${m.to>=8?'観光客の上乗せ効果も大きい':'地元固定客の獲得が見込める'}。`,
+  service:    (m,s)=>`所得スコア${s.raw.inc.toFixed(1)}・成長力${m.gr}/10。${m.ba>=7?'米軍軍属という高所得・英語圏顧客層が存在し、':''}サービス需要に見合った消費力がある。`,
+  retail:     (m,s)=>`人口${m.p}千人・所得スコア${s.raw.inc.toFixed(1)}。${m.to>=7?'観光客流入で客単価アップも見込める。':'物販の安定需要がある。'}成長力${m.gr}/10で出店後の上振れ余地もある。`,
+  office:     (m,s)=>`IT力${m.it}/10・成長力${m.gr}/10。${m.it>=7?'IT・デジタル産業が集積しておりB2B需要が高い。':'人材・インフラが整いつつある新興エリア。'}`,
+  tourism:    (m,s)=>`観光力${m.to}/10は最重要スコア。${m.to>=9?'観光ポテンシャルは最高水準。インバウンド・国内富裕層が集まるエリア。':'観光資源があり体験コンテンツで差別化が可能。'}`,
+  wellness:   (m,s)=>`基地経済${m.ba}/10・所得スコア${s.raw.inc.toFixed(1)}。${m.ba>=7?'米軍軍属という英語圏・高所得ターゲットが多く居住。FamilyTreeOkiモデルが直接参照可能。':'高所得層への訴求余地がある。'}`,
+  education:  (m,s)=>`人口${m.p}千人・基地経済${m.ba}/10。${m.ba>=6?'英語スクールは軍属子女・地元家庭の両方から需要がある。':'子育て世代が多く教育需要は旺盛。'}`,
+  agriculture:(m,s)=>`農業力${m.ag}/10・観光力${m.to}/10。6次産業化で農産直売＋体験観光の組み合わせが有効。${m.ag>=8?'農業基盤が強く、加工・ブランド化の余地大。':''}`,
+  realestate: (m,s)=>`成長力${m.gr}/10・所得スコア${s.raw.inc.toFixed(1)}。${m.gr>=8?'人口流入・開発案件が増加傾向のエリア。':'移住促進・空き家活用で行政との連携余地がある。'}`,
+  medical:    (m,s)=>`人口${m.p}千人・成長力${m.gr}/10。${m.p>50?'医療需要が高い人口集積エリア。':'高齢化が進む地域で医療・介護の深刻な不足が続いている。'}`,
+};
+
+// Risk texts
+const RISK_TEXTS = {
+  restaurant: m=>`競合飲食店密度${m.p>50?'高め':'中程度'}。${m.to>=8?'季節変動あり（オフシーズン対策が必須）':'観光客の取り込みには立地選択が重要'}。家賃水準${m.i>=370?'高め—収支計画に注意':'中程度'}。`,
+  service:    m=>`${m.ba>=8?'基地依存度が高く、米軍政策変化でリスクあり。':''}認知獲得には地域コミュニティへの浸透が必要（3〜6ヶ月）。`,
+  retail:     m=>`${m.to>=8?'オフシーズンの売上確保策が必要。':''}EC・ネット通販との競合。差別化・体験型要素の付加が重要。`,
+  office:     m=>`優秀な人材確保が課題。${m.it>=7?'IT系企業との人材競合に注意。':'テレワーク対応で全国からの採用も有効。'}`,
+  tourism:    m=>`${m.to>=9?'大手ホテル・観光会社との競合が激しい。差別化と顧客LTV向上が鍵。':''}天候・季節に売上が左右されやすい。`,
+  wellness:   m=>`${m.ba>=8?'英語・文化対応コストが発生。スタッフ採用が課題。':''}ウェルネス系の競合増加トレンドに注意。`,
+  education:  m=>`少子化の長期トレンドリスク。${m.ba>=6?'軍属の異動・帰国による顧客入れ替わりに備えた継続的集客が必要。':''}`,
+  agriculture:m=>`気候リスク・台風被害リスクあり。販路・流通コストの確保が必須。加工設備への初期投資が必要。`,
+  realestate: m=>`地価上昇エリアは仕入れコスト増。${m.gr>=8?'開発タイミング見極めが重要。':''}行政の補助金・政策変更への対応が必要。`,
+  medical:    m=>`医師・看護師確保が慢性的に困難。${m.p<20?'少ない人口規模では採算ラインに達しにくい場合あり。':''}行政・保険制度との連携が必要。`,
+};
+
+let aiBarChart=null, aiRadarChart=null;
+
+function runAI() {
+  const biz    = document.getElementById('ai-biz').value;
+  const target = document.getElementById('ai-target').value;
+  const budget = document.getElementById('ai-budget').value;
+  const pri    = document.getElementById('ai-priority').value;
+  const revenue= document.getElementById('ai-revenue').value || '未入力';
+  const desc   = document.getElementById('ai-desc').value || '';
+
+  // Show loading
+  document.getElementById('ai-loading').classList.add('show');
+  document.getElementById('ai-result').classList.remove('show');
+
+  setTimeout(()=>{
+    const bw = BIZ_W[biz] || BIZ_W.service;
+    const tm = TGT_M[target] || TGT_M.resident;
+    const pb = PRI_B[pri] || PRI_B.population;
+
+    // Budget: small prefers low-pop, large prefers high-pop
+    let budgetMod = {};
+    if(budget==='small') budgetMod={pop:0.7,inc:0.8};
+    else if(budget==='large') budgetMod={pop:1.3,inc:1.3};
+
+    const scored = MUNI.map(m=>{
+      const bwFinal = {...bw};
+      if(budgetMod.pop) bwFinal.pop *= budgetMod.pop;
+      if(budgetMod.inc) bwFinal.inc *= (budgetMod.inc||1);
+      const s = calcScore(m, bwFinal, tm, pb);
+      return {m, s, total:s.total};
+    }).sort((a,b)=>b.total-a.total);
+
+    document.getElementById('ai-loading').classList.remove('show');
+    document.getElementById('ai-result').classList.add('show');
+
+    renderResults(scored, biz, target, budget, pri, revenue, desc);
+  }, 900);
+}
+
+function renderResults(scored, biz, target, budget, pri, revenue, desc) {
+  const top3 = scored.slice(0,3);
+  const top15= scored.slice(0,15);
+
+  // ── SUMMARY BANNER
+  const bizLabel = document.getElementById('ai-biz').options[document.getElementById('ai-biz').selectedIndex].text;
+  const tgtLabel = document.getElementById('ai-target').options[document.getElementById('ai-target').selectedIndex].text;
+  const priLabel = document.getElementById('ai-priority').options[document.getElementById('ai-priority').selectedIndex].text;
+  document.getElementById('ai-summary-banner').innerHTML = `
+    <div style="font-size:13px;font-weight:900;color:var(--gold);margin-bottom:8px">📊 分析結果サマリー</div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px">
+      <span class="ai-tag t-blue">業種: ${bizLabel.replace(/^.+?　/,'')}</span>
+      <span class="ai-tag t-green">ターゲット: ${tgtLabel.replace(/^.+?　/,'')}</span>
+      <span class="ai-tag t-orange">優先: ${priLabel.replace(/^.+?　/,'')}</span>
+      <span class="ai-tag t-blue">予算: ${budget==='small'?'小規模':budget==='medium'?'中規模':'大規模'}</span>
+      <span class="ai-tag t-green">月商目標: ${revenue}</span>
+    </div>
+    <div style="font-size:11.5px;color:rgba(255,255,255,.75);line-height:1.8">
+      沖縄全41市町村を8次元・多重重みスコアリングで分析した結果、
+      <strong style="color:var(--gold)">${top3[0].m.n}（${top3[0].total}点）・${top3[1].m.n}（${top3[1].total}点）・${top3[2].m.n}（${top3[2].total}点）</strong>
+      を最適エリアTOP3として選定しました。${desc?'<br>ビジネス特性「'+desc.slice(0,40)+(desc.length>40?'...':'')+'」を反映してスコアリングを調整しています。':''}
+    </div>`;
+
+  // ── TOP 3 CARDS
+  const colors = ['r1','r2','r3'];
+  const crowns = ['🥇','🥈','🥉'];
+  const nums   = ['1','2','3'];
+  document.getElementById('ai-rank3').innerHTML = top3.map((item,i)=>{
+    const {m,s} = item;
+    const whyFn = WHY_TEMPLATES[biz] || WHY_TEMPLATES.service;
+    const riskFn= RISK_TEXTS[biz] || RISK_TEXTS.service;
+    const dims = ['pop','inc','to','gr','ba','it'];
+    const dimBars = dims.map(k=>`
+      <div class="sdim">
+        <div class="sdim-lbl">${DIM_LABELS[k].slice(0,5)}</div>
+        <div class="sdim-track"><div class="sdim-fill" style="width:${s.raw[k]*10}%;background:${DIM_COLORS[k]}"></div></div>
+        <div class="sdim-val" style="color:${DIM_COLORS[k]}">${typeof s.raw[k]==='number'?s.raw[k].toFixed(1):s.raw[k]}</div>
+      </div>`).join('');
+    return `<div class="rank-card">
+      <div class="rank-hd ${colors[i]}">
+        <div class="rank-num">${nums[i]}</div>
+        <div style="font-size:22px;margin-bottom:2px">${crowns[i]}</div>
+        <div class="rank-name">${m.n}</div>
+        <div class="rank-region">${m.r}</div>
+        <div class="rank-score-big">${item.total}<span style="font-size:14px;font-weight:700">点</span></div>
+        <div class="rank-score-lbl">/ 100点満点（全41市町村中 第${i+1}位）</div>
+      </div>
+      <div class="rank-body">
+        <div class="rank-row"><span class="rank-row-lbl">人口</span><span class="rank-row-val">${m.p.toLocaleString()}千人</span></div>
+        <div class="rank-row"><span class="rank-row-lbl">平均所得</span><span class="rank-row-val">${m.i}万円/年</span></div>
+        <div class="rank-row"><span class="rank-row-lbl">観光力</span><span class="rank-row-val">${m.to}/10</span></div>
+        <div class="rank-row"><span class="rank-row-lbl">基地経済</span><span class="rank-row-val">${m.ba}/10</span></div>
+        <div class="rank-row"><span class="rank-row-lbl">成長力</span><span class="rank-row-val">${m.gr}/10</span></div>
+        <div class="rank-row"><span class="rank-row-lbl">IT力</span><span class="rank-row-val">${m.it}/10</span></div>
+        <div style="margin:10px 0 4px;font-size:10px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.4px">スコア内訳</div>
+        ${dimBars}
+        <div class="rank-why">💡 <strong>選定理由:</strong> ${whyFn(m,s)}<br>推奨戦略: ${m.st}</div>
+        <div class="rank-risk">⚠️ <strong>注意点:</strong> ${riskFn(m)}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // ── BAR CHART
+  if(aiBarChart) aiBarChart.destroy();
+  aiBarChart = new Chart(document.getElementById('ai-chart-bar'),{
+    type:'bar',
+    data:{
+      labels: top15.map(x=>x.m.n),
+      datasets:[{
+        label:'総合適合スコア',
+        data: top15.map(x=>x.total),
+        backgroundColor: top15.map((_,i)=>i===0?'rgba(180,83,9,0.9)':i===1?'rgba(107,114,128,0.8)':i===2?'rgba(26,77,122,0.8)':'rgba(26,77,122,0.45)'),
+        borderRadius:6
+      }]
+    },
+    options:{
+      indexAxis:'y',responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.raw+'点 / 100点満点'}}},
+      scales:{
+        x:{min:0,max:100,ticks:{font:{size:10}},grid:{color:'#eee'}},
+        y:{ticks:{font:{size:11},color:'#1e293b'},grid:{display:false}}
+      }
+    }
+  });
+
+  // ── RADAR CHART
+  if(aiRadarChart) aiRadarChart.destroy();
+  const rdims = ['pop','inc','to','ba','it','gr'];
+  const rColors = ['rgba(180,83,9,.8)','rgba(107,114,128,.8)','rgba(26,77,122,.8)'];
+  const rBg    = ['rgba(180,83,9,.1)','rgba(107,114,128,.1)','rgba(26,77,122,.1)'];
+  aiRadarChart = new Chart(document.getElementById('ai-chart-radar'),{
+    type:'radar',
+    data:{
+      labels: rdims.map(k=>DIM_LABELS[k]),
+      datasets: top3.map((item,i)=>({
+        label: item.m.n,
+        data: rdims.map(k=>item.s.raw[k]),
+        backgroundColor: rBg[i],
+        borderColor: rColors[i],
+        pointBackgroundColor: rColors[i],
+        pointRadius: 4
+      }))
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      scales:{r:{min:0,max:10,ticks:{font:{size:9},stepSize:2},pointLabels:{font:{size:10.5}},grid:{color:'#e5e7eb'},angleLines:{color:'#e5e7eb'}}},
+      plugins:{legend:{position:'bottom',labels:{font:{size:11},boxWidth:14,padding:10}}}
+    }
+  });
+
+  // ── DIMENSION TABLE
+  const allDims = ['pop','inc','to','ag','ba','it','gr','ch'];
+  let tbl = `<table style="width:100%;border-collapse:collapse;font-size:11.5px">
+    <thead><tr style="background:var(--primary);color:#fff">
+      <th style="padding:9px 12px;text-align:left;font-size:10.5px">評価軸</th>
+      ${top3.map(x=>`<th style="padding:9px 12px;text-align:center">${x.m.n}</th>`).join('')}
+      <th style="padding:9px 12px;text-align:left;font-size:10.5px">重みの意味</th>
+    </tr></thead><tbody>`;
+  const weightMeaning = {
+    pop:'集客基盤となる人口規模',inc:'顧客の消費・購買力水準',to:'観光客流入による上乗せ効果',
+    ag:'農産物・食材の地元調達力',ba:'米軍軍属市場へのアクセス',it:'デジタル・IT人材集積度',
+    gr:'エリアの将来成長ポテンシャル',ch:'競合少なく参入しやすい環境'
+  };
+  allDims.forEach((k,ri)=>{
+    const bestVal = Math.max(...top3.map(x=>x.s.raw[k]));
+    tbl += `<tr style="background:${ri%2===0?'#fafbfd':'#fff'}">
+      <td style="padding:7px 12px;font-weight:700;color:var(--primary2)">${DIM_LABELS[k]}</td>
+      ${top3.map(x=>{
+        const v = x.s.raw[k];
+        const isBest = v===bestVal;
+        const pct = v/10*100;
+        return `<td style="padding:7px 12px;text-align:center">
+          <div style="display:flex;align-items:center;gap:6px;justify-content:center">
+            <div style="width:60px;height:9px;background:#e8ecf3;border-radius:5px;overflow:hidden">
+              <div style="width:${pct}%;height:100%;background:${isBest?DIM_COLORS[k]:'#9ca3af'};border-radius:5px"></div>
+            </div>
+            <strong style="color:${isBest?DIM_COLORS[k]:'var(--text)'};font-size:12px">${v.toFixed?v.toFixed(1):v}</strong>
+            ${isBest?'<span style="font-size:9px;color:#d97706">★</span>':''}
+          </div>
+        </td>`;
+      }).join('')}
+      <td style="padding:7px 12px;font-size:10px;color:var(--muted)">${weightMeaning[k]}</td>
+    </tr>`;
+  });
+  tbl += '</tbody></table>';
+  document.getElementById('ai-dim-table').innerHTML = tbl;
+
+  // ── ACTION PLAN
+  const bizOptText = {
+    restaurant:'① メニューに地産地消食材を使い「沖縄らしさ」を演出<br>② Instagramフォトスポット設計で口コミ集客<br>③ ランチ需要（地元客）×ディナー需要（観光客）の2本柱設計',
+    service:   '① 初回体験チケットで「まず試してもらう」ハードル低減<br>② ゆいまーる（紹介）プログラムで地域内口コミを加速<br>③ LINE公式・Instagram定期発信で認知継続',
+    retail:    '① 「沖縄産・限定品」ラベルで差別化<br>② 観光客向けECサイトを開設して離島後も購入できる仕組みを作る<br>③ 地元常連客向けポイントカード制度',
+    office:    '① テレワーク・ワーケーション需要を取り込む立地設計<br>② OISTやITサポートセンター那覇等との産学連携を模索<br>③ 採用はUターン・Iターン人材に積極アプローチ',
+    tourism:   '① 台湾・韓国インバウンド向けのSNS（TikTok/Instagram）多言語発信<br>② 体験コンテンツにストーリー性を持たせてリピーター化<br>③ 大手OTA（じゃらん・Airbnb・Klook）への早期掲載',
+    wellness:  '① 英語スタッフ採用・英語メニュー完備を初日から実現<br>② 基地内Facebook Groups・FRGへのアプローチ（許可取得）<br>③ 軍属コミュニティの信頼を得るためリファーラル報酬設計',
+    education: '① 無料体験レッスンで入会ハードルを下げる<br>② 軍属向け英語補助金・教育給付の情報発信<br>③ 地元小中学校との連携イベントで認知獲得',
+    agriculture:'① JA・直売所ルートと並行してEC販売チャネルを構築<br>② 農業体験ツーリズムと連携して観光消費を農産物購入につなげる<br>③ 「沖縄ブランド」を前面に出した6次産業化商品開発',
+    realestate: '① 移住促進係・UIターン相談窓口との連携<br>② 物件情報のSNS・YouTube発信で遠方移住希望者へのリーチ<br>③ 空き家バンク・補助金情報を一括提供するワンストップ体制',
+    medical:   '① 行政・市町村の地域医療計画との連携交渉<br>② 遠隔医療・オンライン診療を組み合わせた医師確保策<br>③ 高齢者送迎・訪問サービスとセットで差別化',
+  };
+  document.getElementById('ai-action-plan').innerHTML = `
+    <div class="g3" style="margin:0">
+      ${top3.map((item,i)=>`
+        <div style="background:${i===0?'#fffbf0':i===1?'#f9fafb':'#eff6ff'};border-radius:10px;padding:16px;border-top:4px solid ${i===0?'#d97706':i===1?'#6b7280':'#1a4d7a'}">
+          <div style="font-size:13px;font-weight:900;color:${i===0?'#b45309':i===1?'#374151':'#1a4d7a'};margin-bottom:8px">${['🥇','🥈','🥉'][i]} ${item.m.n} — 参入アクション</div>
+          <div style="font-size:11px;line-height:1.9;color:#374151">
+            ${bizOptText[biz]||bizOptText.service}
+          </div>
+          <div style="margin-top:12px;background:rgba(0,0,0,.04);border-radius:7px;padding:9px 12px;font-size:10.5px;line-height:1.8">
+            <strong>🗓️ 推奨スケジュール:</strong><br>
+            0-3ヶ月: 市場調査・キーパーソン関係構築・物件選定<br>
+            3-6ヶ月: プレ開業・テスト営業・口コミ構築<br>
+            6ヶ月〜: 本格稼働・SNS集客・リピーター育成
+          </div>
+        </div>`).join('')}
+    </div>`;
+}
+
+
+// ── init ──
 renderTable();
 C.industry(); C.market(); C.income(); C.tourist(); C.labor();
-// radar は tab-com が表示されたとき遅延初期化
 let radarInit=false;
-const origShow=window.showTab;
 window.showTab=function(id,btn){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
@@ -868,4 +1376,3 @@ window.showTab=function(id,btn){
 </script>
 </body>
 </html>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
