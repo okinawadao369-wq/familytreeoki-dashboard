@@ -2145,6 +2145,7 @@ function runAI() {
   const pri    = document.getElementById('ai-priority').value;
   const revenue= document.getElementById('ai-revenue').value || '未入力';
   const desc   = document.getElementById('ai-desc').value || '';
+  const entry  = document.getElementById('ai-entry') ? document.getElementById('ai-entry').value : 'new';
 
   // Show loading
   document.getElementById('ai-loading').classList.add('show');
