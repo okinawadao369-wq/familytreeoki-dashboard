@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>沖縄県エリアマーケティング 行政区連携設計</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #162224;
+      --muted: #5d6b6b;
+      --line: #d8e0dc;
+      --bg: #f7f8f4;
+      --panel: #ffffff;
+      --green: #2f7d5b;
+      --gold: #b8872e;
+      --blue: #2f6f95;
+      --red: #b94e39;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Yu Gothic", "Meiryo", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+    }
+    header {
+      padding: 44px 28px 28px;
+      background: #102427;
+      color: #fff;
+    }
+    .wrap { max-width: 1180px; margin: 0 auto; }
+    h1 { margin: 0 0 12px; font-size: clamp(28px, 4vw, 48px); line-height: 1.18; letter-spacing: 0; }
+    h2 { margin: 0 0 16px; font-size: 24px; }
+    h3 { margin: 0 0 8px; font-size: 18px; }
+    p { margin: 0 0 12px; }
+    a { color: #145f83; font-weight: 700; }
+    main { padding: 28px; }
+    section {
+      margin: 0 auto 22px;
+      max-width: 1180px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 22px;
+      box-shadow: 0 10px 24px rgba(14, 29, 31, .05);
+    }
+    .lead { max-width: 920px; color: #dce9e5; font-size: 17px; }
+    .grid { display: grid; gap: 14px; }
+    .grid.cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .grid.cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .metric {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px;
+      background: #fbfcfa;
+      min-height: 118px;
+    }
+    .metric strong { display: block; font-size: 26px; color: var(--green); line-height: 1.2; }
+    .metric span { color: var(--muted); font-size: 13px; }
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+      align-items: stretch;
+    }
+    .step {
+      border: 1px solid var(--line);
+      border-top: 5px solid var(--green);
+      border-radius: 8px;
+      padding: 14px;
+      background: #fbfcfa;
+    }
+    .step b { display: block; margin-bottom: 6px; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th, td { border-bottom: 1px solid var(--line); padding: 10px; text-align: left; vertical-align: top; }
+    th { background: #eef4ef; color: #233335; white-space: nowrap; }
+    .tag {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 2px 9px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #fff;
+      background: var(--green);
+      white-space: nowrap;
+    }
+    .tag.gold { background: var(--gold); }
+    .tag.blue { background: var(--blue); }
+    .tag.red { background: var(--red); }
+    .formula {
+      font-family: Consolas, monospace;
+      background: #eef4ef;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+    .links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      padding: 8px 14px;
+      border-radius: 8px;
+      background: #fff;
+      border: 1px solid rgba(255,255,255,.45);
+      color: #fff;
+      text-decoration: none;
+      background: rgba(255,255,255,.12);
+    }
+    .note { color: var(--muted); font-size: 13px; }
+    @media (max-width: 900px) {
+      .grid.cols-4, .grid.cols-3, .flow { grid-template-columns: 1fr; }
+      main, header { padding-left: 16px; padding-right: 16px; }
+      section { padding: 16px; }
+      table { font-size: 13px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <h1>沖縄県エリアマーケティング 行政区連携設計</h1>
+      <p class="lead">Googleスプレッドシートの「各市町村」と「行政区別推計税収」を、事業者向けの推薦ロジックへ接続しました。市町村で大きな適性を判定し、行政区で実際の出店場所、広告導線、価格帯、現地確認項目まで落とし込みます。</p>
+      <div class="links">
+        <a class="button" href="https://docs.google.com/spreadsheets/d/1zvwATsvDbF7iYLY-tm9GYUuLt47a_eHD9HknnnZMxUI/edit?gid=612409207#gid=612409207">Googleシート MKT_ADMIN_README</a>
+        <a class="button" href="https://okinawadao369-wq.github.io/familytreeoki-dashboard/okinawa-marketing-dashboard.html">既存マーケティングダッシュボード</a>
+      </div>
+    </div>
+  </header>
+  <main>
+    <section>
+      <h2>生成した連携タブ</h2>
+      <div class="grid cols-4">
+        <div class="metric"><strong>1,174</strong><span>行政区行を参照式で連携</span><p>MKT_ADMIN_DISTRICT_MASTER</p></div>
+        <div class="metric"><strong>市町村別</strong><span>行政区数・人口・税収を集計</span><p>MKT_ADMIN_CITY_SUMMARY</p></div>
+        <div class="metric"><strong>4段階</strong><span>該当する / 条件付き / 再設計 / 該当しない</span><p>MKT_ADMIN_RECOMMENDATION</p></div>
+        <div class="metric"><strong>非破壊</strong><span>元タブは上書きせず参照</span><p>MKT_ADMIN_README</p></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>どう入れ込んだか</h2>
+      <div class="flow">
+        <div class="step"><b>1. 市町村</b>人口、車アクセス、基地近接、観光、地域文化、口コミ力で広域適性を判定。</div>
+        <div class="step"><b>2. 行政区</b>字・町名ごとの人口、地区特性、係数、推計税収を接続。</div>
+        <div class="step"><b>3. 正規化</b>表記ゆれの「那覧市」は「那覇市」に補正して結合。</div>
+        <div class="step"><b>4. ミクロスコア</b>市町村45%、行政区税収20%、人口15%、地区特性20%で採点。</div>
+        <div class="step"><b>5. 事業判定</b>希望エリアと事業内容に対し、候補行政区と根拠を返す。</div>
+      </div>
+    </section>
+
+    <section>
+      <h2>スコア式</h2>
+      <p>行政区の推薦は、市町村の総合力だけでなく、実際の町名単位の税収、人口、地区特性を加味します。</p>
+      <div class="formula">micro_market_score = 市町村総合点 x 45% + 行政区税収指数 x 20% + 行政区人口指数 x 15% + 地区特性適性 x 20%</div>
+      <p class="note">この式はMKT_ADMIN_RECOMMENDATIONで実装済みです。source_statusとconfidenceを残し、推計値を確定値のように扱わない設計にしています。</p>
+    </section>
+
+    <section>
+      <h2>検証済みサンプル</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>順位</th><th>市町村</th><th>行政区</th><th>地区特性</th><th>人口</th><th>推計税収</th><th>スコア</th><th>判定</th><th>推奨事業</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>那覇市</td><td>字小禄</td><td>商業中心地</td><td>8,743</td><td>20.397億円</td><td>83.0</td><td><span class="tag">該当する</span></td><td>美容・飲食・高回転サービス</td></tr>
+          <tr><td>3</td><td>那覇市</td><td>首里石嶺町4丁目</td><td>高級住宅地</td><td>9,114</td><td>18.427億円</td><td>79.9</td><td><span class="tag gold">条件付きで該当</span></td><td>予約制高信頼・教育・美容医療</td></tr>
+          <tr><td>6</td><td>那覇市</td><td>字国場</td><td>一般住宅地</td><td>11,039</td><td>17.169億円</td><td>77.2</td><td><span class="tag gold">条件付きで該当</span></td><td>地元密着・小商圏サービス</td></tr>
+          <tr><td>14</td><td>那覇市</td><td>首里石嶺町2丁目</td><td>高級住宅地</td><td>5,788</td><td>11.703億円</td><td>69.1</td><td><span class="tag blue">再設計なら該当</span></td><td>予約制高信頼・教育・美容医療</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>事業者入力への接続</h2>
+      <div class="grid cols-3">
+        <div class="step"><b>希望エリアがある場合</b>希望市町村をCITY_SUMMARYで照合し、上位行政区をRECOMMENDATIONから返す。</div>
+        <div class="step"><b>業種が明確な場合</b>米軍家族、観光、高単価、日常低価格、ファミリーの適性列で絞り込む。</div>
+        <div class="step"><b>該当しない場合</b>価格、駐車場、英語対応、口コミ導線、出店形態の再設計条件を返す。</div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
