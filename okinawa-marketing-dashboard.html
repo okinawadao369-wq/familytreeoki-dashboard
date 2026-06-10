@@ -383,6 +383,25 @@ tbody tr:nth-child(even):hover td{background:#f0f5ff}
 .imp-pill{display:inline-block;margin:3px;padding:5px 12px;border-radius:20px;font-size:10.5px;font-weight:700;background:#f0fdf4;color:#166534;border:1px solid #86efac}
 .risk-pill{display:inline-block;margin:3px;padding:5px 12px;border-radius:20px;font-size:10.5px;font-weight:700;background:#fff7ed;color:#9a3412;border:1px solid #fdba74}
 
+
+/* ── ROI simulator ── */
+.roi-label{display:block;font-size:10.5px;font-weight:700;color:var(--muted);margin-top:8px;margin-bottom:3px}
+.roi-sel{width:100%;padding:5px 8px;border:1.5px solid var(--border);border-radius:6px;font-size:11px;background:var(--card);color:var(--text)}
+.roi-slider-row{display:flex;align-items:center;gap:7px}
+.roi-slider-row input[type=range]{flex:1;accent-color:#fbbf24}
+.roi-slider-row input[type=number]{padding:3px 6px;border:1.5px solid var(--border);border-radius:5px;font-size:11px;background:var(--card);color:var(--text)}
+.roi-unit{font-size:10px;color:var(--muted);white-space:nowrap}
+.roi-kpi{background:var(--card);border-radius:10px;padding:14px 16px;border:1.5px solid var(--border);text-align:center}
+.roi-kpi-val{font-size:22px;font-weight:900;line-height:1.2}
+.roi-kpi-lbl{font-size:10px;color:var(--muted);margin-top:4px}
+.roi-kpi-sub{font-size:10px;margin-top:2px}
+.sens-row{display:flex;justify-content:space-between;padding:5px 8px;border-radius:6px;margin-bottom:4px;font-size:10.5px}
+#roi-table th{background:#f3f4f6;padding:5px 8px;font-size:10px;font-weight:700;text-align:right;border-bottom:1.5px solid var(--border);white-space:nowrap}
+#roi-table th:first-child{text-align:left}
+#roi-table td{padding:4px 8px;border-bottom:1px solid #f3f4f6;text-align:right;font-size:10px}
+#roi-table td:first-child{text-align:left;font-weight:600}
+#roi-table tr.positive td{background:#f0fdf4}
+#roi-table tr.negative td{background:#fff1f2}
 </style>
 
 <!-- =====================================================
@@ -447,6 +466,7 @@ tbody tr:nth-child(even):hover td{background:#f0f5ff}
   <button class="nav-btn" onclick="showTab('soc',this)">🔬 社会学・行動学</button>
   <button class="nav-btn" onclick="showTab('ai',this)" style="background:rgba(232,98,26,.15);color:#f97316;border-bottom-color:transparent">🎯 エリア選定AI ★</button>
   <button class="nav-btn" onclick="showTab('store',this)" style="background:rgba(22,101,52,.15);color:#4ade80;border-bottom-color:transparent">🏬 店舗立地診断 ★</button>
+  <button class="nav-btn" onclick="showTab('roi',this)" style="background:rgba(202,138,4,.15);color:#fbbf24;border-bottom-color:transparent">💴 ROI試算 ★</button>
 </nav>
 
 <div class="main">
@@ -1786,6 +1806,137 @@ tbody tr:nth-child(even):hover td{background:#f0f5ff}
 </div><!-- .main -->
 <div class="ftr">koya 沖縄エリアマーケティング戦略インテリジェンス・ダッシュボード v2.1 ｜ データ出典: 沖縄県統計局・内閣府・防衛省・沖縄観光コンベンションビューロー ｜ 分析フレームワーク: 社会学・行動経済学・ミアシャイマー攻撃的リアリズム理論 ｜ © 2026 合同会社koya</div>
 
+<!-- ═══════════════════ ROI シミュレーター ═══════════════════ -->
+<div class="tab" id="tab-roi">
+  <div class="section-hd" style="color:#fbbf24">💴 出店ROIシミュレーター</div>
+  <p style="font-size:12px;color:var(--muted);margin-bottom:18px">家賃・客単価・集客数を入力 → 月次損益・黒字転換月・投資回収期間を自動計算。立地スコアと連動した集客倍率を適用します。</p>
+
+  <!-- ── 入力パネル ── -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
+
+    <!-- 左：基本設定 -->
+    <div class="card" style="padding:18px">
+      <div style="font-size:12px;font-weight:800;color:#fbbf24;margin-bottom:14px">📍 立地・業種設定</div>
+
+      <label class="roi-label">市町村</label>
+      <select id="roi-muni" class="roi-sel" onchange="roiAutoFill()">
+        <option value="">-- 選択 --</option>
+      </select>
+
+      <label class="roi-label" style="margin-top:10px">業種</label>
+      <select id="roi-biz" class="roi-sel" onchange="roiAutoFill()">
+        <option value="wellness">🧘 ウェルネス・産後ケア</option>
+        <option value="medical">🏥 医療・クリニック</option>
+        <option value="beauty">💅 美容・サロン</option>
+        <option value="restaurant">🍽️ 飲食・カフェ</option>
+        <option value="retail">🛍️ 小売</option>
+        <option value="education">📚 教育・スクール</option>
+        <option value="military">🎖️ 米軍・軍属特化</option>
+        <option value="tourism">🌺 観光・体験</option>
+      </select>
+
+      <label class="roi-label" style="margin-top:10px">初期投資総額（改装・設備・保証金）</label>
+      <div class="roi-slider-row">
+        <input type="range" id="roi-init-r" min="500000" max="20000000" step="100000" value="8000000" oninput="sync('roi-init')">
+        <input type="number" id="roi-init" value="8000000" min="500000" max="20000000" step="100000" oninput="sync2('roi-init-r','roi-init');calcROI()" style="width:110px">
+        <span class="roi-unit">円</span>
+      </div>
+
+      <label class="roi-label">月額家賃</label>
+      <div class="roi-slider-row">
+        <input type="range" id="roi-rent-r" min="30000" max="500000" step="5000" value="150000" oninput="sync('roi-rent')">
+        <input type="number" id="roi-rent" value="150000" min="30000" max="500000" step="5000" oninput="sync2('roi-rent-r','roi-rent');calcROI()" style="width:100px">
+        <span class="roi-unit">円/月</span>
+      </div>
+
+      <label class="roi-label">人件費（月）</label>
+      <div class="roi-slider-row">
+        <input type="range" id="roi-labor-r" min="50000" max="1500000" step="10000" value="300000" oninput="sync('roi-labor')">
+        <input type="number" id="roi-labor" value="300000" min="50000" max="1500000" step="10000" oninput="sync2('roi-labor-r','roi-labor');calcROI()" style="width:100px">
+        <span class="roi-unit">円/月</span>
+      </div>
+
+      <label class="roi-label">その他固定費（月）</label>
+      <div class="roi-slider-row">
+        <input type="range" id="roi-misc-r" min="10000" max="200000" step="5000" value="50000" oninput="sync('roi-misc')">
+        <input type="number" id="roi-misc" value="50000" min="10000" max="200000" step="5000" oninput="sync2('roi-misc-r','roi-misc');calcROI()" style="width:100px">
+        <span class="roi-unit">円/月</span>
+      </div>
+    </div>
+
+    <!-- 右：売上設定 -->
+    <div class="card" style="padding:18px">
+      <div style="font-size:12px;font-weight:800;color:#fbbf24;margin-bottom:14px">📈 売上・コスト設定</div>
+
+      <label class="roi-label">客単価</label>
+      <div class="roi-slider-row">
+        <input type="range" id="roi-ticket-r" min="1000" max="100000" step="500" value="12000" oninput="sync('roi-ticket')">
+        <input type="number" id="roi-ticket" value="12000" min="1000" max="100000" step="500" oninput="sync2('roi-ticket-r','roi-ticket');calcROI()" style="width:100px">
+        <span class="roi-unit">円/客</span>
+      </div>
+
+      <label class="roi-label">月間集客数（目標）</label>
+      <div class="roi-slider-row">
+        <input type="range" id="roi-cust-r" min="10" max="1000" step="5" value="100" oninput="sync('roi-cust')">
+        <input type="number" id="roi-cust" value="100" min="10" max="1000" step="5" oninput="sync2('roi-cust-r','roi-cust');calcROI()" style="width:80px">
+        <span class="roi-unit">人/月</span>
+      </div>
+
+      <label class="roi-label">変動費率（材料・消耗品）</label>
+      <div class="roi-slider-row">
+        <input type="range" id="roi-varr-r" min="5" max="70" step="1" value="20" oninput="sync('roi-varr')">
+        <input type="number" id="roi-varr" value="20" min="5" max="70" step="1" oninput="sync2('roi-varr-r','roi-varr');calcROI()" style="width:60px">
+        <span class="roi-unit">%</span>
+      </div>
+
+      <label class="roi-label">月次成長率（開業後の集客増加）</label>
+      <div class="roi-slider-row">
+        <input type="range" id="roi-grow-r" min="0" max="10" step="0.5" value="3" oninput="sync('roi-grow')">
+        <input type="number" id="roi-grow" value="3" min="0" max="10" step="0.5" oninput="sync2('roi-grow-r','roi-grow');calcROI()" style="width:60px">
+        <span class="roi-unit">%/月</span>
+      </div>
+
+      <label class="roi-label">試算期間</label>
+      <select id="roi-months" class="roi-sel" onchange="calcROI()">
+        <option value="12">12ヶ月</option>
+        <option value="24" selected>24ヶ月</option>
+        <option value="36">36ヶ月</option>
+        <option value="48">48ヶ月</option>
+      </select>
+
+      <div id="roi-loc-info" style="margin-top:12px;background:#fefce8;border-radius:8px;padding:9px 12px;font-size:10.5px;line-height:1.7;color:#854d0e"></div>
+    </div>
+  </div>
+
+  <!-- ── KPI カード ── -->
+  <div id="roi-kpi-row" style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px"></div>
+
+  <!-- ── グラフ 2列 ── -->
+  <div style="display:grid;grid-template-columns:1.6fr 1fr;gap:16px;margin-bottom:20px">
+    <div class="card" style="padding:16px">
+      <div style="font-size:11px;font-weight:800;color:#0284c7;margin-bottom:10px">📊 累積キャッシュフロー（3シナリオ）</div>
+      <div style="height:260px"><canvas id="roi-cf-chart"></canvas></div>
+    </div>
+    <div class="card" style="padding:16px">
+      <div style="font-size:11px;font-weight:800;color:#16a34a;margin-bottom:10px">📉 月次損益（基準シナリオ）</div>
+      <div style="height:260px"><canvas id="roi-pl-chart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- ── 感度分析 + 月次テーブル ── -->
+  <div style="display:grid;grid-template-columns:1fr 1.8fr;gap:16px;margin-bottom:20px">
+    <div class="card" style="padding:16px">
+      <div style="font-size:11px;font-weight:800;color:#7c3aed;margin-bottom:10px">🎯 感度分析（集客数変動）</div>
+      <div id="roi-sensitivity" style="font-size:11px"></div>
+    </div>
+    <div class="card" style="padding:16px;overflow-x:auto">
+      <div style="font-size:11px;font-weight:800;color:#ea580c;margin-bottom:10px">📋 月次詳細（基準シナリオ）</div>
+      <table id="roi-table" style="width:100%;font-size:10.5px;border-collapse:collapse"></table>
+    </div>
+  </div>
+</div>
+<!-- /tab-roi -->
+
 <script>
 // ── DATA ──
 const MUNI=[
@@ -3058,6 +3209,285 @@ function renderActions(d, total, bizKey, targetKey, raw, parkingCapped) {
 
 // store tab: no special init needed
 
+// ═══════════════════ ROI シミュレーター JS ═══════════════════
+
+// Default values by biz type: [初期投資, 家賃, 人件費, その他固定, 客単価, 月集客, 変動費率%, 成長率%]
+const ROI_DEFAULTS = {
+  wellness:   [8000000, 150000, 300000, 50000, 12000, 100, 20, 3],
+  medical:    [15000000,200000, 500000, 80000, 15000, 150, 15, 2],
+  beauty:     [6000000, 120000, 200000, 40000,  8000, 120, 25, 4],
+  restaurant: [10000000,150000, 300000, 60000,  3500, 400, 35, 3],
+  retail:     [8000000, 150000, 200000, 50000,  5000, 200, 40, 2],
+  education:  [5000000, 100000, 300000, 30000, 20000,  50, 10, 3],
+  military:   [7000000, 150000, 250000, 50000, 15000,  80, 20, 4],
+  tourism:    [6000000, 100000, 200000, 40000,  8000, 100, 30, 5],
+};
+
+// Location score → estimated customer acquisition multiplier
+function locMultiplier(tot) {
+  if(tot >= 85) return 1.12;
+  if(tot >= 75) return 1.05;
+  if(tot >= 65) return 0.95;
+  if(tot >= 50) return 0.85;
+  return 0.75;
+}
+
+function fmt(n) { return n.toLocaleString('ja-JP'); }
+function fmtMan(n) { return (n/10000).toFixed(1) + '万'; }
+
+function sync(id) {
+  const r = document.getElementById(id+'-r');
+  const v = document.getElementById(id);
+  if(r && v){ v.value = r.value; calcROI(); }
+}
+function sync2(rid, vid) {
+  const r = document.getElementById(rid);
+  const v = document.getElementById(vid);
+  if(r && v) r.value = v.value;
+}
+
+function roiPopulateMuni() {
+  const sel = document.getElementById('roi-muni');
+  if(!sel || sel.options.length > 1) return;
+  STOREDATA.slice().sort((a,b)=>b.tot-a.tot).forEach(s=>{
+    const opt = document.createElement('option');
+    opt.value = s.n;
+    opt.textContent = s.n + ' (' + s.rank + ' ' + s.tot + '点)';
+    sel.appendChild(opt);
+  });
+}
+
+function roiAutoFill() {
+  const bizKey = document.getElementById('roi-biz').value;
+  const d = ROI_DEFAULTS[bizKey] || ROI_DEFAULTS.wellness;
+  const ids = ['roi-init','roi-rent','roi-labor','roi-misc','roi-ticket','roi-cust','roi-varr','roi-grow'];
+  ids.forEach((id, i) => {
+    const el = document.getElementById(id);
+    const elr = document.getElementById(id+'-r');
+    if(el){ el.value = d[i]; }
+    if(elr){ elr.value = d[i]; }
+  });
+  calcROI();
+}
+
+let roiCfChart = null, roiPlChart = null;
+
+function calcROI() {
+  const muniName = document.getElementById('roi-muni')?.value || '';
+  const bizKey   = document.getElementById('roi-biz')?.value || 'wellness';
+  const init     = parseFloat(document.getElementById('roi-init')?.value) || 8000000;
+  const rent     = parseFloat(document.getElementById('roi-rent')?.value) || 150000;
+  const labor    = parseFloat(document.getElementById('roi-labor')?.value) || 300000;
+  const misc     = parseFloat(document.getElementById('roi-misc')?.value) || 50000;
+  const ticket   = parseFloat(document.getElementById('roi-ticket')?.value) || 12000;
+  const custBase = parseFloat(document.getElementById('roi-cust')?.value) || 100;
+  const varRate  = parseFloat(document.getElementById('roi-varr')?.value) / 100 || 0.20;
+  const growRate = parseFloat(document.getElementById('roi-grow')?.value) / 100 || 0.03;
+  const months   = parseInt(document.getElementById('roi-months')?.value) || 24;
+
+  const storeD   = muniName ? STOREDATA.find(s=>s.n===muniName) : null;
+  const locMul   = storeD ? locMultiplier(storeD.tot) : 1.0;
+  const milBonus = (storeD && storeD.mil >= 7) ? 1.15 : 1.0; // military market premium
+  const adjCust  = custBase * locMul * milBonus;
+
+  const fixedCost = rent + labor + misc;
+
+  // Scenario multipliers: optimistic +20%, base, pessimistic -20%
+  const scenarios = [
+    { label:'楽観(+20%)', mul:1.20, color:'#4ade80', bg:'rgba(74,222,128,.15)' },
+    { label:'基準',        mul:1.00, color:'#60a5fa', bg:'rgba(96,165,250,.15)' },
+    { label:'悲観(-20%)', mul:0.80, color:'#f87171', bg:'rgba(248,113,113,.15)' },
+  ];
+
+  // Monthly simulation
+  function simulate(custMul) {
+    const rows = [];
+    let cumCF = -init;
+    let bepMonth = null, recMonth = null;
+    for(let m = 1; m <= months; m++) {
+      const cust    = adjCust * custMul * Math.pow(1 + growRate, m - 1);
+      const rev     = cust * ticket;
+      const varCost = rev * varRate;
+      const profit  = rev - varCost - fixedCost;
+      cumCF += profit;
+      if(bepMonth === null && profit > 0) bepMonth = m;
+      if(recMonth === null && cumCF > 0)  recMonth = m;
+      rows.push({ m, cust: Math.round(cust), rev, varCost, profit, cumCF });
+    }
+    return { rows, bepMonth, recMonth };
+  }
+
+  const base = simulate(1.0);
+  const opts = scenarios.map(s => ({ ...s, sim: simulate(s.mul) }));
+  const baseSim = opts[1].sim;
+
+  // KPIs
+  const lastRow  = baseSim.rows[baseSim.rows.length-1];
+  const lastProfit = baseSim.rows[baseSim.rows.length-1].profit;
+  const totalProfit = baseSim.rows.reduce((a,r)=>a+r.profit,0);
+  const roi = ((totalProfit - init) / init * 100);
+
+  const kpiData = [
+    { val: fmt(Math.round(lastProfit)) + '円', lbl: '月次利益（' + months + 'ヶ月目）',
+      sub: lastProfit >= 0 ? '✓ 黒字' : '⚠️ 赤字',
+      color: lastProfit >= 0 ? '#16a34a' : '#dc2626' },
+    { val: baseSim.bepMonth ? baseSim.bepMonth + 'ヶ月' : months + 'ヶ月超',
+      lbl: '黒字転換（損益分岐）',
+      sub: baseSim.bepMonth ? '月次黒字化' : '期間内未達',
+      color: baseSim.bepMonth && baseSim.bepMonth <= 12 ? '#16a34a' : baseSim.bepMonth ? '#ca8a04' : '#dc2626' },
+    { val: baseSim.recMonth ? baseSim.recMonth + 'ヶ月' : months + 'ヶ月超',
+      lbl: '投資回収期間',
+      sub: baseSim.recMonth ? '累積CF黒字化' : '期間内未回収',
+      color: baseSim.recMonth && baseSim.recMonth <= 24 ? '#16a34a' : baseSim.recMonth ? '#ca8a04' : '#dc2626' },
+    { val: roi.toFixed(1) + '%',
+      lbl: months + 'ヶ月累積ROI',
+      sub: roi >= 50 ? '優良' : roi >= 0 ? '許容範囲' : '要改善',
+      color: roi >= 50 ? '#16a34a' : roi >= 0 ? '#0284c7' : '#dc2626' },
+  ];
+
+  document.getElementById('roi-kpi-row').innerHTML = kpiData.map(k=>`
+    <div class="roi-kpi">
+      <div class="roi-kpi-val" style="color:${k.color}">${k.val}</div>
+      <div class="roi-kpi-lbl">${k.lbl}</div>
+      <div class="roi-kpi-sub" style="color:${k.color}">${k.sub}</div>
+    </div>`).join('');
+
+  // Location info panel
+  if(storeD) {
+    const mulPct = ((locMul - 1) * 100).toFixed(0);
+    const milTxt = storeD.mil >= 7
+      ? `｜ 🎖️ 軍属市場スコア${storeD.mil}/10 → 集客+15%・客単価アップ余地あり`
+      : storeD.mil >= 4 ? `｜ 軍属スコア${storeD.mil}/10（中程度）` : '';
+    document.getElementById('roi-loc-info').innerHTML =
+      `📍 <strong>${storeD.n}</strong>（立地スコア${storeD.tot}点 ${storeD.rank}ランク）→ 集客倍率 <strong style="color:#ca8a04">${locMul.toFixed(2)}x</strong>（基準値比${mulPct >= 0 ? '+' : ''}${mulPct}%）${milTxt}<br>
+       💡 推奨業種: <strong>${storeD.bestBiz || '—'}</strong>`;
+  } else {
+    document.getElementById('roi-loc-info').innerHTML = '⬆️ 市町村を選択すると立地スコア連動の集客倍率を適用します';
+  }
+
+  // Cumulative CF Chart
+  const labels = Array.from({length: months}, (_, i) => i + 1 + 'M');
+  if(roiCfChart) roiCfChart.destroy();
+  const cfCtx = document.getElementById('roi-cf-chart')?.getContext('2d');
+  if(cfCtx) {
+    roiCfChart = new Chart(cfCtx, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: opts.map(s => ({
+          label: s.label,
+          data: s.sim.rows.map(r => Math.round(r.cumCF)),
+          borderColor: s.color,
+          backgroundColor: s.bg,
+          fill: false,
+          borderWidth: s.label === '基準' ? 2.5 : 1.5,
+          pointRadius: 0,
+          tension: 0.3,
+        })).concat([{
+          label: '損益分岐ライン',
+          data: Array(months).fill(0),
+          borderColor: '#9ca3af',
+          borderDash: [4,3],
+          borderWidth: 1,
+          pointRadius: 0,
+          fill: false,
+        }])
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { labels: { font: { size: 10 } } },
+          tooltip: { callbacks: { label: c => ' ' + fmt(c.raw) + '円' } }},
+        scales: {
+          x: { ticks: { font: { size: 9 }, maxTicksLimit: 12 } },
+          y: { ticks: { font: { size: 9 }, callback: v => fmtMan(v) } }
+        }
+      }
+    });
+  }
+
+  // Monthly P&L Chart (base scenario, first 24 months)
+  const plRows = baseSim.rows.slice(0, Math.min(24, months));
+  if(roiPlChart) roiPlChart.destroy();
+  const plCtx = document.getElementById('roi-pl-chart')?.getContext('2d');
+  if(plCtx) {
+    roiPlChart = new Chart(plCtx, {
+      type: 'bar',
+      data: {
+        labels: plRows.map(r => r.m + 'M'),
+        datasets: [{
+          label: '月次利益',
+          data: plRows.map(r => Math.round(r.profit)),
+          backgroundColor: plRows.map(r => r.profit >= 0 ? 'rgba(22,163,74,.7)' : 'rgba(220,38,38,.6)'),
+          borderRadius: 3,
+          borderWidth: 0,
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false },
+          tooltip: { callbacks: { label: c => ' ' + fmt(c.raw) + '円' } }},
+        scales: {
+          x: { ticks: { font: { size: 9 }, maxTicksLimit: 12 } },
+          y: { ticks: { font: { size: 9 }, callback: v => fmtMan(v) } }
+        }
+      }
+    });
+  }
+
+  // Sensitivity analysis
+  const sensVals = [-40, -30, -20, -10, 0, 10, 20, 30, 40];
+  document.getElementById('roi-sensitivity').innerHTML = `
+    <table style="width:100%;border-collapse:collapse">
+      <tr style="background:#f3f4f6">
+        <th style="padding:5px 8px;font-size:10px;text-align:left">集客変動</th>
+        <th style="padding:5px 8px;font-size:10px;text-align:right">月次利益(最終)</th>
+        <th style="padding:5px 8px;font-size:10px;text-align:right">黒字転換</th>
+        <th style="padding:5px 8px;font-size:10px;text-align:right">回収月</th>
+      </tr>
+      ${sensVals.map(pct => {
+        const s = simulate(1 + pct/100);
+        const lastP = s.rows[s.rows.length-1].profit;
+        const color = lastP >= 0 ? '#166534' : '#991b1b';
+        const bg    = lastP >= 0 ? '#f0fdf4' : '#fff1f2';
+        return `<tr style="background:${bg}">
+          <td style="padding:4px 8px;font-size:10px;font-weight:700;color:${color}">${pct >= 0 ? '+' : ''}${pct}%</td>
+          <td style="padding:4px 8px;font-size:10px;text-align:right;color:${color}">${fmtMan(Math.round(lastP))}</td>
+          <td style="padding:4px 8px;font-size:10px;text-align:right">${s.bepMonth ? s.bepMonth + 'M' : '—'}</td>
+          <td style="padding:4px 8px;font-size:10px;text-align:right">${s.recMonth ? s.recMonth + 'M' : '—'}</td>
+        </tr>`;
+      }).join('')}
+    </table>`;
+
+  // Monthly detail table (first 18 months)
+  const tableRows = baseSim.rows.slice(0, Math.min(18, months));
+  document.getElementById('roi-table').innerHTML = `
+    <thead><tr>
+      <th style="text-align:left">月</th>
+      <th>集客</th><th>売上</th><th>変動費</th><th>固定費</th><th>月次利益</th><th>累積CF</th>
+    </tr></thead>
+    <tbody>${tableRows.map(r => {
+      const cls = r.profit >= 0 ? 'positive' : 'negative';
+      return `<tr class="${cls}">
+        <td>${r.m}ヶ月目</td>
+        <td>${r.cust}人</td>
+        <td>${fmtMan(r.rev)}</td>
+        <td>${fmtMan(r.varCost)}</td>
+        <td>${fmtMan(fixedCost)}</td>
+        <td style="font-weight:800;color:${r.profit>=0?'#166534':'#991b1b'}">${fmtMan(r.profit)}</td>
+        <td style="font-weight:800;color:${r.cumCF>=0?'#0284c7':'#b91c1c'}">${fmtMan(r.cumCF)}</td>
+      </tr>`;
+    }).join('')}</tbody>`;
+}
+
+// Init ROI tab when shown
+const _origShowTab = window.showTab;
+window.showTab = function(id, btn) {
+  _origShowTab(id, btn);
+  if(id === 'roi') {
+    roiPopulateMuni();
+    if(!roiCfChart) calcROI();
+  }
+};
 </script>
 </body>
 </html>
