@@ -2795,7 +2795,7 @@ const BIZ_WEIGHTS = {
 const DIM_NAMES   = ['通行量','車両アクセス','駐車場','視認性','商圏人口','口コミ力','経済適合','競合優位','賃料ROI'];
 const DIM_KEYS    = ['tp','ca','pk','vs','pop','wom','ef','ac','rr'];
 const DIM_MAXES   = [15,20,15,10,10,10,8,7,5];
-const DIM_COLORS  = ['#e8621a','#0284c7','#16a34a','#7c3aed','#db2777','#0891b2','#ca8a04','#dc2626','#0f766e'];
+const ST_DIM_COLORS = ['#e8621a','#0284c7','#16a34a','#7c3aed','#db2777','#0891b2','#ca8a04','#dc2626','#0f766e'];
 
 function calcStoreScore(d, bizKey, targetKey, parkingSpaces) {
   const w = BIZ_WEIGHTS[bizKey] || BIZ_WEIGHTS.wellness;
@@ -2861,8 +2861,8 @@ function runStoreDiag() {
       return `<div class="score-dim-card">
         <div class="sdim-label">${DIM_NAMES[i]}</div>
         <div class="sdim-bar-wrap">
-          <div class="sdim-bar-track"><div class="sdim-bar-fill" style="width:${pct}%;background:${DIM_COLORS[i]}"></div></div>
-          <div class="sdim-val" style="color:${DIM_COLORS[i]}">${raw[i].toFixed(1)}</div>
+          <div class="sdim-bar-track"><div class="sdim-bar-fill" style="width:${pct}%;background:${ST_DIM_COLORS[i]}"></div></div>
+          <div class="sdim-val" style="color:${ST_DIM_COLORS[i]}">${raw[i].toFixed(1)}</div>
         </div>
         <div class="sdim-max" style="color:${color}">/ ${DIM_MAXES[i]}点 (${pct}%)</div>
       </div>`;
