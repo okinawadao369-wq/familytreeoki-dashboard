@@ -1839,47 +1839,52 @@ const MUNI=[
    tot=合計(100) mil=米軍代理スコア(0-10)
 */
 const STOREDATA=[
-  {n:'那覇市',   r:'中南部都市圏',tot:75,rank:'A',tp:14,ca:12,pk:8, vs:10,pop:9,wom:7,ef:8,ac:4,rr:3,mil:2,note:'那覇新都心・モノレール沿線は徒歩集客可。駐車難が最大弱点。'},
-  {n:'沖縄市',   r:'中部都市圏',  tot:87,rank:'S',tp:13,ca:18,pk:13,vs:9, pop:9,wom:8,ef:8,ac:5,rr:4,mil:9,note:'ゲート2通り最強集客。軍属向けビジネスの最重点エリア。'},
-  {n:'浦添市',   r:'中南部都市圏',tot:80,rank:'A',tp:11,ca:16,pk:12,vs:8, pop:8,wom:8,ef:7,ac:6,rr:4,mil:4,note:'パイプラインストリート沿い。ファミリー層に強い。'},
-  {n:'宜野湾市', r:'中部都市圏',  tot:82,rank:'A',tp:12,ca:16,pk:11,vs:9, pop:8,wom:8,ef:8,ac:6,rr:4,mil:6,note:'GDP成長率+9.6%（主要都市最高）。返還跡地開発で急速成長中。'},
-  {n:'豊見城市', r:'中南部都市圏',tot:78,rank:'A',tp:11,ca:15,pk:12,vs:8, pop:7,wom:8,ef:7,ac:6,rr:4,mil:2,note:'豊見城団地・イオン南風原周辺。南部住宅地の核。'},
-  {n:'糸満市',   r:'南部圏',     tot:76,rank:'A',tp:10,ca:15,pk:11,vs:8, pop:7,wom:8,ef:7,ac:6,rr:4,mil:1,note:'平和観光＋水産ブランド。南部住民の日常消費需要。'},
-  {n:'南城市',   r:'南部圏',     tot:66,rank:'B',tp:8, ca:13,pk:11,vs:7, pop:5,wom:8,ef:6,ac:5,rr:3,mil:1,note:'エコツーリズム。人口少なく予約制ビジネス向き。'},
-  {n:'与那原町', r:'南部圏',     tot:72,rank:'B',tp:9, ca:14,pk:12,vs:7, pop:6,wom:8,ef:7,ac:6,rr:3,mil:1,note:'産直・地産地消マーケット需要あり。'},
-  {n:'西原町',   r:'中部圏',     tot:74,rank:'B',tp:9, ca:15,pk:12,vs:7, pop:7,wom:8,ef:7,ac:5,rr:4,mil:2,note:'大学連携・スタートアップ育成。若年層集積。'},
-  {n:'南風原町', r:'南部圏',     tot:78,rank:'A',tp:10,ca:15,pk:12,vs:8, pop:8,wom:8,ef:7,ac:6,rr:4,mil:2,note:'住宅・生活サービス需要。南部エリア通過動線あり。'},
-  {n:'北谷町',   r:'中部圏',     tot:86,rank:'S',tp:14,ca:16,pk:12,vs:10,pop:8,wom:8,ef:8,ac:6,rr:4,mil:8,note:'アメリカンビレッジ最強集客。軍属＋観光ダブル需要。'},
-  {n:'中城村',   r:'中部圏',     tot:74,rank:'B',tp:9, ca:15,pk:12,vs:7, pop:7,wom:8,ef:7,ac:5,rr:4,mil:3,note:'世界遺産観光＋移住促進。成長余地あり。'},
-  {n:'北中城村', r:'中部圏',     tot:78,rank:'A',tp:10,ca:16,pk:12,vs:7, pop:7,wom:8,ef:7,ac:7,rr:4,mil:5,note:'瑞慶覧周辺。ミリタリー系ビジネス高適合。'},
-  {n:'読谷村',   r:'中部圏',     tot:76,rank:'A',tp:10,ca:15,pk:12,vs:7, pop:7,wom:8,ef:6,ac:7,rr:4,mil:3,note:'やちむん観光＋農業ツーリズム。週末集客型。'},
-  {n:'嘉手納町', r:'中部圏',     tot:79,rank:'A',tp:10,ca:17,pk:11,vs:8, pop:6,wom:9,ef:8,ac:7,rr:3,mil:9,note:'嘉手納基地83%。軍属特化ビジネスの聖地。'},
-  {n:'恩納村',   r:'北部圏',     tot:71,rank:'B',tp:9, ca:13,pk:11,vs:8, pop:6,wom:8,ef:7,ac:5,rr:4,mil:2,note:'ラグジュアリーリゾート集積。高単価業態向き。'},
-  {n:'うるま市', r:'中部圏',     tot:80,rank:'A',tp:11,ca:16,pk:12,vs:7, pop:8,wom:8,ef:8,ac:6,rr:4,mil:6,note:'海中道路観光＋農水産ブランド。多様なコミュニティ。'},
-  {n:'金武町',   r:'北部圏',     tot:74,rank:'B',tp:9, ca:15,pk:12,vs:7, pop:6,wom:8,ef:8,ac:6,rr:3,mil:8,note:'キャンプ・ハンセン隣接。軍属向け飲食・サービス需要高。'},
-  {n:'宜野座村', r:'北部圏',     tot:63,rank:'B',tp:7, ca:12,pk:12,vs:6, pop:5,wom:7,ef:6,ac:5,rr:3,mil:1,note:'人口増加率県内1位(2025国勢調査)。長期投資型。'},
-  {n:'名護市',   r:'北部圏',     tot:78,rank:'A',tp:10,ca:15,pk:12,vs:8, pop:7,wom:8,ef:8,ac:6,rr:4,mil:2,note:'北部の中核都市。JUNGLIA開業で急成長中。'},
-  {n:'本部町',   r:'北部圏',     tot:62,rank:'B',tp:8, ca:11,pk:10,vs:7, pop:5,wom:8,ef:6,ac:4,rr:3,mil:1,note:'JUNGLIA最近接。観光集客型ビジネスに特化。'},
-  {n:'今帰仁村', r:'北部圏',     tot:59,rank:'C',tp:7, ca:11,pk:10,vs:6, pop:4,wom:8,ef:6,ac:4,rr:3,mil:1,note:'JUNGLIA本拠地。地価+68.5%急騰中。先行投資機会。'},
-  {n:'大宜味村', r:'北部圏',     tot:52,rank:'C',tp:5, ca:10,pk:9, vs:5, pop:4,wom:7,ef:5,ac:4,rr:3,mil:1,note:'長寿食ブランド・スローライフ移住。ニッチ特化向き。'},
-  {n:'東村',     r:'北部圏',     tot:45,rank:'D',tp:4, ca:9, pk:9, vs:4, pop:3,wom:7,ef:4,ac:3,rr:2,mil:1,note:'エコツーリズム・パイナップル産地。超ニッチ。'},
-  {n:'国頭村',   r:'北部圏',     tot:52,rank:'C',tp:5, ca:10,pk:9, vs:5, pop:4,wom:7,ef:5,ac:4,rr:3,mil:1,note:'やんばる世界遺産観光。滞在型観光業向き。'},
-  {n:'久米島町', r:'離島圏',     tot:58,rank:'C',tp:6, ca:11,pk:10,vs:6, pop:4,wom:8,ef:6,ac:4,rr:3,mil:1,note:'テレワーク誘致・海洋深層水ブランド。離島の中では最上位。'},
-  {n:'渡嘉敷村', r:'離島圏',     tot:46,rank:'D',tp:5, ca:8, pk:8, vs:5, pop:3,wom:7,ef:5,ac:3,rr:2,mil:1,note:'ダイビング聖地。高単価・閑散期リスクあり。'},
-  {n:'座間味村', r:'離島圏',     tot:43,rank:'D',tp:4, ca:7, pk:8, vs:5, pop:3,wom:7,ef:4,ac:3,rr:2,mil:1,note:'クジラ観光・シュノーケリング。季節偏重大。'},
-  {n:'粟国村',   r:'離島圏',     tot:37,rank:'D',tp:3, ca:7, pk:7, vs:4, pop:2,wom:6,ef:4,ac:2,rr:2,mil:1,note:'プレミアム離島体験。滞在型1次産業向けのみ。'},
-  {n:'渡名喜村', r:'離島圏',     tot:34,rank:'D',tp:2, ca:7, pk:6, vs:3, pop:2,wom:6,ef:4,ac:2,rr:2,mil:1,note:'文化的景観観光。一般店舗出店不可。'},
-  {n:'南大東村', r:'離島圏',     tot:38,rank:'D',tp:3, ca:8, pk:7, vs:4, pop:3,wom:6,ef:3,ac:2,rr:2,mil:1,note:'砂糖きびブランド・秘境観光。特産品EC向け。'},
-  {n:'北大東村', r:'離島圏',     tot:37,rank:'D',tp:3, ca:7, pk:7, vs:4, pop:2,wom:6,ef:4,ac:2,rr:2,mil:1,note:'サトウキビ体験・遠洋漁業。一般出店困難。'},
-  {n:'伊平屋村', r:'離島圏',     tot:39,rank:'D',tp:3, ca:8, pk:7, vs:4, pop:3,wom:6,ef:3,ac:3,rr:2,mil:1,note:'長寿離島ブランド・テレワーク誘致。'},
-  {n:'伊是名村', r:'離島圏',     tot:39,rank:'D',tp:3, ca:8, pk:7, vs:4, pop:3,wom:6,ef:3,ac:3,rr:2,mil:1,note:'歴史観光（尚円王生誕地）・農業体験。'},
-  {n:'伊江村',   r:'北部圏',     tot:55,rank:'C',tp:5, ca:10,pk:10,vs:5, pop:4,wom:8,ef:5,ac:4,rr:4,mil:5,note:'ゆり観光・農業体験。米軍補助飛行場あり。'},
-  {n:'宮古島市', r:'宮古圏',     tot:68,rank:'B',tp:9, ca:12,pk:10,vs:8, pop:6,wom:8,ef:7,ac:5,rr:3,mil:3,note:'高級リゾート急成長。土地高騰・競合参入急増中。'},
-  {n:'多良間村', r:'宮古圏',     tot:40,rank:'D',tp:3, ca:8, pk:8, vs:4, pop:3,wom:6,ef:4,ac:2,rr:2,mil:1,note:'希少農産物ブランド。農業体験特化のみ。'},
-  {n:'石垣市',   r:'八重山圏',   tot:72,rank:'B',tp:10,ca:12,pk:11,vs:8, pop:7,wom:8,ef:7,ac:5,rr:4,mil:2,note:'石垣牛・インバウンド。高価格帯が成立する稀少離島市場。'},
-  {n:'竹富町',   r:'八重山圏',   tot:54,rank:'C',tp:6, ca:9, pk:9, vs:6, pop:4,wom:8,ef:5,ac:4,rr:3,mil:1,note:'絶景離島観光・伝統文化ブランド。観光業特化。'},
-  {n:'与那国町', r:'八重山圏',   tot:44,rank:'D',tp:4, ca:8, pk:8, vs:5, pop:3,wom:7,ef:4,ac:3,rr:2,mil:3,note:'最西端ブランド・国境警備特需。小規模特化向き。'},
-  {n:'八重瀬町', r:'南部圏',     tot:72,rank:'B',tp:9, ca:14,pk:12,vs:7, pop:6,wom:8,ef:7,ac:6,rr:3,mil:1,note:'農業・工業団地・南部農村開発エリア。'},
+  /* ── S ランク ── */
+  {n:'沖縄市',   r:'中部',   tot:87, rank:'S', tp:13, ca:17, pk:13, vs:9, pop:9,  wom:9, ef:8, ac:6, rr:3, mil:9,  pkCap:false, bestBiz:'英語対応サービス/医療/美容/飲食',           note:'キャンプ瑞慶覧・マーキーゲート近接。ドル所得の軍属市場と県民市場の融合が強み。'},
+  {n:'北谷町',   r:'中部',   tot:86, rank:'S', tp:11, ca:19, pk:13, vs:9, pop:6,  wom:9, ef:9, ac:7, rr:3, mil:10, pkCap:false, bestBiz:'英語対応/マタニティ・ウェルネス/体験',        note:'アメリカンビレッジがアンカー。米軍家族の消費の要衝。英語対応サービスに絶好のポジション。'},
+  /* ── A ランク ── */
+  {n:'宜野湾市', r:'中部',   tot:82, rank:'A', tp:12, ca:17, pk:12, vs:8, pop:8,  wom:8, ef:8, ac:6, rr:3, mil:7,  pkCap:false, bestBiz:'医療/整体/子育てサービス/飲食',             note:'普天間基地隣接。国道58号沿いで車アクセス優秀。軍属・県民ミックス市場に強い。'},
+  {n:'浦添市',   r:'中南部', tot:80, rank:'A', tp:12, ca:16, pk:11, vs:8, pop:8,  wom:8, ef:7, ac:6, rr:4, mil:4,  pkCap:false, bestBiz:'整体/クリニック/子育て支援/サロン',          note:'パイプライン通りは県民生活導線の要。子育て世帯多く口コミ型サービスに最適。'},
+  {n:'うるま市', r:'中部',   tot:80, rank:'A', tp:11, ca:16, pk:13, vs:8, pop:8,  wom:8, ef:6, ac:5, rr:5, mil:4,  pkCap:false, bestBiz:'整体/美容/ファミリーサービス/飲食',          note:'沖縄北IC至近で交通便利。大型商業施設イオン隣接エリアあり。軍属市場も一定規模。'},
+  {n:'嘉手納町', r:'中部',   tot:79, rank:'A', tp:10, ca:17, pk:13, vs:8, pop:5,  wom:8, ef:8, ac:6, rr:4, mil:9,  pkCap:false, bestBiz:'英語対応/米軍家族向けサービス/飲食',        note:'嘉手納基地ゲート至近。国道58号沿いで視認性高。米軍家族の購買力を取り込める。'},
+  {n:'名護市',   r:'北部',   tot:78, rank:'A', tp:10, ca:16, pk:14, vs:8, pop:6,  wom:8, ef:6, ac:5, rr:5, mil:5,  pkCap:false, bestBiz:'医療/整体/飲食/サービス業',                note:'北部最大の拠点都市。辺野古移設工事による需要増が見込まれる。家賃低く参入しやすい。'},
+  {n:'豊見城市', r:'南部',   tot:78, rank:'A', tp:11, ca:15, pk:13, vs:8, pop:7,  wom:8, ef:6, ac:5, rr:5, mil:1,  pkCap:false, bestBiz:'ファミリー向け/美容/医療/飲食',            note:'那覇空港近く・住宅開発進行中。ファミリー世帯急増エリアで生活サービス需要大。'},
+  {n:'北中城村', r:'中部',   tot:78, rank:'A', tp:10, ca:16, pk:13, vs:8, pop:6,  wom:8, ef:7, ac:6, rr:4, mil:4,  pkCap:false, bestBiz:'イオン隣接/家族向け/サロン/クリニック',     note:'イオンモール沖縄ライカム隣接で集客力大。アンカー効果を活かした出店が有効。'},
+  {n:'南風原町', r:'南部',   tot:78, rank:'A', tp:11, ca:15, pk:13, vs:8, pop:7,  wom:8, ef:6, ac:5, rr:5, mil:0,  pkCap:false, bestBiz:'ファミリー/医療/美容/飲食',               note:'那覇南側のベッドタウン。世帯数増加中。医療・美容・飲食の生活需要が旺盛。'},
+  {n:'糸満市',   r:'南部',   tot:76, rank:'A', tp:10, ca:16, pk:14, vs:8, pop:6,  wom:8, ef:5, ac:4, rr:5, mil:1,  pkCap:false, bestBiz:'生活サービス/整体/美容/飲食',              note:'南ICアクセスで那覇商圏の延長。ファミリー層多く生活密着型サービスが強い。'},
+  {n:'読谷村',   r:'中部',   tot:76, rank:'A', tp:10, ca:15, pk:14, vs:7, pop:6,  wom:8, ef:6, ac:5, rr:5, mil:4,  pkCap:false, bestBiz:'陶芸/観光/ファミリーサービス/美容',         note:'壺屋焼・読谷山花織など伝統工芸の村。観光と住宅開発が両立。体験型業態が強い。'},
+  {n:'那覇市',   r:'南部',   tot:75, rank:'A', tp:15, ca:14, pk:8,  vs:10,pop:10, wom:9, ef:8, ac:6, rr:2, mil:2,  pkCap:true,  bestBiz:'美容/サロン/飲食/エステ',                 note:'県最大の商業集積。高集客だが家賃高・駐車困難。徒歩通勤者向け業態が最適。'},
+  /* ── B ランク ── */
+  {n:'金武町',   r:'中部',   tot:74, rank:'B', tp:8,  ca:16, pk:14, vs:7, pop:4,  wom:8, ef:7, ac:5, rr:5, mil:8,  pkCap:false, bestBiz:'英語対応サービス/飲食/体験',              note:'キャンプ・ハンセン隣接で米軍関連需要大。ゲート前の飲食・サービス業は安定収益可能。'},
+  {n:'中城村',   r:'中部',   tot:74, rank:'B', tp:9,  ca:15, pk:14, vs:7, pop:5,  wom:8, ef:6, ac:5, rr:5, mil:3,  pkCap:false, bestBiz:'生活サービス/ファミリー/整体',             note:'那覇・沖縄市の中間点。世帯数増加中の住宅地。生活密着型サービスが安定収益。'},
+  {n:'西原町',   r:'中部',   tot:74, rank:'B', tp:10, ca:15, pk:13, vs:7, pop:6,  wom:8, ef:5, ac:5, rr:5, mil:1,  pkCap:false, bestBiz:'学生向け/飲食/生活サービス',              note:'琉球大学所在地。学生・教職員向け需要安定。若い世帯多く健康・美容ニーズ旺盛。'},
+  {n:'石垣市',   r:'八重山', tot:72, rank:'B', tp:8,  ca:14, pk:13, vs:8, pop:5,  wom:9, ef:8, ac:4, rr:3, mil:0,  pkCap:false, bestBiz:'観光/ウェルネス/体験/高単価サービス',      note:'観光消費単価が高い。年間観光客150万人超。季節変動はあるが高付加価値業態に最適。'},
+  {n:'与那原町', r:'南部',   tot:72, rank:'B', tp:10, ca:15, pk:13, vs:7, pop:5,  wom:8, ef:5, ac:4, rr:5, mil:0,  pkCap:false, bestBiz:'生活サービス/飲食/美容',                 note:'那覇東バイパス沿いで通勤需要。南城市への入口として交通量確保。生活密着型に向く。'},
+  {n:'八重瀬町', r:'南部',   tot:72, rank:'B', tp:9,  ca:15, pk:14, vs:7, pop:5,  wom:8, ef:5, ac:4, rr:5, mil:0,  pkCap:false, bestBiz:'生活サービス/工業団地周辺飲食',           note:'南部工業団地隣接。工場勤務者・通勤者向けランチ・生活サービスに需要あり。'},
+  {n:'恩納村',   r:'北部',   tot:71, rank:'B', tp:8,  ca:16, pk:14, vs:7, pop:4,  wom:7, ef:8, ac:4, rr:3, mil:0,  pkCap:false, bestBiz:'リゾートウェルネス/スパ/高単価体験',      note:'国際リゾートホテル集積。観光客消費単価高い。高級ウェルネス・スパ業態に最適。'},
+  {n:'宮古島市', r:'宮古',   tot:68, rank:'B', tp:7,  ca:14, pk:12, vs:7, pop:5,  wom:8, ef:8, ac:4, rr:3, mil:0,  pkCap:false, bestBiz:'リゾートウェルネス/体験/高単価/美容',    note:'観光客急増・高単価市場形成中。ホテル増設で観光消費拡大。島民向け生活サービスも安定。'},
+  {n:'南城市',   r:'南部',   tot:66, rank:'B', tp:6,  ca:15, pk:14, vs:6, pop:4,  wom:7, ef:5, ac:4, rr:5, mil:1,  pkCap:false, bestBiz:'予約制ウェルネス/観光体験/高単価',       note:'世界遺産・斎場御嶽など観光資源豊富。予約制高単価業態なら成立。家賃低く参入コスト小。'},
+  /* ── C ランク ── */
+  {n:'宜野座村', r:'北部',   tot:63, rank:'C', tp:7,  ca:14, pk:14, vs:6, pop:3,  wom:7, ef:4, ac:3, rr:5, mil:3,  pkCap:false, bestBiz:'地元密着/生活サービス',                  note:'キャンプ・ハンセン隣接。軍属の一部需要あり。定住人口少なく生活密着型が中心。'},
+  {n:'本部町',   r:'北部',   tot:62, rank:'C', tp:7,  ca:13, pk:13, vs:6, pop:3,  wom:7, ef:5, ac:3, rr:5, mil:0,  pkCap:false, bestBiz:'観光/海洋体験/飲食',                   note:'美ら海水族館に年間300万人。観光シーズン集客大。飲食・体験業態なら安定収益。'},
+  {n:'今帰仁村', r:'北部',   tot:59, rank:'C', tp:6,  ca:13, pk:13, vs:5, pop:3,  wom:7, ef:4, ac:3, rr:5, mil:0,  pkCap:false, bestBiz:'歴史観光/体験/農産物加工',               note:'今帰仁城跡で観光客が一定数。JUNGLIA開業で地価+68.5%急騰中。農業・歴史体験系が強い。'},
+  {n:'久米島町', r:'離島',   tot:58, rank:'C', tp:5,  ca:12, pk:13, vs:5, pop:3,  wom:8, ef:4, ac:3, rr:5, mil:0,  pkCap:false, bestBiz:'観光ウェルネス/海洋体験/飲食',           note:'タラソテラピーリゾートなど観光施設あり。七ツ岩・はての浜で観光客増加中。'},
+  {n:'伊江村',   r:'北部',   tot:55, rank:'C', tp:5,  ca:10, pk:10, vs:5, pop:4,  wom:8, ef:5, ac:4, rr:4, mil:5,  pkCap:false, bestBiz:'ゆり観光/農業体験',                    note:'ゆり観光・農業体験。米軍補助飛行場あり。'},
+  {n:'竹富町',   r:'八重山', tot:54, rank:'C', tp:5,  ca:10, pk:10, vs:6, pop:3,  wom:7, ef:5, ac:3, rr:5, mil:0,  pkCap:false, bestBiz:'観光/体験/ウェルネス',                  note:'波照間・西表など絶景観光島を擁する。高単価観光体験に特化すれば安定収益可能。'},
+  {n:'国頭村',   r:'北部',   tot:52, rank:'C', tp:4,  ca:12, pk:13, vs:4, pop:2,  wom:7, ef:3, ac:2, rr:5, mil:0,  pkCap:false, bestBiz:'自然体験/アウトドア/地元密着サービス',    note:'やんばる自然豊か。観光需要は増加傾向だが定住人口少。自然体験・地元密着型が成立条件。'},
+  {n:'大宜味村', r:'北部',   tot:52, rank:'C', tp:4,  ca:11, pk:13, vs:4, pop:2,  wom:8, ef:3, ac:2, rr:5, mil:0,  pkCap:false, bestBiz:'長寿村ブランド活用/健康食品/ウェルネス', note:'世界最高水準の長寿村ブランド。健康・ウェルネス系で全国ブランド展開できる希少ポジション。'},
+  /* ── D ランク ── */
+  {n:'渡嘉敷村', r:'離島',   tot:46, rank:'D', tp:4,  ca:8,  pk:10, vs:4, pop:2,  wom:8, ef:3, ac:2, rr:5, mil:0,  pkCap:false, bestBiz:'ダイビング/観光/民宿',                 note:'慶良間諸島の観光島。ダイビング観光客多いが定住人口は700人。季節変動大。'},
+  {n:'東村',     r:'北部',   tot:45, rank:'D', tp:3,  ca:10, pk:13, vs:3, pop:1,  wom:7, ef:2, ac:1, rr:5, mil:0,  pkCap:false, bestBiz:'農業体験/エコツーリズム',               note:'本島最少人口の村。パイナップル産地として知名度あり。定住人口での商売は困難。'},
+  {n:'与那国町', r:'八重山', tot:44, rank:'D', tp:3,  ca:8,  pk:11, vs:4, pop:1,  wom:7, ef:3, ac:2, rr:5, mil:2,  pkCap:false, bestBiz:'防衛関連/観光体験',                   note:'日本最西端・自衛隊レーダー基地あり。防衛関連需要と国境観光で独自市場。'},
+  {n:'座間味村', r:'離島',   tot:43, rank:'D', tp:3,  ca:7,  pk:9,  vs:4, pop:2,  wom:8, ef:3, ac:2, rr:5, mil:0,  pkCap:false, bestBiz:'マリンリゾート/ウェルネス/体験',         note:'慶良間ブルーで世界的知名度。少人数・高単価の体験業態に特化すれば成立可能。'},
+  {n:'多良間村', r:'宮古',   tot:40, rank:'D', tp:2,  ca:8,  pk:11, vs:3, pop:1,  wom:7, ef:2, ac:1, rr:5, mil:0,  pkCap:false, bestBiz:'農水産業/地元生活サービス',             note:'宮古諸島の離島。定住1100人。農業中心で一般商業展開は困難。'},
+  {n:'伊平屋村', r:'離島',   tot:39, rank:'D', tp:2,  ca:7,  pk:10, vs:3, pop:1,  wom:8, ef:2, ac:1, rr:5, mil:0,  pkCap:false, bestBiz:'自然体験/農水産業',                   note:'「神の島」として知られる。少人数での高品質サービス展開なら観光需要取り込み可能。'},
+  {n:'伊是名村', r:'離島',   tot:39, rank:'D', tp:2,  ca:7,  pk:10, vs:3, pop:1,  wom:8, ef:2, ac:1, rr:5, mil:0,  pkCap:false, bestBiz:'歴史観光/体験/農水産業',               note:'尚円王生誕地として歴史ブランドあり。観光体験型なら観光客取り込みの余地あり。'},
+  {n:'南大東村', r:'離島',   tot:38, rank:'D', tp:2,  ca:7,  pk:10, vs:3, pop:1,  wom:7, ef:2, ac:1, rr:5, mil:0,  pkCap:false, bestBiz:'農業関連/サトウキビ関連',              note:'サトウキビ農業の島。定住人口少なく一般商業は困難。農業関連特化型。'},
+  {n:'粟国村',   r:'離島',   tot:37, rank:'D', tp:2,  ca:7,  pk:9,  vs:3, pop:1,  wom:7, ef:2, ac:1, rr:5, mil:0,  pkCap:false, bestBiz:'地元生活サービスのみ',                note:'定住人口700人。商業展開は地元需要のみ。外来観光客は少ない。'},
+  {n:'北大東村', r:'離島',   tot:37, rank:'D', tp:2,  ca:6,  pk:10, vs:3, pop:1,  wom:7, ef:2, ac:1, rr:5, mil:0,  pkCap:false, bestBiz:'地元生活サービスのみ',                note:'定住650人。南大東村と同様に農業中心。一般商業の展開は困難。'},
+  {n:'渡名喜村', r:'離島',   tot:34, rank:'D', tp:1,  ca:6,  pk:9,  vs:2, pop:1,  wom:7, ef:2, ac:1, rr:5, mil:0,  pkCap:false, bestBiz:'地元生活サービスのみ',                note:'県最少人口クラスの離島。商業展開は実質困難。'},
 ];
 let sortCol=-1,sortDir=1,curRegion='all';
 const keys=['n','r','p','i','to','ag','ba','it','gr','ch','sc','yi','od','mi','ne'];
@@ -2808,7 +2813,7 @@ function calcStoreScore(d, bizKey, targetKey, parkingSpaces) {
   let total = raw.reduce((a,b)=>a+b,0) + milBonus + tourBonus;
 
   // Parking cap rule
-  const parkingCapped = parseInt(parkingSpaces) < 5;
+  const parkingCapped = parseInt(parkingSpaces) < 5 || !!d.pkCap;
   if(parkingCapped) total = Math.min(75, total);
 
   return { raw, total: Math.round(total), parkingCapped };
@@ -2849,8 +2854,8 @@ function runStoreDiag() {
       <div class="go-verdict ${verdict.cls}" style="font-size:38px;font-weight:900;letter-spacing:-1px;color:${verdict.color};flex-shrink:0">${verdict.label}</div>
       <div class="go-desc">
         <div class="go-title">${muniName} × ${bizLabel.replace(/^./,'')} — 立地適合スコア <span style="font-size:24px;color:${verdict.color}">${total}</span> / 100点</div>
-        <div class="go-sub">${verdict.title}。ランク: <strong style="color:${verdict.color}">${d.rank}ランク</strong>（基本スコア${d.tot}点） ｜ ターゲット: ${tgtLabel.replace(/^./,'')} ｜ ${d.note}
-          ${parkingCapped?'<br>⚠️ <strong style="color:#fbbf24">駐車場キャップ適用済（5台未満）→ 最高75点制限</strong>':''}
+        <div class="go-sub">${verdict.title}。ランク: <strong style="color:${verdict.color}">${d.rank}ランク</strong>（基本スコア${d.tot}点） ｜ ターゲット: ${tgtLabel.replace(/^./,'')} ｜ ${d.note} ｜ 💡 推奨業種: <strong>${d.bestBiz||'—'}</strong>
+          ${parkingCapped?'<br>⚠️ <strong style="color:#fbbf24">'+(d.pkCap?'エリア固有の駐車場不足によるスコアキャップ適用':'駐車場5台未満キャップ適用')+'→ 最高75点制限</strong>':''}
         </div>
       </div>`;
 
@@ -2943,7 +2948,7 @@ function renderAnalysisPanels(d, total, bizKey, targetKey, parking, raw) {
   const milScore = d.mil;
   const econText = milScore >= 7
     ? `米軍軍属スコア${milScore}/10：<strong>米軍家族の年収中央値は$65,000〜$90,000</strong>。ドル建て収入で円安恩恵を受け、在日期間中は消費余力が高い。基地住宅費・医療費が支給されるため可処分所得が高く、客単価は県民平均の1.5〜2.0倍に設定可能。経済適合スコア${raw[6].toFixed(1)}点（業種調整後）。`
-    : `経済適合スコア${raw[6].toFixed(1)}点：沖縄県民の平均世帯年収は${d.r.includes('中南部')||d.r.includes('中部')?'350〜380万円':'270〜310万円'}水準。手取り月収ベースで<strong>価格感度は高い</strong>が、品質・コミュニティ価値への支出は惜しまない傾向（仲間消費文化）。月2〜3回来店の「日常消費型」モデルが最安定。`;
+    : `経済適合スコア${raw[6].toFixed(1)}点：沖縄県民の平均世帯年収は${d.r.includes('中部')||d.r.includes('南部')?'350〜380万円':'270〜310万円'}水準。手取り月収ベースで<strong>価格感度は高い</strong>が、品質・コミュニティ価値への支出は惜しまない傾向（仲間消費文化）。月2〜3回来店の「日常消費型」モデルが最安定。`;
 
   // Statistics panel
   const allTots = STOREDATA.map(s=>s.tot);
@@ -2953,7 +2958,7 @@ function renderAnalysisPanels(d, total, bizKey, targetKey, parking, raw) {
   const statText = `全41市町村中<strong>上位${100-pct}%ile</strong>（平均${mean.toFixed(1)}点±${std.toFixed(1)}）。業種調整後スコア<strong>${total}点</strong>は統計的に「${total>=mean+std?'平均+1σ以上の優良立地':total>=mean?'平均以上の良好立地':total>=mean-std?'平均付近の許容立地':'要改善立地'}」。成功事業者の立地スコア分布（業種別調査）では、黒字転換までの期間が：85点以上→平均8ヶ月、75〜84点→14ヶ月、65〜74点→22ヶ月という相関データあり。`;
 
   // History/Culture panel
-  const histText = `沖縄の自動車依存度は<strong>1世帯平均1.38台</strong>（全国2位）。1972年本土復帰まで右側通行だった歴史的背景から、米軍基地周辺は左折入店導線が市場慣行。車アクセススコア${raw[1].toFixed(1)}/${DIM_MAXES[1]}点（業種調整後）。${d.r==='中部都市圏'||d.r==='中部圏'?'基地経済（SOFA特需・USドル循環）が地域経済の約20%を占める中部エリア。':''}沖縄の商業施設は「ショッピングセンター型」文化が定着（イオン・サンエー・リウボウが生活インフラ）。独立店舗はアンカーテナントとの共生戦略が成功の鍵。`;
+  const histText = `沖縄の自動車依存度は<strong>1世帯平均1.38台</strong>（全国2位）。1972年本土復帰まで右側通行だった歴史的背景から、米軍基地周辺は左折入店導線が市場慣行。車アクセススコア${raw[1].toFixed(1)}/${DIM_MAXES[1]}点（業種調整後）。${d.r==='中部'||d.r==='中南部'?'基地経済（SOFA特需・USドル循環）が地域経済の約20%を占める中部エリア。':''}沖縄の商業施設は「ショッピングセンター型」文化が定着（イオン・サンエー・リウボウが生活インフラ）。独立店舗はアンカーテナントとの共生戦略が成功の鍵。`;
 
   // Car society panel
   const caScore = raw[1]; // Car Access
@@ -3045,17 +3050,13 @@ function renderActions(d, total, bizKey, targetKey, raw, parkingCapped) {
     </div>
     <div style="background:#f0fdf4;border-radius:8px;padding:12px 16px;font-size:11.5px;line-height:1.8;color:#14532d">
       <strong>🎯 業種別アドバイス：</strong>${recText}
+    </div>
+    <div style="background:#eff6ff;border-radius:8px;padding:10px 14px;font-size:11px;line-height:1.7;color:#1e40af;margin-top:10px">
+      🏆 <strong>このエリアの推奨業種（スプレッドシートDB）：</strong> ${d.bestBiz||'汎用ビジネス'}
     </div>`;
 }
 
-// Register showTab for store tab
-(function(){
-  const origShow = window.showTab;
-  window.showTab = function(id,btn){
-    origShow(id,btn);
-    // store tab doesn't need special init
-  };
-})();
+// store tab: no special init needed
 
 </script>
 </body>
