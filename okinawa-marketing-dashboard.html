@@ -467,6 +467,9 @@ tbody tr:nth-child(even):hover td{background:#f0f5ff}
   <button class="nav-btn" onclick="showTab('ai',this)" style="background:rgba(232,98,26,.15);color:#f97316;border-bottom-color:transparent">🎯 エリア選定AI ★</button>
   <button class="nav-btn" onclick="showTab('store',this)" style="background:rgba(22,101,52,.15);color:#4ade80;border-bottom-color:transparent">🏬 店舗立地診断 ★</button>
   <button class="nav-btn" onclick="showTab('roi',this)" style="background:rgba(202,138,4,.15);color:#fbbf24;border-bottom-color:transparent">💴 ROI試算 ★</button>
+  <button class="nav-btn" onclick="showTab('compare',this)" style="background:rgba(139,92,246,.15);color:#a78bfa;border-bottom-color:transparent">⚖️ 3エリア比較 ★</button>
+  <button class="nav-btn" onclick="showTab('timing',this)" style="background:rgba(239,68,68,.15);color:#f87171;border-bottom-color:transparent">⏰ 参入窓口 ★</button>
+  <button class="nav-btn" onclick="showTab('roadmap',this)" style="background:rgba(16,185,129,.15);color:#34d399;border-bottom-color:transparent">🗓️ ロードマップ ★</button>
 </nav>
 
 <div class="main">
@@ -1936,6 +1939,92 @@ tbody tr:nth-child(even):hover td{background:#f0f5ff}
   </div>
 </div>
 <!-- /tab-roi -->
+<div class="tab" id="tab-compare">
+  <div class="section-banner" style="background:linear-gradient(135deg,#4c1d95,#7c3aed)">
+    <h2>⚖️ 3エリア同時比較</h2>
+    <p>最大3市町村を9次元レーダーチャートで重ね合わせ。立地スコアの強み・弱みを一目で把握。</p>
+  </div>
+  <div class="card" style="margin:16px">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px">
+      <div><label class="form-label">エリア①</label><select id="cmp-a" class="select-input"></select></div>
+      <div><label class="form-label">エリア②</label><select id="cmp-b" class="select-input"></select></div>
+      <div><label class="form-label">エリア③（任意）</label><select id="cmp-c" class="select-input"></select></div>
+    </div>
+    <button class="run-btn" onclick="runCompare()" style="background:#7c3aed">⚖️ 比較分析を実行する</button>
+  </div>
+  <div id="cmp-result" style="display:none;margin:0 16px 24px">
+    <div style="display:grid;grid-template-columns:1.2fr 1fr;gap:16px">
+      <div class="card">
+        <h3 style="color:var(--primary);margin-bottom:12px">📡 9次元レーダーチャート（スコア%換算）</h3>
+        <div style="position:relative;height:380px"><canvas id="c-compare"></canvas></div>
+      </div>
+      <div class="card">
+        <h3 style="color:var(--primary);margin-bottom:12px">📊 スコア詳細比較</h3>
+        <div id="cmp-table-wrap" style="overflow-x:auto;font-size:12px"></div>
+      </div>
+    </div>
+    <div id="cmp-insight" class="card" style="margin-top:16px"></div>
+  </div>
+</div><!-- /tab-compare -->
+
+<div class="tab" id="tab-timing">
+  <div class="section-banner" style="background:linear-gradient(135deg,#7f1d1d,#dc2626)">
+    <h2>⏰ 市場窓口診断 — 参入タイミング分析</h2>
+    <p>「今が入るべきか？」を時間軸で判定。立地スコア＋地価動向＋競合飽和度＋開発カタリストを総合評価。</p>
+  </div>
+  <div style="margin:16px">
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px">
+      <button class="fb on" onclick="filterTiming('all',this)">全41市町村</button>
+      <button class="fb" onclick="filterTiming('今すぐ',this)" style="color:#34d399">🟢 今すぐ参入</button>
+      <button class="fb" onclick="filterTiming('3-6ヶ月',this)" style="color:#60a5fa">🔵 3-6ヶ月以内</button>
+      <button class="fb" onclick="filterTiming('1年後',this)" style="color:#fbbf24">🟡 1年後検討</button>
+      <button class="fb" onclick="filterTiming('要観察',this)" style="color:#9ca3af">⚪ 要観察</button>
+      <button class="fb" onclick="filterTiming('参入難',this)" style="color:#f87171">🔴 参入難</button>
+    </div>
+    <div style="overflow-x:auto">
+      <table style="width:100%;border-collapse:collapse;font-size:12.5px">
+        <thead><tr style="background:var(--surface-2);color:var(--muted);font-size:11px">
+          <th style="padding:8px 10px;text-align:left">市町村</th>
+          <th style="padding:8px 6px">参入窓口</th>
+          <th style="padding:8px 6px;text-align:left">緊急度</th>
+          <th style="padding:8px 10px;text-align:left;min-width:160px">主要カタリスト</th>
+          <th style="padding:8px 10px;text-align:left">地価トレンド</th>
+          <th style="padding:8px 10px;text-align:left">競合密度</th>
+          <th style="padding:8px 10px;text-align:left;min-width:200px">戦略メモ</th>
+        </tr></thead>
+        <tbody id="timing-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div><!-- /tab-timing -->
+
+<div class="tab" id="tab-roadmap">
+  <div class="section-banner" style="background:linear-gradient(135deg,#064e3b,#059669)">
+    <h2>🗓️ 出店後12ヶ月ロードマップ自動生成</h2>
+    <p>GO判定後「で、何から始める？」に答える。業種×エリアの組み合わせで月次アクション計画を自動生成。</p>
+  </div>
+  <div class="card" style="margin:16px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+      <div><label class="form-label">出店エリア</label><select id="rm-muni" class="select-input"></select></div>
+      <div>
+        <label class="form-label">業種</label>
+        <select id="rm-biz" class="select-input">
+          <option value="wellness">🌺 ウェルネス・マタニティ・ヨガ</option>
+          <option value="medical">🏥 医療・クリニック・接骨院</option>
+          <option value="beauty">💆 美容・ネイル・エステ</option>
+          <option value="restaurant">🍽️ 飲食（カフェ・レストラン）</option>
+          <option value="retail">🛍️ 小売・物販・専門店</option>
+          <option value="education">📚 教育・英語スクール</option>
+          <option value="military">⭐ 米軍軍属特化サービス</option>
+          <option value="tourism">🏖️ 観光・体験</option>
+        </select>
+      </div>
+    </div>
+    <button class="run-btn" onclick="runRoadmap()" style="background:#059669">🗓️ 12ヶ月ロードマップを生成する</button>
+  </div>
+  <div id="rm-result" style="margin:0 16px 24px;display:none"></div>
+</div><!-- /tab-roadmap -->
+
 
 <script>
 // ── DATA ──
@@ -3488,6 +3577,274 @@ window.showTab = function(id, btn) {
     if(!roiCfChart) calcROI();
   }
 };
+
+// ══════════════════════════════════════
+// v3.0 NEW FEATURES
+// ══════════════════════════════════════
+
+// ── ② 3エリア同時比較 ──
+const CMP_DIMS = ['通行量','車アクセス','駐車場','視認性','商圏人口','口コミ','経済適合','競合優位','賃料ROI'];
+const CMP_KEYS = ['tp','ca','pk','vs','pop','wom','ef','ac','rr'];
+const CMP_MAX  = [15, 20, 15, 10, 10, 10, 9, 7, 5];
+
+let cmpChart = null;
+
+function initV30Selects(){
+  const opts = STOREDATA.map(s => `<option value="${s.n}">${s.n}（${s.rank} ${s.tot}点）</option>`).join('');
+  document.getElementById('cmp-a').innerHTML = '<option value="">── 選択 ──</option>' + opts;
+  document.getElementById('cmp-b').innerHTML = '<option value="">── 選択 ──</option>' + opts;
+  document.getElementById('cmp-c').innerHTML = '<option value="">なし</option>'        + opts;
+  document.getElementById('rm-muni').innerHTML = '<option value="">── 選択 ──</option>' + opts;
+}
+
+function runCompare(){
+  const na = document.getElementById('cmp-a').value;
+  const nb = document.getElementById('cmp-b').value;
+  const nc = document.getElementById('cmp-c').value;
+  if(!na || !nb){ alert('エリア①②を選択してください'); return; }
+  const sa = STOREDATA.find(s => s.n === na);
+  const sb = STOREDATA.find(s => s.n === nb);
+  const sc = nc ? STOREDATA.find(s => s.n === nc) : null;
+  const areas = [sa, sb, sc].filter(Boolean);
+  const COLS = ['rgba(59,130,246,0.85)','rgba(239,68,68,0.85)','rgba(16,185,129,0.85)'];
+  const FILL = ['rgba(59,130,246,0.12)','rgba(239,68,68,0.12)','rgba(16,185,129,0.12)'];
+  const datasets = areas.map((s,i) => ({
+    label: s.n,
+    data: CMP_KEYS.map((k,j) => Math.round(s[k] / CMP_MAX[j] * 100)),
+    borderColor: COLS[i], backgroundColor: FILL[i],
+    borderWidth: 2, pointBackgroundColor: COLS[i], pointRadius: 5
+  }));
+  if(cmpChart) cmpChart.destroy();
+  cmpChart = new Chart(document.getElementById('c-compare'), {
+    type: 'radar',
+    data: { labels: CMP_DIMS, datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      scales: { r: {
+        min: 0, max: 100,
+        ticks: { stepSize: 25, font: { size: 9 }, backdropColor: 'transparent' },
+        pointLabels: { font: { size: 11 } },
+        grid: { color: 'rgba(255,255,255,0.1)' },
+        angleLines: { color: 'rgba(255,255,255,0.1)' }
+      }},
+      plugins: { legend: { labels: { font: { size: 11 }, boxWidth: 12 } } }
+    }
+  });
+
+  // 比較テーブル
+  const hd = areas.map(s => `<th style="padding:6px 10px;text-align:right;color:#60a5fa">${s.n}</th>`).join('');
+  const rankBadge = s => `<span class="badge b-${s.rank==='S'?'green':s.rank==='A'?'yellow':'red'}">${s.rank}</span>`;
+  const metaRows = [
+    ['合計スコア', ...areas.map(s => `<strong style="color:var(--accent)">${s.tot}</strong>`)],
+    ['軍属スコア', ...areas.map(s => `${s.mil}/10`)],
+    ['ランク',     ...areas.map(s => rankBadge(s))],
+  ];
+  const dimRows = CMP_DIMS.map((d,i) => [d, ...areas.map(s => `${s[CMP_KEYS[i]]}`)]);
+  const allRows = [...metaRows, ...dimRows].map(r =>
+    `<tr style="border-bottom:1px solid var(--border)"><td style="padding:5px 8px;color:var(--muted);font-size:11px">${r[0]}</td>${r.slice(1).map(v=>`<td style="padding:5px 10px;text-align:right">${v}</td>`).join('')}</tr>`
+  ).join('');
+  document.getElementById('cmp-table-wrap').innerHTML =
+    `<table style="width:100%;border-collapse:collapse"><thead><tr style="background:var(--surface-2)"><th style="padding:6px 8px;text-align:left;color:var(--muted);font-size:11px">指標</th>${hd}</tr></thead><tbody>${allRows}</tbody></table>`;
+
+  // インサイト
+  const winner = areas.reduce((a,b) => a.tot > b.tot ? a : b);
+  const milW   = areas.reduce((a,b) => a.mil > b.mil ? a : b);
+  const milNote = milW.mil >= 7 ? `<p style="margin:6px 0;font-size:13px">• <strong>軍属市場 No.1:</strong> ${milW.n}（mil ${milW.mil}/10）— 軍属特化なら${milW.n}が最有力</p>` : '';
+  document.getElementById('cmp-insight').innerHTML =
+    `<h3 style="color:var(--primary);margin-bottom:10px">🎯 koya 戦略インサイト</h3>
+     <p style="margin:6px 0;font-size:13px">• <strong>総合スコア No.1:</strong> ${winner.n}（${winner.tot}点）— ${winner.bestBiz}</p>
+     ${milNote}
+     <p style="margin:6px 0;font-size:13px">• <strong>推奨業種:</strong> ${areas.map(s=>`${s.n}→${s.bestBiz.split('/')[0]}`).join(' ／ ')}</p>`;
+  document.getElementById('cmp-result').style.display = 'block';
+}
+
+// ── ③ 市場窓口診断 ──
+const TIMING_DATA = [
+  {n:'沖縄市',   w:'今すぐ',  u:9,  cat:'Sランク・軍属+県民複合市場が安定',                    land:'横ばい',    comp:'中',   memo:'常時参入チャンス。英語対応業態は競合ほぼゼロ'},
+  {n:'北谷町',   w:'今すぐ',  u:9,  cat:'アメリカンビレッジ・軍属消費エリア最強',               land:'上昇中',   comp:'中高', memo:'FTO系・英語対応は今すぐ。競合は増加傾向のため早め推奨'},
+  {n:'宜野湾市', w:'今すぐ',  u:10, cat:'普天間返還後の爆発成長期待・GDP成長率+9.6%（主要都市最高）', land:'上昇中', comp:'中',   memo:'今入ってブランド構築→返還後に市場覇者。最重要参入窓口'},
+  {n:'浦添市',   w:'今すぐ',  u:8,  cat:'パイプライン通りの生活導線・子育て世帯急増',           land:'横ばい〜上昇', comp:'中',   memo:'県民向け生活密着型。家賃コスト効率◎'},
+  {n:'うるま市', w:'3-6ヶ月', u:7,  cat:'イオン隣接エリア開発・沖縄北IC至近',                  land:'横ばい',   comp:'中低', memo:'ファミリー型需要増加中。競合薄い今が窓口'},
+  {n:'嘉手納町', w:'今すぐ',  u:8,  cat:'嘉手納基地ゲート前・軍属需要安定',                    land:'横ばい',   comp:'低',   memo:'英語対応業態の参入障壁低い。先行者優位が極めて大きい'},
+  {n:'名護市',   w:'今すぐ',  u:8,  cat:'辺野古工事需要増+JUNGLIA波及効果・北部最大都市',       land:'上昇中',   comp:'低中', memo:'家賃低くコスト優位。北部拠点確立のラストチャンス'},
+  {n:'豊見城市', w:'今すぐ',  u:7,  cat:'住宅開発急進行・世帯数急増・那覇空港近接',             land:'上昇中',   comp:'低',   memo:'商業施設が少ない成長エリア。先行者チャンス'},
+  {n:'北中城村', w:'3-6ヶ月', u:7,  cat:'イオンモール沖縄ライカム隣接・集客力大',               land:'横ばい',   comp:'中',   memo:'アンカー効果活用型で安定集客可能。準備期間6ヶ月推奨'},
+  {n:'南風原町', w:'今すぐ',  u:7,  cat:'那覇南側ベッドタウン・世帯数増加中',                  land:'横ばい',   comp:'低中', memo:'那覇の補完市場。ファミリー向けに最適'},
+  {n:'糸満市',   w:'3-6ヶ月', u:6,  cat:'南ICアクセス・ファミリー層増加傾向',                   land:'横ばい',   comp:'低',   memo:'競合少なく生活密着型で安定収益可能'},
+  {n:'読谷村',   w:'3-6ヶ月', u:6,  cat:'人口増加・観光×住宅の複合エリア',                     land:'横ばい',   comp:'低中', memo:'体験型業態・美容系が特に向いている'},
+  {n:'那覇市',   w:'参入難',  u:2,  cat:'競合過多・賃料高騰・駐車困難（pkCap=true）',          land:'上昇',     comp:'最高', memo:'差別化困難。他エリアで成功後の進出を推奨'},
+  {n:'金武町',   w:'今すぐ',  u:7,  cat:'キャンプ・ハンセン近接・軍属需要大',                  land:'横ばい',   comp:'低',   memo:'軍属特化型には穴場。英語対応だけで差別化可能'},
+  {n:'中城村',   w:'3-6ヶ月', u:6,  cat:'世帯数増加中・住宅地として成熟',                      land:'横ばい',   comp:'低',   memo:'生活密着型サービスが安定収益。競合参入前が窓口'},
+  {n:'西原町',   w:'要観察',  u:5,  cat:'琉球大学学生需要・成長は緩やか',                      land:'横ばい',   comp:'中',   memo:'学生向け低単価か専門サービスで差別化が必要'},
+  {n:'石垣市',   w:'1年後',   u:5,  cat:'観光客増加・高単価市場形成中',                        land:'上昇中',   comp:'中',   memo:'競合増加前に高単価×体験型で先行するのが吉'},
+  {n:'与那原町', w:'要観察',  u:5,  cat:'通勤需要・成長は緩やか',                             land:'横ばい',   comp:'中',   memo:'那覇バイパス沿いのニッチ需要を狙う戦略が有効'},
+  {n:'八重瀬町', w:'要観察',  u:4,  cat:'工業団地需要・成長余地は限定的',                      land:'横ばい',   comp:'低',   memo:'工場勤務者向けランチ・生活サービスに特化すれば安定'},
+  {n:'恩納村',   w:'1年後',   u:5,  cat:'国際リゾート集積・高単価市場',                        land:'上昇中',   comp:'高',   memo:'大型ホテルとの差別化設計が必須。高単価×体験型'},
+  {n:'宮古島市', w:'1年後',   u:6,  cat:'リゾート急成長・観光消費単価全県最高水準',             land:'急上昇',   comp:'中高', memo:'島嶼コスト高いが消費単価高く収益性◎。今から準備開始'},
+  {n:'南城市',   w:'要観察',  u:4,  cat:'世界遺産観光・需要は季節変動大',                      land:'横ばい',   comp:'低',   memo:'予約制高単価業態なら成立。家賃低く投資額小さい'},
+  {n:'宜野座村', w:'今すぐ',  u:9,  cat:'人口増加率沖縄1位(2025国勢調査)×競合ほぼゼロ',       land:'横ばい',   comp:'最低', memo:'本当の穴場。今から入れば地域独占が可能'},
+  {n:'本部町',   w:'今すぐ',  u:7,  cat:'JUNGLIA開業(2025年7月)・美ら海水族館300万人',        land:'上昇中',   comp:'低中', memo:'JUNGLIA効果で観光客急増中。今が参入窓口'},
+  {n:'今帰仁村', w:'参入難',  u:2,  cat:'JUNGLIA効果で地価+68.5%急騰・参入コスト肥大化',      land:'急上昇',   comp:'増加中', memo:'コスト上昇で収益化困難。農業体験系のみ検討余地あり'},
+  {n:'久米島町', w:'要観察',  u:4,  cat:'観光施設増加・テレワーク誘致推進',                    land:'横ばい',   comp:'低',   memo:'島嶼コストに注意。テレワーカー向けサービスが最適'},
+  {n:'伊江村',   w:'要観察',  u:4,  cat:'ゆり観光・補助飛行場・農業体験',                      land:'横ばい',   comp:'低',   memo:'定住人口少なく季節観光が中心。農業系で存在感'},
+  {n:'竹富町',   w:'1年後',   u:3,  cat:'西表島世界遺産・絶景観光需要',                        land:'横ばい',   comp:'低',   memo:'高単価×体験型に絞れば独自ポジション確立可能'},
+  {n:'国頭村',   w:'要観察',  u:3,  cat:'やんばる世界遺産・エコツーリズム',                    land:'横ばい',   comp:'低',   memo:'定住人口少ない。観光客向け高単価体験のみ成立'},
+  {n:'大宜味村', w:'1年後',   u:4,  cat:'世界最高水準の長寿村ブランド・健康ビジネス適地',       land:'横ばい',   comp:'最低', memo:'長寿ブランドを活かした健康食品・ウェルネスなら全国展開可'},
+  {n:'渡嘉敷村', w:'要観察',  u:3,  cat:'慶良間諸島・ダイビング観光',                         land:'横ばい',   comp:'低',   memo:'季節変動大。通年型の観光モデル構築が先決'},
+  {n:'東村',     w:'参入難',  u:1,  cat:'本島最少人口・商業基盤なし',                         land:'横ばい',   comp:'なし', memo:'農業体験・エコツーリズムのみ。一般商業は成立しない'},
+  {n:'与那国町', w:'要観察',  u:3,  cat:'防衛関連需要・最西端観光',                           land:'横ばい',   comp:'低',   memo:'自衛隊関連需要あり。観光客増加傾向も絶対数少ない'},
+  {n:'座間味村', w:'要観察',  u:3,  cat:'慶良間ブルー・世界的ダイビング聖地',                  land:'横ばい',   comp:'低',   memo:'少人数高単価型業態のみ成立。規模拡大は困難'},
+  {n:'多良間村', w:'参入難',  u:1,  cat:'定住人口1100人・農業中心',                           land:'横ばい',   comp:'なし', memo:'農水産業関連以外の商業展開は困難'},
+  {n:'伊平屋村', w:'参入難',  u:1,  cat:'定住人口1300人・神の島観光',                         land:'横ばい',   comp:'なし', memo:'少人数×限定観光のみ。高単価農泊系のみ余地あり'},
+  {n:'伊是名村', w:'参入難',  u:1,  cat:'定住人口1500人・歴史観光',                           land:'横ばい',   comp:'なし', memo:'尚円王生誕地ブランドで観光体験型なら余地あり'},
+  {n:'南大東村', w:'参入難',  u:1,  cat:'定住人口1200人・農業中心',                           land:'横ばい',   comp:'なし', memo:'サトウキビ関連以外困難。農業6次産業化のみ検討余地'},
+  {n:'粟国村',   w:'参入難',  u:1,  cat:'定住人口700人・商業基盤なし',                        land:'横ばい',   comp:'なし', memo:'定住人口少なすぎて一般商業は成立しない'},
+  {n:'北大東村', w:'参入難',  u:1,  cat:'定住人口650人・農業中心',                            land:'横ばい',   comp:'なし', memo:'最小規模離島の一つ。農業関連特化型のみ'},
+  {n:'渡名喜村', w:'参入難',  u:1,  cat:'県最少人口クラス・商業基盤なし',                     land:'横ばい',   comp:'なし', memo:'文化的景観観光のみ。一般商業展開は不可'},
+];
+
+const TIMING_COLORS = {'今すぐ':'#34d399','3-6ヶ月':'#60a5fa','1年後':'#fbbf24','要観察':'#9ca3af','参入難':'#f87171'};
+const TIMING_BG = {'今すぐ':'rgba(16,185,129,.1)','3-6ヶ月':'rgba(59,130,246,.1)','1年後':'rgba(212,168,67,.1)','要観察':'rgba(156,163,175,.06)','参入難':'rgba(239,68,68,.06)'};
+let timingFilter = 'all';
+
+function renderTimingTable(){
+  const data = timingFilter === 'all' ? TIMING_DATA : TIMING_DATA.filter(d => d.w === timingFilter);
+  const urgBar = u => `<div style="display:flex;align-items:center;gap:4px"><div style="width:${u*9}px;height:6px;border-radius:3px;background:${u>=8?'#34d399':u>=6?'#fbbf24':'#f87171'}"></div><span style="font-size:11px">${u}/10</span></div>`;
+  document.getElementById('timing-tbody').innerHTML = data.map(d => `
+    <tr style="border-bottom:1px solid var(--border);background:${TIMING_BG[d.w]}">
+      <td style="padding:8px 10px;font-weight:600">${d.n}</td>
+      <td style="padding:8px 6px;text-align:center"><span style="color:${TIMING_COLORS[d.w]};padding:3px 8px;border-radius:10px;font-size:11px;white-space:nowrap;border:1px solid ${TIMING_COLORS[d.w]}55;background:${TIMING_BG[d.w]}">${d.w}</span></td>
+      <td style="padding:8px 6px">${urgBar(d.u)}</td>
+      <td style="padding:8px 10px;font-size:12px">${d.cat}</td>
+      <td style="padding:8px 10px;font-size:12px">${d.land}</td>
+      <td style="padding:8px 10px;font-size:12px">${d.comp}</td>
+      <td style="padding:8px 10px;font-size:12px;color:var(--muted)">${d.memo}</td>
+    </tr>`).join('');
+}
+
+function filterTiming(w, btn){
+  timingFilter = w;
+  document.querySelectorAll('#tab-timing .fb').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  renderTimingTable();
+}
+
+// ── ④ 12ヶ月ロードマップ ──
+const RM_BIZ_LABELS = {
+  wellness:'ウェルネス・マタニティ・ヨガ', medical:'医療・クリニック・接骨院',
+  beauty:'美容・ネイル・エステ', restaurant:'飲食（カフェ・レストラン）',
+  retail:'小売・物販・専門店', education:'教育・英語スクール',
+  military:'米軍軍属特化サービス', tourism:'観光・体験'
+};
+
+const RM_PHASES = [
+  { label:'Phase 1: 市場調査・競合分析', icon:'🔍', color:'#1a4d7a', months:'Month 1〜2',
+    base:['対象エリアの競合店を全軒調査（Google Maps＋現地視察）','ターゲット顧客にヒアリング5〜10件実施','物件相場・賃料水準を不動産業者3社に確認','行政（市町村役場・商工会）に補助金・助成金情報を問い合わせ','SNS（Instagram・Facebook）で競合の集客方法を分析'],
+    wellness:['産前産後ケア・ヨガ需要のニーズ調査（アンケート実施）','近隣病院・産婦人科との連携可能性を打診'],
+    medical:['医療法人設立・開業許可手続きのリサーチ','近隣医療機関との棲み分け・診療科別需要分析'],
+    beauty:['美容師法・エステ関連資格要件の確認','トレンド調査（SNS競合メニュー分析）'],
+    restaurant:['飲食業許可・食品衛生法要件の確認','地元農家・仕入れ先候補をリストアップ'],
+    education:['英語スクール・競合塾の授業料・カリキュラム調査','教育補助金（文科省・沖縄県）情報収集'],
+    military:['基地Facebook Groupsでニーズ調査','AAFES・各基地のサービス空白を確認','英語ネイティブスタッフの採用可能性を事前確認'],
+    tourism:['観光庁・沖縄県の体験型事業支援制度調査','体験コンテンツの独自性・差別化ポイント整理'],
+    retail:['仕入れ先・メーカーへの打診・委託販売交渉','EC（ネット販売）との並行展開可能性を検討'] },
+
+  { label:'Phase 2: 法人設立・物件確定', icon:'🏢', color:'#1f7a4a', months:'Month 2〜4',
+    base:['合同会社または株式会社の設立手続き（定款・登記）','物件3〜5件を内見し賃料・立地・駐車場を比較','最終物件で交渉（敷金・フリーレント交渉）','事業計画書を作成し日本政策金融公庫・銀行に融資申込','社会保険・雇用保険の加入手続き'],
+    wellness:['個室プライバシーを確保できるレイアウト設計','産前産後ケア特有設備（ヨガルーム・施術ベッド）要件を確認'],
+    medical:['医療法人設立または診療所開設届の提出','医療機器リース・購入先を決定'],
+    beauty:['美容室開設届・保健所検査の日程調整','防火管理者選任届'],
+    restaurant:['食品衛生責任者・防火管理者の資格取得','厨房設備の見積もりを3社以上で比較'],
+    education:['認可外保育施設・学習塾の届出確認','防音・安全基準を満たす物件選定'],
+    military:['英語表記看板・内装計画の策定','US dollar対応クレジット決済端末の選定'],
+    tourism:['体験場所・集合場所の安全確認・保険加入','旅行業登録が必要か確認（ガイド業務の場合）'],
+    retail:['在庫管理・陳列スペースを考慮した物件選定','POSレジシステムの比較検討'] },
+
+  { label:'Phase 3: 内装・採用・SNS準備', icon:'🛠️', color:'#6a2f7a', months:'Month 4〜7',
+    base:['内装工事着工（コンセプト・ブランドカラーを統一）','スタッフ採用開始（地元求人サイト・ハローワーク・SNS）','Instagram・Facebook・Googleビジネスプロフィールを開設','メニュー・サービス内容・料金表を確定','POS・予約管理システムのセットアップ'],
+    wellness:['バイリンガル（日英）ウェルカムコンテンツを作成','産後ケアサービスのInstagram事前告知投稿を開始','地元助産師・産婦人科医師との連携関係を構築'],
+    medical:['医療従事者の採用（求人→面接→内定）','電子カルテ・予約システムの導入','院内掲示・同意書類の作成'],
+    beauty:['施術メニュー・料金表の完成','ビフォーアフター撮影用のモデルスタッフ撮影','LINE公式アカウントの開設'],
+    restaurant:['試作メニューを地元の人に試食してもらいフィードバック収集','食材仕入れルートを確定し試験納品を実施'],
+    education:['カリキュラム・教材の完成','体験レッスン（無料）の告知・申込受付開始'],
+    military:['英語SNSアカウント（Instagram・Facebook）の開設','基地内掲示板・Facebook Groupsへの事前告知投稿（許可確認）'],
+    tourism:['体験コンテンツの試験運用（友人・知人で実施）','じゃらん・Airbnb体験等への登録準備'],
+    retail:['商品陳列・ディスプレイの完成','開店セールの企画・チラシ制作'] },
+
+  { label:'Phase 4: ソフトオープン・改善', icon:'🚀', color:'#d4a843', months:'Month 7〜9',
+    base:['ソフトオープン（招待制プレオープンで知人・地域住民を招待）','お客様アンケートでサービス品質を評価・改善','Googleマップにレビューを依頼（初期5件以上を目指す）','地域の区長・商工会・コミュニティへの挨拶まわり','オペレーションの標準化（マニュアル作成）'],
+    wellness:['初回体験クラスを無料で提供して口コミ獲得','産後ケア利用者の声をInstagramに掲載（許可を得て）'],
+    medical:['地域の健康診断・予防医療の案内を近隣世帯に配布','近隣医療機関との紹介システムを構築'],
+    beauty:['地域のお客様にモニター価格でサービス提供しレビュー収集','リピーター向けポイントカード・会員制度の導入'],
+    restaurant:['ランチセット・テイクアウトメニューで地元客を獲得','食べログ・Googleマップへの登録・写真アップ'],
+    education:['体験レッスン後の入会率・フィードバックを分析','授業内容を改善し正式メニューを確定'],
+    military:['基地内のFRG（Family Readiness Group）に参加・紹介依頼','口コミがFacebook Groupsで広がるよう写真・動画投稿'],
+    tourism:['モニターツアー10組を実施し改善点を洗い出し','旅行会社・ホテルへの営業（送客依頼）を開始'],
+    retail:['売れ筋商品の分析・仕入れ量の最適化','リピーター獲得のためのLINE登録促進'] },
+
+  { label:'Phase 5: 本格集客・コミュニティ化', icon:'🌺', color:'#b91c1c', months:'Month 9〜12',
+    base:['Instagram・TikTok広告（月3〜5万円）で認知拡大','ゆいまーる精神を活かした紹介プログラム（紹介者特典）の開始','地域イベント・お祭りへの出店・協賛で知名度向上','月次の売上・顧客数・リピート率のKPI振り返り','Year 2に向けた事業拡大計画（スタッフ増員・サービス拡充）の策定'],
+    wellness:['マタニティ・産後コミュニティイベントを月1回開催','子育て支援施設・NPOと共同イベントを企画','英語クラス・バイリンガルセッションの開始'],
+    medical:['健康診断・予防接種・無料相談会で地域貢献','地域医療連携ネットワーク（地区医師会）への参加'],
+    beauty:['美容セミナー・ワークショップで専門性訴求','ブライダル・成人式向け特別パッケージの企画'],
+    restaurant:['ランチのリピーター固定客化（常連カード・ポイント）','テイクアウト・デリバリー（Uber Eats等）での副収益'],
+    education:['保護者向け進路・英語教育セミナーを開催','オンラインレッスン（Zoom等）で受講者層を拡大'],
+    military:['米軍関連メディア（Stripes Japan等）への掲載申請','PCSシーズン（春・夏）に合わせた集中プロモーション'],
+    tourism:['リピーター向けシーズナルコンテンツの開発','外国人観光客向けに英語・中国語・韓国語対応'],
+    retail:['季節イベントに合わせた特別企画','地元農家・メーカーとのコラボ商品開発'] }
+];
+
+function runRoadmap(){
+  const muniName = document.getElementById('rm-muni').value;
+  const biz = document.getElementById('rm-biz').value;
+  if(!muniName){ alert('出店エリアを選択してください'); return; }
+  const sd = STOREDATA.find(s => s.n === muniName) || {tot:70, mil:3, rank:'B', bestBiz:'', note:''};
+  const td = TIMING_DATA.find(d => d.n === muniName) || {w:'要観察', cat:'', memo:''};
+  const isMil = sd.mil >= 7;
+
+  const phaseHTML = RM_PHASES.map(ph => {
+    const tasks = [...ph.base, ...(ph[biz]||[]), ...(isMil && biz !== 'military' && ph.military ? ph.military.slice(0,2) : [])];
+    const taskList = tasks.map(t => `<li style="padding:4px 0;font-size:12.5px;border-bottom:1px solid rgba(255,255,255,0.07)">${t}</li>`).join('');
+    return `<div style="margin-bottom:14px">
+      <div style="background:${ph.color};padding:10px 14px;border-radius:8px 8px 0 0;display:flex;justify-content:space-between;align-items:center">
+        <span style="font-weight:700;font-size:14px">${ph.icon} ${ph.label}</span>
+        <span style="font-size:12px;opacity:.85;background:rgba(0,0,0,.25);padding:2px 9px;border-radius:10px">${ph.months}</span>
+      </div>
+      <ul style="margin:0;padding:10px 14px 10px 28px;background:var(--surface-2);border-radius:0 0 8px 8px;border:1px solid var(--border);border-top:none">${taskList}</ul>
+    </div>`;
+  }).join('');
+
+  const milBadge = isMil ? `<span style="background:rgba(16,185,129,.15);color:#34d399;border:1px solid #34d39940;padding:3px 10px;border-radius:10px;font-size:12px;margin-left:8px">⭐ 軍属ボーナス +15%</span>` : '';
+  const twc = TIMING_COLORS[td.w] || '#9ca3af';
+
+  document.getElementById('rm-result').innerHTML = `
+    <div class="card" style="margin-bottom:14px">
+      <div style="display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:10px">
+        <h3 style="color:var(--accent);margin:0">📍 ${muniName} × ${RM_BIZ_LABELS[biz]}</h3>${milBadge}
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;font-size:12.5px">
+        <div><strong>立地スコア:</strong> ${sd.tot}点（${sd.rank}ランク）</div>
+        <div><strong>参入窓口:</strong> <span style="color:${twc}">${td.w}</span></div>
+        <div><strong>推奨業種:</strong> ${sd.bestBiz.split('/')[0]}</div>
+      </div>
+      <p style="margin:10px 0 0;font-size:12.5px;color:var(--muted)">${td.memo}</p>
+    </div>
+    ${phaseHTML}
+    <div class="card" style="background:linear-gradient(135deg,rgba(6,78,59,.2),rgba(5,150,105,.15));border:1px solid #05966940">
+      <h4 style="color:#34d399;margin-bottom:8px">🎯 koya 戦略アドバイス</h4>
+      <p style="font-size:13px;margin:4px 0">• <strong>立地インサイト:</strong> ${sd.note}</p>
+      <p style="font-size:13px;margin:4px 0">• <strong>参入タイミング:</strong> ${td.cat}</p>
+      ${isMil ? `<p style="font-size:13px;margin:4px 0">• <strong>軍属戦略:</strong> mil ${sd.mil}/10。英語対応・FRGアプローチ・Facebook Groups活用が必須。</p>` : ''}
+    </div>`;
+  document.getElementById('rm-result').style.display = 'block';
+}
+
+// ── INIT v3.0 ──
+(function(){
+  initV30Selects();
+  renderTimingTable();
+})();
+
 </script>
 </body>
 </html>
