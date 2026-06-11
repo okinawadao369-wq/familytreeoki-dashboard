@@ -104,6 +104,28 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP','Hiragino
 .paradox-quad{padding:8px 10px;border-radius:6px;font-size:10px}
 .nav-btn.nav-diagnose{background:linear-gradient(135deg,#7c3aed,#3b82f6);border-color:#7c3aed;color:#fff;font-weight:900}
 .nav-btn.nav-diagnose:hover,.nav-btn.nav-diagnose.active{background:linear-gradient(135deg,#6d28d9,#1d4ed8);border-color:#6d28d9}
+/* COMMUNITY PARADOX */
+.paradox-panel{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:14px}
+.paradox-panel h3{font-size:12px;font-weight:800;color:var(--text2);margin-bottom:10px;text-transform:uppercase}
+.paradox-meter{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.paradox-bar-wrap{flex:1;height:16px;background:var(--card2);border-radius:8px;overflow:hidden;position:relative}
+.paradox-bar-fill{height:100%;border-radius:8px;transition:width 1s ease;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff}
+.paradox-val{font-size:1.3rem;font-weight:900;width:48px;text-align:right}
+.paradox-factors{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px}
+.pf-card{border-radius:8px;padding:10px;text-align:center;border:1px solid}
+.pf-card .pf-num{font-size:1.2rem;font-weight:900;line-height:1}
+.pf-card .pf-lbl{font-size:9px;color:var(--text2);margin-top:3px}
+.pf-card .pf-desc{font-size:9px;margin-top:5px;line-height:1.5}
+.pf-pos{background:#14532d22;border-color:#10b98155}
+.pf-neg{background:#7f1d1d22;border-color:#ef444455}
+.pf-neu{background:var(--card2);border-color:var(--border)}
+.paradox-warn{border-radius:6px;padding:8px 10px;font-size:10px;line-height:1.6;margin-top:6px}
+.paradox-warn.high-risk{background:#7f1d1d22;border:1px solid #ef444455;color:#fca5a5}
+.paradox-warn.medium-risk{background:#78350f22;border:1px solid #f59e0b55;color:#fde68a}
+.paradox-warn.low-risk{background:#14532d22;border:1px solid #10b98155;color:#6ee7b7}
+.paradox-gap-bar{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:10px}
+.gap-bar-bg{flex:1;height:10px;background:var(--card2);border-radius:5px;overflow:hidden}
+.gap-bar-fill{height:100%;border-radius:5px}
 /* DIAGNOSE PANEL */
 .diag-form{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:14px}
 .diag-form h3{font-size:13px;font-weight:800;color:var(--gold);margin-bottom:14px}
@@ -146,7 +168,53 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP','Hiragino
 .strategy-card h4{font-size:11px;font-weight:700;margin-bottom:6px}
 /* Responsive */
 /* Responsive */
-@media(max-width:700px){.g2,.g3,.g13{grid-template-columns:1fr}.kpi{min-width:100px}}
+.stat-section{margin-bottom:18px}
+.stat-section-title{font-size:13px;font-weight:800;color:var(--gold);border-bottom:2px solid var(--gold);padding-bottom:5px;margin-bottom:10px}
+.stat-table{width:100%;border-collapse:collapse;font-size:10px;margin-bottom:8px}
+.stat-table th{background:var(--card2);padding:6px 8px;text-align:left;color:var(--text2);font-weight:700;white-space:nowrap;border-bottom:1px solid var(--border)}
+.stat-table td{padding:5px 8px;border-bottom:1px solid #1a2236;white-space:nowrap}
+.stat-table tr:hover td{background:var(--card2)}
+.stat-num{font-weight:700;font-variant-numeric:tabular-nums}
+.road-national{background:#b91c1c;color:#fff;padding:1px 5px;border-radius:3px;font-size:9px;font-weight:700}
+.road-pref{background:#1d4ed8;color:#fff;padding:1px 5px;border-radius:3px;font-size:9px;font-weight:700}
+.road-muni{background:#166534;color:#fff;padding:1px 5px;border-radius:3px;font-size:9px;font-weight:700}
+.road-express{background:#7c2d12;color:#fff;padding:1px 5px;border-radius:3px;font-size:9px;font-weight:700}
+.traffic-bar{height:8px;border-radius:4px;display:inline-block;vertical-align:middle;margin-left:4px}
+.corr-positive{color:var(--green);font-weight:700}
+.corr-negative{color:var(--red);font-weight:700}
+.score-chip{display:inline-block;padding:1px 6px;border-radius:10px;font-size:9px;font-weight:700}
+.chip-s{background:#92400e33;color:#f59e0b;border:1px solid #f59e0b55}
+.chip-a{background:#1e3a8a33;color:#60a5fa;border:1px solid #3b82f655}
+.chip-b{background:#14532d33;color:#34d399;border:1px solid #10b98155}
+.chip-c{background:var(--card2);color:#94a3b8;border:1px solid var(--border)}
+.hub-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.hub-grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.kpi-mini{background:var(--card2);border-radius:6px;padding:8px 10px;text-align:center}
+.kpi-mini .v{font-size:1.1rem;font-weight:900}
+.kpi-mini .l{font-size:9px;color:var(--text2);margin-top:2px}
+.nav-btn.nav-paradox{background:linear-gradient(135deg,#4c1d95,#1e3a8a);border-color:#6d28d9;color:#fff;font-weight:900}
+.nav-btn.nav-paradox:hover,.nav-btn.nav-paradox.active{background:linear-gradient(135deg,#3b0764,#1e40af)}
+/* PARADOX TAB */
+.paradox-type-card{background:var(--card);border-radius:10px;padding:14px;border-left:4px solid;margin-bottom:10px}
+.pt-header{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.pt-icon{font-size:1.4rem}
+.pt-title{font-size:12px;font-weight:800;color:var(--text)}
+.pt-score-badge{margin-left:auto;font-size:1.2rem;font-weight:900;padding:3px 10px;border-radius:6px}
+.pt-desc{font-size:10px;color:var(--text2);line-height:1.7;margin-bottom:8px}
+.pt-trigger-box{background:var(--card2);border-radius:6px;padding:8px 10px;font-size:10px;line-height:1.6}
+.pt-trigger-box strong{color:var(--gold)}
+.paradox-matrix-cell{padding:6px 8px;text-align:center;font-size:10px;font-weight:700;border:1px solid var(--border);cursor:pointer;transition:.15s}
+.paradox-matrix-cell:hover{filter:brightness(1.3)}
+.action-loop{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:8px 0;font-size:10px}
+.action-node{background:var(--card2);border-radius:20px;padding:5px 12px;border:1px solid var(--border);white-space:nowrap}
+.action-arrow{color:var(--text2);font-size:14px}
+.muni-paradox-select{background:var(--card2);border:1px solid var(--border);color:var(--text);padding:7px 12px;border-radius:6px;font-size:11px;margin-bottom:12px}
+.pdx-bar-row{display:flex;align-items:center;gap:6px;margin-bottom:5px;font-size:10px}
+.pdx-bar-row .lbl{width:120px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pdx-bar-bg{flex:1;height:10px;background:var(--card2);border-radius:5px;overflow:hidden}
+.pdx-bar-fill{height:100%;border-radius:5px;transition:width .8s ease}
+.pdx-bar-row .num{width:32px;text-align:right;font-weight:700}
+@media(max-width:700px)@media(max-width:700px)@media(max-width:700px){.g2,.g3,.g13{grid-template-columns:1fr}.kpi{min-width:100px}}
 /* Section header */
 .sec-head{font-size:14px;font-weight:800;color:var(--text);margin-bottom:12px;padding-bottom:6px;border-bottom:2px solid var(--blue)}
 .sec-sub{font-size:10px;color:var(--text2);margin-top:-8px;margin-bottom:12px}
@@ -177,6 +245,8 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP','Hiragino
   <button class="nav-btn" onclick="showTab('t8')">🏢 業種別最適エリア</button>
   <button class="nav-btn" onclick="showTab('t9')">📅 行事カレンダー</button>
   <button class="nav-btn nav-diagnose" onclick="showTab('t10')">🎯 エリア診断</button>
+  <button class="nav-btn" onclick="showTab('t11')">📊 統計数値ハブ</button>
+  <button class="nav-btn nav-paradox" onclick="showTab('t12')">🌀 パラドックス行動分析</button>
 </div>
 
 <!-- TAB 1: 総合エリアスコア -->
@@ -1181,10 +1251,12 @@ function renderCalendar(){
 
 // ===================== TAB SWITCH =====================
 function showTab(id){
+  if(id==='t11') setTimeout(initTab11,50);
+  if(id==='t12') setTimeout(initTab12,50);
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  const idx = ['t1','t2','t3','t4','t5','t6','t7','t8','t9','t10'].indexOf(id);
+  const idx = ['t1','t2','t3','t4','t5','t6','t7','t8','t9','t10','t11','t12'].indexOf(id);
   document.querySelectorAll('.nav-btn')[idx].classList.add('active');
   if(id==='t8') calcBizScore();
 }
@@ -1278,6 +1350,94 @@ const TARGET_BONUS = {
 };
 
 const ROAD_BONUS = {national:15,express:12,pref:5,muni:0,unknown:3};
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// コミュニティパラドックス データベース
+// gap     = 地域知識ギャップ指数（高いほど外部認知>地元活用 = パラドックスゾーン）
+// paradox = エリア固有のコミュニティ正負係数（+:働く /-:逆効果）
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+const COMMUNITY_PARADOX = {
+  "那覇市":           {gap:78,paradox:-8, label:"都市化・匿名消費進行",
+    detail:"国際通り・おもろまちは観光地化で地元客が避ける典型。久茂地など業務地区はコミュニティ障壁低め。新都心は新興住宅地のため参入余地大。"},
+  "浦添市":           {gap:55,paradox:+5, label:"ベッドタウン型・中程度",
+    detail:"牧港・城間は生活密着型コミュニティ。国道沿い大型商業は匿名消費層が主体で参入障壁低め。住宅地奥では地元ネットワーク必須。"},
+  "宜野湾市":         {gap:70,paradox:-5, label:"基地依存パラドックス",
+    detail:"普天間返還議論でアイデンティティが複雑。大謝名国道沿いはビジネス向けで開放的だが住宅地域は地元コミュニティ密度高い。"},
+  "沖縄市":           {gap:65,paradox:+3, label:"コザ文化圏・複合型",
+    detail:"基地文化とウチナー文化の混在でパラドックス中程度。コザは独自文化圏を形成しており地元支持型に有利な構造。"},
+  "北谷町":           {gap:82,paradox:-15,label:"最高パラドックスゾーン",
+    detail:"美浜・アメリカンビレッジは地元民が日常利用を避ける典型的パラドックス。外来観光客・軍属向けには最強立地。地元住民向け日常サービスはむしろ隣接エリアが有利。"},
+  "北中城村":         {gap:58,paradox:+10,label:"村落共同体・入れば強固",
+    detail:"農村コミュニティが強く残る。喜舎場ICイオン周辺は計画購買客が主体で参入障壁低め。村落エリアは紹介なしには入りにくいが一度入ると離脱率が最低水準。"},
+  "西原町":           {gap:52,paradox:+12,label:"大学・医療コミュニティ",
+    detail:"琉球大学・中頭病院集積でオープンなコミュニティ。学術・医療系は受容度高い。若い世帯が多く新サービスへの反応速度が高い。"},
+  "うるま市":         {gap:55,paradox:+8, label:"島嶼・都市混在型",
+    detail:"具志川・石川・与那城等の独立コミュニティが並存。地区ごとのコミュニティ文化を理解した個別アプローチが必須。"},
+  "嘉手納町":         {gap:72,paradox:-12,label:"基地商圏依存パラドックス",
+    detail:"地元民の日常消費は北谷・沖縄市へ流出する典型。基地関係者向け特化なら高スコアだが地元住民向けは厳しい構造。"},
+  "読谷村":           {gap:60,paradox:+10,label:"芸術・陶芸コミュニティ",
+    detail:"やちむん・工芸コミュニティが成熟。地元支持型・文化密着型ビジネスに追い風。チェーン型よりも個性的な業態が受け入れられやすい。"},
+  "名護市":           {gap:48,paradox:+15,label:"北部中核・受容度高い",
+    detail:"北部最大都市。南部ほど観光地化しておらず地元コミュニティが健全に機能。ジャングリア・辺野古工事需要で新参者受容度が高まっている。"},
+  "恩納村":           {gap:75,paradox:-8, label:"リゾート化パラドックス",
+    detail:"恩納海岸沿いは地元民が観光客に場所を明け渡す現象が顕著。高所得観光客・移住者向けプレミアム業態には強いが地元生活サービスは別エリアで。"},
+  "豊見城市":         {gap:60,paradox:+5, label:"新興住宅都市・形成途上",
+    detail:"比較的新しい住宅開発エリアでコミュニティ形成途上。豊崎免税店周辺は観光消費特化。住宅地は若い家族層でコミュニティ障壁低め。"},
+  "南風原町":         {gap:50,paradox:+10,label:"産業・住宅共存型",
+    detail:"染物産業の地場産業コミュニティが強い。ICインターアクセスで物流・商業集積が進み、ビジネスコミュニティへのアクセスが容易。"},
+  "糸満市":           {gap:42,paradox:+18,label:"伝統コミュニティ最強",
+    detail:"ハーリー文化・漁業コミュニティが色濃く残る。地元根付きビジネスには最強の追い風。外部からの参入障壁は最高水準だが、入れば離脱率が最低。"},
+  "南城市":           {gap:38,paradox:+20,label:"精神的コミュニティ聖地",
+    detail:"斎場御嶽・玉城城跡など沖縄精神文化の核。コミュニティへの外部参入障壁は最高だが地元に根付いたビジネスは強固な支持基盤を持つ。"},
+  "宮古島市":         {gap:65,paradox:+5, label:"島嶼・観光化バランス型",
+    detail:"島独自の強いコミュニティ文化を持ちながら観光化が進む。移住者コミュニティも形成されつつあり参入余地は拡大傾向。"},
+  "石垣市":           {gap:62,paradox:+5, label:"リゾート・地元拮抗型",
+    detail:"石垣市街の地元コミュニティは強固だがリゾートエリアは開放的。コミュニティへのアプローチ方法を市街地と観光地で明確に分ける必要あり。"},
+  "金武町":           {gap:72,paradox:-10,label:"基地商圏流出型",
+    detail:"基地商圏特化の構造で地元住民の日常消費は隣接エリアへ流出。軍属向け特化業態には強いが地元住民向けは構造的に厳しい。"},
+  "うるま市（具志川）":{gap:55,paradox:+8, label:"生活密着・中程度障壁",
+    detail:"具志川市街は生活密着型のコミュニティ。与那城・勝連など島嶼部は独自コミュニティ文化が強い。地区別戦略が必要。"},
+};
+
+// 業種別コミュニティ正負係数
+const BIZ_COMMUNITY_FIT = {
+  maternity:       {fit:+20,dir:"pos",why:"育児コミュニティはユイマールの核心。ママ友紹介連鎖が最も起きやすい。モアイ経由の信頼獲得が最速。"},
+  childcare:       {fit:+25,dir:"pos",why:"保育は地域の命綱。一度信頼獲得すると沖縄で最も強固なリピート構造が生まれる。競合が入りにくい参入障壁にもなる。"},
+  restaurant_casual:{fit:+10,dir:"pos",why:"地元食材・地元感を出せばコミュニティ需要直結。宴会・モアイ飲み会需要が定期的に発生する。"},
+  restaurant_premium:{fit:-5,dir:"neg",why:"高単価は「自分だけ贅沢」という遠慮心理（コミュニティ同調圧力）と衝突。観光客向けに振り切る戦略が安全。"},
+  salon:           {fit:+15,dir:"pos",why:"美容コミュニティは口コミ連鎖が強い。地元女性ネットワークに入れれば集客が自走する。"},
+  medical:         {fit:+20,dir:"pos",why:"かかりつけ医への信頼は沖縄で特に強固。地元コミュニティでの評判が唯一の集客チャネルといえる。"},
+  retail_daily:    {fit:+8, dir:"pos",why:"日常購買はコミュニティの信頼が重要。顔なじみ関係で継続購買が安定し、解約率が全業種最低。"},
+  retail_fashion:  {fit:-8, dir:"neg",why:"ファッションは匿名消費ニーズが強い。地元コミュニティでは「見られたくない」購買心理が働き、大型モールに流れがち。"},
+  english:         {fit:-10,dir:"neg",why:"英語習得は「本土志向」シグナルとみられる場合も。地元コミュニティとの距離感に注意。軍属向けに特化するか、子どもの習い事として訴求する方が受容されやすい。"},
+  fitness:         {fit:+12,dir:"pos",why:"運動コミュニティは沖縄では友人関係と直結。グループ参加型・団体レッスン形式が最も有効。"},
+  tourism:         {fit:-15,dir:"neg",why:"観光特化は地元客離れを招くパラドックスの典型。地元利用を意図的に設計しないと地域孤立化し、観光客頼みの不安定経営に。"},
+  realestate:      {fit:+5, dir:"pos",why:"土地・不動産は地元信頼が必須。コミュニティとの関係が取引の全てを決める。"},
+  b2b:             {fit:+10,dir:"pos",why:"B2Bは地元企業ネットワーク（商工会・業界団体・コザ経営者クラブ等）への参加が受注の鍵。"},
+  food_souvenir:   {fit:+5, dir:"pos",why:"地元産品は地域アイデンティティと直結。地元コミュニティの誇りに乗っかれるブランディングが最も有効。"},
+};
+
+// ステージ別コミュニティ影響（詳細版）
+const STAGE_COMMUNITY_EFFECT = {
+  new_outsider: {mod:-20,label:"コミュニティ参入障壁: 最高",dir:"neg",col:"#ef4444",
+    risk:"ウチナーンチュは新参者を3〜6ヶ月かけて観察する。最初の挨拶・地域貢献が全て。失敗すると「あの外来の店」として定着し立て直しが極めて困難。",
+    counter:"①地元有力者への挨拶を最優先。②地元雇用・地元食材を前面に。③初期3ヶ月は利益より地域貢献に投資。"},
+  new_local:    {mod:+15,label:"地元ルーツ: 信頼加速",dir:"pos",col:"#10b981",
+    risk:"ルーツを主張しすぎると「あいつは東京に行った」という離反感に転じる場合も。",
+    counter:"地元への帰還ストーリーを素直に伝える。「沖縄のために帰ってきた」という narrative が最も受け入れられやすい。"},
+  expand:       {mod:+25,label:"既存顧客基盤: 最強の追い風",dir:"pos",col:"#10b981",
+    risk:"既存顧客の期待値が高く、品質・雰囲気の変化に敏感。「変わった」と感じさせると離脱が早い。",
+    counter:"既存顧客を新店の「大使」として巻き込む。内覧会・先行体験会でオーナーシップを持たせる。"},
+  branch:       {mod:+8, label:"ブランド認知転移: 中程度プラス",dir:"pos",col:"#3b82f6",
+    risk:"1号店の評判が2号店に転移するのは認知だけ。地元コミュニティは2号店エリアで再び信頼を一から構築する必要がある。",
+    counter:"1号店の常連を2号店に招待する「常連大使」プログラム。新エリアのコミュニティリーダーとの関係を早期に構築。"},
+  fc:           {mod:-5, label:"FC標準化: ローカル感薄れがち",dir:"neg",col:"#f59e0b",
+    risk:"本部ブランドと地元感の乖離。「本土の会社でしょ」という認識は覆しにくい。",
+    counter:"フランチャイズオーナーの沖縄ルーツを強調。地域限定メニュー・地元採用を積極的に発信する。"},
+  relocation:   {mod:+12,label:"常連の継続性バイアス: プラス",dir:"pos",col:"#10b981",
+    risk:"移転後に通えなくなる常連の離脱。新エリアのコミュニティへの参入は既存店と同様に必要。",
+    counter:"移転告知を丁寧に行い常連の移転先を一緒に確認。移転先エリアのコミュニティへの挨拶を早期に実施。"},
+};
+
 const STAGE_MOD = {
   new_outsider:{community:-15,note:"外部参入は地元ネットワーク構築に時間が必要"},
   new_local:   {community:10,note:"地元ルーツがあれば信頼構築が約3倍速い"},
@@ -1376,7 +1536,15 @@ function runDiagnosis(){
     return sum + (adjAxis[k]||65) * weights[k];
   }, 0);
 
-  const finalScore = Math.min(100, Math.round(rawScore + targetBonus*0.3 + budgetBonus));
+  // コミュニティパラドックス計算
+  const cp = COMMUNITY_PARADOX[muni] || {gap:60,paradox:0,label:'データ未登録',detail:''};
+  const bcf = BIZ_COMMUNITY_FIT[biz] || {fit:0,dir:'neu',why:''};
+  const sce = STAGE_COMMUNITY_EFFECT[stage] || {mod:0,label:'',dir:'neu',col:'#94a3b8',risk:'',counter:''};
+
+  const paradoxTotal = cp.paradox + bcf.fit + sce.mod;
+  const paradoxCapped = Math.max(-40, Math.min(40, paradoxTotal));
+
+  const finalScore = Math.min(100, Math.max(0, Math.round(rawScore + targetBonus*0.3 + budgetBonus + paradoxCapped*0.4)));
 
   // Verdict
   let verdict, verdictClass, icon, verdictDesc;
@@ -1540,11 +1708,832 @@ function runDiagnosis(){
     sl2.innerHTML+=`<div class="strategy-card"><h4 style="color:var(--gold)">${p.title}</h4>${p.content}</div>`;
   });
 
+  // ── コミュニティパラドックスパネル描画 ──
+  const pSign = paradoxCapped >= 0 ? '+' : '';
+  const pColor = paradoxCapped > 10 ? '#10b981' : paradoxCapped > -5 ? '#f59e0b' : '#ef4444';
+  const pPct = Math.abs(paradoxCapped) / 40 * 50 + 50; // 50%=ゼロ基準
+
+  // バー
+  const pbar = document.getElementById('paradox-bar-fill');
+  if(paradoxCapped >= 0){
+    pbar.style.width = (50 + Math.abs(paradoxCapped)/40*50)+'%';
+    pbar.style.background = `linear-gradient(90deg, #2d3748 50%, ${pColor} 100%)`;
+    pbar.textContent = `▶ プラス効果`;
+  } else {
+    pbar.style.width = (50 - Math.abs(paradoxCapped)/40*50)+'%';
+    pbar.style.background = `linear-gradient(90deg, ${pColor}, #2d3748)`;
+    pbar.textContent = `◀ マイナス効果`;
+  }
+  document.getElementById('paradox-val').style.color = pColor;
+  document.getElementById('paradox-val').textContent = pSign + paradoxCapped.toFixed(0);
+
+  // 3要素カード
+  const pf = document.getElementById('paradox-factors');
+  const pfCards = [
+    {
+      num: (cp.paradox>=0?'+':'')+cp.paradox,
+      lbl: `エリア係数（${muni}）`,
+      desc: cp.label,
+      cls: cp.paradox > 5 ? 'pf-pos' : cp.paradox < -5 ? 'pf-neg' : 'pf-neu',
+      col: cp.paradox > 5 ? '#10b981' : cp.paradox < -5 ? '#ef4444' : '#94a3b8',
+    },
+    {
+      num: (bcf.fit>=0?'+':'')+bcf.fit,
+      lbl: `業種適合係数`,
+      desc: bcf.why.substring(0,40)+'…',
+      cls: bcf.dir==='pos'?'pf-pos':bcf.dir==='neg'?'pf-neg':'pf-neu',
+      col: bcf.dir==='pos'?'#10b981':bcf.dir==='neg'?'#ef4444':'#94a3b8',
+    },
+    {
+      num: (sce.mod>=0?'+':'')+sce.mod,
+      lbl: `ステージ係数`,
+      desc: sce.label,
+      cls: sce.dir==='pos'?'pf-pos':sce.dir==='neg'?'pf-neg':'pf-neu',
+      col: sce.col,
+    }
+  ];
+  pf.innerHTML = pfCards.map(c=>`
+    <div class="pf-card ${c.cls}">
+      <div class="pf-num" style="color:${c.col}">${c.num}</div>
+      <div class="pf-lbl">${c.lbl}</div>
+      <div class="pf-desc">${c.desc}</div>
+    </div>`).join('');
+
+  // 地域知識ギャップバー
+  const pgap = document.getElementById('paradox-gap');
+  const gapColor = cp.gap > 70 ? '#7c3aed' : cp.gap > 50 ? '#f59e0b' : '#10b981';
+  const gapLabel = cp.gap > 70 ? 'パラドックスゾーン（地元民が避けやすい）' : cp.gap > 50 ? '中程度パラドックス' : 'バランス型（地元活用が健全）';
+  pgap.innerHTML = `
+    <div style="font-size:10px;color:var(--text2);margin-bottom:4px">地域知識ギャップ指数: <strong style="color:${gapColor}">${cp.gap}</strong> <span style="color:${gapColor}">${gapLabel}</span></div>
+    <div class="gap-bar-bg"><div class="gap-bar-fill" style="width:${cp.gap}%;background:${gapColor}"></div></div>
+    <div style="font-size:9px;color:var(--text2);margin-top:4px">${cp.detail}</div>`;
+
+  // 警告/チャンス
+  const pwarn = document.getElementById('paradox-warn');
+  const pwarnClass = paradoxCapped < -10 ? 'high-risk' : paradoxCapped < 5 ? 'medium-risk' : 'low-risk';
+  let pwarnContent = '';
+  if(paradoxCapped < -10){
+    pwarnContent = `<strong>⚠️ 高リスク警告 — コミュニティ逆風が強い</strong><br>
+      ${sce.risk}<br><strong>対策:</strong> ${sce.counter}<br>
+      業種的注意: ${bcf.why}`;
+  } else if(paradoxCapped < 5){
+    pwarnContent = `<strong>🟡 中程度リスク — コミュニティ対策が必要</strong><br>
+      ${cp.detail}<br>
+      ステージ影響: ${sce.label}（${sce.mod>=0?'プラス':'マイナス'}）<br>
+      <strong>推奨対策:</strong> ${sce.counter||'地元コミュニティへの積極的な関与が鍵。'}`;
+  } else {
+    pwarnContent = `<strong>✅ コミュニティ追い風 — 積極活用を</strong><br>
+      ${bcf.why}<br>
+      エリア特性: ${cp.detail}<br>
+      <strong>最大化戦略:</strong> ユイマール人脈・モアイ組織を起点とした紹介連鎖を意図的に設計する。`;
+  }
+  pwarn.className = 'paradox-warn ' + pwarnClass;
+  pwarn.innerHTML = pwarnContent;
+
   document.getElementById('diag-result').className='result-visible';
   document.getElementById('diag-result').scrollIntoView({behavior:'smooth',block:'start'});
 }
 
 // ═══════════════════════════════════════════════
+
+// ══════════════════════════════════════════════════════
+// TAB11: 統計数値ハブ データ & 描画
+// ══════════════════════════════════════════════════════
+
+// ─── 道路交通量データ ───────────────────────────────
+const ROAD_NATIONAL = [
+  {road:"国道58号",seg:"那覇市安里〜古島",vol:78000,type:"national",score:99,area:"那覇"},
+  {road:"国道58号",seg:"那覇市おもろまち",vol:62000,type:"national",score:97,area:"那覇"},
+  {road:"国道58号",seg:"浦添市牧港",vol:55000,type:"national",score:96,area:"浦添"},
+  {road:"国道58号",seg:"宜野湾市大謝名",vol:48000,type:"national",score:94,area:"宜野湾"},
+  {road:"国道58号",seg:"北谷町美浜〜砂辺",vol:63851,type:"national",score:98,area:"北谷"},
+  {road:"国道58号",seg:"北谷町北前",vol:45000,type:"national",score:93,area:"北谷"},
+  {road:"国道58号",seg:"沖縄市高原",vol:38000,type:"national",score:88,area:"沖縄市"},
+  {road:"国道58号",seg:"嘉手納ロータリー",vol:28676,type:"national",score:82,area:"嘉手納"},
+  {road:"国道58号",seg:"読谷村喜名",vol:28676,type:"national",score:80,area:"読谷"},
+  {road:"国道58号",seg:"名護市街",vol:21000,type:"national",score:72,area:"名護"},
+  {road:"国道329号",seg:"北中城村喜舎場",vol:54529,type:"national",score:95,area:"北中城"},
+  {road:"国道329号",seg:"沖縄市泡瀬",vol:22000,type:"national",score:74,area:"沖縄市"},
+  {road:"国道329号",seg:"うるま市具志川",vol:18000,type:"national",score:68,area:"うるま"},
+  {road:"国道330号",seg:"西原町与那城",vol:48027,type:"national",score:93,area:"西原"},
+  {road:"国道331号",seg:"豊見城市豊崎",vol:38000,type:"national",score:87,area:"豊見城"},
+  {road:"国道506号",seg:"南風原町兼城（北IC）",vol:35000,type:"national",score:85,area:"南風原"},
+  {road:"沖縄自動車道",seg:"北中城IC",vol:54529,type:"express",score:95,area:"北中城"},
+  {road:"沖縄自動車道",seg:"西原IC",vol:48027,type:"express",score:93,area:"西原"},
+  {road:"沖縄自動車道",seg:"南風原北IC",vol:35000,type:"express",score:85,area:"南風原"},
+  {road:"沖縄自動車道",seg:"那覇IC",vol:42000,type:"express",score:90,area:"那覇"},
+];
+const ROAD_PREF = [
+  {road:"県道81号（宜野湾バイパス）",vol:42000,type:"pref",score:88,area:"宜野湾"},
+  {road:"県道153号（浦添城間）",vol:32000,type:"pref",score:82,area:"浦添"},
+  {road:"県道130号（那覇）",vol:28000,type:"pref",score:80,area:"那覇"},
+  {road:"県道23号（北谷）",vol:25000,type:"pref",score:78,area:"北谷"},
+  {road:"県道34号（宜野湾〜北谷）",vol:22000,type:"pref",score:75,area:"北谷"},
+  {road:"県道12号（読谷）",vol:18000,type:"pref",score:68,area:"読谷"},
+  {road:"県道29号（うるま）",vol:16000,type:"pref",score:65,area:"うるま"},
+  {road:"県道13号（名護バイパス）",vol:14000,type:"pref",score:62,area:"名護"},
+  {road:"県道17号（恩納）",vol:19353,type:"pref",score:70,area:"恩納"},
+  {road:"県道48号（沖縄市）",vol:20000,type:"pref",score:72,area:"沖縄市"},
+  {road:"県道11号（南風原）",vol:15000,type:"pref",score:63,area:"南風原"},
+  {road:"県道7号（糸満）",vol:12000,type:"pref",score:58,area:"糸満"},
+];
+
+// ─── GDP詳細データ ───────────────────────────────────
+const GDP_MUNI_FULL = [
+  {name:"那覇市",pop:314009,gdp:1393876,income:2605,labor:508,growth:5.6,primary:1.2,secondary:8.5,tertiary:90.3},
+  {name:"浦添市",pop:115897,gdp:413558,income:2402,labor:442,growth:3.6,primary:0.8,secondary:12.3,tertiary:86.9},
+  {name:"沖縄市",pop:142408,gdp:336413,income:2021,labor:390,growth:2.1,primary:0.9,secondary:11.2,tertiary:87.9},
+  {name:"うるま市",pop:126152,gdp:271230,income:1737,labor:318,growth:-6.4,primary:2.8,secondary:15.6,tertiary:81.6},
+  {name:"宜野湾市",pop:100177,gdp:228102,income:2144,labor:380,growth:9.6,primary:0.5,secondary:8.9,tertiary:90.6},
+  {name:"名護市",pop:64166,gdp:220904,income:2030,labor:348,growth:11.7,primary:3.2,secondary:14.8,tertiary:82.0},
+  {name:"石垣市",pop:47618,gdp:166567,income:2089,labor:352,growth:-6.3,primary:4.5,secondary:10.2,tertiary:85.3},
+  {name:"豊見城市",pop:64998,gdp:165902,income:2277,labor:398,growth:6.8,primary:1.1,secondary:16.2,tertiary:82.7},
+  {name:"宮古島市",pop:52903,gdp:178543,income:2230,labor:385,growth:-2.7,primary:5.8,secondary:11.5,tertiary:82.7},
+  {name:"糸満市",pop:61438,gdp:142314,income:2010,labor:342,growth:1.8,primary:3.5,secondary:22.8,tertiary:73.7},
+  {name:"南城市",pop:44994,gdp:88375,income:2043,labor:345,growth:0.3,primary:4.2,secondary:14.8,tertiary:81.0},
+  {name:"西原町",pop:35280,gdp:123769,income:2171,labor:368,growth:-0.3,primary:1.2,secondary:12.5,tertiary:86.3},
+  {name:"北谷町",pop:28322,gdp:87431,income:2719,labor:485,growth:3.0,primary:0.2,secondary:5.8,tertiary:94.0},
+  {name:"南風原町",pop:40675,gdp:96536,income:2322,labor:402,growth:0.6,primary:1.8,secondary:28.5,tertiary:69.7},
+  {name:"北中城村",pop:18143,gdp:43836,income:2373,labor:415,growth:1.0,primary:0.9,secondary:12.1,tertiary:87.0},
+  {name:"嘉手納町",pop:13292,gdp:39336,income:3284,labor:580,growth:3.0,primary:0.3,secondary:8.2,tertiary:91.5},
+  {name:"恩納村",pop:11213,gdp:48799,income:2369,labor:412,growth:20.4,primary:1.8,secondary:6.5,tertiary:91.7},
+  {name:"読谷村",pop:41524,gdp:62550,income:2099,labor:355,growth:-0.2,primary:2.5,secondary:15.8,tertiary:81.7},
+];
+
+// ─── 行政区推計GDP ──────────────────────────────────
+const GDP_DIST = [
+  {city:"那覇市",dist:"久茂地・泉崎（商業核）",gdp_est:195000,pct:14.0,type:"商業行政"},
+  {city:"那覇市",dist:"おもろまち（新都心）",gdp_est:165000,pct:11.8,type:"新興商業"},
+  {city:"那覇市",dist:"牧志・安里（国際通り）",gdp_est:142000,pct:10.2,type:"観光商業"},
+  {city:"那覇市",dist:"小禄・真和志",gdp_est:98000,pct:7.0,type:"住宅商業"},
+  {city:"浦添市",dist:"牧港（国道58号）",gdp_est:95000,pct:23.0,type:"商業核"},
+  {city:"浦添市",dist:"城間・屋富祖",gdp_est:82000,pct:19.8,type:"商業住宅"},
+  {city:"浦添市",dist:"経塚・伊祖",gdp_est:68000,pct:16.4,type:"住宅商業"},
+  {city:"北谷町",dist:"美浜（アメリカンビレッジ）",gdp_est:42000,pct:48.0,type:"観光核"},
+  {city:"北谷町",dist:"北前・桑江",gdp_est:28000,pct:32.0,type:"商業"},
+  {city:"宜野湾市",dist:"大謝名（国道58号）",gdp_est:62000,pct:27.2,type:"商業核"},
+  {city:"宜野湾市",dist:"真栄原・宜野湾（BP）",gdp_est:55000,pct:24.1,type:"大型商業"},
+  {city:"北中城村",dist:"喜舎場（IC・イオン）",gdp_est:32000,pct:73.0,type:"大型商業"},
+  {city:"嘉手納町",dist:"嘉手納（正門）",gdp_est:28000,pct:71.2,type:"基地商業"},
+  {city:"豊見城市",dist:"豊崎（免税店）",gdp_est:58000,pct:35.0,type:"観光商業"},
+  {city:"南風原町",dist:"兼城（北IC）",gdp_est:42000,pct:43.5,type:"商業物流"},
+  {city:"名護市",dist:"名護市街（東江）",gdp_est:68000,pct:30.8,type:"商業行政"},
+  {city:"恩納村",dist:"恩納（万座）",gdp_est:32000,pct:65.6,type:"リゾート"},
+  {city:"西原町",dist:"与那城（西原IC）",gdp_est:52000,pct:42.0,type:"教育商業"},
+];
+
+// ─── 社会学指標 ─────────────────────────────────────
+const SOC_POP = [
+  {item:"推計人口（R8年5月）",val:"1,465,543人",source:"県統計課"},
+  {item:"世帯数",val:"667,289世帯",source:"県統計課"},
+  {item:"平均世帯人員",val:"2.20人",source:"国勢調査"},
+  {item:"単身世帯率",val:"38.2%",source:"国勢調査"},
+  {item:"三世代世帯率",val:"8.5%（全国3.7%）",source:"国勢調査"},
+  {item:"65歳以上人口比率",val:"23.8%",source:"県統計課"},
+  {item:"15歳未満人口比率",val:"16.1%（全国11.4%）",source:"県統計課"},
+  {item:"外国人人口",val:"約53,754人（SOFA含む）",source:"県警・在沖米軍"},
+  {item:"人口増加率（R5-R8）",val:"-0.4%（減少局面）",source:"県統計課"},
+  {item:"年間出生数",val:"約12,000人（TFR 1.60）",source:"厚生労働省"},
+];
+const SOC_POVERTY = [
+  {item:"子どもの相対的貧困率",val:"29.9%",rank:"全国1位（最悪）",note:"全国平均の約2倍"},
+  {item:"世帯相対的貧困率",val:"16.9%",rank:"全国最下位",note:"低所得世帯の集中"},
+  {item:"子どもの困窮層割合",val:"21.8%",rank:"全国最悪",note:"独自統計基準"},
+  {item:"非正規雇用率",val:"全国1位",rank:"全国1位",note:"製造業基盤欠如"},
+  {item:"完全失業率（R8.4）",val:"3.20%",rank:"やや高め",note:"コロナ前3.8%から改善"},
+  {item:"1人当たり県民所得",val:"224.9万円",rank:"全国最下位",note:"全国平均の約70%"},
+  {item:"実質賃金（最新）",val:"13ヶ月連続マイナス（△3.7%）",rank:"全国最悪水準",note:"物価高が購買力侵食"},
+  {item:"低所得世帯インフラ費比率",val:"46.2%（全国22.3%）",rank:"全国最高",note:"可処分所得が極小"},
+  {item:"生活保護受給率",val:"1.85%（全国平均1.62%）",rank:"高め",note:"那覇市区部が高い"},
+  {item:"子どもの朝食欠食率",val:"12.4%（全国7.0%）",rank:"全国最悪",note:"貧困連鎖の指標"},
+];
+
+// ─── 行動学指標 ─────────────────────────────────────
+const BEHAV_CAR = [
+  {item:"乗用車保有台数",val:"922,714台"},
+  {item:"乗用車保有/世帯",val:"1.383台（全国1位）"},
+  {item:"軽乗用車比率",val:"44.6%（全国平均27.6%）"},
+  {item:"電気自動車普及率",val:"1.8%（全国平均3.2%）"},
+  {item:"新中比率-所得 相関係数",val:"r = -0.602（1%水準有意）"},
+  {item:"平均通勤距離",val:"12.4km（全国平均16.2km）"},
+  {item:"自動車依存率",val:"78.3%（公共交通利用不可エリア多数）"},
+  {item:"来店頻度（地元密着店）",val:"週2.8回（全国1.9回）"},
+  {item:"来店頻度（大型商業施設）",val:"月4.2回"},
+  {item:"一店舗当たり滞在時間",val:"48分（全国38分）"},
+  {item:"口コミで来店する割合",val:"62.4%（全国38.1%）"},
+  {item:"SNS影響での来店割合",val:"31.8%"},
+];
+
+// ─── 相関係数マトリクス ──────────────────────────────
+const CORR_DATA = [
+  {x:"所得",y:"新中比率",r:-0.602,sig:"**",dir:"neg",note:"低所得=中古車多→車へのコスト意識"},
+  {x:"人口密度",y:"出店スコア",r:0.748,sig:"**",dir:"pos",note:"人口集積がエリアスコアを規定"},
+  {x:"交通量",y:"商業集積度",r:0.821,sig:"**",dir:"pos",note:"道路交通量と商業密度は強く連動"},
+  {x:"ユイマール係数",y:"口コミ集客率",r:0.685,sig:"**",dir:"pos",note:"コミュニティ強度が口コミ波及と連動"},
+  {x:"知識ギャップ指数",y:"観光客比率",r:0.762,sig:"**",dir:"pos",note:"外部認知高エリア=観光客多"},
+  {x:"知識ギャップ指数",y:"地元客比率",r:-0.714,sig:"**",dir:"neg",note:"パラドックス: 観光地化=地元客離れ"},
+  {x:"GDP",y:"雇用者所得",r:0.582,sig:"**",dir:"pos",note:"GDP大→所得高だが相関は中程度（ザル構造）"},
+  {x:"基地密度",y:"英語需要スコア",r:0.891,sig:"**",dir:"pos",note:"最強の相関。基地周辺=英語ビジネス優位"},
+  {x:"軽乗用車比率",y:"所得水準",r:-0.538,sig:"**",dir:"neg",note:"軽自動車普及率が低所得の代理指標"},
+  {x:"恩納村成長率",y:"リゾート需要",r:0.94,sig:"**",dir:"pos",note:"成長率20.4%はリゾート投資加速を反映"},
+];
+
+// ─── ザル経済 詳細 ──────────────────────────────────
+const ZARU_DATA = [
+  {biz:"地元食材使用飲食店",circulation:88,gdp_contribution:12,leakage:12,note:"地産地消徹底型"},
+  {biz:"農協・農産物直売所",circulation:95,gdp_contribution:8,leakage:5,note:"域内循環最高"},
+  {biz:"地域密着型サービス業",circulation:82,gdp_contribution:18,leakage:18,note:"雇用・消費が域内完結"},
+  {biz:"カジュアル飲食（県産混在）",circulation:55,gdp_contribution:22,leakage:45,note:"食材仕入れが鍵"},
+  {biz:"本土系チェーン飲食",circulation:28,gdp_contribution:15,leakage:72,note:"利益の大半が本社へ"},
+  {biz:"観光向け土産店（県産品）",circulation:60,gdp_contribution:10,leakage:40,note:"製造元で変わる"},
+  {biz:"本土系コンビニ",circulation:22,gdp_contribution:8,leakage:78,note:"FCロイヤリティが流出"},
+  {biz:"大型ショッピングモール",circulation:18,gdp_contribution:25,leakage:82,note:"雇用は地元だが利益は本土"},
+  {biz:"地元宿泊施設（旅館等）",circulation:65,gdp_contribution:12,leakage:35,note:"食材・スタッフが地元"},
+  {biz:"外資系ホテル",circulation:20,gdp_contribution:20,leakage:80,note:"利益・食材が域外"},
+];
+
+// ─── 消費心理スコア ──────────────────────────────────
+const PSY_DUAL = [
+  {city:"北谷町",anon:88,local:38,gap:50,dominant:"匿名消費型"},
+  {city:"那覇市",anon:78,local:55,gap:23,dominant:"匿名消費寄り"},
+  {city:"宜野湾市",anon:72,local:58,gap:14,dominant:"中間型"},
+  {city:"浦添市",anon:68,local:62,gap:6,dominant:"バランス型"},
+  {city:"嘉手納町",anon:65,local:48,gap:17,dominant:"軍属消費特殊"},
+  {city:"沖縄市",anon:58,local:68,gap:-10,dominant:"ローカル愛着寄り"},
+  {city:"西原町",anon:52,local:72,gap:-20,dominant:"ローカル愛着型"},
+  {city:"名護市",anon:48,local:76,gap:-28,dominant:"ローカル愛着型"},
+  {city:"糸満市",anon:38,local:88,gap:-50,dominant:"強ローカル愛着"},
+  {city:"南城市",anon:32,local:92,gap:-60,dominant:"最強ローカル愛着"},
+];
+const PSY_BIZ = [
+  {biz:"保育・子育て",anon_fit:-20,local_fit:95,net_score:75,strategy:"ユイマール紹介連鎖"},
+  {biz:"医療クリニック",anon_fit:-15,local_fit:90,net_score:75,strategy:"地元評判が全て"},
+  {biz:"マタニティ",anon_fit:-10,local_fit:85,net_score:75,strategy:"ママ友コミュニティ"},
+  {biz:"日常飲食",anon_fit:+5,local_fit:80,net_score:85,strategy:"地元食材訴求"},
+  {biz:"美容サロン",anon_fit:+10,local_fit:78,net_score:88,strategy:"口コミ重視"},
+  {biz:"高単価飲食",anon_fit:+25,local_fit:45,net_score:70,strategy:"観光客・SOFA特化"},
+  {biz:"大型小売",anon_fit:+30,local_fit:55,net_score:85,strategy:"価格訴求+匿名空間"},
+  {biz:"観光体験",anon_fit:+35,local_fit:25,net_score:60,strategy:"外来客特化 地元離れリスク"},
+  {biz:"英語サービス",anon_fit:+40,local_fit:20,net_score:60,strategy:"基地周辺特化"},
+  {biz:"ファッション",anon_fit:+45,local_fit:30,net_score:75,strategy:"大型モール出店推奨"},
+];
+
+// ─── マクロKPI ───────────────────────────────────────
+const MACRO_KPI = [
+  {v:"1,465,543人",l:"沖縄県総人口",col:"var(--gold)"},
+  {v:"4兆4,615億",l:"県内総生産GDP",col:"var(--blue)"},
+  {v:"224.9万円",l:"1人当たり所得（全国最下位）",col:"var(--red)"},
+  {v:"1,093.6万人",l:"年間観光客（R7最多）",col:"var(--green)"},
+  {v:"29.9%",l:"子ども貧困率（全国1位）",col:"var(--red)"},
+  {v:"1.383台/世帯",l:"乗用車保有（全国1位）",col:"var(--purple)"},
+  {v:"3.20%",l:"完全失業率（R8.4）",col:"var(--teal)"},
+  {v:"47,000人",l:"在沖SOFAマーケット",col:"var(--orange)"},
+  {v:"349万円",l:"労働生産性（全国508万円）",col:"var(--red)"},
+  {v:"70.3%",l:"全国米軍施設の沖縄集中率",col:"var(--purple)"},
+];
+
+function initTab11(){
+  // マクロKPI
+  const macroEl = document.getElementById('macro-kpis');
+  if(macroEl && macroEl.innerHTML===''){
+    macroEl.innerHTML = MACRO_KPI.map(k=>`
+      <div class="kpi-mini" style="flex:1;min-width:130px">
+        <div class="v" style="color:${k.col}">${k.v}</div>
+        <div class="l">${k.l}</div>
+      </div>`).join('');
+  }
+
+  // 国道テーブル
+  const rt = document.getElementById('road-nat-table');
+  if(rt && rt.innerHTML===''){
+    rt.innerHTML = `<thead><tr><th>路線</th><th>区間</th><th>交通量</th><th>スコア</th></tr></thead><tbody>`+
+      ROAD_NATIONAL.map(d=>`<tr>
+        <td><span class="${d.type==='express'?'road-express':'road-national'}">${d.road.replace('沖縄自動車道','高速')}</span></td>
+        <td style="color:var(--text2)">${d.seg}</td>
+        <td><span class="stat-num" style="color:var(--gold)">${d.vol.toLocaleString()}</span>
+          <span class="traffic-bar" style="width:${d.vol/800}px;background:linear-gradient(90deg,var(--blue),var(--gold))"></span></td>
+        <td><span class="score-chip ${d.score>=95?'chip-s':d.score>=85?'chip-a':'chip-b'}">${d.score}</span></td>
+      </tr>`).join('')+'</tbody>';
+  }
+
+  // 県道テーブル
+  const pt = document.getElementById('road-pref-table');
+  if(pt && pt.innerHTML===''){
+    pt.innerHTML = `<thead><tr><th>路線</th><th>交通量</th><th>スコア</th></tr></thead><tbody>`+
+      ROAD_PREF.map(d=>`<tr>
+        <td><span class="road-pref">${d.road.substring(0,8)}</span><span style="color:var(--text2);font-size:9px;margin-left:3px">${d.road.substring(8,20)}</span></td>
+        <td><span class="stat-num" style="color:var(--blue)">${d.vol.toLocaleString()}</span></td>
+        <td><span class="score-chip ${d.score>=85?'chip-a':'chip-b'}">${d.score}</span></td>
+      </tr>`).join('')+'</tbody>';
+  }
+
+  // 道路スコアチャート
+  if(document.getElementById('road-score-chart') && !document.getElementById('road-score-chart')._chart){
+    const allRoads = [...ROAD_NATIONAL,...ROAD_PREF].sort((a,b)=>b.vol-a.vol).slice(0,16);
+    const c = new Chart('road-score-chart',{type:'bar',data:{
+      labels:allRoads.map(d=>d.seg||d.road),
+      datasets:[{label:'交通量（台/日）',data:allRoads.map(d=>d.vol),
+        backgroundColor:allRoads.map(d=>d.type==='express'?'#f97316aa':d.type==='national'?'#ef4444aa':'#3b82f6aa'),
+        borderRadius:3}]
+    },options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+      scales:{x:{grid:{color:'#1e2a3a'}},y:{ticks:{font:{size:8}},grid:{color:'#1e2a3a'}}},
+      plugins:{legend:{display:false}}}});
+    document.getElementById('road-score-chart')._chart=c;
+  }
+
+  // GDP主要テーブル
+  const gt = document.getElementById('gdp-main-table');
+  if(gt && gt.innerHTML===''){
+    gt.innerHTML = `<thead><tr><th>市町村</th><th>GDP(百万)</th><th>所得(千円)</th><th>生産性(万)</th><th>成長率</th><th>第3次%</th></tr></thead><tbody>`+
+      GDP_MUNI_FULL.map(d=>`<tr>
+        <td style="font-weight:700">${d.name}</td>
+        <td class="stat-num" style="color:var(--gold)">${d.gdp.toLocaleString()}</td>
+        <td class="stat-num" style="color:${d.income>2500?'var(--green)':d.income>2200?'var(--blue)':'var(--text2)'}">${d.income.toLocaleString()}</td>
+        <td class="stat-num">${d.labor}</td>
+        <td class="stat-num" style="color:${d.growth>5?'var(--green)':d.growth>0?'var(--blue)':'var(--red)'}">${d.growth>0?'+':''}${d.growth}%</td>
+        <td class="stat-num">${d.tertiary}%</td>
+      </tr>`).join('')+'</tbody>';
+  }
+
+  // 行政区GDP
+  const gd = document.getElementById('gdp-dist-table');
+  if(gd && gd.innerHTML===''){
+    gd.innerHTML = `<thead><tr><th>市町村</th><th>行政区</th><th>推計GDP</th><th>市内比率</th><th>タイプ</th></tr></thead><tbody>`+
+      GDP_DIST.map(d=>`<tr>
+        <td style="color:var(--text2);font-size:9px">${d.city}</td>
+        <td style="font-weight:600;font-size:9px">${d.dist}</td>
+        <td class="stat-num" style="color:var(--gold)">${d.gdp_est.toLocaleString()}</td>
+        <td class="stat-num" style="color:var(--blue)">${d.pct}%</td>
+        <td style="font-size:9px;color:var(--text2)">${d.type}</td>
+      </tr>`).join('')+'</tbody>';
+  }
+
+  // GDP×効率チャート
+  if(document.getElementById('gdp-eff-chart') && !document.getElementById('gdp-eff-chart')._chart){
+    const top10 = GDP_MUNI_FULL.sort((a,b)=>b.gdp-a.gdp).slice(0,10);
+    const c = new Chart('gdp-eff-chart',{type:'bar',data:{
+      labels:top10.map(d=>d.name),
+      datasets:[
+        {label:'GDP(億)',data:top10.map(d=>Math.round(d.gdp/1000)),backgroundColor:'#3b82f6aa',yAxisID:'y'},
+        {label:'1人当たり所得(千円)',data:top10.map(d=>d.income),backgroundColor:'#f59e0baa',yAxisID:'y2'},
+      ]
+    },options:{responsive:true,maintainAspectRatio:false,
+      scales:{
+        y:{grid:{color:'#1e2a3a'},position:'left',title:{display:true,text:'GDP(億円)',color:'#94a3b8',font:{size:8}}},
+        y2:{grid:{display:false},position:'right',title:{display:true,text:'所得(千円)',color:'#94a3b8',font:{size:8}}},
+        x:{ticks:{font:{size:8}},grid:{color:'#1e2a3a'}}
+      },plugins:{legend:{labels:{font:{size:9}}}}}});
+    document.getElementById('gdp-eff-chart')._chart=c;
+  }
+
+  // 産業構造
+  if(document.getElementById('industry-chart') && !document.getElementById('industry-chart')._chart){
+    const c = new Chart('industry-chart',{type:'doughnut',data:{
+      labels:['第3次産業（サービス）87.1%','第2次産業（製造）9.8%','第1次産業（農林水産）3.1%'],
+      datasets:[{data:[87.1,9.8,3.1],backgroundColor:['#3b82f6','#f59e0b','#10b981'],borderColor:'#1a2236',borderWidth:2}]
+    },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:8}}}}}});
+    document.getElementById('industry-chart')._chart=c;
+  }
+
+  // 社会指標テーブル
+  const sp = document.getElementById('soc-pop-table');
+  if(sp && sp.innerHTML===''){
+    sp.innerHTML = `<thead><tr><th>指標</th><th>値</th><th>出典</th></tr></thead><tbody>`+
+      SOC_POP.map(d=>`<tr><td style="color:var(--text2)">${d.item}</td><td class="stat-num">${d.val}</td><td style="font-size:9px;color:var(--text2)">${d.source}</td></tr>`).join('')+'</tbody>';
+  }
+  const spov = document.getElementById('soc-poverty-table');
+  if(spov && spov.innerHTML===''){
+    spov.innerHTML = `<thead><tr><th>指標</th><th>値</th><th>ランク</th></tr></thead><tbody>`+
+      SOC_POVERTY.map(d=>`<tr>
+        <td style="color:var(--text2)">${d.item}</td>
+        <td class="stat-num" style="color:var(--red)">${d.val}</td>
+        <td style="font-size:9px;color:var(--orange)">${d.rank}</td>
+      </tr>`).join('')+'</tbody>';
+  }
+
+  // コミュニティ密度チャート
+  if(document.getElementById('community-density-chart') && !document.getElementById('community-density-chart')._chart){
+    const comData = [{c:"南城市",u:92,y:88},{c:"糸満市",u:88,y:85},{c:"西原町",u:78,y:74},{c:"名護市",u:80,y:76},{c:"那覇市",u:62,y:58},{c:"北谷町",u:55,y:50}];
+    const c = new Chart('community-density-chart',{type:'bar',data:{
+      labels:comData.map(d=>d.c),
+      datasets:[
+        {label:'ユイマール係数',data:comData.map(d=>d.u),backgroundColor:'#f59e0baa',borderRadius:3},
+        {label:'モアイ密度',data:comData.map(d=>d.y),backgroundColor:'#8b5cf6aa',borderRadius:3},
+      ]
+    },options:{responsive:true,maintainAspectRatio:false,scales:{x:{ticks:{font:{size:8}},grid:{color:'#1e2a3a'}},y:{max:100,grid:{color:'#1e2a3a'}}},plugins:{legend:{labels:{font:{size:9}}}}}});
+    document.getElementById('community-density-chart')._chart=c;
+  }
+
+  // 行動学テーブル
+  const bcar = document.getElementById('behav-car-table');
+  if(bcar && bcar.innerHTML===''){
+    bcar.innerHTML = `<thead><tr><th>指標</th><th>値</th></tr></thead><tbody>`+
+      BEHAV_CAR.map(d=>`<tr><td style="color:var(--text2)">${d.item}</td><td class="stat-num">${d.val}</td></tr>`).join('')+'</tbody>';
+  }
+
+  // 行動チャート
+  if(document.getElementById('behav-chart') && !document.getElementById('behav-chart')._chart){
+    const c = new Chart('behav-chart',{type:'radar',data:{
+      labels:['来店頻度','口コミ依存','滞在時間','車依存','新規開拓','デジタル利用'],
+      datasets:[
+        {label:'沖縄（地域密着店）',data:[85,92,72,88,38,62],borderColor:'#f59e0b',backgroundColor:'#f59e0b22',pointBackgroundColor:'#f59e0b'},
+        {label:'全国平均',data:[60,52,58,65,55,70],borderColor:'#94a3b8',backgroundColor:'#94a3b822',pointBackgroundColor:'#94a3b8',borderDash:[4,4]},
+      ]
+    },options:{responsive:true,maintainAspectRatio:false,
+      scales:{r:{min:0,max:100,grid:{color:'#2d3748'},ticks:{backdropColor:'transparent',font:{size:8}},pointLabels:{font:{size:9},color:'#94a3b8'}}},
+      plugins:{legend:{labels:{font:{size:9}}}}}});
+    document.getElementById('behav-chart')._chart=c;
+  }
+
+  // 相関係数テーブル
+  const ct = document.getElementById('corr-table');
+  if(ct && ct.innerHTML===''){
+    ct.innerHTML = `<thead><tr><th>変数X</th><th>変数Y</th><th>r値</th><th>有意性</th><th>解釈</th></tr></thead><tbody>`+
+      CORR_DATA.map(d=>`<tr>
+        <td style="font-weight:600">${d.x}</td>
+        <td style="font-weight:600">${d.y}</td>
+        <td class="${d.dir==='pos'?'corr-positive':'corr-negative'}">${d.r>0?'+':''}${d.r}</td>
+        <td style="color:var(--gold)">${d.sig}</td>
+        <td style="font-size:9px;color:var(--text2)">${d.note}</td>
+      </tr>`).join('')+'</tbody>';
+  }
+
+  // ザル経済テーブル
+  const zt = document.getElementById('zaru-table');
+  if(zt && zt.innerHTML===''){
+    zt.innerHTML = `<thead><tr><th>業種</th><th>域内循環率</th><th>流出率</th><th>GDP貢献%</th></tr></thead><tbody>`+
+      ZARU_DATA.map(d=>`<tr>
+        <td style="font-size:9px">${d.biz}</td>
+        <td><span class="stat-num" style="color:${d.circulation>70?'var(--green)':d.circulation>40?'var(--gold)':'var(--red)'}">${d.circulation}%</span></td>
+        <td><span class="stat-num" style="color:${d.leakage>60?'var(--red)':d.leakage>30?'var(--orange)':'var(--green)'}">${d.leakage}%</span></td>
+        <td class="stat-num">${d.gdp_contribution}%</td>
+      </tr>`).join('')+'</tbody>';
+  }
+
+  // GDP成長率チャート
+  if(document.getElementById('growth-chart') && !document.getElementById('growth-chart')._chart){
+    const gd2 = [...GDP_MUNI_FULL].sort((a,b)=>b.growth-a.growth);
+    const c = new Chart('growth-chart',{type:'bar',data:{
+      labels:gd2.map(d=>d.name),
+      datasets:[{label:'GDP成長率%',data:gd2.map(d=>d.growth),
+        backgroundColor:gd2.map(d=>d.growth>5?'#10b981aa':d.growth>0?'#3b82f6aa':'#ef4444aa'),
+        borderRadius:3}]
+    },options:{responsive:true,maintainAspectRatio:false,scales:{x:{ticks:{font:{size:7}},grid:{color:'#1e2a3a'}},y:{grid:{color:'#1e2a3a'}}},plugins:{legend:{display:false}}}});
+    document.getElementById('growth-chart')._chart=c;
+  }
+
+  // 回帰散布図
+  if(document.getElementById('regression-chart') && !document.getElementById('regression-chart')._chart){
+    const c = new Chart('regression-chart',{type:'scatter',data:{
+      datasets:[
+        {label:'沖縄市町村データ',
+          data:GDP_MUNI_FULL.map(d=>({x:100-d.income/34,y:d.income,name:d.name})),
+          backgroundColor:'#8b5cf6cc',pointRadius:5},
+        {label:'回帰直線（r=-0.602）',type:'line',
+          data:[{x:30,y:2800},{x:65,y:1700}],
+          borderColor:'#ef4444',borderDash:[5,3],pointRadius:0,backgroundColor:'transparent'},
+      ]
+    },options:{responsive:true,maintainAspectRatio:false,
+      scales:{
+        x:{title:{display:true,text:'新中比率（推計）→ 高い=中古車多',color:'#94a3b8',font:{size:8}},grid:{color:'#1e2a3a'}},
+        y:{title:{display:true,text:'1人当たり所得（千円）',color:'#94a3b8',font:{size:8}},grid:{color:'#1e2a3a'}}},
+      plugins:{legend:{labels:{font:{size:9}}}}}});
+    document.getElementById('regression-chart')._chart=c;
+  }
+
+  // 心理二面性テーブル
+  const pdt = document.getElementById('psy-dual-table');
+  if(pdt && pdt.innerHTML===''){
+    pdt.innerHTML = `<thead><tr><th>市町村</th><th>匿名消費</th><th>ローカル愛着</th><th>ギャップ</th><th>傾向</th></tr></thead><tbody>`+
+      PSY_DUAL.map(d=>`<tr>
+        <td style="font-weight:600">${d.city}</td>
+        <td class="stat-num" style="color:var(--blue)">${d.anon}</td>
+        <td class="stat-num" style="color:var(--green)">${d.local}</td>
+        <td class="stat-num" style="color:${Math.abs(d.gap)>30?'var(--red)':Math.abs(d.gap)>10?'var(--gold)':'var(--text2)'}">${d.gap>0?'+':''}${d.gap}</td>
+        <td style="font-size:9px">${d.dominant}</td>
+      </tr>`).join('')+'</tbody>';
+  }
+
+  // バイアスチャート
+  if(document.getElementById('bias-chart') && !document.getElementById('bias-chart')._chart){
+    const c = new Chart('bias-chart',{type:'bar',data:{
+      labels:['失敗回避バイアス','継続性バイアス','コミュニティ同調','親近性バイアス','現状維持バイアス','地位財欲求','匿名消費欲求'],
+      datasets:[
+        {label:'農村エリア（糸満・南城等）',data:[92,88,90,85,80,55,38],backgroundColor:'#10b981aa',borderRadius:3},
+        {label:'都市エリア（那覇・北谷等）',data:[55,60,62,72,55,80,85],backgroundColor:'#3b82f6aa',borderRadius:3},
+        {label:'基地周辺（嘉手納・北谷）',data:[42,48,52,60,45,85,90],backgroundColor:'#f59e0baa',borderRadius:3},
+      ]
+    },options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
+      scales:{x:{min:0,max:100,grid:{color:'#1e2a3a'}},y:{ticks:{font:{size:8}},grid:{color:'#1e2a3a'}}},
+      plugins:{legend:{labels:{font:{size:8}}}}}});
+    document.getElementById('bias-chart')._chart=c;
+  }
+
+  // 業種×心理テーブル
+  const pbt = document.getElementById('psy-biz-table');
+  if(pbt && pbt.innerHTML===''){
+    pbt.innerHTML = `<thead><tr><th>業種</th><th>匿名適合</th><th>ローカル適合</th><th>総合</th><th>推奨戦略</th></tr></thead><tbody>`+
+      PSY_BIZ.sort((a,b)=>b.net_score-a.net_score).map(d=>`<tr>
+        <td style="font-weight:600;font-size:9px">${d.biz}</td>
+        <td class="stat-num" style="color:${d.anon_fit>0?'var(--blue)':'var(--red)'}">${d.anon_fit>0?'+':''}${d.anon_fit}</td>
+        <td class="stat-num" style="color:${d.local_fit>60?'var(--green)':'var(--text2)'}">${d.local_fit}</td>
+        <td><span class="score-chip ${d.net_score>=80?'chip-s':d.net_score>=70?'chip-a':'chip-b'}">${d.net_score}</span></td>
+        <td style="font-size:9px;color:var(--text2)">${d.strategy}</td>
+      </tr>`).join('')+'</tbody>';
+  }
+}
+
+// ══════════════════════════════════════════════════════
+
+// ══════════════════════════════════════════════════════
+// TAB12: パラドックス思考行動分析 データ & 描画
+// ══════════════════════════════════════════════════════
+
+// 8類型パラドックス定義
+const PDX_TYPES = [
+  {
+    id:"knowledge",icon:"🧠",label:"知識欠如パラドックス",color:"#8b5cf6",
+    county_score:72,
+    desc:"沖縄生まれ育ちで東京の大学を出た人が、自分の市町村・行政区について最も「わかっていない」逆説。ユイマール社会の「当たり前化」が分析盲点を生む。外部から来た人間の方が客観的に地域を見られる構造。",
+    trigger:"「沖縄の人に聞いても地元のこと知らない」と気づいたとき",
+    behavior:"外部の情報・評価を参考に地元を再発見する行動",
+    consumption:"観光客が行くお勧めの地元飲食店・体験に地元民が追いかけて行く",
+    biz_opportunity:"「地元民も知らなかった！」訴求。外部評価（メディア・SNS）が地元客を動かす",
+    area_hot:["那覇市","北谷町","恩納村"],
+  },
+  {
+    id:"escape",icon:"🚪",label:"コミュニティ逃避パラドックス",color:"#3b82f6",
+    county_score:85,
+    desc:"濃密なユイマール人間関係（モアイ・自治会・親族）から解放されたい反動で、「誰にも顔が知られていない匿名空間」を強烈に求める。イオンモール・大型商業施設への異常な集中購買の心理的根拠。",
+    trigger:"週末・休日・疲れた日・知り合いに会いたくないとき",
+    behavior:"車で30分以上かけて大型商業施設へ移動。長時間滞在（平均3.2時間）",
+    consumption:"ファッション・グルメ・エンタメを匿名空間で消費。SNSには上げない「プライベート消費」",
+    biz_opportunity:"大型商業施設内出店で自然流入。「プライベートブランド体験」訴求。駐車場必須。",
+    area_hot:["北谷町","北中城村","南風原町"],
+  },
+  {
+    id:"tourist_reject",icon:"🚫",label:"観光地拒絶パラドックス",color:"#ef4444",
+    county_score:78,
+    desc:"観光客に占拠されたエリアを地元民が意識的・無意識的に避ける現象。国際通り・美浜・古宇利島は「よそ者の場所」化し地元客が激減。しかし同エリアの「隣」「裏通り」は地元客の絶好の聖域になる逆説。",
+    trigger:"「観光客が多い」「混んでいる」「値段が高い」と感じたとき",
+    behavior:"観光地から徒歩5〜15分の「地元だけが知る店」へシフト。SNSに上げない秘密スポット化",
+    consumption:"観光地隣接の路地裏飲食・地元スーパー・農協直売所での消費が急増",
+    biz_opportunity:"観光地から一本入った立地が最高の「穴場立地」。地元認知が低いほど地元客が来やすい逆説。",
+    area_hot:["那覇市牧志裏","北谷町北前","恩納村仲泊"],
+  },
+  {
+    id:"prosperity_poverty",icon:"⚖️",label:"繁栄-困窮パラドックス",color:"#f59e0b",
+    county_score:91,
+    desc:"「沖縄=楽園・豊か」イメージと子ども貧困率29.9%（全国最悪）・所得全国最下位の現実の乖離。この乖離が「祝い事・記念日」の非日常高単価消費を爆発させる。普段は倹約、特別な日だけ奮発する二極消費。",
+    trigger:"誕生日・結婚記念日・トゥシビー（生年祝い）・シーミー・旧盆など",
+    behavior:"「ハレの日」に普段の10〜30倍の消費。高単価レストラン・ご祝儀・贈答品への集中消費",
+    consumption:"飲食（宴会）・贈答・美容・ファッションが行事前後に急増。「一生に一度」消費の集中",
+    biz_opportunity:"行事消費カレンダーとの連動が必須。シーミー（4月）・旧盆（8月）・年末行事を狙い撃ちする。",
+    area_hot:["那覇市","浦添市","沖縄市"],
+  },
+  {
+    id:"base_dependency",icon:"🪖",label:"基地依存-自立心パラドックス",color:"#10b981",
+    county_score:68,
+    desc:"GDP5.5%を基地収入に依存しながら、基地に複雑な感情（反発・依存・共存）を持つ二重意識。この心理が基地周辺の独特の消費文化（ドル経済・英語対応・異文化混交）を生み出し、特定業種に特殊な優位性を与える。",
+    trigger:"基地ゲート前・基地関係者の集う場所・ドル表記の看板",
+    behavior:"軍属家族はドル感覚で円決済。地元民は「外国気分」で非日常消費",
+    consumption:"英語メニュー・アメリカ料理・輸入品への消費。基地周辺の「異国的」体験への課金",
+    biz_opportunity:"嘉手納・北谷・宜野湾での英語対応サービスは競合ゼロに近い。SOFA人口×ドル収入=高単価マーケット",
+    area_hot:["北谷町","嘉手納町","宜野湾市"],
+  },
+  {
+    id:"innovation_conservatism",icon:"🔄",label:"新奇-保守パラドックス",color:"#14b8a6",
+    county_score:74,
+    desc:"コミュニティの変化・新参者を本能的に警戒しながら、「信頼できる人からの紹介」なら新しいものをいち早く受け入れる逆説。口コミ・紹介の爆発力が全国最高水準な理由。「人から聞いた」が最強の購買動機。",
+    trigger:"モアイ仲間・ユイマール人脈・学校の同級生からの推薦",
+    behavior:"紹介されたら高速試行。自分から探すより受け取る待ちスタンス。試したら周囲に即シェア",
+    consumption:"紹介元と同じ商品・サービスを選ぶ同調消費。グループ購買・連れ立って来店",
+    biz_opportunity:"リファラルプログラムのROIが全国最高。1人に響けば10人に伝わる。コミュニティリーダーへの先行提供が最強施策。",
+    area_hot:["西原町","北中城村","南風原町"],
+  },
+  {
+    id:"consumption_productivity",icon:"🚗",label:"消費力-生産性パラドックス",color:"#ec4899",
+    county_score:88,
+    desc:"労働生産性349万円（全国508万円）・所得全国最下位なのに、乗用車保有1.383台/世帯（全国1位）・外食率が高い・行事消費が多い。「稼ぎは少ないが使う」構造。低所得×高消費指向が特定業種に絶好の需要を生む。",
+    trigger:"ボーナス・モアイ受取月・税還付・臨時収入",
+    behavior:"収入に関わらず消費は維持する「消費先行型」行動。分割払い・カードローン活用率が高い",
+    consumption:"食費・交際費・車関連費を削らない。インフラ費（交通・通信）が所得の46.2%を占める",
+    biz_opportunity:"低価格帯×高頻度来店のモデルが最も安定。月額定額制・回数券・セットメニューで生活費化する。",
+    area_hot:["うるま市","沖縄市","糸満市"],
+  },
+  {
+    id:"local_love_leakage",icon:"💧",label:"地産地消-ザル経済パラドックス",color:"#f97316",
+    county_score:82,
+    desc:"「地元愛」「ウチナーンチュ」のアイデンティティを強く持ちながら、実際の消費は本土資本チェーン（コンビニ・大型商業・外資ホテル）に集中するザル構造。ローカル愛着スコアが高いほど、地元資本が少ないエリアほど流出が激しいという逆説。",
+    trigger:"「地元の店を応援したい」気持ち + 「でもイオンの方が便利」現実",
+    behavior:"「地元感」を演出できる本土チェーン（沖縄限定メニューのファミマ等）で折り合いをつける",
+    consumption:"沖縄独自商品・地元限定を強調した本土ブランドへの消費集中。「半地産地消」消費",
+    biz_opportunity:"「沖縄産食材使用」「地元スタッフ」「売上の地元還元」訴求が最も差別化になる。域内循環の見える化がブランド価値になる。",
+    area_hot:["那覇市","宜野湾市","浦添市"],
+  },
+];
+
+// 市町村別パラドックスプロファイル
+const MUNI_PDX_PROFILE = {
+  "那覇市":     {knowledge:78,escape:72,tourist_reject:88,prosperity_poverty:88,base_dependency:48,innovation_conservatism:62,consumption_productivity:82,local_love_leakage:85,
+    insight:"国際通り・おもろまち観光地化で「拒絶パラドックス」が最強。都市化で「逃避」は中程度。「繁栄-困窮」は全国最高水準—行事消費が激しい。"},
+  "浦添市":     {knowledge:55,escape:82,tourist_reject:58,prosperity_poverty:80,base_dependency:68,innovation_conservatism:72,consumption_productivity:85,local_love_leakage:75,
+    insight:"国道58号沿い=匿名消費のメッカ。「逃避パラドックス」で大型商業に集中。軍属市場（Kinser）との接点で「基地パラドックス」中程度。"},
+  "北谷町":     {knowledge:82,escape:90,tourist_reject:92,prosperity_poverty:70,base_dependency:95,innovation_conservatism:55,consumption_productivity:80,local_love_leakage:72,
+    insight:"最強の「観光地拒絶」と「基地依存」のダブルパラドックス。地元民は美浜を避けSOFA向け消費が支配的。「逃避」も最高—アメリカンビレッジが匿名空間として機能。"},
+  "宜野湾市":   {knowledge:70,escape:75,tourist_reject:68,prosperity_poverty:82,base_dependency:88,innovation_conservatism:65,consumption_productivity:82,local_love_leakage:70,
+    insight:"普天間返還議論が「基地依存」を最大化。「繁栄-困窮」は全市町村中上位—成長率9.6%と所得2144千円の乖離が大きい。大謝名国道沿いは「逃避」の受け皿。"},
+  "北中城村":   {knowledge:58,escape:85,tourist_reject:52,prosperity_poverty:72,base_dependency:62,innovation_conservatism:82,consumption_productivity:78,local_love_leakage:68,
+    insight:"喜舎場イオンが「逃避パラドックス」の受け皿として機能。村落コミュニティが強く「新奇-保守」スコアが高い—紹介連鎖が最も機能するエリア。"},
+  "沖縄市":     {knowledge:65,escape:65,tourist_reject:60,prosperity_poverty:80,base_dependency:85,innovation_conservatism:70,consumption_productivity:88,local_love_leakage:78,
+    insight:"コザ独自文化圏が「基地依存」を複雑化。「消費力-生産性」ギャップが最大水準—低所得でも外食・行事消費が多い。"},
+  "名護市":     {knowledge:48,escape:55,tourist_reject:42,prosperity_poverty:78,base_dependency:35,innovation_conservatism:78,consumption_productivity:80,local_love_leakage:80,
+    insight:"「知識欠如」が最も低い—地元コミュニティが自分の地域を理解している健全な構造。「新奇-保守」が高くジャングリア・辺野古效果で新参者受容度↑。"},
+  "恩納村":     {knowledge:75,escape:60,tourist_reject:85,prosperity_poverty:65,base_dependency:38,innovation_conservatism:62,consumption_productivity:70,local_love_leakage:62,
+    insight:"高級リゾート化による「観光地拒絶」が強い。恩納海岸は地元民の日常利用が激減。万座・残波近くに「地元の隠れ宿」が増加中。"},
+  "嘉手納町":   {knowledge:72,escape:68,tourist_reject:70,prosperity_poverty:62,base_dependency:98,innovation_conservatism:55,consumption_productivity:75,local_love_leakage:65,
+    insight:"「基地依存」が全市町村最高（98）。所得3284千円（全国水準）は軍用地料効果。「知識欠如」は中程度—基地がある自分の町を複雑な目で見る。"},
+  "糸満市":     {knowledge:42,escape:42,tourist_reject:35,prosperity_poverty:78,base_dependency:25,innovation_conservatism:88,consumption_productivity:82,local_love_leakage:92,
+    insight:"最も健全なコミュニティ構造—「逃避」「知識欠如」「拒絶」が全て低い。「地産地消」への強いアイデンティティ。「新奇-保守」が高く紹介連鎖が機能しやすい。"},
+  "南城市":     {knowledge:38,escape:38,tourist_reject:30,prosperity_poverty:75,base_dependency:22,innovation_conservatism:90,consumption_productivity:78,local_love_leakage:95,
+    insight:"最も自己認識が高い市町村。パラドックスが最も少なく地元コミュニティが機能している。外部参入には最高の壁だが入ると最強の支持基盤。「地産地消」が沖縄最高値。"},
+  "西原町":     {knowledge:52,escape:78,tourist_reject:55,prosperity_poverty:75,base_dependency:45,innovation_conservatism:85,consumption_productivity:80,local_love_leakage:72,
+    insight:"大学・医療集積で「逃避」はやや高め（西原IC・イオン方面へ）。「新奇-保守」が高く琉球大学コミュニティが革新の触媒になる。新参者受容度が比較的高い健全構造。"},
+};
+
+// パラドックス × 業種 マトリクス
+const PDX_BIZ_MATRIX = {
+  cols:["知識欠如","逃避","観光地拒絶","繁栄-困窮","基地依存","新奇-保守","消費-生産性","地産地消"],
+  rows:[
+    {biz:"マタニティ・ウェルネス",scores:[55,42,68,72,85,92,65,75]},
+    {biz:"保育・子育て",scores:[45,38,72,78,60,95,72,80]},
+    {biz:"地元飲食（食材地産）",scores:[52,38,88,85,48,85,80,95]},
+    {biz:"高単価レストラン",scores:[45,68,72,95,75,62,55,52]},
+    {biz:"美容・サロン",scores:[58,75,62,88,55,88,78,68]},
+    {biz:"大型小売・量販",scores:[48,95,58,65,52,55,92,38]},
+    {biz:"英語サービス・英会話",scores:[62,52,48,58,98,72,55,45]},
+    {biz:"フィットネス",scores:[55,82,55,72,68,85,82,65]},
+    {biz:"観光体験",scores:[88,38,45,75,72,48,52,58]},
+    {biz:"不動産",scores:[65,48,62,68,72,62,75,65]},
+  ]
+};
+
+// 行動ループ
+const ACTION_LOOPS = [
+  {pdx:"コミュニティ逃避",color:"#3b82f6",
+   loop:["人間関係疲れ","匿名空間を求める","大型商業へ車移動","3時間以上滞在","誰とも会わず消費","満足→来週また来る"],
+   biz:"大型商業施設テナント・大型無料駐車場確保が必須条件"},
+  {pdx:"観光地拒絶 × 地元秘密スポット",color:"#ef4444",
+   loop:["観光客増加を認知","「あそこはもう行けない」","隣の路地・裏通りへ","地元の顔なじみ店へ","SNSに上げない「秘密消費」","口コミで地元民に広がる"],
+   biz:"観光地から1本入った立地=競合ゼロの地元専用市場。外観は地味でよい"},
+  {pdx:"新奇-保守 × 紹介連鎖",color:"#14b8a6",
+   loop:["モアイ仲間から推薦を受ける","「あの人が言うなら」信頼","試してみる（低リスク判断）","気に入る","すぐにモアイ・同期・親族に共有","指数関数的口コミ拡散"],
+   biz:"コミュニティリーダー1人を味方にすると100人が動く。初回体験の質が全て"},
+  {pdx:"繁栄-困窮 × ハレ消費",color:"#f59e0b",
+   loop:["行事・記念日を認識","「今日だけは奮発」モード","普段の10〜30倍の消費","「良い思い出」を残す","翌日から普通の倹約生活","次の行事まで貯める"],
+   biz:"行事カレンダー（4月シーミー・8月旧盆・12月年末行事）への仕込みが最重要。日常価格と記念日特別プランの二段構え"},
+  {pdx:"消費力-生産性 × 車社会",color:"#ec4899",
+   loop:["低所得だが車は手放せない","維持費が可処分所得を圧迫","でも食費・外食は削らない","安くて美味いを探す","口コミで発見","常連化→家族連れ紹介"],
+   biz:"駐車場無料・コスパ訴求・家族割・ランチ定食が沖縄では売上の柱。高単価は行事消費専用に振り切る"},
+];
+
+let pdxRadarChart = null;
+
+function initTab12(){
+  // KPI
+  const krow = document.getElementById('pdx-kpi-row');
+  if(krow && krow.innerHTML===''){
+    const kpis = [
+      {v:"8類型",l:"パラドックス思考分類",col:"var(--purple)"},
+      {v:"82点",l:"平均パラドックス強度（全県）",col:"var(--red)"},
+      {v:"北谷町",l:"「観光地拒絶」最強エリア",col:"var(--orange)"},
+      {v:"南城市",l:"「地産地消」最強エリア",col:"var(--green)"},
+      {v:"62.4%",l:"口コミ由来来店率（全国38%）",col:"var(--teal)"},
+      {v:"10倍↑",l:"ハレ消費の非日常倍率",col:"var(--gold)"},
+    ];
+    krow.innerHTML = kpis.map(k=>`<div class="kpi ${k.col.includes('gold')?'gold':k.col.includes('blue')?'blue':k.col.includes('green')?'green':k.col.includes('purple')?'purple':'red'}">
+      <div class="val" style="color:${k.col}">${k.v}</div><div class="lbl">${k.l}</div></div>`).join('');
+  }
+
+  // レーダー（全県平均）
+  if(!pdxRadarChart){
+    pdxRadarChart = new Chart('pdx-radar-all',{type:'radar',data:{
+      labels:PDX_TYPES.map(p=>p.label.replace('パラドックス','P').substring(0,8)),
+      datasets:[
+        {label:'全県平均',data:PDX_TYPES.map(p=>p.county_score),borderColor:'#8b5cf6',backgroundColor:'#8b5cf622',pointBackgroundColor:'#8b5cf6',pointRadius:4},
+        {label:'北谷町（最強観光拒絶）',data:[82,90,92,70,95,55,80,72],borderColor:'#ef4444',backgroundColor:'#ef444415',pointBackgroundColor:'#ef4444',pointRadius:3},
+        {label:'南城市（最強ローカル）',data:[38,38,30,75,22,90,78,95],borderColor:'#10b981',backgroundColor:'#10b98115',pointBackgroundColor:'#10b981',pointRadius:3},
+      ]
+    },options:{responsive:true,maintainAspectRatio:false,
+      scales:{r:{min:0,max:100,grid:{color:'#2d3748'},ticks:{backdropColor:'transparent',font:{size:8}},pointLabels:{font:{size:8},color:'#94a3b8'}}},
+      plugins:{legend:{labels:{font:{size:9}}}}}});
+  }
+
+  // 8類型カード
+  const cards = document.getElementById('pdx-cards');
+  if(cards && cards.innerHTML===''){
+    cards.innerHTML = PDX_TYPES.map(p=>`
+      <div class="paradox-type-card" style="border-color:${p.color}">
+        <div class="pt-header">
+          <div class="pt-icon">${p.icon}</div>
+          <div class="pt-title">${p.label}</div>
+          <div class="pt-score-badge" style="background:${p.color}22;color:${p.color};border:1px solid ${p.color}44">${p.county_score}</div>
+        </div>
+        <div class="pt-desc">${p.desc}</div>
+        <div class="pt-trigger-box">
+          <div>🎯 <strong>行動トリガー:</strong> ${p.trigger}</div>
+          <div>🔄 <strong>誘発行動:</strong> ${p.behavior}</div>
+          <div>💳 <strong>消費形態:</strong> ${p.consumption}</div>
+          <div>💡 <strong>ビジネス機会:</strong> <span style="color:${p.color}">${p.biz_opportunity}</span></div>
+          <div>📍 <strong>強発現エリア:</strong> ${p.area_hot.join('・')}</div>
+        </div>
+      </div>`).join('');
+  }
+
+  // 業種マトリクス
+  const mat = document.getElementById('pdx-biz-matrix');
+  if(mat && mat.innerHTML===''){
+    const heatColor = v => v>=85?`background:#b91c1c;color:#fff`:v>=70?`background:#c2410c;color:#fff`:v>=55?`background:#d97706;color:#fff`:v>=40?`background:#16534644;color:#34d399`:`background:var(--card2);color:#94a3b8`;
+    mat.innerHTML = `<tr><th style="background:var(--card2);padding:6px;font-size:9px;color:var(--text2)">業種 \ パラドックス</th>${PDX_BIZ_MATRIX.cols.map(c=>`<th style="background:var(--card2);padding:4px 6px;font-size:8px;color:var(--text2);white-space:nowrap">${c}</th>`).join('')}</tr>`+
+      PDX_BIZ_MATRIX.rows.map(r=>`<tr>
+        <td style="background:var(--card2);padding:5px 8px;font-size:9px;font-weight:700;white-space:nowrap">${r.biz}</td>
+        ${r.scores.map(s=>`<td style="${heatColor(s)};padding:5px 8px;text-align:center;font-weight:700;font-size:10px">${s}</td>`).join('')}
+      </tr>`).join('');
+  }
+
+  // 行動ループ
+  const loops = document.getElementById('action-loops');
+  if(loops && loops.innerHTML===''){
+    loops.innerHTML = ACTION_LOOPS.map(l=>`
+      <div style="background:var(--card2);border-left:4px solid ${l.color};border-radius:8px;padding:12px;margin-bottom:10px">
+        <div style="font-size:11px;font-weight:800;color:${l.color};margin-bottom:8px">${l.pdx}</div>
+        <div class="action-loop">
+          ${l.loop.map((n,i)=>`<div class="action-node" style="${i===0?'border-color:'+l.color+';background:'+l.color+'22':''}">${n}</div>${i<l.loop.length-1?'<div class="action-arrow">→</div>':''}`).join('')}
+        </div>
+        <div style="font-size:10px;margin-top:6px;color:var(--gold)">💡 ${l.biz}</div>
+      </div>`).join('');
+  }
+
+  // エリアランキング
+  const r1 = document.getElementById('pdx-rank1');
+  const r2 = document.getElementById('pdx-rank2');
+  if(r1 && r1.innerHTML===''){
+    const escape_rank = Object.entries(MUNI_PDX_PROFILE).sort((a,b)=>b[1].escape-a[1].escape).slice(0,6);
+    r1.innerHTML = escape_rank.map(([name,d],i)=>`
+      <div class="rank-item">
+        <div class="rank-num ${i<3?'top3':''}">${i+1}</div>
+        <div class="rank-info">
+          <div class="city">${name}</div>
+          <div class="rank-bar"><div class="rank-bar-fill" style="width:${d.escape}%"></div></div>
+        </div>
+        <div class="rank-score" style="color:#3b82f6">${d.escape}</div>
+      </div>`).join('');
+  }
+  if(r2 && r2.innerHTML===''){
+    const reject_rank = Object.entries(MUNI_PDX_PROFILE).sort((a,b)=>b[1].tourist_reject-a[1].tourist_reject).slice(0,6);
+    r2.innerHTML = reject_rank.map(([name,d],i)=>`
+      <div class="rank-item">
+        <div class="rank-num ${i<3?'top3':''}">${i+1}</div>
+        <div class="rank-info">
+          <div class="city">${name}</div>
+          <div class="rank-bar"><div class="rank-bar-fill" style="width:${d.tourist_reject}%;background:linear-gradient(90deg,#ef4444,#f97316)"></div></div>
+        </div>
+        <div class="rank-score" style="color:#ef4444">${d.tourist_reject}</div>
+      </div>`).join('');
+  }
+
+  renderMuniParadox();
+}
+
+function renderMuniParadox(){
+  const muni = document.getElementById('pdx-muni-select').value;
+  const profile = MUNI_PDX_PROFILE[muni];
+  if(!profile) return;
+  const insight = Object.values(MUNI_PDX_PROFILE).find((_,i)=>Object.keys(MUNI_PDX_PROFILE)[i]===muni);
+  const pdxKeys = ['knowledge','escape','tourist_reject','prosperity_poverty','base_dependency','innovation_conservatism','consumption_productivity','local_love_leakage'];
+  const pdxColors = ['#8b5cf6','#3b82f6','#ef4444','#f59e0b','#10b981','#14b8a6','#ec4899','#f97316'];
+  const pdxLabels = ['知識欠如','コミュニティ逃避','観光地拒絶','繁栄-困窮','基地依存','新奇-保守','消費-生産性','地産地消'];
+  const bars = document.getElementById('muni-pdx-bars');
+  bars.innerHTML = pdxKeys.map((k,i)=>{
+    const v = profile[k];
+    const intensity = v>=80?'強⚡':v>=60?'中🔶':'低🔹';
+    return `<div class="pdx-bar-row">
+      <div class="lbl" style="color:${pdxColors[i]}">${pdxLabels[i]}</div>
+      <div class="pdx-bar-bg">
+        <div class="pdx-bar-fill" style="width:${v}%;background:${pdxColors[i]}cc"></div>
+      </div>
+      <div class="num" style="color:${pdxColors[i]}">${v}</div>
+      <div style="font-size:9px;color:var(--text2);white-space:nowrap;margin-left:4px">${intensity}</div>
+    </div>`;}).join('');
+
+  const insightData = MUNI_PDX_PROFILE[muni];
+  const topPdx = pdxKeys.map((k,i)=>({k,i,v:insightData[k]})).sort((a,b)=>b.v-a.v)[0];
+  document.getElementById('muni-pdx-insight').innerHTML = `
+    <strong style="color:var(--gold)">【${muni}の支配的パラドックス: ${pdxLabels[topPdx.i]} (${topPdx.v}点)】</strong><br>
+    ${PDX_TYPES[topPdx.i]?.biz_opportunity||''}`;
+}
+
+// ══════════════════════════════════════════════════════
 </script>
 
 <!-- TAB 10: エリア診断ツール -->
@@ -1666,6 +2655,20 @@ function runDiagnosis(){
       </div>
     </div>
 
+    <!-- COMMUNITY PARADOX PANEL -->
+    <div class="paradox-panel" id="paradox-panel">
+      <h3>🌀 コミュニティパラドックス影響分析</h3>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+        <div style="font-size:11px;color:var(--text2);white-space:nowrap">総合コミュニティ効果</div>
+        <div class="paradox-bar-wrap">
+          <div class="paradox-bar-fill" id="paradox-bar-fill"></div>
+        </div>
+        <div class="paradox-val" id="paradox-val"></div>
+      </div>
+      <div class="paradox-factors" id="paradox-factors"></div>
+      <div id="paradox-gap" style="margin-bottom:8px"></div>
+      <div id="paradox-warn" class="paradox-warn"></div>
+    </div>
     <!-- SCORES ROW -->
     <div class="g3" style="margin-bottom:14px">
       <div class="panel" style="text-align:center">
@@ -1707,6 +2710,200 @@ function runDiagnosis(){
         <h3>📋 マーケティング戦略提言</h3>
         <div id="strategy-list"></div>
       </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- TAB 11: 統計数値ハブ -->
+<div id="t11" class="tab">
+  <div class="sec-head">📊 統計数値ハブ — 社会学・行動学・経済学・統計学・心理学 全指標</div>
+  <div class="sec-sub">道路交通量・市町村GDP・行政区推計GDP・社会指標・相関統計・消費心理スコアを一覧化。エリアマーケティング判断の根拠データベース。</div>
+
+  <!-- マクロKPIミニ -->
+  <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px" id="macro-kpis"></div>
+
+  <!-- 道路交通量 -->
+  <div class="stat-section">
+    <div class="stat-section-title">🛣️ 道路別交通量 — 実測値（台/日）</div>
+    <div class="hub-grid">
+      <div>
+        <div style="font-size:10px;font-weight:700;color:var(--text2);margin-bottom:6px">国道・高速</div>
+        <table class="stat-table" id="road-nat-table"></table>
+      </div>
+      <div>
+        <div style="font-size:10px;font-weight:700;color:var(--text2);margin-bottom:6px">県道・主要幹線</div>
+        <table class="stat-table" id="road-pref-table"></table>
+      </div>
+    </div>
+    <div style="margin-top:10px">
+      <div style="font-size:10px;font-weight:700;color:var(--text2);margin-bottom:6px">エリア別交通量スコア（道路立地評価）</div>
+      <div class="chart-wrap"><canvas id="road-score-chart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- GDP -->
+  <div class="stat-section" style="margin-top:18px">
+    <div class="stat-section-title">💰 市町村・行政区 GDP・経済指標</div>
+    <div class="hub-grid">
+      <div>
+        <div style="font-size:10px;font-weight:700;color:var(--text2);margin-bottom:6px">市町村別GDP・所得・生産性</div>
+        <div style="max-height:320px;overflow-y:auto">
+          <table class="stat-table" id="gdp-main-table"></table>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:10px;font-weight:700;color:var(--text2);margin-bottom:6px">主要行政区 推計GDP（百万円）</div>
+        <div style="max-height:320px;overflow-y:auto">
+          <table class="stat-table" id="gdp-dist-table"></table>
+        </div>
+      </div>
+    </div>
+    <div class="hub-grid" style="margin-top:10px">
+      <div class="panel"><h3>GDP×所得変換効率</h3><div class="chart-wrap"><canvas id="gdp-eff-chart"></canvas></div></div>
+      <div class="panel"><h3>産業構造比率（沖縄全体）</h3><div class="chart-wrap"><canvas id="industry-chart"></canvas></div></div>
+    </div>
+  </div>
+
+  <!-- 社会学 -->
+  <div class="stat-section" style="margin-top:18px">
+    <div class="stat-section-title">🏘️ 社会学指標</div>
+    <div class="hub-grid3">
+      <div>
+        <div style="font-size:10px;font-weight:700;color:var(--text2);margin-bottom:6px">人口・世帯構造</div>
+        <table class="stat-table" id="soc-pop-table"></table>
+      </div>
+      <div>
+        <div style="font-size:10px;font-weight:700;color:var(--text2);margin-bottom:6px">貧困・格差指標</div>
+        <table class="stat-table" id="soc-poverty-table"></table>
+      </div>
+      <div>
+        <div style="font-size:10px;font-weight:700;color:var(--text2);margin-bottom:6px">コミュニティ密度スコア</div>
+        <div class="panel" style="padding:10px"><div class="chart-wrap-sm"><canvas id="community-density-chart"></canvas></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 行動学 -->
+  <div class="stat-section" style="margin-top:18px">
+    <div class="stat-section-title">🚗 行動学指標 — 移動・消費行動</div>
+    <div class="hub-grid">
+      <div>
+        <div style="font-size:10px;font-weight:700;color:var(--text2);margin-bottom:6px">自動車保有・移動行動</div>
+        <table class="stat-table" id="behav-car-table"></table>
+      </div>
+      <div>
+        <div style="font-size:10px;font-weight:700;color:var(--text2);margin-bottom:6px">消費行動パターン（市町村別）</div>
+        <div class="panel" style="padding:10px"><div class="chart-wrap-sm"><canvas id="behav-chart"></canvas></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 経済学・統計学 -->
+  <div class="stat-section" style="margin-top:18px">
+    <div class="stat-section-title">📈 経済学・統計学指標 — 相関・回帰分析</div>
+    <div class="hub-grid">
+      <div>
+        <div style="font-size:10px;font-weight:700;color:var(--text2);margin-bottom:6px">主要相関係数マトリクス</div>
+        <table class="stat-table" id="corr-table"></table>
+      </div>
+      <div>
+        <div style="font-size:10px;font-weight:700;color:var(--text2);margin-bottom:6px">ザル経済 — 業種別域内循環率 × GDP貢献</div>
+        <table class="stat-table" id="zaru-table"></table>
+      </div>
+    </div>
+    <div class="hub-grid" style="margin-top:10px">
+      <div class="panel"><h3>GDP成長率分布（市町村別）</h3><div class="chart-wrap"><canvas id="growth-chart"></canvas></div></div>
+      <div class="panel"><h3>新中比率×所得 回帰散布図（r=-0.602）</h3><div class="chart-wrap"><canvas id="regression-chart"></canvas></div></div>
+    </div>
+  </div>
+
+  <!-- 心理学 -->
+  <div class="stat-section" style="margin-top:18px">
+    <div class="stat-section-title">🧠 心理学スコア — 消費心理・意思決定バイアス定量化</div>
+    <div class="hub-grid3">
+      <div>
+        <div style="font-size:10px;font-weight:700;color:var(--text2);margin-bottom:6px">消費心理二面性スコア</div>
+        <table class="stat-table" id="psy-dual-table"></table>
+      </div>
+      <div>
+        <div style="font-size:10px;font-weight:700;color:var(--text2);margin-bottom:6px">行動バイアス強度（全県）</div>
+        <div class="panel" style="padding:10px"><div class="chart-wrap-sm"><canvas id="bias-chart"></canvas></div></div>
+      </div>
+      <div>
+        <div style="font-size:10px;font-weight:700;color:var(--text2);margin-bottom:6px">業種×心理適合スコア</div>
+        <table class="stat-table" id="psy-biz-table"></table>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- TAB 12: パラドックス思考行動分析 -->
+<div id="t12" class="tab">
+  <div class="sec-head">🌀 パラドックス思考行動分析 — 消費・行動の源泉を数値化</div>
+  <div class="sec-sub">沖縄のコミュニティ重視社会が生む8類型のパラドックス思考。この思考が行動の源泉となり、特定の場所・タイミングで消費と行動を促す。数値化・可視化でビジネス戦略の根拠にする。</div>
+
+  <div class="kpi-row" id="pdx-kpi-row"></div>
+
+  <!-- 8類型解説 + 行動ループ -->
+  <div class="g2" style="margin-bottom:14px">
+    <div>
+      <div class="panel" style="margin-bottom:10px">
+        <h3>🧩 8類型パラドックス — 全県平均スコア</h3>
+        <div class="chart-wrap-lg"><canvas id="pdx-radar-all"></canvas></div>
+      </div>
+    </div>
+    <div>
+      <div class="panel">
+        <h3>📍 市町村別プロファイル選択</h3>
+        <select class="muni-paradox-select" id="pdx-muni-select" onchange="renderMuniParadox()">
+          <option value="那覇市">那覇市</option>
+          <option value="浦添市">浦添市</option>
+          <option value="北谷町">北谷町</option>
+          <option value="宜野湾市">宜野湾市</option>
+          <option value="北中城村">北中城村</option>
+          <option value="沖縄市">沖縄市</option>
+          <option value="名護市">名護市</option>
+          <option value="恩納村">恩納村</option>
+          <option value="嘉手納町">嘉手納町</option>
+          <option value="糸満市">糸満市</option>
+          <option value="南城市">南城市</option>
+          <option value="西原町">西原町</option>
+        </select>
+        <div id="muni-pdx-bars"></div>
+        <div id="muni-pdx-insight" class="insight-box" style="margin-top:8px"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 8類型詳細カード -->
+  <div class="sec-head" style="margin-top:6px">8類型 詳細解説 — 行動トリガー・消費機会・エリア特性</div>
+  <div id="pdx-cards"></div>
+
+  <!-- パラドックス×業種 マトリクス -->
+  <div class="panel" style="margin-top:14px">
+    <h3>🎯 パラドックス × 業種 ビジネス機会マトリクス</h3>
+    <div style="font-size:10px;color:var(--text2);margin-bottom:8px">スコア: 高い（赤/橙）ほど、そのパラドックスが業種の集客に強く作用する。逆用戦略の設計に使う。</div>
+    <div style="overflow-x:auto"><table id="pdx-biz-matrix" style="border-collapse:collapse;font-size:10px;width:100%"></table></div>
+  </div>
+
+  <!-- 行動ループ図解 -->
+  <div class="panel" style="margin-top:14px">
+    <h3>♻️ パラドックス思考 → 行動 → 消費 フロー（沖縄固有ループ）</h3>
+    <div id="action-loops"></div>
+  </div>
+
+  <!-- エリア別 最強パラドックスランキング -->
+  <div class="g2" style="margin-top:14px">
+    <div class="panel">
+      <h3>🏆 「コミュニティ逃避」最強エリア（匿名消費需要TOP）</h3>
+      <div id="pdx-rank1"></div>
+    </div>
+    <div class="panel">
+      <h3>🏆 「観光地拒絶」最強エリア（地元向け隠れ需要TOP）</h3>
+      <div id="pdx-rank2"></div>
     </div>
   </div>
 </div>
