@@ -233,7 +233,21 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP','Hiragino
 .dist-card .dc-gdp{font-size:13px;font-weight:900}
 .dist-card .dc-pct{font-size:9px;color:var(--text2)}
 .dist-card .dc-bar{height:5px;border-radius:3px;margin-top:6px}
-@media(max-width:700px)@media(max-width:700px)@media(max-width:700px)@media(max-width:700px){.g2,.g3,.g13{grid-template-columns:1fr}.kpi{min-width:100px}}
+.nav-btn.nav-yuimaru{background:linear-gradient(135deg,#7c2d12,#92400e);border-color:#d97706;color:#fde68a;font-weight:900}
+.nav-btn.nav-yuimaru:hover,.nav-btn.nav-yuimaru.active{background:linear-gradient(135deg,#6b21a8,#92400e)}
+.ym-calc{background:var(--card2);border-radius:12px;padding:16px;border:2px solid #d9770644}
+.ym-question{margin-bottom:14px}
+.ym-question label{font-size:11px;font-weight:700;color:var(--gold);display:block;margin-bottom:6px}
+.ym-question select,.ym-question input[type=range]{width:100%;background:var(--card);border:1px solid var(--border);color:var(--text);padding:7px 10px;border-radius:6px;font-size:10px}
+.ym-score-display{background:linear-gradient(135deg,#7c2d12,#1e3a5f);border-radius:10px;padding:20px;text-align:center;margin-bottom:16px}
+.ym-score-num{font-size:3rem;font-weight:900;color:#fde68a;line-height:1}
+.ym-score-label{font-size:11px;color:#fbbf24;margin-top:4px}
+.ym-bar-track{height:12px;background:var(--card2);border-radius:6px;overflow:hidden;margin:6px 0}
+.ym-bar-fill{height:100%;border-radius:6px;transition:width 0.8s ease}
+.ym-compare-box{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.ym-compare-card{background:var(--card2);border-radius:8px;padding:12px;text-align:center}
+.yuimaru-tag{display:inline-block;padding:3px 10px;border-radius:10px;font-size:9px;font-weight:700;margin:2px}
+@media(max-width:700px)@media(max-width:700px)@media(max-width:700px)@media(max-width:700px)@media(max-width:700px){.g2,.g3,.g13{grid-template-columns:1fr}.kpi{min-width:100px}}
 /* Section header */
 .sec-head{font-size:14px;font-weight:800;color:var(--text);margin-bottom:12px;padding-bottom:6px;border-bottom:2px solid var(--blue)}
 .sec-sub{font-size:10px;color:var(--text2);margin-top:-8px;margin-bottom:12px}
@@ -267,6 +281,7 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP','Hiragino
   <button class="nav-btn" onclick="showTab('t11')">📊 統計数値ハブ</button>
   <button class="nav-btn nav-paradox" onclick="showTab('t12')">🌀 パラドックス行動分析</button>
   <button class="nav-btn nav-gdp" onclick="showTab('t13')">💰 GDP・経済データ全覧</button>
+  <button class="nav-btn nav-yuimaru" onclick="showTab('t14')">🌺 ユイマール変数分析</button>
 </div>
 
 <!-- TAB 1: 総合エリアスコア -->
@@ -1274,10 +1289,11 @@ function showTab(id){
   if(id==='t11') setTimeout(initTab11,50);
   if(id==='t12') setTimeout(initTab12,50);
   if(id==='t13'){ setTimeout(initTab13,50); setTimeout(initGDPConformityAnalysis,200); }
+  if(id==='t14') setTimeout(initTab14,50);
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  const idx = ['t1','t2','t3','t4','t5','t6','t7','t8','t9','t10','t11','t12','t13'].indexOf(id);
+  const idx = ['t1','t2','t3','t4','t5','t6','t7','t8','t9','t10','t11','t12','t13','t14'].indexOf(id);
   document.querySelectorAll('.nav-btn')[idx].classList.add('active');
   if(id==='t8') calcBizScore();
 }
@@ -1813,6 +1829,285 @@ function runDiagnosis(){
 
   document.getElementById('diag-result').className='result-visible';
   document.getElementById('diag-result').scrollIntoView({behavior:'smooth',block:'start'});
+
+  // ══ ユイマール変数計算 ══
+  const ymD1 = parseInt(document.getElementById('ym-d1')?.value||0);
+  const ymD2 = parseInt(document.getElementById('ym-d2')?.value||0);
+  const ymD3 = parseInt(document.getElementById('ym-d3')?.value||0);
+  const ymD4 = parseInt(document.getElementById('ym-d4')?.value||0);
+  const ymTotal = ymD1+ymD2+ymD3+ymD4;
+
+  const ymRankTable = [
+    {min:85,label:"ユイマール最強（本物の地元）",col:"#10b981",stars:"🌺🌺🌺🌺🌺",capture:0.90},
+    {min:65,label:"ユイマール強（地元認定）",col:"#3b82f6",stars:"🌺🌺🌺🌺",capture:0.75},
+    {min:45,label:"ユイマール中（準地元）",col:"#f59e0b",stars:"🌺🌺🌺",capture:0.50},
+    {min:20,label:"ユイマール低（知人レベル）",col:"#f97316",stars:"🌺🌺",capture:0.35},
+    {min:0, label:"ユイマール未起動（外部）",col:"#ef4444",stars:"🌺",capture:0.12},
+  ];
+  const ymRank = ymRankTable.find(r=>ymTotal>=r.min)||ymRankTable[4];
+
+  // 参入難易度逆転
+  const conformityMap = {"那覇市":42,"浦添市":48,"沖縄市":62,"うるま市":70,"宜野湾市":55,
+    "豊見城市":52,"名護市":65,"石垣市":58,"宮古島市":55,"糸満市":72,"南城市":80,
+    "西原町":60,"北谷町":45,"南風原町":55,"北中城村":68,"嘉手納町":50,"読谷村":68,"恩納村":52};
+  const baseDiffMap = {"那覇市":2,"浦添市":2,"沖縄市":3,"うるま市":4,"宜野湾市":3,
+    "豊見城市":2,"名護市":3,"石垣市":3,"宮古島市":2,"糸満市":4,"南城市":5,
+    "西原町":3,"北谷町":2,"南風原町":3,"北中城村":3,"嘉手納町":2,"読谷村":4,"恩納村":2};
+  const gdpCapMap = {"那覇市":1393876,"浦添市":413558,"沖縄市":336400,"うるま市":271230,
+    "宜野湾市":220904,"豊見城市":165902,"名護市":123769,"石垣市":166567,"宮古島市":178543,
+    "糸満市":96536,"南城市":88375,"西原町":123769,"北谷町":87431,"南風原町":96536,
+    "北中城村":43836,"嘉手納町":39336,"読谷村":62550,"恩納村":48799};
+  const extCapMap = {"那覇市":0.40,"浦添市":0.30,"沖縄市":0.22,"うるま市":0.15,
+    "宜野湾市":0.25,"豊見城市":0.25,"名護市":0.20,"石垣市":0.25,"宮古島市":0.28,
+    "糸満市":0.15,"南城市":0.12,"西原町":0.22,"北谷町":0.35,"南風原町":0.25,
+    "北中城村":0.20,"嘉手納町":0.22,"読谷村":0.18,"恩納村":0.28};
+
+  const muniConformity = conformityMap[muni]||60;
+  const muniBaseDiff = baseDiffMap[muni]||3;
+  const muniGDP = gdpCapMap[muni]||80000;
+  const extCap = extCapMap[muni]||0.20;
+  const ymModDiff = Math.max(1, muniBaseDiff - Math.round(ymTotal*0.04));
+  const extMarket = Math.round(muniGDP * extCap / 1000)/10;
+  const ymMarket  = Math.round(muniGDP * ymRank.capture / 1000)/10;
+  const marketRatio = (ymMarket/extMarket).toFixed(1);
+
+  const diffLabel = ['','★','★★','★★★','★★★★','★★★★★'];
+  const diffColor = ['','#10b981','#3b82f6','#f59e0b','#f97316','#ef4444'];
+
+  // ユイマールスコアパネル描画
+  document.getElementById('ym-diag-score-panel').innerHTML = `
+    <div style="background:linear-gradient(135deg,#7c2d1222,#1e3a5f22);border-radius:10px;padding:14px;border:1px solid ${ymRank.col}44">
+      <div style="text-align:center;margin-bottom:10px">
+        <div style="font-size:2.5rem;font-weight:900;color:${ymRank.col}">${ymTotal}</div>
+        <div style="font-size:10px;color:${ymRank.col};font-weight:700">${ymRank.stars} ${ymRank.label}</div>
+      </div>
+      <div style="font-size:10px;color:var(--text2);margin-bottom:8px">ユイマール係数の内訳:</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:10px">
+        <div style="background:var(--card);border-radius:5px;padding:5px 8px">
+          <span style="color:var(--text2)">親族密度</span>
+          <span style="float:right;color:${ymRank.col};font-weight:700">${ymD1}点</span>
+        </div>
+        <div style="background:var(--card);border-radius:5px;padding:5px 8px">
+          <span style="color:var(--text2)">継続年数</span>
+          <span style="float:right;color:${ymRank.col};font-weight:700">${ymD2}点</span>
+        </div>
+        <div style="background:var(--card);border-radius:5px;padding:5px 8px">
+          <span style="color:var(--text2)">事業継承</span>
+          <span style="float:right;color:${ymRank.col};font-weight:700">${ymD3}点</span>
+        </div>
+        <div style="background:var(--card);border-radius:5px;padding:5px 8px">
+          <span style="color:var(--text2)">モアイ参加</span>
+          <span style="float:right;color:${ymRank.col};font-weight:700">${ymD4}点</span>
+        </div>
+      </div>
+      <div style="margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:8px;text-align:center">
+        <div style="background:${diffColor[muniBaseDiff]}22;border:1px solid ${diffColor[muniBaseDiff]}44;border-radius:6px;padding:8px">
+          <div style="font-size:9px;color:var(--text2)">外部参入難易度</div>
+          <div style="font-size:1.3rem;color:${diffColor[muniBaseDiff]};font-weight:900">${diffLabel[muniBaseDiff]}</div>
+        </div>
+        <div style="background:${diffColor[ymModDiff]}22;border:1px solid ${diffColor[ymModDiff]}44;border-radius:6px;padding:8px">
+          <div style="font-size:9px;color:var(--text2)">ユイマール適用後</div>
+          <div style="font-size:1.3rem;color:${diffColor[ymModDiff]};font-weight:900">${diffLabel[ymModDiff]}</div>
+        </div>
+      </div>
+    </div>`;
+
+  // 実効市場パネル
+  document.getElementById('ym-diag-market-panel').innerHTML = `
+    <div style="background:var(--card2);border-radius:10px;padding:14px;height:100%">
+      <div style="font-size:11px;font-weight:700;color:var(--gold);margin-bottom:10px">💰 実効市場規模比較</div>
+      <div style="display:grid;gap:8px">
+        <div style="background:#ef444415;border-left:3px solid #ef4444;border-radius:6px;padding:10px">
+          <div style="font-size:9px;color:#ef4444;font-weight:700">本土企業・外部参入者</div>
+          <div style="font-size:1.4rem;font-weight:900;color:#ef4444">${extMarket}億円</div>
+          <div style="font-size:9px;color:var(--text2)">捕捉率 ${Math.round(extCap*100)}%（見える市場）</div>
+        </div>
+        <div style="background:${ymRank.col}15;border-left:3px solid ${ymRank.col};border-radius:6px;padding:10px">
+          <div style="font-size:9px;color:${ymRank.col};font-weight:700">ユイマール係数${ymTotal}点適用後</div>
+          <div style="font-size:1.4rem;font-weight:900;color:${ymRank.col}">${ymMarket}億円</div>
+          <div style="font-size:9px;color:var(--text2)">捕捉率 ${Math.round(ymRank.capture*100)}%</div>
+        </div>
+        <div style="background:var(--card);border-radius:6px;padding:8px;text-align:center">
+          <div style="font-size:9px;color:var(--text2)">外部比 実効市場差</div>
+          <div style="font-size:1.8rem;font-weight:900;color:var(--gold)">${marketRatio}倍</div>
+          <div style="font-size:9px;color:${ymTotal>=65?'#10b981':ymTotal>=20?'#f59e0b':'#94a3b8'}">${ymTotal>=65?'地元競合ゼロの独占市場':ymTotal>=20?'一定のコミュニティ優位':ymTotal===0?'コミュニティ締め出しリスクあり':'育成フェーズ'}</div>
+        </div>
+      </div>
+    </div>`;
+
+  // ユイマール詳細アドバイス
+  const ymAdvice = ymTotal>=85?`<strong style="color:#10b981">✅ 最強のユイマール起動状態</strong> — 一族・モアイ・行事の全てが動く。競合は地区内に入れない。口コミCPA（顧客獲得単価）は実質ゼロ。今すぐ「常連化」プログラムを設計し、その顧客を紹介連鎖の起点にする。`:
+    ymTotal>=65?`<strong style="color:#3b82f6">✅ ユイマール起動中</strong> — 地域認定済み。地元コミュニティが自発的に紹介してくれる段階。モアイ仲間・自治会へのご祝儀・行事協賛で係数を85点超に引き上げると独占市場が開く。`:
+    ymTotal>=45?`<strong style="color:#f59e0b">🟡 ユイマール育成中</strong> — まだ「外の人」という認識が残る。地元雇用を80%以上にし、地元食材調達を徹底することで係数が急上昇する。3〜5年の継続で自動的にスコアが上がる。`:
+    ymTotal>=20?`<strong style="color:#f97316">⚠️ ユイマール初期段階</strong> — 知人レベル。高同調圧力エリアでは口コミが起きにくい。突破条件7原則（地元有力者挨拶・雇用・食材・行事参加）の即時実行が必須。`:
+    `<strong style="color:#ef4444">🔴 ユイマール未起動（外部参入）</strong> — ${muni}の同調圧力${muniConformity}点は${muniConformity>=75?'極めて高く':muniConformity>=60?'高く':'中程度で'}、コミュニティ承認なしでの集客は極めて困難。突破条件7原則を今すぐ設計する必要がある。`;
+  document.getElementById('ym-diag-detail').innerHTML = `
+    <div style="background:var(--card2);border-radius:8px;padding:12px;font-size:10px;line-height:1.8">${ymAdvice}</div>`;
+
+  // GDP×同調圧力パネル
+  const openness = Math.max(10, Math.min(90, 100 - muniConformity + Math.round(ymTotal*0.3)));
+  const gdpTier = muniGDP>=500000?'大型（500億超）':muniGDP>=100000?'中型（100〜500億）':muniGDP>=30000?'小型（30〜100億）':'零細（30億未満）';
+  const gdpTierColor = muniGDP>=500000?'#f59e0b':muniGDP>=100000?'#3b82f6':muniGDP>=30000?'#10b981':'#94a3b8';
+  document.getElementById('gdp-conf-content').innerHTML = `
+    <div style="font-size:10px;color:var(--text2);line-height:1.8">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px">
+        <div style="background:var(--card2);border-radius:6px;padding:8px;text-align:center">
+          <div style="font-size:9px;color:var(--text2)">GDP規模帯</div>
+          <div style="font-size:11px;font-weight:800;color:${gdpTierColor}">${gdpTier}</div>
+        </div>
+        <div style="background:var(--card2);border-radius:6px;padding:8px;text-align:center">
+          <div style="font-size:9px;color:var(--text2)">同調圧力</div>
+          <div style="font-size:1.2rem;font-weight:900;color:${muniConformity>=75?'#ef4444':muniConformity>=60?'#f97316':muniConformity>=45?'#f59e0b':'#10b981'}">${muniConformity}<span style="font-size:10px">点</span></div>
+        </div>
+        <div style="background:var(--card2);border-radius:6px;padding:8px;text-align:center">
+          <div style="font-size:9px;color:var(--text2)">外部受容度（ユイマール補正後）</div>
+          <div style="font-size:1.2rem;font-weight:900;color:${openness>=70?'#10b981':openness>=50?'#f59e0b':'#ef4444'}">${openness}<span style="font-size:10px">点</span></div>
+        </div>
+      </div>
+      <div class="gdp-bar-track" style="height:10px;background:var(--card2);border-radius:5px;overflow:hidden;margin-bottom:4px">
+        <div style="height:10px;border-radius:5px;background:linear-gradient(90deg,#10b981,#f59e0b,#ef4444);width:${muniConformity}%"></div>
+      </div>
+      <div style="font-size:9px;color:var(--text2);margin-bottom:8px">同調圧力バー（高いほど外部参入困難）</div>
+      <div style="background:var(--card);border-radius:6px;padding:8px;font-size:10px">
+        <strong style="color:var(--gold)">GDP×同調圧力の診断:</strong><br>
+        ${muniGDP>=500000?`<span style="color:#3b82f6">GDP大型圏（${(muniGDP/1000000).toFixed(1)}兆円）</span> × 同調圧力${muniConformity}点 = 都市型市場。資本力・立地が主勝因でコミュニティ依存度は低い。チェーン・フランチャイズでも参入可。`:
+        muniGDP>=100000?`<span style="color:#3b82f6">GDP中型圏（${(muniGDP/1000000).toFixed(2)}兆円）</span> × 同調圧力${muniConformity}点 = 資本力とコミュニティ浸透の二刀流が必要。地元有力者との関係構築でスコアが大きく改善する。`:
+        muniGDP>=30000?`<span style="color:#f59e0b">GDP小型圏（${(muniGDP/100000).toFixed(0)}億円）</span> × 同調圧力${muniConformity}点 = コミュニティ承認なしに集客困難。突破条件3〜4個の実行が必須。しかし、ユイマール起動後は競合排除の独占市場になる。`:
+        `<span style="color:#94a3b8">GDP零細圏（${(muniGDP/100000).toFixed(0)}億円）</span> × 同調圧力${muniConformity}点 = 最難関エリア。外部資本の単独参入はほぼ不可。地元出身者との共同創業・島民家族の紹介状が最低条件。`}
+      </div>
+    </div>`;
+
+  // パラドックス思考 TOP3（市町村別プロファイルから取得）
+  const pdxProfileAll = {
+    "那覇市":    {knowledge:78,escape:72,tourist_reject:88,prosperity_poverty:88,base_dependency:48,innovation_conservatism:62,consumption_productivity:82,local_love_leakage:85},
+    "浦添市":    {knowledge:55,escape:82,tourist_reject:58,prosperity_poverty:80,base_dependency:68,innovation_conservatism:72,consumption_productivity:85,local_love_leakage:75},
+    "北谷町":    {knowledge:82,escape:90,tourist_reject:92,prosperity_poverty:70,base_dependency:95,innovation_conservatism:55,consumption_productivity:80,local_love_leakage:72},
+    "宜野湾市":  {knowledge:70,escape:75,tourist_reject:68,prosperity_poverty:82,base_dependency:88,innovation_conservatism:65,consumption_productivity:82,local_love_leakage:70},
+    "北中城村":  {knowledge:58,escape:85,tourist_reject:52,prosperity_poverty:72,base_dependency:62,innovation_conservatism:82,consumption_productivity:78,local_love_leakage:68},
+    "沖縄市":    {knowledge:65,escape:65,tourist_reject:60,prosperity_poverty:80,base_dependency:85,innovation_conservatism:70,consumption_productivity:88,local_love_leakage:78},
+    "名護市":    {knowledge:48,escape:55,tourist_reject:42,prosperity_poverty:78,base_dependency:35,innovation_conservatism:78,consumption_productivity:80,local_love_leakage:80},
+    "恩納村":    {knowledge:75,escape:60,tourist_reject:85,prosperity_poverty:65,base_dependency:38,innovation_conservatism:62,consumption_productivity:70,local_love_leakage:62},
+    "嘉手納町":  {knowledge:72,escape:68,tourist_reject:70,prosperity_poverty:62,base_dependency:98,innovation_conservatism:55,consumption_productivity:75,local_love_leakage:65},
+    "糸満市":    {knowledge:42,escape:42,tourist_reject:35,prosperity_poverty:78,base_dependency:25,innovation_conservatism:88,consumption_productivity:82,local_love_leakage:92},
+    "南城市":    {knowledge:38,escape:38,tourist_reject:30,prosperity_poverty:75,base_dependency:22,innovation_conservatism:90,consumption_productivity:78,local_love_leakage:95},
+    "西原町":    {knowledge:52,escape:78,tourist_reject:55,prosperity_poverty:75,base_dependency:45,innovation_conservatism:85,consumption_productivity:80,local_love_leakage:72},
+  };
+  const pdxLabels = {knowledge:"🧠知識欠如",escape:"🚪コミュニティ逃避",tourist_reject:"🚫観光地拒絶",prosperity_poverty:"⚖️繁栄-困窮",base_dependency:"🪖基地依存",innovation_conservatism:"🔄新奇-保守",consumption_productivity:"🚗消費-生産性",local_love_leakage:"💧地産地消-ザル"};
+  const pdxColors = {knowledge:"#8b5cf6",escape:"#3b82f6",tourist_reject:"#ef4444",prosperity_poverty:"#f59e0b",base_dependency:"#10b981",innovation_conservatism:"#14b8a6",consumption_productivity:"#ec4899",local_love_leakage:"#f97316"};
+  const pdxBizOpp = {
+    knowledge:"外部評価（SNS・メディア）が地元客を動かす。「地元民も知らなかった！」訴求",
+    escape:"大型無料駐車場確保。「誰にも会わない」空間演出。長時間滞在型設計",
+    tourist_reject:"観光地から一本入った立地が最高の穴場。地味な外観で地元専用感を出す",
+    prosperity_poverty:"行事消費カレンダーへの仕込み（4月・8月・12月）。記念日特別プランの二段構え",
+    base_dependency:"英語対応でSOFA市場を独占。ドル感覚の価格設定。基地ゲート前立地が最強",
+    innovation_conservatism:"コミュニティリーダー1人を味方に。紹介プログラムのROIが全国最高",
+    consumption_productivity:"駐車場無料・コスパ訴求・家族割・月額定額制。生活費化が最強戦略",
+    local_love_leakage:"「沖縄産食材使用」「地元スタッフ」「売上の地元還元」を数値で見える化"
+  };
+  const muniPdx = pdxProfileAll[muni];
+  if(muniPdx){
+    const pdxKeys = Object.keys(muniPdx);
+    const top3 = pdxKeys.map(k=>({k,v:muniPdx[k]})).sort((a,b)=>b.v-a.v).slice(0,3);
+    document.getElementById('pdx-thinking-content').innerHTML = top3.map((p,i)=>`
+      <div style="background:${pdxColors[p.k]}15;border-left:3px solid ${pdxColors[p.k]};border-radius:6px;padding:10px;margin-bottom:8px">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
+          <span style="font-size:10px;font-weight:800;color:${pdxColors[p.k]}">${['1位','2位','3位'][i]} ${pdxLabels[p.k]}</span>
+          <span style="margin-left:auto;font-size:10px;font-weight:900;color:${pdxColors[p.k]}">${p.v}点</span>
+        </div>
+        <div style="font-size:9px;color:var(--text2);line-height:1.6">${pdxBizOpp[p.k]||''}</div>
+        <div style="margin-top:4px">
+          <div style="height:5px;border-radius:3px;background:${pdxColors[p.k]}33">
+            <div style="height:5px;border-radius:3px;background:${pdxColors[p.k]};width:${p.v}%"></div>
+          </div>
+        </div>
+      </div>`).join('');
+  } else {
+    document.getElementById('pdx-thinking-content').innerHTML = '<div style="font-size:10px;color:var(--text2)">このエリアのパラドックス詳細データを追加予定。Tab12でパラドックス全分析を確認できます。</div>';
+  }
+
+  // 行政区GDP表示
+  const distGDPAll = [
+    {city:"那覇市",dist:"久茂地・泉崎",gdp_est:195000,pct:14.0,type:"商業核"},
+    {city:"那覇市",dist:"おもろまち",gdp_est:162000,pct:11.6,type:"商業核"},
+    {city:"那覇市",dist:"牧志・安里",gdp_est:140000,pct:10.0,type:"観光商業"},
+    {city:"那覇市",dist:"小禄",gdp_est:118000,pct:8.5,type:"商業核"},
+    {city:"浦添市",dist:"牧港",gdp_est:88000,pct:21.3,type:"商業核"},
+    {city:"浦添市",dist:"城間・屋富祖",gdp_est:72000,pct:17.4,type:"住宅商業"},
+    {city:"浦添市",dist:"経塚・伊祖",gdp_est:65000,pct:15.7,type:"商業核"},
+    {city:"北谷町",dist:"美浜",gdp_est:42000,pct:48.0,type:"観光商業"},
+    {city:"北谷町",dist:"北前・桑江",gdp_est:28000,pct:32.0,type:"基地商業"},
+    {city:"宜野湾市",dist:"大謝名",gdp_est:62000,pct:28.1,type:"商業核"},
+    {city:"宜野湾市",dist:"真栄原・大山",gdp_est:48000,pct:21.7,type:"住宅商業"},
+    {city:"沖縄市",dist:"コザ",gdp_est:62000,pct:18.4,type:"商業核"},
+    {city:"うるま市",dist:"具志川",gdp_est:78000,pct:28.8,type:"商業核"},
+    {city:"名護市",dist:"名護市街",gdp_est:42000,pct:33.9,type:"商業核"},
+    {city:"名護市",dist:"許田（ジャングリア）",gdp_est:22000,pct:17.8,type:"観光商業"},
+    {city:"豊見城市",dist:"豊崎",gdp_est:68000,pct:41.0,type:"観光商業"},
+    {city:"南風原町",dist:"兼城（北IC）",gdp_est:58000,pct:35.0,type:"商業核"},
+    {city:"北中城村",dist:"喜舎場（イオン）",gdp_est:32000,pct:73.0,type:"大型商業"},
+    {city:"嘉手納町",dist:"嘉手納正門",gdp_est:28000,pct:71.2,type:"基地商業"},
+    {city:"糸満市",dist:"糸満市街",gdp_est:32000,pct:33.2,type:"商業核"},
+    {city:"西原町",dist:"与那城（西原IC）",gdp_est:52000,pct:42.0,type:"教育商業"},
+    {city:"読谷村",dist:"楚辺・残波",gdp_est:32000,pct:33.2,type:"観光商業"},
+    {city:"恩納村",dist:"恩納（万座）",gdp_est:28000,pct:57.4,type:"リゾート"},
+    {city:"宮古島市",dist:"平良",gdp_est:68000,pct:38.1,type:"商業核"},
+    {city:"石垣市",dist:"石垣市街",gdp_est:62000,pct:37.2,type:"商業核"},
+    {city:"南城市",dist:"（南城市全体）",gdp_est:88375,pct:100,type:"住宅農業"},
+  ];
+  const muniDists = distGDPAll.filter(d=>d.city===muni);
+  const inputDist = district.trim();
+  let distContent = '';
+  if(muniDists.length>0){
+    const totalMuniGDP = muniGDP;
+    const matchDist = muniDists.find(d=>inputDist&&d.dist.includes(inputDist.substring(0,3)));
+    const featured = matchDist || muniDists[0];
+    distContent = `
+      <div style="display:grid;grid-template-columns:auto 1fr 1fr;gap:8px;align-items:center;font-size:10px;margin-bottom:10px">
+        <div style="font-size:10px;color:var(--text2)">市町村GDP総計</div>
+        <div style="font-weight:800;color:var(--blue)">${(totalMuniGDP/1000000).toFixed(2)}兆円 / ${(totalMuniGDP/100000).toFixed(0)}億円</div>
+        <div style="color:var(--text2)">（全41市町村中 ${Object.keys(gdpCapMap).sort((a,b)=>gdpCapMap[b]-gdpCapMap[a]).indexOf(muni)+1}位）</div>
+      </div>
+      <div style="margin-bottom:10px">
+        <div style="font-size:10px;font-weight:700;color:var(--gold);margin-bottom:6px">📍 主要行政区別GDP推計:</div>
+        ${muniDists.map(d=>`
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:5px">
+          <div style="width:100px;font-size:9px;color:${d.dist===featured.dist?'var(--gold)':'var(--text2)'}${d.dist===featured.dist?';font-weight:700':''}">${d.dist}</div>
+          <div style="flex:1;height:8px;background:var(--card2);border-radius:4px;overflow:hidden">
+            <div style="height:8px;background:${d.dist===featured.dist?'#f59e0b':'#3b82f6'}aa;border-radius:4px;width:${Math.round(d.pct*2)}%;max-width:100%"></div>
+          </div>
+          <div style="width:60px;font-size:9px;font-weight:700;color:${d.dist===featured.dist?'var(--gold)':'var(--text2)'}">${(d.gdp_est/10000).toFixed(1)}億</div>
+          <div style="font-size:9px;color:var(--text2)">${d.pct}%</div>
+          <span style="font-size:9px;background:var(--card2);padding:1px 6px;border-radius:8px;color:var(--text2)">${d.type}</span>
+        </div>`).join('')}
+      </div>
+      ${inputDist?`<div style="background:${matchDist?'#10b98115':'#f59e0b15'};border-radius:6px;padding:8px;font-size:10px">
+        ${matchDist?`✅ <strong style="color:#10b981">${matchDist.dist}</strong>: 推計GDP ${(matchDist.gdp_est/10000).toFixed(1)}億円 / 市内集中度 ${matchDist.pct}% / タイプ: ${matchDist.type}`:
+        `⚠️ 入力した行政区「${inputDist}」の個別データは現在追加中です。上記の近接地区データを参考にしてください。`}
+      </div>`:''}`;
+  } else {
+    distContent = `<div style="font-size:10px;color:var(--text2)">市内GDP: ${(muniGDP/100000).toFixed(0)}億円 / 行政区別詳細データはTab13「GDP・経済データ全覧」で確認できます。</div>`;
+  }
+  document.getElementById('dist-gdp-content').innerHTML = distContent;
+
+  // 統合サマリーカード
+  const overallLabel = finalScore>=75?'GO 🟢':finalScore>=55?'CONDITIONAL GO 🟡':'NO GO 🔴';
+  const overallColor = finalScore>=75?'#10b981':finalScore>=55?'#f59e0b':'#ef4444';
+  const ymBoostEffect = Math.round(ymTotal * 0.08);
+  document.getElementById('integrated-summary').innerHTML = `
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;font-size:10px">
+      ${[
+        {label:"AXIS総合スコア",val:finalScore+"点",col:overallColor,sub:overallLabel},
+        {label:"ユイマール係数",val:ymTotal+"点",col:ymRank.col,sub:ymRank.stars},
+        {label:"同調圧力",val:muniConformity+"点",col:muniConformity>=75?'#ef4444':muniConformity>=55?'#f59e0b':'#10b981',sub:"新規参入難易度"},
+        {label:"外部→ユイマール市場差",val:marketRatio+"倍",col:"var(--gold)",sub:"実効市場比"},
+        {label:"コミュニティパラドックス",val:(paradoxCapped>=0?'+':'')+paradoxCapped+"点",col:paradoxCapped>5?'#10b981':paradoxCapped>-5?'#f59e0b':'#ef4444',sub:"ビジネス相性"},
+        {label:"参入難易度（修正後）",val:diffLabel[ymModDiff],col:diffColor[ymModDiff],sub:muniBaseDiff!==ymModDiff?"逆転↑"+(muniBaseDiff-ymModDiff)+"ランク":"変化なし"},
+      ].map(c=>`<div style="background:var(--card2);border-radius:8px;padding:10px;border-top:3px solid ${c.col}">
+        <div style="color:var(--text2);font-size:9px;margin-bottom:4px">${c.label}</div>
+        <div style="font-size:1.3rem;font-weight:900;color:${c.col}">${c.val}</div>
+        <div style="font-size:9px;color:var(--text2)">${c.sub}</div>
+      </div>`).join('')}
+    </div>`;
 }
 
 // ═══════════════════════════════════════════════
@@ -3078,6 +3373,284 @@ function initGDPConformityAnalysis(){
 }
 
 // Tab13初期化に追加呼び出し
+
+// ══════════════════════════════════════════════════════
+// TAB14: ユイマール変数分析
+// ══════════════════════════════════════════════════════
+
+const YM_AREA_DATA = {
+  "東村":    {conformity:90,baseDiff:5,gdp:3800,capture_ext:0.08},
+  "大宜味村":{conformity:88,baseDiff:5,gdp:5800,capture_ext:0.10},
+  "宜野座村":{conformity:82,baseDiff:5,gdp:8000,capture_ext:0.12},
+  "南城市":  {conformity:80,baseDiff:5,gdp:88375,capture_ext:0.12},
+  "糸満市":  {conformity:72,baseDiff:4,gdp:96536,capture_ext:0.15},
+  "読谷村":  {conformity:68,baseDiff:4,gdp:96500,capture_ext:0.18},
+  "うるま市":{conformity:70,baseDiff:4,gdp:271230,capture_ext:0.15},
+  "名護市":  {conformity:65,baseDiff:3,gdp:123769,capture_ext:0.20},
+  "沖縄市":  {conformity:62,baseDiff:3,gdp:336400,capture_ext:0.22},
+  "宜野湾市":{conformity:55,baseDiff:3,gdp:220904,capture_ext:0.25},
+  "北谷町":  {conformity:45,baseDiff:2,gdp:87431,capture_ext:0.35},
+  "那覇市":  {conformity:42,baseDiff:2,gdp:1393876,capture_ext:0.40},
+};
+
+const YM_RANK_TABLE = [
+  {min:85,max:100,rank:"ユイマール最強（本物の地元）",col:"#10b981",stars:"🌺🌺🌺🌺🌺",
+   desc:"一族・モアイ・行事の全てが動く。地域コミュニティ全体があなたの営業部隊になる。競合は地区内に入れない。"},
+  {min:65,max:84,rank:"ユイマール強（地元認定済み）",col:"#3b82f6",stars:"🌺🌺🌺🌺",
+   desc:"地域から認められ、口コミの恩恵を受ける。新規競合が入っても既存顧客が守る。"},
+  {min:45,max:64,rank:"ユイマール中（準地元）",col:"#f59e0b",stars:"🌺🌺🌺",
+   desc:"一定の信頼はあるが、まだ「外の人」と見られる部分も。継続と参加でスコアを上げられる。"},
+  {min:20,max:44,rank:"ユイマール低（知人レベル）",col:"#f97316",stars:"🌺🌺",
+   desc:"顔見知りになってきたが、コミュニティの中核には入れていない。地元雇用・食材調達で加速可。"},
+  {min:0,max:19,rank:"ユイマール未起動（外部・本土）",col:"#ef4444",stars:"🌺",
+   desc:"コミュニティからは「よそ者」。高同調圧力エリアでは口コミが起きない。突破条件7原則の実行が急務。"},
+];
+
+const YM_SCENARIOS = [
+  {title:"シナリオ①：親族の食堂を継承した地元出身者",icon:"🏪",
+   ym_score:92,area:"糸満市",baseDiff:4,
+   story:"糸満市で祖父の代から60年続く食堂を孫が継承。地区の全世帯が「あそこは○○さんちの店」として認識。ユイマール係数92点で難易度4→1に逆転。",
+   advantage:["近隣5軒が毎日常連","モアイ仲間20人が月1宴会を予約","区民運動会の仕出しを独占受注","漁協から最安値で食材調達"],
+   market_ext:"地区GDP 3,200百万円 × 外部捕捉率15% = 480百万円が外部企業の見える市場",
+   market_ym:"地区GDP 3,200百万円 × 継承捕捉率90% = 2,880百万円が地元継承者の実効市場（6倍差）",
+   invisible:"本土のFC企業が「糸満市は所得低くて市場が小さい」と判断して参入しない間、完全独占。"},
+  {title:"シナリオ②：20年間地元で継続してきた理美容店",icon:"✂️",
+   ym_score:78,area:"読谷村",baseDiff:4,
+   story:"読谷村で20年間、地元密着の美容室を経営。モアイ仲間の紹介連鎖で顧客が代替わりしても維持。ユイマール係数78点で難易度4→2に逆転。",
+   advantage:["親の代から通う二世代顧客","モアイ仲間のSNSでの自発的拡散","陶芸・農業イベントへの協賛で地域認知"],
+   market_ext:"読谷村GDP × 15% = 外部美容室が獲得できる市場",
+   market_ym:"読谷村GDP × 75% = 20年継続者が獲得できる市場（5倍差）",
+   invisible:"外部チェーン美容室が那覇で同じクオリティを出しても読谷村では集客できない理由はここにある。"},
+  {title:"シナリオ③：一族が多い地区に新規参入した親族系業者",icon:"👨‍👩‍👧‍👦",
+   ym_score:85,area:"大宜味村",baseDiff:5,
+   story:"大宜味村に一族が30人以上住む地元出身者が、那覇から戻って農業体験施設を開業。親族密度30点+行事参加15点で即座に地域認証。",
+   advantage:["親族30人が口コミ第一波","長老から「あそこは○○家の子」とお墨付き","農家コミュニティの仕入れネットワーク活用"],
+   market_ext:"大宜味村GDP × 10% = 外部企業の実効市場（年576万円）",
+   market_ym:"大宜味村GDP × 80% = 一族事業者の実効市場（年4,640万円 — 8倍差）",
+   invisible:"「大宜味村GDP58億円は小さすぎる」と本土企業が切り捨てる市場の80%は、一族事業者が独占している。"},
+  {title:"シナリオ④：地元出身者ゼロ・那覇資本の新規参入（失敗例）",icon:"❌",
+   ym_score:0,area:"東村",baseDiff:5,
+   story:"那覇の投資家が東村に観光施設を開業。ユイマール係数0点。開業後3ヶ月、地元客ゼロ。観光客のみで採算割れ。2年で撤退。",
+   advantage:["なし（口コミ連鎖が起きない）","地元漁師・農家から食材調達拒否","区民行事に招待されない"],
+   market_ext:"東村GDP × 8% = 実効市場380万円（年間）",
+   market_ym:"那覇資本の実際の売上: 観光客のみ、地元客0%",
+   invisible:"那覇から見ると「東村は市場が小さいから失敗した」と分析される。正しくは「ユイマール係数0だから全市場から締め出された」が真因。"},
+];
+
+const BIAS_DATA = [
+  {bias:"GDP・所得による市場規模過小評価",icon:"📊",
+   external:"GDP低い=市場小さい=参入不要と判断",
+   local:"低GDPの地区でも、地元親族事業者はGDPの75〜90%を捕捉できる。外部は15%しか見えない",
+   delta:"実効市場の差: 最大6倍"},
+  {bias:"数値に見えない「口コミ連鎖」の無視",icon:"🗣️",
+   external:"SNS・チラシ・看板での集客を想定。ROIを広告費で計算",
+   local:"モアイ・自治会・親族ネットワークの口コミは広告費0円で起動する。CPA（顧客獲得単価）が1/10以下",
+   delta:"マーケティングコストの差: 本土企業の10倍有利"},
+  {bias:"継続年数の価値を会計に載せられない",icon:"⏳",
+   external:"財務諸表に「地域信頼20年分」は資産として記載されない。のれん代として見えない",
+   local:"20年の継続＝顧客生涯価値（LTV）が地区の全世帯に蓄積。競合が同じLTVを作るには20年かかる",
+   delta:"参入障壁の高さ: 金で買えない"},
+  {bias:"事業継承の「のれん」を過小評価",icon:"🏮",
+   external:"店舗・設備の物理的価値だけで承継評価。地域信頼・顧客関係は「目に見えない」",
+   local:"「○○さんちの店」というブランドは地区内で最強の差別化。看板を変えた瞬間に顧客流出リスク",
+   delta:"のれんの実際の市場価値: 年売上の3〜5年分"},
+  {bias:"「同調圧力＝ネガティブ」という誤解",icon:"🌀",
+   external:"同調圧力が強いエリアは参入が難しい＝避けるべき市場と判断",
+   local:"同調圧力が強いエリアでユイマールが起動すると、その圧力が競合排除の最強バリアになる。地元事業者にとっては最高の競争優位",
+   delta:"競合排除力: 本土資本・外部企業を恒久的に締め出す"},
+];
+
+let ymCompareChart = null;
+
+function initTab14(){
+  const krow = document.getElementById('ym-kpi-row');
+  if(krow && krow.innerHTML===''){
+    krow.innerHTML = [
+      {v:"最大6倍",l:"ユイマール高vsゼロの実効市場差",col:"var(--gold)"},
+      {v:"r=-0.742",l:"GDP低⇔同調圧力強（相関係数）",col:"var(--red)"},
+      {v:"4ランク逆転",l:"ユイマール90点の難易度改善幅",col:"var(--green)"},
+      {v:"0円",l:"ユイマール口コミのマーケティングコスト",col:"var(--teal)"},
+      {v:"20年",l:"競合排除バリアの継続期間（継続事業者）",col:"var(--purple)"},
+      {v:"90%捕捉率",l:"事業継承者の地区市場アクセス率",col:"var(--blue)"},
+    ].map(k=>`<div class="kpi gold"><div class="val" style="color:${k.col}">${k.v}</div><div class="lbl">${k.l}</div></div>`).join('');
+  }
+
+  calcYuimaru();
+
+  // 比較チャート（本土企業 vs 地元事業者 × 市場規模）
+  if(!ymCompareChart){
+    const areas = Object.keys(YM_AREA_DATA);
+    const extData = areas.map(a=>Math.round(YM_AREA_DATA[a].gdp * YM_AREA_DATA[a].capture_ext / 1000));
+    const ymData  = areas.map(a=>Math.round(YM_AREA_DATA[a].gdp * 0.80 / 1000));
+    ymCompareChart = new Chart('ym-compare-chart',{type:'bar',data:{
+      labels:areas,
+      datasets:[
+        {label:'本土企業・外部参入者の実効市場（億円）',data:extData,backgroundColor:'#ef444488',borderColor:'#ef4444',borderWidth:1},
+        {label:'ユイマール高・地元親族事業者の実効市場（億円）',data:ymData,backgroundColor:'#10b98188',borderColor:'#10b981',borderWidth:1},
+      ]
+    },options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{labels:{font:{size:9}}}},
+      scales:{x:{grid:{display:false},ticks:{font:{size:8}}},
+              y:{grid:{color:'#1e2a3a'},ticks:{font:{size:8},color:'#94a3b8',callback:v=>v+'億'}}}}});
+  }
+
+  // メカニズム説明
+  const mech = document.getElementById('yuimaru-mechanism');
+  if(mech && mech.innerHTML===''){
+    mech.innerHTML = `
+      <div style="font-size:10px;color:var(--text2);line-height:1.8">
+        <div style="margin-bottom:12px;padding:10px;background:var(--card);border-radius:8px;border-left:3px solid var(--gold)">
+          <strong style="color:var(--gold)">起動前（外部参入者）:</strong><br>
+          新規客 → 「誰？知らない店」→ 試さない → 口コミゼロ → 集客ゼロ<br>
+          <span style="color:#ef4444">→ 同調圧力が競合排除の壁として機能し、外部をブロック</span>
+        </div>
+        <div style="margin-bottom:12px;padding:10px;background:var(--card);border-radius:8px;border-left:3px solid #10b981">
+          <strong style="color:#10b981">起動後（ユイマール高・地元親族）:</strong><br>
+          親族 → 「○○さんちの店だから行こう」→ 来店 → 満足 → モアイ仲間に口コミ → 20人来店 → 再口コミ → 指数関数的拡散<br>
+          <span style="color:#10b981">→ 同調圧力が競合排除の壁として地元事業者を守る</span>
+        </div>
+        <div style="padding:10px;background:var(--card);border-radius:8px;border-left:3px solid #8b5cf6">
+          <strong style="color:#8b5cf6">数式:</strong><br>
+          実効市場 = 地区GDP × コミュニティ捕捉率<br>
+          捕捉率 = { 外部: 8〜15% | ユイマール低: 35% | ユイマール高: 75% | 事業継承: 90% }<br>
+          <span style="color:#fde68a">→ 外部vs継承 = 最大11倍の市場アクセス差が生まれる</span>
+        </div>
+      </div>`;
+  }
+
+  // 逆転マップテーブル
+  const tbody = document.getElementById('ym-reversal-tbody');
+  if(tbody && tbody.innerHTML===''){
+    const diffLabel = ['','★','★★','★★★','★★★★','★★★★★'];
+    const diffColor = ['','#10b981','#3b82f6','#f59e0b','#f97316','#ef4444'];
+    Object.entries(YM_AREA_DATA).forEach(([name,d])=>{
+      const extDiff = d.baseDiff;
+      const ymHighDiff = Math.max(1, extDiff - Math.round(90*0.04));
+      const inheritDiff = Math.max(1, extDiff - Math.round(95*0.04));
+      const delta = extDiff - inheritDiff;
+      const extMarket = Math.round(d.gdp * d.capture_ext / 10) / 100;
+      const ymMarket = Math.round(d.gdp * 0.90 / 10) / 100;
+      const monopoly = extDiff >= 4 ? '3〜10年独占' : extDiff === 3 ? '1〜3年優位' : '短期優位';
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td style="font-weight:700">${name}</td>
+        <td><span style="color:${diffColor[extDiff]};font-weight:700">${d.conformity}点</span></td>
+        <td style="color:${diffColor[extDiff]};font-weight:700">${diffLabel[extDiff]}</td>
+        <td style="color:${diffColor[ymHighDiff]};font-weight:700">${diffLabel[ymHighDiff]}</td>
+        <td style="color:${diffColor[inheritDiff]};font-weight:700">${diffLabel[inheritDiff]}</td>
+        <td><span style="background:${delta>=3?'#10b98122':'#3b82f622'};color:${delta>=3?'#10b981':'#3b82f6'};padding:2px 8px;border-radius:10px;font-weight:700">▲${delta}ランク</span></td>
+        <td style="font-size:9px;color:var(--text2)">外部:${extMarket}億 / 継承:${ymMarket}億</td>
+        <td style="font-size:9px;color:var(--gold)">${monopoly}</td>`;
+      tbody.appendChild(tr);
+    });
+  }
+
+  // シナリオカード
+  const sc = document.getElementById('yuimaru-scenarios');
+  if(sc && sc.innerHTML===''){
+    sc.innerHTML = YM_SCENARIOS.map((s,i)=>`
+      <div style="background:var(--card2);border-radius:12px;padding:16px;margin-bottom:12px;border-left:5px solid ${s.ym_score>70?'#10b981':s.ym_score>40?'#f59e0b':'#ef4444'}">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <span style="font-size:1.5rem">${s.icon}</span>
+          <div>
+            <div style="font-size:12px;font-weight:900;color:var(--text)">${s.title}</div>
+            <div style="font-size:10px;color:var(--text2)">${s.area} | ユイマール係数: <span style="color:${s.ym_score>70?'#10b981':'#ef4444'};font-weight:700">${s.ym_score}点</span></div>
+          </div>
+          <div style="margin-left:auto;text-align:right">
+            <div style="font-size:10px;color:var(--text2)">参入難易度: <span style="color:#ef4444">★${s.baseDiff}</span> → <span style="color:#10b981">★${Math.max(1,s.baseDiff-Math.round(s.ym_score*0.04))}</span></div>
+          </div>
+        </div>
+        <div style="font-size:10px;color:var(--text2);margin-bottom:8px;line-height:1.7">${s.story}</div>
+        ${s.advantage[0]!=='なし（口コミ連鎖が起きない）' ? `<div style="margin-bottom:8px">
+          <div style="font-size:9px;color:var(--gold);font-weight:700;margin-bottom:4px">✅ ユイマールが生む具体的優位性:</div>
+          ${s.advantage.map(a=>`<div style="font-size:9px;color:var(--text2);padding:2px 0">• ${a}</div>`).join('')}
+        </div>` : `<div style="font-size:9px;color:#ef4444;padding:6px;background:var(--card);border-radius:5px;margin-bottom:8px">❌ ${s.advantage[1]||s.advantage[0]}</div>`}
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+          <div style="background:var(--card);border-radius:6px;padding:8px;border-left:3px solid #ef4444">
+            <div style="font-size:9px;color:#ef4444;font-weight:700">外部企業の見える市場:</div>
+            <div style="font-size:9px;color:var(--text2)">${s.market_ext}</div>
+          </div>
+          <div style="background:var(--card);border-radius:6px;padding:8px;border-left:3px solid #10b981">
+            <div style="font-size:9px;color:#10b981;font-weight:700">地元事業者の実効市場:</div>
+            <div style="font-size:9px;color:var(--text2)">${s.market_ym}</div>
+          </div>
+        </div>
+        <div style="font-size:9px;color:var(--gold);background:var(--card);border-radius:5px;padding:6px">💡 ${s.invisible}</div>
+      </div>`).join('');
+  }
+
+  // バイアス分析
+  const bias = document.getElementById('bias-analysis');
+  if(bias && bias.innerHTML===''){
+    bias.innerHTML = BIAS_DATA.map(b=>`
+      <div style="display:grid;grid-template-columns:auto 1fr 1fr auto;gap:10px;align-items:start;padding:10px 0;border-bottom:1px solid var(--border)">
+        <div style="font-size:1.3rem">${b.icon}</div>
+        <div>
+          <div style="font-size:10px;font-weight:800;color:var(--text);margin-bottom:4px">${b.bias}</div>
+          <div style="font-size:9px;color:#ef4444">🔴 本土・都市型の見方: ${b.external}</div>
+        </div>
+        <div style="font-size:9px;color:#10b981">🟢 ユイマール起動者の実態: ${b.local}</div>
+        <div style="font-size:10px;font-weight:900;color:var(--gold);white-space:nowrap">${b.delta}</div>
+      </div>`).join('');
+  }
+}
+
+function calcYuimaru(){
+  const q1 = parseInt(document.getElementById('ym-q1')?.value||0);
+  const q2 = parseInt(document.getElementById('ym-q2')?.value||0);
+  const q3 = parseInt(document.getElementById('ym-q3')?.value||0);
+  const q4 = parseInt(document.getElementById('ym-q4')?.value||0);
+  const total = q1+q2+q3+q4;
+  const area = document.getElementById('ym-area')?.value||'那覇市';
+
+  document.getElementById('ym-total').textContent = total;
+  document.getElementById('ym-bar').style.width = total+'%';
+
+  const rank = YM_RANK_TABLE.find(r=>total>=r.min&&total<=r.max)||YM_RANK_TABLE[4];
+  document.getElementById('ym-rank-label').innerHTML =
+    `<span style="color:${rank.col}">${rank.stars} ${rank.rank}</span>`;
+
+  const aData = YM_AREA_DATA[area]||YM_AREA_DATA['那覇市'];
+  const baseDiff = aData.baseDiff;
+  const modDiff = Math.max(1, baseDiff - Math.round(total*0.04));
+  const captureRate = total>=85?0.90:total>=65?0.75:total>=45?0.50:total>=20?0.35:aData.capture_ext;
+  const mktSize = Math.round(aData.gdp * captureRate / 100) / 10;
+  const extSize = Math.round(aData.gdp * aData.capture_ext / 100) / 10;
+  const diffLabel = ['','★','★★','★★★','★★★★','★★★★★'];
+  const diffColor = ['','#10b981','#3b82f6','#f59e0b','#f97316','#ef4444'];
+
+  document.getElementById('ym-result-panel').innerHTML = `
+    <div style="background:var(--card);border-radius:10px;padding:14px;border:1px solid ${rank.col}44">
+      <div style="font-size:11px;font-weight:800;color:${rank.col};margin-bottom:10px">${rank.desc}</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+        <div style="background:var(--card2);border-radius:6px;padding:10px;text-align:center">
+          <div style="font-size:9px;color:var(--text2)">修正前（外部）参入難易度</div>
+          <div style="font-size:1.4rem;font-weight:900;color:${diffColor[baseDiff]}">${diffLabel[baseDiff]}</div>
+        </div>
+        <div style="background:var(--card2);border-radius:6px;padding:10px;text-align:center">
+          <div style="font-size:9px;color:var(--text2)">ユイマール係数${total}点 適用後</div>
+          <div style="font-size:1.4rem;font-weight:900;color:${diffColor[modDiff]}">${diffLabel[modDiff]}</div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div style="background:#ef444415;border:1px solid #ef444444;border-radius:6px;padding:8px;text-align:center">
+          <div style="font-size:9px;color:#ef4444">外部企業の実効市場</div>
+          <div style="font-size:1.2rem;font-weight:900;color:#ef4444">${extSize}億円</div>
+          <div style="font-size:9px;color:var(--text2)">（捕捉率${Math.round(aData.capture_ext*100)}%）</div>
+        </div>
+        <div style="background:#10b98115;border:1px solid #10b98144;border-radius:6px;padding:8px;text-align:center">
+          <div style="font-size:9px;color:#10b981">あなたの実効市場</div>
+          <div style="font-size:1.2rem;font-weight:900;color:#10b981">${mktSize}億円</div>
+          <div style="font-size:9px;color:var(--text2)">（捕捉率${Math.round(captureRate*100)}%）</div>
+        </div>
+      </div>
+      <div style="margin-top:10px;font-size:10px;color:var(--gold);text-align:center;font-weight:700">
+        外部企業比 <span style="font-size:1.1rem">${Math.round(mktSize/extSize*10)/10}倍</span> の市場にアクセス可能
+      </div>
+    </div>`;
+}
+
+// showTabにt14初期化追加
 </script>
 
 <!-- TAB 10: エリア診断ツール -->
@@ -3185,7 +3758,54 @@ function initGDPConformityAnalysis(){
         <div class="target-tag" data-val="b2b" onclick="toggleTarget(this)">🏢 法人・企業</div>
       </div>
     </div>
-    <button class="diag-btn" onclick="runDiagnosis()">🔍 エリア診断を実行する</button>
+    <!-- ユイマール変数入力セクション -->
+    <div style="margin-top:12px;padding:14px;background:linear-gradient(135deg,#1a0a0044,#0f1b2d);border:1px solid #d9770644;border-radius:10px">
+      <div style="font-size:12px;font-weight:800;color:#fde68a;margin-bottom:4px">🌺 ユイマール変数（地元絆係数）— 事業者の地域密着度を入力</div>
+      <div style="font-size:10px;color:var(--text2);margin-bottom:10px">本土企業・新規外部参入者は全て「0」のまま実行。地元密着度が高いほど参入難易度が逆転し実効市場が拡大します。</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div class="form-group">
+          <label style="color:#fbbf24">① 対象エリアの親族・親戚数</label>
+          <select id="ym-d1">
+            <option value="0">0人（外部・本土資本）</option>
+            <option value="5">1〜4人（知人程度）</option>
+            <option value="10">5〜9人（親戚数名）</option>
+            <option value="20">10〜19人（親族複数）</option>
+            <option value="30">20人以上（一族が根付く）</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label style="color:#fbbf24">② エリアでの継続年数</label>
+          <select id="ym-d2">
+            <option value="0">0〜2年（試用観察期間）</option>
+            <option value="8">3〜5年（顔見知り）</option>
+            <option value="15">6〜10年（地域の一員）</option>
+            <option value="20">11〜20年（長老認知）</option>
+            <option value="25">20年超（地元の顔）</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label style="color:#fbbf24">③ 事業継承の形態</label>
+          <select id="ym-d3">
+            <option value="0">完全新規（外部参入）</option>
+            <option value="5">廃業跡地取得（継承なし）</option>
+            <option value="15">隣地区親族店を継承</option>
+            <option value="20">地元先輩・師匠からの継承</option>
+            <option value="25">同地区親族店を直接継承</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label style="color:#fbbf24">④ モアイ・コミュニティ参加</label>
+          <select id="ym-d4">
+            <option value="0">未参加（外部・本土資本）</option>
+            <option value="5">自治会のみ</option>
+            <option value="10">自治会＋行事協賛</option>
+            <option value="12">自治会＋モアイ</option>
+            <option value="15">全参加（自治会＋モアイ＋行事＋清掃）</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <button class="diag-btn" onclick="runDiagnosis()">🔍 エリア診断を実行する（全変数統合）</button>
   </div>
 
   <!-- RESULT (hidden until run) -->
@@ -3245,7 +3865,7 @@ function initGDPConformityAnalysis(){
     </div>
 
     <!-- ALTERNATIVE + STRATEGY -->
-    <div class="g2">
+    <div class="g2" style="margin-bottom:14px">
       <div class="panel">
         <h3 id="alt-title">🗺️ 推奨代替エリア TOP5</h3>
         <div id="alt-list"></div>
@@ -3255,6 +3875,42 @@ function initGDPConformityAnalysis(){
         <div id="strategy-list"></div>
       </div>
     </div>
+
+    <!-- ユイマール変数結果パネル -->
+    <div class="panel" id="ym-result-diag" style="border:2px solid #d9770644;margin-bottom:14px">
+      <h3>🌺 ユイマール変数 診断結果 — 地元絆係数の市場影響</h3>
+      <div class="g2" style="gap:10px">
+        <div id="ym-diag-score-panel"></div>
+        <div id="ym-diag-market-panel"></div>
+      </div>
+      <div id="ym-diag-detail" style="margin-top:10px"></div>
+    </div>
+
+    <!-- GDP×同調圧力 診断パネル -->
+    <div class="g2" style="margin-bottom:14px">
+      <div class="panel" id="gdp-conformity-diag">
+        <h3>🔒 GDP×同調圧力 診断</h3>
+        <div id="gdp-conf-content"></div>
+      </div>
+      <div class="panel" id="pdx-thinking-diag">
+        <h3>🌀 支配的パラドックス思考 TOP3</h3>
+        <div style="font-size:10px;color:var(--text2);margin-bottom:8px">このエリアで最も強く消費行動を動かすパラドックス思考。マーケティング設計の根拠として活用する。</div>
+        <div id="pdx-thinking-content"></div>
+      </div>
+    </div>
+
+    <!-- 行政区GDP + 実効市場規模 -->
+    <div class="panel" id="dist-gdp-diag" style="margin-bottom:14px">
+      <h3>💰 行政区GDP × 実効市場規模 — エリア経済ポテンシャル</h3>
+      <div id="dist-gdp-content"></div>
+    </div>
+
+    <!-- 統合スコアカード -->
+    <div class="panel" style="background:linear-gradient(135deg,#0f1b2d,#1a0a00);border:2px solid #d9770688">
+      <h3 style="color:var(--gold)">📊 全変数統合 診断サマリー</h3>
+      <div id="integrated-summary"></div>
+    </div>
+
   </div>
 </div>
 
@@ -3632,6 +4288,144 @@ function initGDPConformityAnalysis(){
     <div id="gdp-tier-summary"></div>
   </div>
 
+</div>
+
+
+<!-- TAB 14: ユイマール変数分析 -->
+<div id="t14" class="tab">
+  <div class="sec-head">🌺 ユイマール変数（地元絆係数）— 本土企業が見えない市場を数値化</div>
+  <div class="sec-sub">
+    <strong style="color:var(--gold)">【核心インサイト】</strong>
+    GDP・所得が低く同調圧力が高いエリアでも、<span style="color:#fde68a">「地元親族・長年継続・事業継承・モアイ参加」</span>という変数が起動すると、
+    難易度★★★★★のエリアが★★に逆転し、外部参入者の<strong style="color:#10b981">4〜6倍の実効市場</strong>にアクセスできる。
+    この構造が本土企業・那覇の都市型沖縄人に全く見えていないパラドックスの本質。
+  </div>
+
+  <div class="kpi-row" id="ym-kpi-row"></div>
+
+  <!-- ユイマール係数計算機 -->
+  <div class="g2" style="margin-bottom:14px">
+    <div>
+      <div class="ym-calc">
+        <div style="font-size:13px;font-weight:900;color:var(--gold);margin-bottom:14px">🧮 ユイマール係数 計算機 — あなたのスコアを入力</div>
+
+        <div class="ym-question">
+          <label>① 対象エリアの親族・親戚の数</label>
+          <select id="ym-q1" onchange="calcYuimaru()">
+            <option value="0">0人（完全な新規・外部）</option>
+            <option value="5">1〜4人（知人程度）</option>
+            <option value="10">5〜9人（親戚数名）</option>
+            <option value="20">10〜19人（親族が複数いる）</option>
+            <option value="30">20人以上（一族が根付いている）</option>
+          </select>
+        </div>
+
+        <div class="ym-question">
+          <label>② そのエリアでの継続事業年数 / 居住年数</label>
+          <select id="ym-q2" onchange="calcYuimaru()">
+            <option value="0">0〜2年（試用観察期間中）</option>
+            <option value="8">3〜5年（ようやく顔見知り）</option>
+            <option value="15">6〜10年（地域の一員として認識）</option>
+            <option value="20">11〜20年（長老から認められる）</option>
+            <option value="25">20年超（地元の顔として確立）</option>
+          </select>
+        </div>
+
+        <div class="ym-question">
+          <label>③ 事業継承の形態</label>
+          <select id="ym-q3" onchange="calcYuimaru()">
+            <option value="0">完全新規（外部から独立参入）</option>
+            <option value="5">廃業跡地を取得（継承なし）</option>
+            <option value="15">隣地区の親族店を引き継ぎ</option>
+            <option value="20">地元先輩・師匠からの信頼継承</option>
+            <option value="25">同地区の親族・親戚店を直接継承</option>
+          </select>
+        </div>
+
+        <div class="ym-question">
+          <label>④ モアイ・コミュニティ参加度</label>
+          <select id="ym-q4" onchange="calcYuimaru()">
+            <option value="0">未参加（外部・本土資本）</option>
+            <option value="5">自治会のみ参加</option>
+            <option value="10">自治会 + 区民行事協賛</option>
+            <option value="12">自治会 + モアイ参加</option>
+            <option value="15">自治会 + モアイ + 行事協賛 + 清掃活動</option>
+          </select>
+        </div>
+
+        <div class="ym-score-display">
+          <div class="ym-score-num" id="ym-total">0</div>
+          <div class="ym-score-label">ユイマール係数（MAX 100点）</div>
+          <div class="ym-bar-track" style="margin-top:10px">
+            <div class="ym-bar-fill" id="ym-bar" style="width:0%;background:linear-gradient(90deg,#ef4444,#f59e0b,#10b981)"></div>
+          </div>
+          <div id="ym-rank-label" style="font-size:12px;margin-top:8px;font-weight:700;color:#fde68a">ランクを計算中...</div>
+        </div>
+
+        <!-- エリア選択 -->
+        <div class="ym-question">
+          <label>⑤ 対象エリア（市町村）</label>
+          <select id="ym-area" onchange="calcYuimaru()">
+            <option value="東村">東村（同調圧力90点・最難関）</option>
+            <option value="大宜味村">大宜味村（同調圧力88点）</option>
+            <option value="宜野座村">宜野座村（同調圧力82点）</option>
+            <option value="南城市">南城市（同調圧力80点）</option>
+            <option value="糸満市">糸満市（同調圧力72点）</option>
+            <option value="読谷村">読谷村（同調圧力68点）</option>
+            <option value="うるま市">うるま市（同調圧力70点）</option>
+            <option value="名護市">名護市（同調圧力65点）</option>
+            <option value="沖縄市">沖縄市（同調圧力62点）</option>
+            <option value="宜野湾市">宜野湾市（同調圧力55点）</option>
+            <option value="北谷町">北谷町（同調圧力45点）</option>
+            <option value="那覇市">那覇市（同調圧力42点）</option>
+          </select>
+        </div>
+
+        <div id="ym-result-panel"></div>
+      </div>
+    </div>
+
+    <div>
+      <!-- 本土企業 vs ユイマール高い地元 比較 -->
+      <div class="panel" style="margin-bottom:10px">
+        <h3>🔍 本土企業 vs 地元親族事業 — 同じ市場への実効アクセス比較</h3>
+        <div id="ym-compare-chart-wrap" class="chart-wrap-lg"><canvas id="ym-compare-chart"></canvas></div>
+      </div>
+      <div class="panel">
+        <h3>📡 ユイマール係数が「起動」するメカニズム</h3>
+        <div id="yuimaru-mechanism"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 全市町村 ユイマール逆転マップ -->
+  <div class="sec-head" style="margin-top:6px">🗾 全市町村「ユイマール逆転マップ」— 外部参入者 vs 地元親族事業者の難易度比較</div>
+  <div class="sec-sub">同じエリアでも、ユイマール係数によって参入難易度が最大4ランク逆転する。本土企業が「低GDP＝小市場」と切り捨てたエリアが、地元事業者には独占市場になる。</div>
+  <div style="overflow-x:auto;margin-bottom:14px">
+    <table class="gdp-table" id="ym-reversal-table">
+      <thead><tr>
+        <th>市町村</th>
+        <th>同調圧力</th>
+        <th>外部参入難易度</th>
+        <th>ユイマール高(90点)難易度</th>
+        <th>事業継承難易度</th>
+        <th>逆転幅</th>
+        <th>本土企業が見逃す市場規模</th>
+        <th>地元事業者の独占期間</th>
+      </tr></thead>
+      <tbody id="ym-reversal-tbody"></tbody>
+    </table>
+  </div>
+
+  <!-- ユイマール起動事例 -->
+  <div class="sec-head" style="margin-top:6px">💡 ユイマール変数が起動するシナリオ4類型</div>
+  <div id="yuimaru-scenarios"></div>
+
+  <!-- 本土企業が見えない理由の分析 -->
+  <div class="panel" style="margin-top:14px;border:2px solid #f59e0b44">
+    <h3>🧠 なぜ本土企業・那覇型沖縄人には見えないのか — 認知バイアス分析</h3>
+    <div id="bias-analysis"></div>
+  </div>
 </div>
 
 </body>
