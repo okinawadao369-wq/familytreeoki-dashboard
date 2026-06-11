@@ -102,6 +102,49 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP','Hiragino
 .paradox-container{background:var(--card2);border-radius:10px;padding:14px;position:relative}
 .paradox-labels{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
 .paradox-quad{padding:8px 10px;border-radius:6px;font-size:10px}
+.nav-btn.nav-diagnose{background:linear-gradient(135deg,#7c3aed,#3b82f6);border-color:#7c3aed;color:#fff;font-weight:900}
+.nav-btn.nav-diagnose:hover,.nav-btn.nav-diagnose.active{background:linear-gradient(135deg,#6d28d9,#1d4ed8);border-color:#6d28d9}
+/* DIAGNOSE PANEL */
+.diag-form{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:14px}
+.diag-form h3{font-size:13px;font-weight:800;color:var(--gold);margin-bottom:14px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px}
+.form-group{display:flex;flex-direction:column;gap:5px}
+.form-group label{font-size:10px;color:var(--text2);font-weight:600;text-transform:uppercase;letter-spacing:.3px}
+.form-group select,.form-group input{background:var(--card2);border:1px solid var(--border);color:var(--text);padding:7px 10px;border-radius:6px;font-size:11px;width:100%}
+.form-group select:focus,.form-group input:focus{outline:none;border-color:var(--blue)}
+.target-grid{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.target-tag{background:var(--card2);border:1.5px solid var(--border);color:var(--text2);padding:5px 10px;border-radius:20px;font-size:10px;cursor:pointer;transition:.2s;user-select:none}
+.target-tag.selected{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:700}
+.diag-btn{background:linear-gradient(135deg,#7c3aed,#3b82f6);border:none;color:#fff;padding:12px 32px;border-radius:8px;font-size:13px;font-weight:900;cursor:pointer;margin-top:8px;letter-spacing:1px;transition:.2s;width:100%}
+.diag-btn:hover{background:linear-gradient(135deg,#6d28d9,#1d4ed8);transform:translateY(-1px);box-shadow:0 4px 12px #7c3aed44}
+/* RESULT PANEL */
+.result-hidden{display:none}
+.result-visible{display:block}
+.verdict-box{display:flex;align-items:center;gap:16px;padding:20px;border-radius:12px;margin-bottom:14px}
+.verdict-go{background:linear-gradient(135deg,#14532d22,#16534644);border:2px solid #10b981}
+.verdict-conditional{background:linear-gradient(135deg,#78350f22,#92400e22);border:2px solid #f59e0b}
+.verdict-nogo{background:linear-gradient(135deg,#7f1d1d22,#991b1b22);border:2px solid #ef4444}
+.verdict-icon{font-size:3rem;line-height:1}
+.verdict-text h2{font-size:1.4rem;font-weight:900}
+.verdict-text p{font-size:11px;color:var(--text2);margin-top:4px}
+.score-gauge{position:relative;width:120px;height:120px;margin:0 auto 8px}
+.score-gauge svg{transform:rotate(-90deg)}
+.gauge-bg{fill:none;stroke:#2d3748;stroke-width:10}
+.gauge-fill{fill:none;stroke-width:10;stroke-linecap:round;transition:stroke-dashoffset 1s ease}
+.gauge-num{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:1.8rem;font-weight:900;text-align:center}
+.gauge-lbl{text-align:center;font-size:10px;color:var(--text2)}
+.strength-list,.risk-list{display:flex;flex-direction:column;gap:6px}
+.strength-item{background:var(--card2);border-left:3px solid var(--green);border-radius:4px;padding:7px 10px;font-size:10px;line-height:1.6}
+.risk-item{background:var(--card2);border-left:3px solid var(--red);border-radius:4px;padding:7px 10px;font-size:10px;line-height:1.6}
+.alt-area-item{background:var(--card2);border-radius:8px;padding:10px;display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.alt-rank{font-size:1.1rem;font-weight:900;color:var(--gold);width:24px}
+.alt-info{flex:1}
+.alt-info .city{font-size:11px;font-weight:700}
+.alt-info .why{font-size:10px;color:var(--text2)}
+.alt-score{font-size:1.2rem;font-weight:900;color:var(--green)}
+.strategy-card{background:var(--card2);border-radius:8px;padding:12px;margin-bottom:8px;font-size:10px;line-height:1.7}
+.strategy-card h4{font-size:11px;font-weight:700;margin-bottom:6px}
+/* Responsive */
 /* Responsive */
 @media(max-width:700px){.g2,.g3,.g13{grid-template-columns:1fr}.kpi{min-width:100px}}
 /* Section header */
@@ -133,6 +176,7 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP','Hiragino
   <button class="nav-btn" onclick="showTab('t7')">📍 行政区詳細</button>
   <button class="nav-btn" onclick="showTab('t8')">🏢 業種別最適エリア</button>
   <button class="nav-btn" onclick="showTab('t9')">📅 行事カレンダー</button>
+  <button class="nav-btn nav-diagnose" onclick="showTab('t10')">🎯 エリア診断</button>
 </div>
 
 <!-- TAB 1: 総合エリアスコア -->
@@ -1140,7 +1184,7 @@ function showTab(id){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  const idx = ['t1','t2','t3','t4','t5','t6','t7','t8','t9'].indexOf(id);
+  const idx = ['t1','t2','t3','t4','t5','t6','t7','t8','t9','t10'].indexOf(id);
   document.querySelectorAll('.nav-btn')[idx].classList.add('active');
   if(id==='t8') calcBizScore();
 }
@@ -1155,6 +1199,517 @@ window.addEventListener('load',()=>{
   renderCalendar();
   calcBizScore();
 });
+
+// ═══════════════════════════════════════════════
+// エリア診断エンジン
+// ═══════════════════════════════════════════════
+const DISTRICT_MAP = {
+  "那覇市":["久茂地・泉崎","おもろまち（新都心）","牧志・安里（国際通り）","首里","小禄","真和志","寄宮","壺川","古波蔵","識名"],
+  "浦添市":["牧港","城間","屋富祖","経塚","伊祖","仲西","内間","宮城","前田","大平"],
+  "宜野湾市":["大謝名","真栄原","普天間","宜野湾","嘉数","新城","伊佐","志真志","我如古","愛知"],
+  "沖縄市":["コザ（中央）","泡瀬","美里","高原","山里","越来","諸見里","室川","比屋根","池原"],
+  "北谷町":["美浜","北前","砂辺","桑江","謝苅","上勢頭","浜川","字北谷"],
+  "北中城村":["喜舎場","大城","石平","渡口","仲順","荻道","安谷屋"],
+  "西原町":["与那城","小橋川","棚原","嘉手苅","我謝","内間","幸地"],
+  "うるま市":["具志川市街","石川市街","与那城","勝連","赤道","平安座","宮城島"],
+  "嘉手納町":["嘉手納","屋良","水釜","兼久"],
+  "読谷村":["喜名","比謝","座喜味","渡慶次","長浜","大湾","波平"],
+  "名護市":["名護市街（世嘉良・東江）","辺野古","羽地","屋我地","本部","瀬底"],
+  "恩納村":["恩納","山田","仲泊","喜瀬","冨着","瀬良垣","真栄田"],
+  "豊見城市":["豊崎","高安","翁長","真玉橋","宜保","渡嘉敷"],
+  "南風原町":["兼城","宮平","新川","本部","喜屋武","宮城"],
+  "糸満市":["糸満市街","潮平","名城","座波","西崎","真栄里"],
+  "南城市":["大里","知念","玉城","佐敷","仲村渠","百名"],
+  "宮古島市":["平良市街","伊良部","下地","城辺","上野"],
+  "石垣市":["石垣市街","登野城","新川","川平","白保"],
+  "金武町":["金武","並里","屋嘉","伊芸"],
+  "うるま市（具志川）":["赤道","栄野比","昆布","字具志川","兼箇段"],
+};
+
+const BIZ_AXIS_WEIGHT = {
+  maternity:    {community:0.25,economy:0.10,psychology:0.15,road:0.15,military:0.20,history:0.05,growth:0.05,biz:0.05},
+  childcare:    {community:0.30,economy:0.10,psychology:0.15,road:0.10,military:0.10,history:0.05,growth:0.10,biz:0.10},
+  restaurant_casual:{community:0.15,economy:0.20,psychology:0.10,road:0.25,military:0.05,history:0.10,growth:0.05,biz:0.10},
+  restaurant_premium:{community:0.05,economy:0.15,psychology:0.15,road:0.20,military:0.15,history:0.10,growth:0.10,biz:0.10},
+  salon:        {community:0.20,economy:0.10,psychology:0.20,road:0.15,military:0.10,history:0.05,growth:0.10,biz:0.10},
+  medical:      {community:0.25,economy:0.15,psychology:0.10,road:0.15,military:0.05,history:0.05,growth:0.15,biz:0.10},
+  retail_daily: {community:0.15,economy:0.20,psychology:0.05,road:0.30,military:0.05,history:0.05,growth:0.10,biz:0.10},
+  retail_fashion:{community:0.10,economy:0.15,psychology:0.15,road:0.25,military:0.10,history:0.10,growth:0.05,biz:0.10},
+  english:      {community:0.10,economy:0.05,psychology:0.10,road:0.10,military:0.40,history:0.05,growth:0.10,biz:0.10},
+  fitness:      {community:0.15,economy:0.10,psychology:0.15,road:0.20,military:0.15,history:0.05,growth:0.10,biz:0.10},
+  tourism:      {community:0.05,economy:0.20,psychology:0.10,road:0.20,military:0.10,history:0.20,growth:0.10,biz:0.05},
+  realestate:   {community:0.15,economy:0.20,psychology:0.10,road:0.15,military:0.15,history:0.10,growth:0.10,biz:0.05},
+  b2b:          {community:0.10,economy:0.25,psychology:0.05,road:0.20,military:0.10,history:0.05,growth:0.15,biz:0.10},
+  food_souvenir:{community:0.10,economy:0.15,psychology:0.10,road:0.20,military:0.10,history:0.20,growth:0.10,biz:0.05},
+};
+
+const MUNI_AXIS = {
+  "那覇市":      {community:62,economy:95,psychology:72,road:90,military:55,history:90,growth:72,biz:88},
+  "浦添市":      {community:68,economy:82,psychology:70,road:95,military:78,history:65,growth:76,biz:85},
+  "宜野湾市":    {community:60,economy:75,psychology:65,road:92,military:85,history:60,growth:85,biz:82},
+  "沖縄市":      {community:72,economy:70,psychology:60,road:75,military:88,history:70,growth:70,biz:75},
+  "北谷町":      {community:55,economy:78,psychology:58,road:96,military:90,history:65,growth:80,biz:90},
+  "北中城村":    {community:75,economy:72,psychology:68,road:90,military:70,history:60,growth:72,biz:82},
+  "西原町":      {community:78,economy:75,psychology:70,road:88,military:55,history:65,growth:68,biz:78},
+  "うるま市":    {community:76,economy:65,psychology:62,road:70,military:65,history:65,growth:60,biz:68},
+  "嘉手納町":    {community:58,economy:65,psychology:55,road:78,military:95,history:70,growth:62,biz:72},
+  "読谷村":      {community:80,economy:60,psychology:65,road:70,military:70,history:80,growth:58,biz:65},
+  "名護市":      {community:80,economy:68,psychology:72,road:65,military:40,history:75,growth:88,biz:72},
+  "恩納村":      {community:65,economy:65,psychology:80,road:68,military:40,history:82,growth:88,biz:78},
+  "豊見城市":    {community:70,economy:68,psychology:65,road:72,military:50,history:60,growth:72,biz:65},
+  "南風原町":    {community:74,economy:65,psychology:68,road:80,military:45,history:65,growth:68,biz:70},
+  "糸満市":      {community:82,economy:58,psychology:70,road:60,military:35,history:80,growth:62,biz:60},
+  "南城市":      {community:85,economy:52,psychology:75,road:55,military:30,history:85,growth:60,biz:58},
+  "宮古島市":    {community:78,economy:62,psychology:70,road:55,military:20,history:82,growth:65,biz:68},
+  "石垣市":      {community:76,economy:60,psychology:68,road:52,military:18,history:80,growth:62,biz:65},
+  "金武町":      {community:72,economy:55,psychology:60,road:65,military:85,history:68,growth:55,biz:65},
+  "うるま市（具志川）":{community:74,economy:60,psychology:60,road:68,military:62,history:62,growth:58,biz:65},
+};
+
+const TARGET_BONUS = {
+  military:{北谷町:20,嘉手納町:18,宜野湾市:15,浦添市:12,北中城村:10,金武町:10},
+  tourist: {北谷町:18,那覇市:15,恩納村:18,名護市:10,宮古島市:15,石垣市:15},
+  local:   {那覇市:10,浦添市:10,西原町:12,南城市:12,読谷村:12,糸満市:12},
+  family:  {北中城村:15,西原町:12,南風原町:12,浦添市:10,那覇市:8},
+  premium: {那覇市:12,恩納村:15,宮古島市:10,石垣市:10,北谷町:8},
+  young:   {那覇市:10,浦添市:8,沖縄市:10,北谷町:12,名護市:8},
+  senior:  {南城市:12,糸満市:10,南風原町:8,読谷村:8},
+  b2b:     {那覇市:18,浦添市:12,沖縄市:8,名護市:8,うるま市:6},
+};
+
+const ROAD_BONUS = {national:15,express:12,pref:5,muni:0,unknown:3};
+const STAGE_MOD = {
+  new_outsider:{community:-15,note:"外部参入は地元ネットワーク構築に時間が必要"},
+  new_local:   {community:10,note:"地元ルーツがあれば信頼構築が約3倍速い"},
+  expand:      {community:20,note:"既存顧客基盤の活用で初期集客コスト70%削減可能"},
+  branch:      {community:5,note:"ブランド認知の転移効果で出店障壁が低下"},
+  fc:          {community:0,note:"フランチャイズは標準化と地元最適化のバランスが鍵"},
+  relocation:  {community:8,note:"顧客が追いかけてくれる可能性が高い（継続性バイアス活用）"},
+};
+
+const STRATEGY_DB = {
+  maternity:{
+    military:"英語対応・ドル決済・駐在員SNS（Facebook Groups: Okinawa Military Spouses）経由の集客が最重要。基地正門から車5分圏内の立地優先。",
+    local:"保育施設・産婦人科との連携でリファラル導線を構築。シーミー・行事前後の家族集合時期に体験会。",
+    tourist:"ハネムーナー向け産後エステパッケージ検討。観光地近接は客単価↑だがリピート率↓。",
+    general:"ユイマール文化を活かした「ママ友紹介割」が最も費用対効果が高い集客手法。モアイ組織の紹介網に乗ること。"
+  },
+  english:{
+    military:"Kadena・Foster周辺は一番のターゲットゾーン。基地内コミュニティボード（物理・デジタル）への掲載が最速導線。",
+    tourist:"国際通り・美浜周辺のインバウンド向け英会話体験は観光客需要あり。",
+    general:"米軍家族は英語教育に月3〜5万円支出が標準。競合は少なく参入余地大きい。"
+  },
+  restaurant_casual:{
+    local:"地元食材（県産豚・島野菜・沖縄そば麺）の使用比率を前面訴求。「ウチナーンチュが作った」ラベルが集客差別化の核。",
+    military:"英語メニュー・テイクアウト対応・大盛サービスが軍属向け必須条件。",
+    general:"国道58号沿いランチタイムは回転率勝負。夜は地元コミュニティの会合需要を取り込む宴会メニューが必須。"
+  },
+  default:{
+    general:"①地元コミュニティへの挨拶・顔見せを最初の90日で徹底（ユイマール接点構築）。②SNS（Instagram/LINE）と口コミのハイブリッド集客。③行事消費ピーク（4月シーミー・8月旧盆・12月年末行事）に仕込みを。"
+  }
+};
+
+let diagRadarChart = null;
+let selectedTargets = [];
+
+function updateDistricts(){
+  const muni = document.getElementById('d-muni').value;
+  const dl = document.getElementById('district-list');
+  dl.innerHTML = '';
+  if(DISTRICT_MAP[muni]){
+    DISTRICT_MAP[muni].forEach(d=>{
+      const opt = document.createElement('option');
+      opt.value = d;
+      dl.appendChild(opt);
+    });
+  }
+}
+
+function toggleTarget(el){
+  el.classList.toggle('selected');
+  const val = el.dataset.val;
+  if(el.classList.contains('selected')){
+    if(!selectedTargets.includes(val)) selectedTargets.push(val);
+  } else {
+    selectedTargets = selectedTargets.filter(v=>v!==val);
+  }
+}
+
+function runDiagnosis(){
+  const muni = document.getElementById('d-muni').value;
+  const district = document.getElementById('d-district').value.trim();
+  const road = document.getElementById('d-road').value;
+  const biz = document.getElementById('d-biz').value;
+  const stage = document.getElementById('d-stage').value;
+  const budget = document.getElementById('d-budget').value;
+
+  if(!muni){
+    alert('市町村を選択してください');
+    return;
+  }
+
+  const axis = MUNI_AXIS[muni] || {community:65,economy:60,psychology:60,road:65,military:50,history:65,growth:60,biz:65};
+  const weights = BIZ_AXIS_WEIGHT[biz] || BIZ_AXIS_WEIGHT['restaurant_casual'];
+  const stageData = STAGE_MOD[stage] || {community:0,note:''};
+  const roadBonus = ROAD_BONUS[road] || 0;
+
+  // Apply stage modifier to community
+  const adjAxis = {...axis};
+  adjAxis.community = Math.min(100, Math.max(0, adjAxis.community + stageData.community));
+
+  // Apply road bonus
+  adjAxis.road = Math.min(100, adjAxis.road + roadBonus);
+
+  // Apply target bonuses
+  let targetBonus = 0;
+  selectedTargets.forEach(t=>{
+    const tb = TARGET_BONUS[t];
+    if(tb && tb[muni]) targetBonus += tb[muni];
+  });
+
+  // Budget modifier
+  const budgetMod = {small:0,medium:5,large:10,xlarge:15};
+  const budgetBonus = budgetMod[budget]||0;
+
+  // Weighted total score
+  const rawScore = Object.keys(weights).reduce((sum,k)=>{
+    return sum + (adjAxis[k]||65) * weights[k];
+  }, 0);
+
+  const finalScore = Math.min(100, Math.round(rawScore + targetBonus*0.3 + budgetBonus));
+
+  // Verdict
+  let verdict, verdictClass, icon, verdictDesc;
+  if(finalScore >= 75){
+    verdict = '✅ GO — 出店推進エリア';
+    verdictClass = 'verdict-go';
+    icon = '🟢';
+    verdictDesc = `${muni}${district?' / '+district:''} は、この業種・ターゲット層との相性が高く積極的な出店を推奨します。`;
+  } else if(finalScore >= 55){
+    verdict = '🟡 CONDITIONAL GO — 条件付き推進';
+    verdictClass = 'verdict-conditional';
+    icon = '⚠️';
+    verdictDesc = `${muni} は一定の適合性があります。下記のリスク項目を対策した上での出店が推奨されます。`;
+  } else {
+    verdict = '🔴 NO GO — 再検討を推奨';
+    verdictClass = 'verdict-nogo';
+    icon = '❌';
+    verdictDesc = `${muni} はこの業種・ターゲット層との適合度が低い可能性があります。代替エリアの検討を推奨します。`;
+  }
+
+  // Render verdict
+  const vbox = document.getElementById('verdict-box');
+  vbox.className = 'verdict-box ' + verdictClass;
+  document.getElementById('verdict-icon').textContent = icon;
+  document.getElementById('verdict-title').textContent = verdict;
+  document.getElementById('verdict-desc').textContent = verdictDesc;
+
+  // Gauge
+  const pct = finalScore / 100;
+  const circumference = 2 * Math.PI * 50;
+  const offset = circumference * (1 - pct);
+  const gaugeColor = finalScore >= 75 ? '#10b981' : finalScore >= 55 ? '#f59e0b' : '#ef4444';
+  const circle = document.getElementById('gauge-circle');
+  circle.style.stroke = gaugeColor;
+  circle.style.strokeDashoffset = offset;
+  document.getElementById('gauge-num').style.color = gaugeColor;
+  document.getElementById('gauge-num').textContent = finalScore;
+  document.getElementById('gauge-lbl').textContent = finalScore>=75?'高適合 🔥':finalScore>=55?'中適合 ✓':'低適合 ⚠️';
+
+  // Radar
+  const axisLabels = ['コミュニティ','経済','心理','道路','基地','歴史','成長','業種適合'];
+  const axisKeys   = ['community','economy','psychology','road','military','history','growth','biz'];
+  const radarData  = axisKeys.map(k=>adjAxis[k]||65);
+
+  if(diagRadarChart) diagRadarChart.destroy();
+  diagRadarChart = new Chart('diag-radar',{type:'radar',data:{
+    labels:axisLabels,
+    datasets:[
+      {label:`${muni} スコア`,data:radarData,borderColor:gaugeColor,backgroundColor:gaugeColor+'22',pointBackgroundColor:gaugeColor,pointRadius:4},
+      {label:'沖縄平均',data:[68,68,65,72,60,68,68,70],borderColor:'#94a3b8',backgroundColor:'#94a3b822',pointBackgroundColor:'#94a3b8',pointRadius:3,borderDash:[4,4]},
+    ]
+  },options:{responsive:true,maintainAspectRatio:false,
+    scales:{r:{min:0,max:100,grid:{color:'#2d3748'},ticks:{backdropColor:'transparent',font:{size:8}},pointLabels:{font:{size:9},color:'#94a3b8'}}},
+    plugins:{legend:{labels:{font:{size:9}}}}}});
+
+  // Strengths & Risks
+  const sl = document.getElementById('strength-list');
+  const rl = document.getElementById('risk-list');
+  sl.innerHTML=''; rl.innerHTML='';
+
+  const axisNames = {community:'コミュニティ結束',economy:'経済規模',psychology:'消費者心理',road:'交通量・道路',military:'基地・軍属市場',history:'歴史・文化資源',growth:'成長ポテンシャル',biz:'業種適合性'};
+  const sorted = axisKeys.map(k=>({k,label:axisNames[k],val:adjAxis[k]})).sort((a,b)=>b.val-a.val);
+  const strengths = sorted.filter(d=>d.val>=72).slice(0,3);
+  const risks = sorted.filter(d=>d.val<65).slice(0,3);
+
+  const strengthAdvice = {
+    community:`ユイマール人脈が強い。地元コミュニティリーダーとの関係構築を最優先に。`,
+    economy:`GDP・消費規模が大きく、客単価を高めに設定できる。`,
+    psychology:`消費者の価値観とサービスが合いやすいエリア。訴求メッセージが刺さりやすい。`,
+    road:`交通量が多く自然流入が見込める。看板・外観への投資対効果が高い。`,
+    military:`軍属マーケット（ドル収入層）への高単価サービス提供が可能。英語対応で競合差別化。`,
+    history:`歴史・文化資源が豊富。地域ブランドと連携したマーケティングが有効。`,
+    growth:`エリア成長率が高く、先行参入で優位性を確立できる。`,
+    biz:`業種とエリアの需要がマッチ。競合が入りにくい参入窓口が存在。`,
+  };
+  const riskAdvice = {
+    community:`地元ネットワークへの参入障壁あり。${stageData.note||'地元イベント参加・SNS活用で補完が必要。'}`,
+    economy:`消費規模が限定的。低価格帯ラインナップと高単価オプションの二段構え設計を推奨。`,
+    psychology:`消費者心理が慎重型（失敗回避バイアス強）。口コミ・体験会から段階的信頼構築が必要。`,
+    road:`交通量・視認性が低い。SNS・デジタル集客・紹介プログラムで補完必須。`,
+    military:`軍属市場依存度が低いエリア。地元住民・観光客向け戦略への比重シフトを検討。`,
+    history:`観光・文化資源に乏しく差別化ストーリーが作りにくい。コミュニティ根付き型で勝負。`,
+    growth:`成長率が低迷気味。現在の市場シェア確保戦略が必要（先行者が有利）。`,
+    biz:`業種とエリア需要のミスマッチあり。ターゲット層の再定義か業態調整を検討。`,
+  };
+
+  strengths.forEach(d=>{
+    sl.innerHTML+=`<div class="strength-item"><strong style="color:var(--green)">${d.label} ${d.val}点</strong><br>${strengthAdvice[d.k]||''}</div>`;
+  });
+  if(sl.innerHTML==='') sl.innerHTML='<div class="strength-item">特定の突出した強みはありません。複合的な中スコアエリアです。</div>';
+
+  risks.forEach(d=>{
+    rl.innerHTML+=`<div class="risk-item"><strong style="color:var(--red)">${d.label} ${d.val}点</strong><br>${riskAdvice[d.k]||''}</div>`;
+  });
+  if(rl.innerHTML==='') rl.innerHTML='<div class="risk-item" style="border-color:var(--green)">明確なリスク要因は少ない優良エリアです。</div>';
+
+  // Alternative areas
+  const altArr = document.getElementById('alt-list');
+  const altTitle = document.getElementById('alt-title');
+  altArr.innerHTML='';
+
+  const alternatives = Object.entries(MUNI_AXIS).map(([name,axData])=>{
+    const adjA = {...axData};
+    adjA.community = Math.min(100,adjA.community + stageData.community);
+    let tb2 = 0;
+    selectedTargets.forEach(t=>{if(TARGET_BONUS[t]&&TARGET_BONUS[t][name]) tb2+=TARGET_BONUS[t][name];});
+    const s2 = Math.min(100,Math.round(Object.keys(weights).reduce((sum,k)=>sum+(adjA[k]||65)*weights[k],0)+tb2*0.3+budgetBonus));
+    return {name,score:s2};
+  }).filter(a=>a.name!==muni).sort((a,b)=>b.score-a.score).slice(0,5);
+
+  if(finalScore >= 75){
+    altTitle.textContent = '🗺️ 周辺競合・補完エリア（参考）';
+  } else {
+    altTitle.textContent = '🗺️ 推奨代替エリア TOP5';
+  }
+
+  const altReasons = {
+    "那覇市":"GDP・人口最大。観光客と地元住民の双方を狙える。",
+    "浦添市":"国道58号最大交通量エリア。高成長・高購買力。",
+    "北谷町":"米軍市場+観光客の最強二重市場。最高交通量エリア。",
+    "宜野湾市":"普天間返還後の成長率No.1。参入の今が最大窓口。",
+    "北中城村":"高速IC近接・イオン集積。計画購買型高単価客層。",
+    "西原町":"琉球大学・医療集積。教育・医療・若者需要が強い。",
+    "名護市":"北部最大都市。ジャングリア効果で成長率11.7%。",
+    "恩納村":"リゾート核。高所得観光客+移住者の高単価市場。",
+    "嘉手納町":"基地正門前。SOFA密度最高。英語対応サービスが刺さる。",
+    "豊見城市":"免税店エリア。観光消費の拠点として急成長中。",
+    "南風原町":"南風原IC直結。物流・商業の集積地として急拡大。",
+    "沖縄市":"基地商圏+地元コミュニティの複合市場。コザ文化圏。",
+  };
+
+  alternatives.forEach((a,i)=>{
+    const col = i===0?'var(--gold)':i<3?'var(--green)':'var(--text2)';
+    altArr.innerHTML+=`<div class="alt-area-item">
+      <div class="alt-rank" style="color:${col}">${i+1}</div>
+      <div class="alt-info">
+        <div class="city">${a.name}</div>
+        <div class="why">${altReasons[a.name]||'エリア特性・業種適合度が高い'}</div>
+      </div>
+      <div class="alt-score" style="color:${a.score>=75?'var(--green)':a.score>=55?'var(--gold)':'var(--red)'}">${a.score}</div>
+    </div>`;
+  });
+
+  // Strategy
+  const sl2 = document.getElementById('strategy-list');
+  sl2.innerHTML='';
+  const bizKey = biz.includes('maternity')?'maternity':biz.includes('english')?'english':biz.includes('restaurant')?'restaurant_casual':'default';
+  const stratDB = STRATEGY_DB[bizKey]||STRATEGY_DB['default'];
+
+  const phase = ['month1','month2','month3'];
+  const phases = [
+    {title:'🚀 フェーズ1（出店前1〜3ヶ月）: 信頼構築',
+     content:`地元コミュニティへの顔見せを徹底。${stageData.note} 行政区の自治会・商工会に挨拶。SNS（Instagram/LINE公式）開設とフォロワー獲得開始。`},
+    {title:'📣 フェーズ2（出店〜3ヶ月）: 認知拡大',
+     content:(stratDB[selectedTargets[0]]||stratDB.general)+' 体験無料DAY・先着割引で口コミ種まき。モアイ・ユイマールネットワークへのリファラル設計。'},
+    {title:'💪 フェーズ3（3〜12ヶ月）: リピート固定化',
+     content:`行事消費カレンダーに合わせたキャンペーン設計（4月シーミー・8月旧盆・12月行事）。LINE公式でリピーター管理。口コミ紹介制度の本格稼働。`},
+  ];
+
+  phases.forEach(p=>{
+    sl2.innerHTML+=`<div class="strategy-card"><h4 style="color:var(--gold)">${p.title}</h4>${p.content}</div>`;
+  });
+
+  document.getElementById('diag-result').className='result-visible';
+  document.getElementById('diag-result').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+// ═══════════════════════════════════════════════
 </script>
+
+<!-- TAB 10: エリア診断ツール -->
+<div id="t10" class="tab">
+  <div class="sec-head">🎯 エリア診断ツール — あなたのビジネスに合うエリアを数値で判定</div>
+  <div class="sec-sub">住所・業種・ビジネスステージ・ターゲット層を入力するだけで、沖縄エリアマーケティングAXISが瞬時にスコア計算し「GO / CONDITIONAL GO / NO GO」で判定。推奨代替エリアも自動提示。</div>
+
+  <!-- INPUT FORM -->
+  <div class="diag-form">
+    <h3>📋 診断入力フォーム</h3>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>① 市町村を選択</label>
+        <select id="d-muni" onchange="updateDistricts()">
+          <option value="">-- 市町村を選択 --</option>
+          <option value="那覇市">那覇市</option>
+          <option value="浦添市">浦添市</option>
+          <option value="宜野湾市">宜野湾市</option>
+          <option value="沖縄市">沖縄市</option>
+          <option value="北谷町">北谷町</option>
+          <option value="北中城村">北中城村</option>
+          <option value="西原町">西原町</option>
+          <option value="うるま市">うるま市</option>
+          <option value="嘉手納町">嘉手納町</option>
+          <option value="読谷村">読谷村</option>
+          <option value="名護市">名護市</option>
+          <option value="恩納村">恩納村</option>
+          <option value="豊見城市">豊見城市</option>
+          <option value="南風原町">南風原町</option>
+          <option value="糸満市">糸満市</option>
+          <option value="南城市">南城市</option>
+          <option value="宮古島市">宮古島市</option>
+          <option value="石垣市">石垣市</option>
+          <option value="金武町">金武町</option>
+          <option value="うるま市（具志川）">うるま市（具志川）</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>② 行政区・字を入力</label>
+        <input id="d-district" placeholder="例: 美浜、牧港、大謝名 など" list="district-list">
+        <datalist id="district-list"></datalist>
+      </div>
+      <div class="form-group">
+        <label>③ 道路条件（立地）</label>
+        <select id="d-road">
+          <option value="national">国道沿い（58号・329号等）</option>
+          <option value="express">高速IC近接（2km以内）</option>
+          <option value="pref">県道沿い</option>
+          <option value="muni">市町村道・路地</option>
+          <option value="unknown">不明・確認中</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>④ 業種を選択</label>
+        <select id="d-biz">
+          <option value="maternity">マタニティ・ウェルネス・産前産後</option>
+          <option value="childcare">保育・学童・子育て支援</option>
+          <option value="restaurant_casual">飲食業（カジュアル・日常）</option>
+          <option value="restaurant_premium">飲食業（高単価・特別感）</option>
+          <option value="salon">美容・エステ・サロン</option>
+          <option value="medical">医療・クリニック・歯科</option>
+          <option value="retail_daily">小売・日用品・スーパー</option>
+          <option value="retail_fashion">小売・ファッション・雑貨</option>
+          <option value="english">英語教室・外国語サービス</option>
+          <option value="fitness">フィットネス・スポーツ</option>
+          <option value="tourism">観光体験・アクティビティ</option>
+          <option value="realestate">不動産・賃貸仲介</option>
+          <option value="b2b">B2B・法人向けサービス</option>
+          <option value="food_souvenir">土産・特産品・食品製造販売</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>⑤ ビジネスステージ</label>
+        <select id="d-stage">
+          <option value="new_outsider">新規参入（沖縄外からの出店）</option>
+          <option value="new_local">新規参入（地元ルーツあり）</option>
+          <option value="expand">地元に慣れ親しんだ既存店の拡大</option>
+          <option value="branch">新店舗展開（複数店舗化）</option>
+          <option value="fc">フランチャイズ展開</option>
+          <option value="relocation">既存店舗の移転・リニューアル</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>⑥ 予算規模</label>
+        <select id="d-budget">
+          <option value="small">小規模（〜300万円）</option>
+          <option value="medium">中規模（300〜1,000万円）</option>
+          <option value="large">大規模（1,000〜3,000万円）</option>
+          <option value="xlarge">超大型（3,000万円以上）</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group" style="margin-bottom:10px">
+      <label>⑦ ターゲット客層（複数選択可）</label>
+      <div class="target-grid" id="target-grid">
+        <div class="target-tag" data-val="local" onclick="toggleTarget(this)">🏠 地元住民</div>
+        <div class="target-tag" data-val="military" onclick="toggleTarget(this)">🪖 米軍・軍属ファミリー</div>
+        <div class="target-tag" data-val="tourist" onclick="toggleTarget(this)">✈️ 観光客</div>
+        <div class="target-tag" data-val="family" onclick="toggleTarget(this)">👨‍👩‍👧 子育て世帯</div>
+        <div class="target-tag" data-val="premium" onclick="toggleTarget(this)">💎 高所得層</div>
+        <div class="target-tag" data-val="young" onclick="toggleTarget(this)">🎓 若者（18-35歳）</div>
+        <div class="target-tag" data-val="senior" onclick="toggleTarget(this)">👴 シニア（55歳以上）</div>
+        <div class="target-tag" data-val="b2b" onclick="toggleTarget(this)">🏢 法人・企業</div>
+      </div>
+    </div>
+    <button class="diag-btn" onclick="runDiagnosis()">🔍 エリア診断を実行する</button>
+  </div>
+
+  <!-- RESULT (hidden until run) -->
+  <div id="diag-result" class="result-hidden">
+    <!-- VERDICT -->
+    <div id="verdict-box" class="verdict-box">
+      <div class="verdict-icon" id="verdict-icon"></div>
+      <div class="verdict-text" style="flex:1">
+        <h2 id="verdict-title"></h2>
+        <p id="verdict-desc"></p>
+      </div>
+    </div>
+
+    <!-- SCORES ROW -->
+    <div class="g3" style="margin-bottom:14px">
+      <div class="panel" style="text-align:center">
+        <h3>総合適合スコア</h3>
+        <div class="score-gauge">
+          <svg width="120" height="120" viewBox="0 0 120 120">
+            <circle class="gauge-bg" cx="60" cy="60" r="50"/>
+            <circle class="gauge-fill" id="gauge-circle" cx="60" cy="60" r="50" stroke-dasharray="314" stroke-dashoffset="314"/>
+          </svg>
+          <div class="gauge-num" id="gauge-num">-</div>
+        </div>
+        <div class="gauge-lbl" id="gauge-lbl">スコア算出中...</div>
+      </div>
+      <div class="panel" style="grid-column:span 2">
+        <h3>OKINAWA-AXIS 8次元スコア</h3>
+        <div class="chart-wrap"><canvas id="diag-radar"></canvas></div>
+      </div>
+    </div>
+
+    <!-- AXIS DETAIL ROW -->
+    <div class="g2" style="margin-bottom:14px">
+      <div class="panel">
+        <h3>✅ 強み・好条件</h3>
+        <div id="strength-list" class="strength-list"></div>
+      </div>
+      <div class="panel">
+        <h3>⚠️ リスク・課題</h3>
+        <div id="risk-list" class="risk-list"></div>
+      </div>
+    </div>
+
+    <!-- ALTERNATIVE + STRATEGY -->
+    <div class="g2">
+      <div class="panel">
+        <h3 id="alt-title">🗺️ 推奨代替エリア TOP5</h3>
+        <div id="alt-list"></div>
+      </div>
+      <div class="panel">
+        <h3>📋 マーケティング戦略提言</h3>
+        <div id="strategy-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
