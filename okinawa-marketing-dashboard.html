@@ -4074,84 +4074,6 @@ h1{margin:0;font-size:20px;color:#fff} .sub{color:#ffffffcc;font-size:12px;margi
   <div class="section"><h3>📋 マーケティング戦略提言</h3>${strategy}</div>
   <div class="footer">沖縄エリアマーケティングダッシュボード v2.9 — 合同会社koya</div>
 </div>
-<div id="t16" class="tab">
-  <div class="sec-head">✅ 業種別 市場参入突破条件チェックリスト</div>
-  <div class="sec-sub">業種×エリアを選択すると、参入前に満たすべき条件一覧が表示されます。チェックを入れながら進捗を管理してください。</div>
-
-  <div class="g2" style="margin-bottom:16px">
-    <div class="panel" style="padding:12px">
-      <label style="font-size:11px;font-weight:700;color:var(--gold);display:block;margin-bottom:5px">業種</label>
-      <select id="cl-biz-select" style="width:100%;background:#1e2533;color:#e2e8f0;border:1px solid #ffffff22;border-radius:6px;padding:7px 10px;font-size:11px"></select>
-    </div>
-    <div class="panel" style="padding:12px">
-      <label style="font-size:11px;font-weight:700;color:var(--gold);display:block;margin-bottom:5px">対象エリア（任意）</label>
-      <select id="cl-area-select" style="width:100%;background:#1e2533;color:#e2e8f0;border:1px solid #ffffff22;border-radius:6px;padding:7px 10px;font-size:11px"></select>
-    </div>
-  </div>
-
-  <!-- 進捗バー -->
-  <div class="panel" style="margin-bottom:14px" id="cl-progress"></div>
-
-  <!-- チェックリスト本体 -->
-  <div class="panel" id="cl-board">
-    <div style="color:var(--text-dim);text-align:center;padding:20px">業種を選択してください</div>
-  </div>
-</div>
-
-
-<div id="t17" class="tab">
-  <div class="sec-head">🗺️ 店舗立地マップ — 住所入力→道路・GDP・エリアスコア即時確認</div>
-  <div class="sec-sub">住所を入力するか現在地GPSで、周辺道路種別（国道・県道・市町村道）・市町村GDP・OKINAWA-AXISスコアを表示します。</div>
-
-  <!-- 入力エリア -->
-  <div class="panel" style="margin-bottom:12px">
-    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end">
-      <div style="flex:1;min-width:200px">
-        <label style="font-size:10px;font-weight:700;color:var(--gold);display:block;margin-bottom:4px">📍 店舗住所（例: 沖縄県沖縄市山内2-9-16）</label>
-        <input id="map-addr-input" type="text" placeholder="沖縄県〇〇市〇〇町〇〇番地"
-          style="width:100%;box-sizing:border-box;background:#1e2533;color:#e2e8f0;border:1px solid #ffffff33;border-radius:6px;padding:8px 10px;font-size:12px"/>
-      </div>
-      <button onclick="searchAddress()" style="background:linear-gradient(135deg,#6366f1,#4f46e5);color:#fff;border:none;border-radius:8px;padding:9px 18px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap">🔍 検索</button>
-      <button onclick="getGPS()" style="background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;border-radius:8px;padding:9px 18px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap">📡 GPS現在地</button>
-    </div>
-    <div id="map-status" style="margin-top:8px;font-size:10px;color:var(--text-dim)">住所を入力して検索するか、GPS現在地ボタンを押してください。</div>
-  </div>
-
-  <div class="g2" style="margin-bottom:12px">
-    <!-- 地図 -->
-    <div class="panel" style="padding:0;overflow:hidden;border-radius:10px;min-height:380px">
-      <div id="map-container" style="width:100%;height:400px;border-radius:10px"></div>
-    </div>
-
-    <!-- 右パネル: 道路・GDP -->
-    <div>
-      <!-- 市町村情報 -->
-      <div class="panel" style="margin-bottom:10px" id="map-muni-panel">
-        <h3>🏙️ 市町村情報</h3>
-        <div id="map-muni-info" style="color:var(--text-dim);font-size:10px">住所を検索すると表示されます</div>
-      </div>
-
-      <!-- 周辺道路 -->
-      <div class="panel" style="margin-bottom:10px">
-        <h3>🛣️ 周辺道路（500m圏内）</h3>
-        <div id="map-road-info" style="color:var(--text-dim);font-size:10px">住所を検索すると表示されます</div>
-      </div>
-
-      <!-- AXIS スコア -->
-      <div class="panel">
-        <h3>📊 OKINAWA-AXIS スコア</h3>
-        <div id="map-axis-score" style="color:var(--text-dim);font-size:10px">住所を検索すると表示されます</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- GDP詳細 -->
-  <div class="panel" id="map-gdp-panel">
-    <h3>💴 GDP・経済規模データ</h3>
-    <div id="map-gdp-info" style="color:var(--text-dim);font-size:10px">住所を検索すると表示されます</div>
-  </div>
-</div>
-
 </body></html>`;
   const blob = new Blob([card],{type:'text/html;charset=utf-8'});
   const url = URL.createObjectURL(blob);
@@ -5503,6 +5425,71 @@ document.addEventListener('DOMContentLoaded', () => {
   <div class="panel">
     <h3>🗺️ エリア別 SOFA密度 × FTO参入スコア</h3>
     <div id="t15-area-sofa"></div>
+  </div>
+</div>
+
+
+<div id="t16" class="tab">
+  <div class="sec-head">✅ 業種別 市場参入突破条件チェックリスト</div>
+  <div class="sec-sub">業種×エリアを選択すると、参入前に満たすべき条件一覧が表示されます。チェックを入れながら進捗を管理してください。</div>
+
+  <div class="g2" style="margin-bottom:16px">
+    <div class="panel" style="padding:12px">
+      <label style="font-size:11px;font-weight:700;color:var(--gold);display:block;margin-bottom:5px">業種</label>
+      <select id="cl-biz-select" style="width:100%;background:#1e2533;color:#e2e8f0;border:1px solid #ffffff22;border-radius:6px;padding:7px 10px;font-size:11px"></select>
+    </div>
+    <div class="panel" style="padding:12px">
+      <label style="font-size:11px;font-weight:700;color:var(--gold);display:block;margin-bottom:5px">対象エリア（任意）</label>
+      <select id="cl-area-select" style="width:100%;background:#1e2533;color:#e2e8f0;border:1px solid #ffffff22;border-radius:6px;padding:7px 10px;font-size:11px"></select>
+    </div>
+  </div>
+
+  <div class="panel" style="margin-bottom:14px" id="cl-progress"></div>
+  <div class="panel" id="cl-board">
+    <div style="color:var(--text-dim);text-align:center;padding:20px">業種を選択してください</div>
+  </div>
+</div>
+
+<div id="t17" class="tab">
+  <div class="sec-head">🗺️ 店舗立地マップ — 住所入力→道路・GDP・エリアスコア即時確認</div>
+  <div class="sec-sub">住所を入力するか現在地GPSで、周辺道路種別（国道・県道・市町村道）・市町村GDP・OKINAWA-AXISスコアを表示します。</div>
+
+  <div class="panel" style="margin-bottom:12px">
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end">
+      <div style="flex:1;min-width:200px">
+        <label style="font-size:10px;font-weight:700;color:var(--gold);display:block;margin-bottom:4px">📍 店舗住所（例: 沖縄県沖縄市山内2-9-16）</label>
+        <input id="map-addr-input" type="text" placeholder="沖縄県〇〇市〇〇町〇〇番地"
+          style="width:100%;box-sizing:border-box;background:#1e2533;color:#e2e8f0;border:1px solid #ffffff33;border-radius:6px;padding:8px 10px;font-size:12px"/>
+      </div>
+      <button onclick="searchAddress()" style="background:linear-gradient(135deg,#6366f1,#4f46e5);color:#fff;border:none;border-radius:8px;padding:9px 18px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap">🔍 検索</button>
+      <button onclick="getGPS()" style="background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;border-radius:8px;padding:9px 18px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap">📡 GPS現在地</button>
+    </div>
+    <div id="map-status" style="margin-top:8px;font-size:10px;color:var(--text-dim)">住所を入力して検索するか、GPS現在地ボタンを押してください。</div>
+  </div>
+
+  <div class="g2" style="margin-bottom:12px">
+    <div class="panel" style="padding:0;overflow:hidden;border-radius:10px;min-height:380px">
+      <div id="map-container" style="width:100%;height:400px;border-radius:10px"></div>
+    </div>
+    <div>
+      <div class="panel" style="margin-bottom:10px" id="map-muni-panel">
+        <h3>🏙️ 市町村情報</h3>
+        <div id="map-muni-info" style="color:var(--text-dim);font-size:10px">住所を検索すると表示されます</div>
+      </div>
+      <div class="panel" style="margin-bottom:10px">
+        <h3>🛣️ 周辺道路（500m圏内）</h3>
+        <div id="map-road-info" style="color:var(--text-dim);font-size:10px">住所を検索すると表示されます</div>
+      </div>
+      <div class="panel">
+        <h3>📊 OKINAWA-AXIS スコア</h3>
+        <div id="map-axis-score" style="color:var(--text-dim);font-size:10px">住所を検索すると表示されます</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel" id="map-gdp-panel">
+    <h3>💴 GDP・経済規模データ</h3>
+    <div id="map-gdp-info" style="color:var(--text-dim);font-size:10px">住所を検索すると表示されます</div>
   </div>
 </div>
 
