@@ -282,57 +282,48 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP','Hiragino
   <button class="nav-btn nav-paradox" onclick="showTab('t12')">🌀 パラドックス行動分析</button>
   <button class="nav-btn nav-gdp" onclick="showTab('t13')">💰 GDP・経済データ全覧</button>
   <button class="nav-btn nav-yuimaru" onclick="showTab('t14')">🌺 ユイマール変数分析</button>
+  <button class="nav-btn" onclick="showTab('t15')">🪖 SOFA軍属市場</button>
+  <button class="nav-btn" onclick="showTab('t16')">✅ 突破チェックリスト</button>
 </div>
 
 <!-- TAB 1: 総合エリアスコア -->
-<div id="t1" class="tab active">
-  <div class="kpi-row">
-    <div class="kpi gold"><div class="val">41</div><div class="lbl">分析対象市町村</div></div>
-    <div class="kpi blue"><div class="val">93</div><div class="lbl">主要行政区スコア</div></div>
-    <div class="kpi green"><div class="val">8</div><div class="lbl">OKINAWA-AXIS次元</div></div>
-    <div class="kpi purple"><div class="val">96.0</div><div class="lbl">最高エリアスコア（美浜）</div></div>
-    <div class="kpi red"><div class="val">3</div><div class="lbl">Sランク市町村</div></div>
+<div id="t1" class="tab">
+  <div class="sec-head">🏆 OKINAWA-AXIS — 総合概要ダッシュボード</div>
+  <div class="sec-sub">沖縄41市町村 × 8次元統合スコアリング。地政学・ユイマール社会・ザル経済・基地依存・消費者心理の全てを数値化。</div>
+
+  <!-- 動的KPIカード -->
+  <div class="kpi-row" id="t1-kpi-row" style="margin-bottom:16px"></div>
+
+  <!-- SOFA市場ハイライト -->
+  <div style="background:linear-gradient(135deg,#1a0a2e22,#0f2040);border:1px solid #8b5cf644;border-radius:10px;padding:14px;margin-bottom:16px">
+    <div style="font-size:11px;font-weight:800;color:#a78bfa;margin-bottom:10px">🪖 SOFA軍属市場 特別ハイライト — Family Tree Oki 視点</div>
+    <div class="g3" id="t1-sofa-kpi"></div>
   </div>
-  <div class="insight-box">
-    <strong>【OKINAWA-AXIS設計思想】</strong> 沖縄特有の地政学・ユイマール社会・ザル経済・基地依存構造・消費者心理の二面性を8次元で統一数値化。「コミュニティ（C）」「経済（E）」「心理（P）」「道路（R）」「基地（M）」「歴史（H）」「成長（G）」「業種適合（B）」の合成スコアがエリアの本質を表す。
-  </div>
-  <div class="g13">
-    <div>
-      <div class="panel">
-        <h3>🏆 TOP市町村ランキング</h3>
-        <div class="rank-list" id="muni-rank-list"></div>
-      </div>
+
+  <!-- ランキングと分布 -->
+  <div class="g2">
+    <div class="panel">
+      <h3>🏆 市町村AXISスコア TOP10</h3>
+      <div id="t1-muni-ranking"></div>
     </div>
-    <div>
-      <div class="g2">
-        <div class="panel">
-          <h3>📊 行政区TOP20スコア</h3>
-          <div class="chart-wrap-lg"><canvas id="top20chart"></canvas></div>
-        </div>
-        <div class="panel">
-          <h3>🎯 OKINAWA-AXIS（上位5エリア）</h3>
-          <div class="chart-wrap-lg"><canvas id="axischart"></canvas></div>
-        </div>
-      </div>
-      <div class="g3" style="margin-top:14px">
-        <div class="panel">
-          <h3>🗺️ 地域別分布</h3>
-          <div class="chart-wrap"><canvas id="regionchart"></canvas></div>
-        </div>
-        <div class="panel">
-          <h3>📈 GDP規模TOP10市町村</h3>
-          <div class="chart-wrap"><canvas id="gdpchart"></canvas></div>
-        </div>
-        <div class="panel">
-          <h3>🚗 交通量TOP10行政区</h3>
-          <div class="chart-wrap"><canvas id="trafficchart"></canvas></div>
-        </div>
-      </div>
+    <div class="panel">
+      <h3>📊 地域別 市場規模分布</h3>
+      <div style="position:relative;height:220px"><canvas id="t1-region-chart" role="img" aria-label="地域別GDP分布"></canvas></div>
+    </div>
+  </div>
+
+  <div class="g2" style="margin-top:14px">
+    <div class="panel">
+      <h3>🎯 OKINAWA-AXIS 8次元解説</h3>
+      <div id="t1-axis-legend"></div>
+    </div>
+    <div class="panel">
+      <h3>📈 GDP TOP10 市町村</h3>
+      <div style="position:relative;height:220px"><canvas id="t1-gdp-chart" role="img" aria-label="GDP上位10市町村"></canvas></div>
     </div>
   </div>
 </div>
 
-<!-- TAB 2: コミュニティ構造分析 -->
 <div id="t2" class="tab">
   <div class="sec-head">🏘️ コミュニティ構造分析 — ユイマール係数・地域知識ギャップ指数</div>
   <div class="sec-sub">沖縄生まれ育ちでも自地域を理解していない「知識パラドックス」を数値化。外部認知度 vs 地元活用度の乖離がエリアマーケティングの真の機会を示す。</div>
@@ -1286,14 +1277,17 @@ function renderCalendar(){
 
 // ===================== TAB SWITCH =====================
 function showTab(id){
+  if(id==='t1') setTimeout(initTab1Dynamic,50);
   if(id==='t11') setTimeout(initTab11,50);
   if(id==='t12') setTimeout(initTab12,50);
   if(id==='t13'){ setTimeout(initTab13,50); setTimeout(initGDPConformityAnalysis,200); }
   if(id==='t14') setTimeout(initTab14,50);
+  if(id==='t15') setTimeout(initTab15,50);
+  if(id==='t16') setTimeout(initChecklist,50);
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  const idx = ['t1','t2','t3','t4','t5','t6','t7','t8','t9','t10','t11','t12','t13','t14'].indexOf(id);
+  const idx = ['t1','t2','t3','t4','t5','t6','t7','t8','t9','t10','t11','t12','t13','t14','t15','t16'].indexOf(id);
   document.querySelectorAll('.nav-btn')[idx].classList.add('active');
   if(id==='t8') calcBizScore();
 }
@@ -1856,8 +1850,7 @@ function runDiagnosis(){
     "今帰仁村":78,"本部町":72,"大宜味村":88,"国頭村":85,"東村":90,
     "伊江村":80,"多良間村":95,"渡嘉敷村":88,"座間味村":85,"粟国村":92,
     "渡名喜村":95,"南大東村":88,"北大東村":90,"伊平屋村":92,"伊是名村":90,
-    "久米島町":75,"石垣市":58,"宮古島市":55,"竹富町":80,"与那国町":85,
-    "うるま市":70
+    "久米島町":75,"石垣市":58,"宮古島市":55,"竹富町":80,"与那国町":85
   };
   // 全41市町村 × 基本参入難易度（★1〜5）
   const baseDiffMap = {
@@ -2919,7 +2912,6 @@ const GDP41 = [
 {name:"国頭村",region:"北部",pop:4800,gdp:9200,income:1780,labor:288,growth:-0.5,primary:10.0,secondary:15.0,tertiary:75.0,feature:"やんばる・林業・エコツーリズム"},
 {name:"東村",region:"北部",pop:1720,gdp:3800,income:1750,labor:280,growth:1.2,primary:14.0,secondary:12.0,tertiary:74.0,feature:"農業・パイン・慶佐次湾"},
 {name:"伊江村",region:"北部",pop:4400,gdp:8500,income:1800,labor:292,growth:0.8,primary:18.0,secondary:12.0,tertiary:70.0,feature:"農業・観光・百合"},
-{name:"羽地(今帰仁・本部合算)",region:"北部",pop:0,gdp:0,income:0,labor:0,growth:0,primary:0,secondary:0,tertiary:0,feature:"※参考値"},
 // ─── 離島（宮古・八重山） ───
 {name:"宮古島市",region:"離島",pop:52903,gdp:178543,income:2230,labor:380,growth:12.5,primary:5.5,secondary:12.0,tertiary:82.5,feature:"観光ブーム・リゾート・農業"},
 {name:"石垣市",region:"離島",pop:47618,gdp:166567,income:2089,labor:355,growth:8.8,primary:4.8,secondary:14.5,tertiary:80.7,feature:"観光・農業・離島物流拠点"},
@@ -3209,7 +3201,7 @@ const CONFORMITY_DATA = [
   {name:"石垣市",gdpBand:3,conformity:58,openness:72,entryDiff:3,minCond:3,key:"観光資本は比較的歓迎。地元生活圏への参入は文化理解が必要。"},
   {name:"宮古島市",gdpBand:3,conformity:55,openness:75,entryDiff:2,minCond:2,key:"観光ブームで外部資本受容度↑。ただし地元雇用・食材調達が条件。"},
   {name:"糸満市",gdpBand:2,conformity:72,openness:48,entryDiff:4,minCond:4,key:"漁業・農業コミュニティが強固。水産関連は特に閉鎖的。食文化への敬意が鍵。"},
-  {name:"南城市",gdpBand:2,conformity:80,openness:38,entryDiff:5,minCond:5,key:"斎場御嶽・精神文化の聖域。霊的・文化的権威者との連携なしに参入不可。"},
+  
   {name:"西原町",gdpBand:2,conformity:60,openness:70,entryDiff:3,minCond:3,key:"大学コミュニティが革新触媒。学術・医療系は比較的開放的。"},
   {name:"北谷町",gdpBand:2,conformity:45,openness:85,entryDiff:2,minCond:2,key:"観光・SOFA文化で外部受容度高。英語対応+地元雇用で参入可。"},
   {name:"南風原町",gdpBand:3,conformity:55,openness:68,entryDiff:3,minCond:2,key:"IC商業は資本力主導。住宅地は地元溶け込み型が勝つ。"},
@@ -3410,18 +3402,46 @@ function initGDPConformityAnalysis(){
 // ══════════════════════════════════════════════════════
 
 const YM_AREA_DATA = {
-  "東村":    {conformity:90,baseDiff:5,gdp:3800,capture_ext:0.08},
-  "大宜味村":{conformity:88,baseDiff:5,gdp:5800,capture_ext:0.10},
-  "宜野座村":{conformity:82,baseDiff:5,gdp:8000,capture_ext:0.12},
-  "南城市":  {conformity:80,baseDiff:5,gdp:88375,capture_ext:0.12},
-  "糸満市":  {conformity:72,baseDiff:4,gdp:96536,capture_ext:0.15},
-  "読谷村":  {conformity:68,baseDiff:4,gdp:96500,capture_ext:0.18},
-  "うるま市":{conformity:70,baseDiff:4,gdp:271230,capture_ext:0.15},
-  "名護市":  {conformity:65,baseDiff:3,gdp:123769,capture_ext:0.20},
-  "沖縄市":  {conformity:62,baseDiff:3,gdp:336400,capture_ext:0.22},
-  "宜野湾市":{conformity:55,baseDiff:3,gdp:220904,capture_ext:0.25},
-  "北谷町":  {conformity:45,baseDiff:2,gdp:87431,capture_ext:0.35},
-  "那覇市":  {conformity:42,baseDiff:2,gdp:1393876,capture_ext:0.40},
+  "那覇市":    {conformity:42,baseDiff:2,gdp:1393876,capture_ext:0.40},
+  "浦添市":    {conformity:48,baseDiff:2,gdp:413558, capture_ext:0.30},
+  "宜野湾市":  {conformity:55,baseDiff:3,gdp:220904, capture_ext:0.25},
+  "沖縄市":    {conformity:62,baseDiff:3,gdp:336400, capture_ext:0.22},
+  "豊見城市":  {conformity:52,baseDiff:2,gdp:165902, capture_ext:0.25},
+  "うるま市":  {conformity:70,baseDiff:4,gdp:271230, capture_ext:0.15},
+  "糸満市":    {conformity:72,baseDiff:4,gdp:96536,  capture_ext:0.15},
+  "南城市":    {conformity:80,baseDiff:5,gdp:88375,  capture_ext:0.12},
+  "宜野座村":  {conformity:82,baseDiff:4,gdp:15200,  capture_ext:0.10},
+  "金武町":    {conformity:75,baseDiff:4,gdp:18900,  capture_ext:0.12},
+  "恩納村":    {conformity:52,baseDiff:2,gdp:48799,  capture_ext:0.28},
+  "読谷村":    {conformity:68,baseDiff:4,gdp:62550,  capture_ext:0.18},
+  "嘉手納町":  {conformity:50,baseDiff:2,gdp:39336,  capture_ext:0.22},
+  "北谷町":    {conformity:45,baseDiff:2,gdp:87431,  capture_ext:0.35},
+  "北中城村":  {conformity:68,baseDiff:3,gdp:43836,  capture_ext:0.20},
+  "西原町":    {conformity:60,baseDiff:3,gdp:123769, capture_ext:0.22},
+  "与那原町":  {conformity:62,baseDiff:3,gdp:52000,  capture_ext:0.20},
+  "南風原町":  {conformity:55,baseDiff:3,gdp:96536,  capture_ext:0.25},
+  "八重瀬町":  {conformity:72,baseDiff:4,gdp:42000,  capture_ext:0.14},
+  "名護市":    {conformity:65,baseDiff:3,gdp:123769, capture_ext:0.20},
+  "今帰仁村":  {conformity:78,baseDiff:4,gdp:18500,  capture_ext:0.12},
+  "本部町":    {conformity:72,baseDiff:4,gdp:22000,  capture_ext:0.15},
+  "大宜味村":  {conformity:88,baseDiff:5,gdp:8200,   capture_ext:0.08},
+  "国頭村":    {conformity:85,baseDiff:5,gdp:10500,  capture_ext:0.10},
+  "東村":      {conformity:90,baseDiff:5,gdp:5800,   capture_ext:0.08},
+  "伊江村":    {conformity:80,baseDiff:4,gdp:9200,   capture_ext:0.10},
+  "多良間村":  {conformity:95,baseDiff:5,gdp:3100,   capture_ext:0.06},
+  "渡嘉敷村":  {conformity:88,baseDiff:5,gdp:2800,   capture_ext:0.06},
+  "座間味村":  {conformity:85,baseDiff:5,gdp:3200,   capture_ext:0.07},
+  "粟国村":    {conformity:92,baseDiff:5,gdp:1900,   capture_ext:0.05},
+  "渡名喜村":  {conformity:95,baseDiff:5,gdp:1500,   capture_ext:0.05},
+  "南大東村":  {conformity:88,baseDiff:5,gdp:4200,   capture_ext:0.07},
+  "北大東村":  {conformity:90,baseDiff:5,gdp:2800,   capture_ext:0.06},
+  "伊平屋村":  {conformity:92,baseDiff:5,gdp:2100,   capture_ext:0.05},
+  "伊是名村":  {conformity:90,baseDiff:5,gdp:2400,   capture_ext:0.06},
+  "久米島町":  {conformity:75,baseDiff:4,gdp:18800,  capture_ext:0.12},
+  "石垣市":    {conformity:58,baseDiff:3,gdp:166567, capture_ext:0.25},
+  "宮古島市":  {conformity:55,baseDiff:2,gdp:178543, capture_ext:0.28},
+  "竹富町":    {conformity:80,baseDiff:4,gdp:12500,  capture_ext:0.10},
+  "与那国町":  {conformity:85,baseDiff:4,gdp:6800,   capture_ext:0.10},
 };
 
 const YM_RANK_TABLE = [
@@ -3682,6 +3702,552 @@ function calcYuimaru(){
 }
 
 // showTabにt14初期化追加
+
+// ══════════════════════════════════════════════════════════
+// 改善B: Tab1 動的KPI初期化
+// ══════════════════════════════════════════════════════════
+function initTab1Dynamic() {
+  // KPI計算
+  const munis = Object.keys(STOREDATA||{});
+  const totalMunis = munis.length;
+  let totalPop = 0, totalGDP = 0, topScore = 0, topMuni = '';
+  munis.forEach(m => {
+    const d = STOREDATA[m];
+    if(d && d.pop) totalPop += d.pop;
+  });
+  // GDP41から総GDP
+  if(typeof GDP41 !== 'undefined') {
+    GDP41.forEach(r => { if(r.gdp) totalGDP += r.gdp; });
+  }
+  // 平均スコア計算
+  let scoreSum = 0, scoreCount = 0;
+  munis.forEach(m => {
+    const s = calcAxisScore(m);
+    if(s > topScore){ topScore = s; topMuni = m; }
+    scoreSum += s; scoreCount++;
+  });
+  const avgScore = scoreCount ? (scoreSum/scoreCount).toFixed(1) : '—';
+  const gdpT = totalGDP ? (totalGDP/1000000).toFixed(1) : '—';
+
+  const kpiRow = document.getElementById('t1-kpi-row');
+  if(kpiRow) kpiRow.innerHTML = [
+    {icon:'🏙️', label:'対象市町村', val: totalMunis+'市町村', sub:'全41自治体'},
+    {icon:'👥', label:'総人口', val: (totalPop/10000).toFixed(0)+'万人', sub:'2024年推計'},
+    {icon:'💴', label:'県内総GDP', val: gdpT+'億円', sub:'市町村合算'},
+    {icon:'🏆', label:'最高AXISスコア', val: topScore+'点', sub: topMuni},
+    {icon:'📊', label:'平均AXISスコア', val: avgScore+'点', sub:'全市町村平均'},
+    {icon:'🪖', label:'SOFA市場規模', val: '~2.6万世帯', sub: '在沖米軍家族'},
+  ].map(k=>`<div class="kpi-card"><div class="kpi-icon">${k.icon}</div><div class="kpi-val">${k.val}</div><div class="kpi-label">${k.label}</div><div class="kpi-sub">${k.sub}</div></div>`).join('');
+
+  // SOFA KPI
+  const sofaKpi = document.getElementById('t1-sofa-kpi');
+  if(sofaKpi) sofaKpi.innerHTML = [
+    {icon:'🪖', label:'SOFA総世帯数', val:'~26,000世帯', sub:'基地外居住含む'},
+    {icon:'💰', label:'年間消費総額', val:'~¥520億', sub:'世帯年収¥800万×0.25'},
+    {icon:'🤰', label:'年間出産数', val:'~1,300件/年', sub:'出生率2.1想定'},
+    {icon:'🏆', label:'英語サービスシェア', val:'実質独占', sub:'日系店舗の英語対応率<5%'},
+    {icon:'🔄', label:'PCS顧客更新率', val:'33%/年', sub:'2-3年毎転勤'},
+    {icon:'💬', label:'FRG口コミ増幅率', val:'×3.2倍', sub:'1顧客→3.2紹介'},
+  ].map(k=>`<div class="kpi-card"><div class="kpi-icon">${k.icon}</div><div class="kpi-val">${k.val}</div><div class="kpi-label">${k.label}</div><div class="kpi-sub">${k.sub}</div></div>`).join('');
+
+  // ランキング
+  const rankDiv = document.getElementById('t1-muni-ranking');
+  if(rankDiv) {
+    const ranked = munis.map(m=>({m, s:calcAxisScore(m)})).sort((a,b)=>b.s-a.s).slice(0,10);
+    rankDiv.innerHTML = ranked.map((r,i)=>`
+      <div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid #ffffff11">
+        <span style="width:20px;text-align:center;font-size:11px;color:var(--gold);font-weight:700">${i+1}</span>
+        <div style="flex:1">
+          <span style="font-size:11px;font-weight:700">${r.m}</span>
+        </div>
+        <div style="width:120px;height:8px;background:#ffffff11;border-radius:4px;overflow:hidden">
+          <div style="height:100%;width:${r.s}%;background:linear-gradient(90deg,#10b981,#3b82f6)"></div>
+        </div>
+        <span style="width:35px;text-align:right;font-size:11px;font-weight:700;color:#10b981">${r.s}</span>
+      </div>`).join('');
+  }
+
+  // AXIS凡例
+  const axisLeg = document.getElementById('t1-axis-legend');
+  if(axisLeg) axisLeg.innerHTML = [
+    {k:'C',n:'Community',d:'コミュニティ・ユイマール結束度'},
+    {k:'E',n:'Economy',d:'域内経済循環・市場規模'},
+    {k:'P',n:'Psychology',d:'消費者心理・行動パターン'},
+    {k:'R',n:'Road',d:'道路交通量・アクセス性'},
+    {k:'M',n:'Military',d:'軍属市場・SOFA密度'},
+    {k:'H',n:'History',d:'歴史的文脈・地域感情'},
+    {k:'G',n:'Growth',d:'人口成長・開発ポテンシャル'},
+    {k:'B',n:'Business',d:'業種適合・競合密度'},
+  ].map(a=>`<div style="display:flex;align-items:center;gap:8px;padding:3px 0;border-bottom:1px solid #ffffff11">
+    <span style="width:22px;height:22px;background:var(--accent);border-radius:4px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:10px">${a.k}</span>
+    <div><div style="font-size:11px;font-weight:700">${a.n}</div><div style="font-size:9px;color:var(--text-dim)">${a.d}</div></div>
+  </div>`).join('');
+
+  // GDP Top10チャート
+  const gdpCtx = document.getElementById('t1-gdp-chart');
+  if(gdpCtx && typeof Chart !== 'undefined' && typeof GDP41 !== 'undefined') {
+    const top10 = [...GDP41].sort((a,b)=>b.gdp-a.gdp).slice(0,10);
+    new Chart(gdpCtx, {
+      type:'bar',
+      data:{ labels: top10.map(r=>r.city), datasets:[{
+        label:'GDP(億円)', data: top10.map(r=>+(r.gdp/10000).toFixed(1)),
+        backgroundColor:'rgba(99,102,241,0.7)', borderRadius:4
+      }]},
+      options:{ responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{display:false} },
+        scales:{ x:{ticks:{color:'#aaa',font:{size:9}}}, y:{ticks:{color:'#aaa',font:{size:9}}} } }
+    });
+  }
+
+  // 地域別分布チャート
+  const regCtx = document.getElementById('t1-region-chart');
+  if(regCtx && typeof Chart !== 'undefined') {
+    const regions = {'南部圏':['那覇市','浦添市','豊見城市','糸満市','南城市','南風原町','与那原町','八重瀬町'],
+      '中部圏':['宜野湾市','沖縄市','うるま市','北谷町','嘉手納町','読谷村','北中城村','西原町','中城村'],
+      '北部圏':['名護市','今帰仁村','本部町','大宜味村','国頭村','東村','宜野座村','金武町','恩納村','伊江村'],
+      '離島圏':['石垣市','宮古島市','竹富町','与那国町','久米島町','多良間村','座間味村','渡嘉敷村','粟国村','渡名喜村','南大東村','北大東村','伊平屋村','伊是名村']};
+    const gdpMap = {};
+    if(typeof GDP41 !== 'undefined') GDP41.forEach(r=>{ gdpMap[r.city] = r.gdp||0; });
+    const regGDP = Object.entries(regions).map(([name,ms])=>({name, gdp:ms.reduce((s,m)=>s+(gdpMap[m]||0),0)}));
+    new Chart(regCtx, {
+      type:'doughnut',
+      data:{ labels: regGDP.map(r=>r.name), datasets:[{
+        data: regGDP.map(r=>+(r.gdp/10000).toFixed(0)),
+        backgroundColor:['#6366f1','#10b981','#f59e0b','#ef4444']
+      }]},
+      options:{ responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{position:'bottom', labels:{color:'#aaa',font:{size:9}}} } }
+    });
+  }
+}
+
+// calcAxisScoreがなければフォールバック
+function calcAxisScore(muni) {
+  const d = STOREDATA && STOREDATA[muni];
+  if(!d) return 50;
+  const c = d.competition||5, a = d.access||5, g = d.growth||5, l = d.land||5, div = d.diversity||5;
+  return Math.round(((10-c)*0.2 + a*0.2 + g*0.2 + l*0.2 + div*0.2)*10);
+}
+
+// ══════════════════════════════════════════════════════════
+// 改善A: Tab15 SOFA軍属マーケット専用タブ JS
+// ══════════════════════════════════════════════════════════
+const SOFA_BASE_DATA = [
+  {base:'嘉手納基地',city:'嘉手納町/沖縄市/北谷町',sofa_households:8200,military:19000,monthly_spend:180000,english_demand:'最高',notes:'空軍・最大基地'},
+  {base:'普天間基地',city:'宜野湾市',sofa_households:4100,military:9000,monthly_spend:165000,english_demand:'高',notes:'海兵隊・移転計画中'},
+  {base:'那覇軍港',city:'那覇市',sofa_households:1200,military:2800,monthly_spend:190000,english_demand:'高',notes:'海軍・那覇港隣接'},
+  {base:'キャンプ・フォスター',city:'北中城村/宜野湾市',sofa_households:3800,military:8500,monthly_spend:160000,english_demand:'最高',notes:'海兵隊本部・家族多'},
+  {base:'キャンプ・コートニー',city:'うるま市',sofa_households:2600,military:5800,monthly_spend:155000,english_demand:'高',notes:'海兵隊・中部'},
+  {base:'キャンプ・シールズ',city:'沖縄市',sofa_households:800,military:1800,monthly_spend:148000,english_demand:'中',notes:'陸軍・小規模'},
+  {base:'トリイ通信施設',city:'読谷村',sofa_households:600,military:1200,monthly_spend:152000,english_demand:'中',notes:'陸軍・特殊部隊'},
+];
+
+const PCS_CALENDAR = [
+  {month:'1月',pcs_rate:8,demand:'低',action:'既存顧客ケア・口コミ強化期間',color:'#3b82f6'},
+  {month:'2月',pcs_rate:10,demand:'中低',action:'次シーズン向けSNS広告準備',color:'#3b82f6'},
+  {month:'3月',pcs_rate:18,demand:'最高',action:'PCS到着ウェルカムパッケージ配布・FRG登録促進',color:'#ef4444'},
+  {month:'4月',pcs_rate:15,demand:'高',action:'新規家族向けオリエンテーション参加・体験クラス無料提供',color:'#f59e0b'},
+  {month:'5月',pcs_rate:12,demand:'高',action:'マタニティサービス認知拡大・英語ブログSEO',color:'#f59e0b'},
+  {month:'6月',pcs_rate:22,demand:'最高',action:'夏PCS最大波・基地FRG掲示板広告・口コミキャンペーン',color:'#ef4444'},
+  {month:'7月',pcs_rate:18,demand:'高',action:'新規家族オンボーディング・プログラム案内英語DM',color:'#f59e0b'},
+  {month:'8月',pcs_rate:14,demand:'中高',action:'秋以降継続利用促進・紹介割引プログラム',color:'#10b981'},
+  {month:'9月',pcs_rate:10,demand:'中',action:'秋クラス募集・PCS退去家族への感謝イベント',color:'#10b981'},
+  {month:'10月',pcs_rate:8,demand:'中低',action:'年末向けギフト企画・英語ニュースレター',color:'#3b82f6'},
+  {month:'11月',pcs_rate:6,demand:'低',action:'感謝祭・Holiday割引・FRGコミュニティイベント協賛',color:'#3b82f6'},
+  {month:'12月',pcs_rate:5,demand:'最低',action:'年末挨拶・翌年3月PCS波に向けた準備開始',color:'#6366f1'},
+];
+
+const ENGLISH_GAP_DATA = [
+  {industry:'産後ケア・マタニティ',gap_score:98,competition:'ゼロ',market:'¥22億/年',opportunity:'最高：英語対応0件'},
+  {industry:'ベビーシッター',gap_score:95,competition:'外国人個人のみ',market:'¥8億/年',opportunity:'最高：日系業者の英語率<2%'},
+  {industry:'小児歯科',gap_score:85,competition:'英語可1〜2院',market:'¥4億/年',opportunity:'高：紹介依存が強い'},
+  {industry:'ヨガ・フィットネス',gap_score:75,competition:'英語クラスあり',market:'¥6億/年',opportunity:'高：軍属特化なし'},
+  {industry:'英語学習',gap_score:20,competition:'多数',market:'¥3億/年',opportunity:'低：飽和市場'},
+  {industry:'飲食・カフェ',gap_score:40,competition:'英語メニューあり',market:'¥15億/年',opportunity:'中：差別化余地あり'},
+];
+
+const CONSUMER_PROFILE = [
+  {num:'①',title:'高品質・高価格受容',detail:'米軍給与は基本給＋各種手当で世帯年収¥800〜1,200万。価格よりも「英語で安心」を優先。日本人の3〜5倍の単価でも購入する。'},
+  {num:'②',title:'FRGネットワーク依存',detail:'Family Readiness Group（軍家族会）が最大の情報源。FRGでの「口コミ」は購買確率×8倍。負の口コミも同速度で伝播する諸刃の剣。'},
+  {num:'③',title:'PCS転勤による強制更新',detail:'2〜3年ごとの転勤（PCS）で顧客が100%入れ替わる。これはチャーン（離脱）ではなく「自動補充」。新規獲得を永続的に続ける必要がある。'},
+  {num:'④',title:'医療・健康への高関心',detail:'保険適用範囲外サービスでも積極投資。マタニティ・メンタルヘルス・子供の発達サポートには特に高い支出意欲。'},
+  {num:'⑤',title:'英語環境への強い需要',detail:'日本語不可の家族が多数。英語で「全て解決してくれる」ワンストップサービスへの依存度が非常に高い。'},
+  {num:'⑥',title:'Base外生活圏の拡大',detail:'住宅手当（OHA）増加により基地外居住が増加。嘉手納・北谷・沖縄市・宜野湾が主要居住圏。地元消費が活発化。'},
+  {num:'⑦',title:'帰国前の「駆け込み消費」',detail:'帰国前6ヶ月は「沖縄の思い出」を積極的に消費する傾向。体験・記念品・写真等のサービス需要が急増。'},
+];
+
+const SOFA_AREA_SCORES = [
+  {area:'北谷町',sofa_density:9.2,fto_score:79,english_access:9.5,pcs_wave:8.8,notes:'キャンプ・フォスター至近・最高密度'},
+  {area:'沖縄市',sofa_density:8.8,fto_score:83,english_access:8.5,pcs_wave:8.5,notes:'FTO現拠点・嘉手納至近'},
+  {area:'宜野湾市',sofa_density:8.1,fto_score:72,english_access:8.0,pcs_wave:7.8,notes:'普天間隣接・移転後変化注意'},
+  {area:'嘉手納町',sofa_density:8.5,fto_score:72,english_access:8.8,pcs_wave:8.2,notes:'嘉手納基地正門前・商圏小さい'},
+  {area:'うるま市',sofa_density:6.5,fto_score:58,english_access:6.5,pcs_wave:7.0,notes:'コートニー周辺・アクセスやや不便'},
+  {area:'読谷村',sofa_density:5.2,fto_score:52,english_access:5.8,pcs_wave:5.5,notes:'トリイ施設・小規模'},
+];
+
+function initTab15() {
+  // 基地データテーブル
+  const baseDiv = document.getElementById('t15-base-table');
+  if(baseDiv) {
+    const totalH = SOFA_BASE_DATA.reduce((s,r)=>s+r.sofa_households,0);
+    baseDiv.innerHTML = `<table style="width:100%;border-collapse:collapse;font-size:10px">
+      <thead><tr style="background:#ffffff11">
+        <th style="padding:5px 4px;text-align:left;color:var(--gold)">基地名</th>
+        <th style="padding:5px 4px;text-align:right;color:var(--gold)">SOFA世帯</th>
+        <th style="padding:5px 4px;text-align:right;color:var(--gold)">月消費額</th>
+        <th style="padding:5px 4px;text-align:center;color:var(--gold)">英語需要</th>
+      </tr></thead>
+      <tbody>
+        ${SOFA_BASE_DATA.map(r=>`<tr style="border-bottom:1px solid #ffffff11">
+          <td style="padding:4px"><div style="font-weight:700">${r.base}</div><div style="color:var(--text-dim);font-size:9px">${r.city}</div></td>
+          <td style="padding:4px;text-align:right;font-weight:700;color:#10b981">${r.sofa_households.toLocaleString()}</td>
+          <td style="padding:4px;text-align:right">¥${(r.monthly_spend/10000).toFixed(0)}万</td>
+          <td style="padding:4px;text-align:center"><span style="background:${r.english_demand==='最高'?'#ef4444':r.english_demand==='高'?'#f59e0b':'#3b82f6'}22;color:${r.english_demand==='最高'?'#ef4444':r.english_demand==='高'?'#f59e0b':'#60a5fa'};padding:2px 6px;border-radius:4px;font-size:9px">${r.english_demand}</span></td>
+        </tr>`).join('')}
+        <tr style="background:#ffffff11;font-weight:700">
+          <td style="padding:5px">合計</td>
+          <td style="padding:5px;text-align:right;color:#10b981">${totalH.toLocaleString()}</td>
+          <td colspan="2" style="padding:5px;text-align:right;font-size:9px;color:var(--text-dim)">推計年間消費~¥520億</td>
+        </tr>
+      </tbody>
+    </table>`;
+  }
+
+  // PCSカレンダー
+  const calDiv = document.getElementById('t15-pcs-calendar');
+  if(calDiv) {
+    calDiv.innerHTML = PCS_CALENDAR.map(m=>`
+      <div style="display:flex;align-items:center;gap:8px;padding:3px 0;border-bottom:1px solid #ffffff11">
+        <span style="width:28px;font-size:10px;font-weight:700;color:${m.color}">${m.month}</span>
+        <div style="width:60px;height:8px;background:#ffffff11;border-radius:4px;overflow:hidden">
+          <div style="height:100%;width:${m.pcs_rate*4}%;background:${m.color};border-radius:4px"></div>
+        </div>
+        <span style="width:25px;font-size:9px;color:${m.color}">${m.pcs_rate}%</span>
+        <span style="flex:1;font-size:9px;color:var(--text-dim)">${m.action}</span>
+      </div>`).join('');
+  }
+
+  // 英語対応ギャップ
+  const engDiv = document.getElementById('t15-english-gap');
+  if(engDiv) {
+    engDiv.innerHTML = ENGLISH_GAP_DATA.map(r=>`
+      <div style="padding:5px 0;border-bottom:1px solid #ffffff11">
+        <div style="display:flex;justify-content:space-between;margin-bottom:3px">
+          <span style="font-size:11px;font-weight:700">${r.industry}</span>
+          <span style="font-size:10px;color:var(--gold);font-weight:700">${r.market}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px">
+          <div style="flex:1;height:8px;background:#ffffff11;border-radius:4px;overflow:hidden">
+            <div style="height:100%;width:${r.gap_score}%;background:linear-gradient(90deg,#ef4444,#f59e0b);border-radius:4px"></div>
+          </div>
+          <span style="font-size:10px;font-weight:700;color:#ef4444">${r.gap_score}</span>
+        </div>
+        <div style="font-size:9px;color:var(--text-dim)">${r.opportunity} | 競合: ${r.competition}</div>
+      </div>`).join('');
+  }
+
+  // FRG口コミモデル
+  const frgDiv = document.getElementById('t15-frg-model');
+  if(frgDiv) {
+    frgDiv.innerHTML = `
+      <div style="background:#10b98122;border:1px solid #10b98144;border-radius:8px;padding:10px;margin-bottom:10px">
+        <div style="font-size:13px;font-weight:800;color:#10b981;margin-bottom:4px">FRG口コミ増幅係数: ×3.2倍</div>
+        <div style="font-size:10px;color:var(--text-dim)">1人の顧客が平均3.2人の新顧客を紹介する（軍コミュニティFRG調査値）</div>
+      </div>
+      ${[
+        {stage:'初回接触', cost:'¥12,000', channel:'SNS広告/FRG掲示板', conv:'8%→予約'},
+        {stage:'1回利用', cost:'¥0（既存）', channel:'サービス体験→FRG口コミ', conv:'62%→継続'},
+        {stage:'口コミ紹介', cost:'¥0', channel:'FRG WhatsApp/Facebook', conv:'45%→新規予約'},
+        {stage:'口コミ2次', cost:'¥0', channel:'紹介の紹介', conv:'35%→新規予約'},
+      ].map(s=>`<div style="padding:5px 0;border-bottom:1px solid #ffffff11">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span style="font-size:11px;font-weight:700">${s.stage}</span>
+          <span style="font-size:10px;color:var(--gold)">${s.cost}</span>
+        </div>
+        <div style="font-size:9px;color:var(--text-dim)">${s.channel} — 転換率 ${s.conv}</div>
+      </div>`).join('')}
+      <div style="margin-top:8px;padding:8px;background:#f59e0b11;border-radius:6px;font-size:10px">
+        <strong style="color:#f59e0b">⚠️ 注意:</strong> FRGでの<strong>負の評判</strong>も同速度（×3.2）で伝播。
+        品質・英語対応・スタッフ態度は基地全体に24時間以内に伝わる。
+      </div>`;
+  }
+
+  // 消費者プロファイル
+  const profDiv = document.getElementById('t15-consumer-profile');
+  if(profDiv) {
+    profDiv.innerHTML = `<div class="g2">${CONSUMER_PROFILE.map(p=>`
+      <div style="background:#ffffff08;border:1px solid #ffffff15;border-radius:8px;padding:10px">
+        <div style="font-size:12px;font-weight:800;margin-bottom:5px">${p.num} ${p.title}</div>
+        <div style="font-size:10px;color:var(--text-dim);line-height:1.6">${p.detail}</div>
+      </div>`).join('')}</div>`;
+  }
+
+  // エリア別SOFAスコア
+  const areaDiv = document.getElementById('t15-area-sofa');
+  if(areaDiv) {
+    const best = SOFA_AREA_SCORES.reduce((a,b)=>b.fto_score>a.fto_score?b:a,SOFA_AREA_SCORES[0]);
+    areaDiv.innerHTML = `
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+        ${SOFA_AREA_SCORES.map(a=>`
+          <div style="flex:1;min-width:150px;background:${a.area===best.area?'linear-gradient(135deg,#6366f133,#10b98133)':'#ffffff08'};
+            border:${a.area===best.area?'2px solid #10b981':'1px solid #ffffff15'};border-radius:8px;padding:10px">
+            <div style="display:flex;justify-content:space-between;margin-bottom:5px">
+              <span style="font-size:12px;font-weight:800">${a.area}</span>
+              <span style="font-size:14px;font-weight:900;color:${a.fto_score>=80?'#10b981':a.fto_score>=70?'#f59e0b':'#ef4444'}">${a.fto_score}</span>
+            </div>
+            <div style="font-size:9px;margin-bottom:5px">
+              SOFA密度 ${['','','','','','','','','','●'].slice(0,Math.round(a.sofa_density)).join('')}${a.sofa_density}
+            </div>
+            <div style="font-size:9px;color:var(--text-dim)">${a.notes}</div>
+          </div>`).join('')}
+      </div>
+      <div style="background:#6366f111;border:1px solid #6366f133;border-radius:8px;padding:10px;font-size:10px">
+        <strong>💡 FTO戦略的含意:</strong> 沖縄市（現拠点・83点）＋北谷町（2拠点目候補・79点）の組み合わせが
+        SOFA市場カバレッジを最大化。2拠点合計でSOFA全世帯の<strong>約72%</strong>を30分圏内でカバー。
+      </div>`;
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+// 改善C: エリア診断 シェア機能
+// ══════════════════════════════════════════════════════════
+function shareDiagResult() {
+  const muni = document.getElementById('d-muni')?.value || '未選択';
+  const biz = document.getElementById('d-biz')?.value || '未入力';
+  const score = document.getElementById('diag-total-score')?.textContent || '—';
+  const summary = document.getElementById('integrated-summary')?.innerText || '';
+  const strategy = document.getElementById('strategy-list')?.innerText || '';
+  const ymScore = document.getElementById('ym-diag-score-panel')?.innerText || '';
+  const text = `【OKINAWA-AXIS エリア診断結果】
+エリア: ${muni}
+業種: ${biz}
+総合スコア: ${score}
+
+【統合サマリー】
+${summary}
+
+【ユイマール係数】
+${ymScore}
+
+【マーケティング戦略提言】
+${strategy}
+
+--- 生成: 沖縄エリアマーケティングダッシュボード v2.9 ---`;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn = event.target;
+    btn.textContent='✓ コピーしました！';
+    setTimeout(()=>{ btn.textContent='📋 診断結果をコピー（テキスト）'; },2000);
+  }).catch(()=>{ alert('コピーに失敗しました。テキストを選択して手動でコピーしてください。'); });
+}
+
+function printDiagResult() {
+  window.print();
+}
+
+function downloadDiagCard() {
+  const muni = document.getElementById('d-muni')?.value || '未選択';
+  const biz = document.getElementById('d-biz')?.value || '未入力';
+  const score = document.getElementById('diag-total-score')?.textContent || '—';
+  const summary = document.getElementById('integrated-summary')?.innerHTML || '<p>診断を実行してください</p>';
+  const strategy = document.getElementById('strategy-list')?.innerHTML || '';
+  const date = new Date().toLocaleDateString('ja-JP');
+  const card = `<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8">
+<title>エリア診断レポート - ${muni}</title>
+<style>body{font-family:'Hiragino Sans',sans-serif;background:#0f1117;color:#e2e8f0;margin:0;padding:20px}
+.card{max-width:800px;margin:0 auto;background:#1a1f2e;border-radius:12px;padding:24px;border:1px solid #6366f133}
+.header{background:linear-gradient(135deg,#6366f1,#10b981);padding:16px;border-radius:8px;margin-bottom:20px}
+h1{margin:0;font-size:20px;color:#fff} .sub{color:#ffffffcc;font-size:12px;margin-top:4px}
+.score{font-size:48px;font-weight:900;color:#10b981;text-align:center;padding:16px}
+.section{margin:16px 0;padding:12px;background:#ffffff08;border-radius:8px}
+.section h3{margin:0 0 8px;font-size:13px;color:#a78bfa}
+.footer{text-align:center;font-size:10px;color:#666;margin-top:20px}
+</style></head><body>
+<div class="card">
+  <div class="header"><h1>🏙️ ${muni} エリア診断レポート</h1>
+    <div class="sub">業種: ${biz} ｜ 生成日: ${date}</div></div>
+  <div class="score">${score}点</div>
+  <div class="section"><h3>📊 統合サマリー</h3>${summary}</div>
+  <div class="section"><h3>📋 マーケティング戦略提言</h3>${strategy}</div>
+  <div class="footer">沖縄エリアマーケティングダッシュボード v2.9 — 合同会社koya</div>
+</div>
+<div id="t16" class="tab">
+  <div class="sec-head">✅ 業種別 市場参入突破条件チェックリスト</div>
+  <div class="sec-sub">業種×エリアを選択すると、参入前に満たすべき条件一覧が表示されます。チェックを入れながら進捗を管理してください。</div>
+
+  <div class="g2" style="margin-bottom:16px">
+    <div class="panel" style="padding:12px">
+      <label style="font-size:11px;font-weight:700;color:var(--gold);display:block;margin-bottom:5px">業種</label>
+      <select id="cl-biz-select" style="width:100%;background:#1e2533;color:#e2e8f0;border:1px solid #ffffff22;border-radius:6px;padding:7px 10px;font-size:11px"></select>
+    </div>
+    <div class="panel" style="padding:12px">
+      <label style="font-size:11px;font-weight:700;color:var(--gold);display:block;margin-bottom:5px">対象エリア（任意）</label>
+      <select id="cl-area-select" style="width:100%;background:#1e2533;color:#e2e8f0;border:1px solid #ffffff22;border-radius:6px;padding:7px 10px;font-size:11px"></select>
+    </div>
+  </div>
+
+  <!-- 進捗バー -->
+  <div class="panel" style="margin-bottom:14px" id="cl-progress"></div>
+
+  <!-- チェックリスト本体 -->
+  <div class="panel" id="cl-board">
+    <div style="color:var(--text-dim);text-align:center;padding:20px">業種を選択してください</div>
+  </div>
+</div>
+
+</body></html>`;
+  const blob = new Blob([card],{type:'text/html;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `FTO_エリア診断_${muni}_${date.replace(/\//g,'-')}.html`;
+  a.click(); URL.revokeObjectURL(url);
+}
+
+// ══════════════════════════════════════════════════════════
+// 改善D: 業種別突破条件チェックリスト
+// ══════════════════════════════════════════════════════════
+const CHECKLIST_DATA = {
+  "産後ケア・マタニティ": {
+    conditions: [
+      {id:'mc01',phase:'市場準備',item:'英語ウェブサイト・予約システム構築',weight:10,detail:'米軍家族はGoogle英語検索で探す。英語ページがなければ存在しないも同然'},
+      {id:'mc02',phase:'市場準備',item:'TRICARE保険対応・コード確認',weight:8,detail:'保険対象サービスは採用率2.3倍。事前にTRICAREコード取得推奨'},
+      {id:'mc03',phase:'コミュニティ',item:'FRG（家族支援グループ）への登録・連絡',weight:9,detail:'各基地のFRG担当者と関係構築。掲示板へのチラシ掲示許可取得'},
+      {id:'mc04',phase:'コミュニティ',item:'基地内Community Center訪問・紹介依頼',weight:8,detail:'Chapel、Medical facility、Community Centerに英語チラシ設置'},
+      {id:'mc05',phase:'スタッフ',item:'英語対応スタッフ確保（最低1名常駐）',weight:10,detail:'英語ネイティブまたは高い英会話力を持つスタッフが必須'},
+      {id:'mc06',phase:'スタッフ',item:'産後ケア国際資格（IBCLC等）取得検討',weight:6,detail:'資格証明は米軍家族の信頼獲得に直結'},
+      {id:'mc07',phase:'立地',item:'主要基地から30分圏内の立地確認',weight:9,detail:'嘉手納・フォスター・普天間へのアクセス性確認'},
+      {id:'mc08',phase:'マーケ',item:'Instagram英語アカウント開設・投稿開始',weight:7,detail:'軍家族はInstagramで情報収集。ハッシュタグ#OkinawaMilitary活用'},
+      {id:'mc09',phase:'マーケ',item:'PCSシーズン（3月・6月）向けキャンペーン設計',weight:7,detail:'転入時期に集中的に認知拡大することが最重要'},
+      {id:'mc10',phase:'オペレーション',item:'24時間前キャンセル対応ポリシー策定',weight:5,detail:'突然の任務変更・演習出動でキャンセルが発生する。対応ポリシー明示が信頼に繋がる'},
+    ]
+  },
+  "ベビーシッター": {
+    conditions: [
+      {id:'bs01',phase:'資格・法務',item:'認定ベビーシッター資格取得',weight:10,detail:'日本の認定証明は米軍家族にとって安心材料'},
+      {id:'bs02',phase:'資格・法務',item:'英語の身元保証書・保険証明書準備',weight:9,detail:'軍家族は書類確認を徹底する。英語書類必須'},
+      {id:'bs03',phase:'スタッフ',item:'英語堪能スタッフ全員の英語面接実施',weight:10,detail:'子供と直接話す仕事。英語力が最重要要件'},
+      {id:'bs04',phase:'スタッフ',item:'CPR・救急資格取得（英語証明書付き）',weight:8,detail:'米国の安全基準を満たす証明として必須'},
+      {id:'bs05',phase:'コミュニティ',item:'基地FRG・Facebook グループ参加',weight:9,detail:'"Okinawa Military Spouses"等のFacebookグループで認知獲得'},
+      {id:'bs06',phase:'サービス',item:'深夜・早朝対応プラン設定',weight:7,detail:'演習・夜間任務中の家族ケア需要が高い'},
+      {id:'bs07',phase:'マーケ',item:'口コミ紹介インセンティブプログラム設計',weight:8,detail:'FRGネットワーク活用の紹介割引で顧客獲得コストをゼロに近づける'},
+    ]
+  },
+  "飲食・カフェ": {
+    conditions: [
+      {id:'fc01',phase:'立地',item:'基地ゲート1km圏内または主要幹線沿い',weight:9,detail:'軍家族の行動圏はゲート周辺に集中'},
+      {id:'fc02',phase:'メニュー',item:'英語メニュー・注文システム完備',weight:10,detail:'英語でのコミュニケーションが完結すること'},
+      {id:'fc03',phase:'メニュー',item:'アメリカン・メキシカン・バーガー系メニュー追加',weight:7,detail:'味の好みはアメリカンが多い。日本食一辺倒は避ける'},
+      {id:'fc04',phase:'マーケ',item:'Yelp・Google Business英語登録',weight:8,detail:'軍家族はYelpとGoogle Mapsで検索する'},
+      {id:'fc05',phase:'マーケ',item:'クレジットカード・電子決済全対応',weight:8,detail:'現金のみは致命的。VISA/Master/ApplePay全対応'},
+      {id:'fc06',phase:'オペレーション',item:'Wifiパスワード掲示・充電スポット設置',weight:6,detail:'長居しやすい環境がリピート率を上げる'},
+      {id:'fc07',phase:'コミュニティ',item:'Trivia Night・Sports View イベント開催',weight:7,detail:'コミュニティ形成イベントでFRG口コミ起点を作る'},
+    ]
+  },
+  "ヨガ・フィットネス": {
+    conditions: [
+      {id:'yg01',phase:'クラス',item:'英語クラス設置（週3回以上）',weight:10,detail:'英語クラスがないとSOFA家族は参加できない'},
+      {id:'yg02',phase:'クラス',item:'朝6:00〜7:00のクラス設置',weight:8,detail:'BDU（勤務着）前の早朝クラス需要が高い'},
+      {id:'yg03',phase:'資格',item:'YTT200（英語）または米国認定資格',weight:7,detail:'資格の国際認知が軍家族の信頼を高める'},
+      {id:'yg04',phase:'マーケ',item:'Instagramリール投稿（英語キャプション）週2回以上',weight:8,detail:'視覚的なSNSマーケティングが軍家族への主要接触点'},
+      {id:'yg05',phase:'コミュニティ',item:'基地内ウェルネスフェア参加・デモクラス提供',weight:9,detail:'無料体験が最も効果的な獲得手段'},
+      {id:'yg06',phase:'料金',item:'月額制・回数券制 両プラン設定',weight:7,detail:'PCS前後の転入出に対応する柔軟な料金体系'},
+    ]
+  }
+};
+
+let checklistState = {};
+
+function initChecklist() {
+  const bizSel = document.getElementById('cl-biz-select');
+  const areaSel = document.getElementById('cl-area-select');
+  const board = document.getElementById('cl-board');
+  const progress = document.getElementById('cl-progress');
+
+  if(!bizSel || !areaSel || !board) return;
+
+  bizSel.innerHTML = '<option value="">業種を選択してください</option>' +
+    Object.keys(CHECKLIST_DATA).map(b=>`<option value="${b}">${b}</option>`).join('');
+  areaSel.innerHTML = '<option value="">エリアを選択してください</option>' +
+    ['那覇市','浦添市','宜野湾市','沖縄市','北谷町','嘉手納町','北中城村','うるま市','名護市','読谷村'].map(a=>`<option value="${a}">${a}</option>`).join('');
+
+  function renderChecklist() {
+    const biz = bizSel.value;
+    const area = areaSel.value;
+    if(!biz) { board.innerHTML = '<div style="color:var(--text-dim);text-align:center;padding:20px">業種を選択してください</div>'; return; }
+
+    const data = CHECKLIST_DATA[biz];
+    if(!data) return;
+
+    const stateKey = `${biz}_${area||'all'}`;
+    if(!checklistState[stateKey]) checklistState[stateKey] = {};
+    const state = checklistState[stateKey];
+
+    // フェーズ別グループ化
+    const phases = {};
+    data.conditions.forEach(c => {
+      if(!phases[c.phase]) phases[c.phase] = [];
+      phases[c.phase].push(c);
+    });
+
+    const totalWeight = data.conditions.reduce((s,c)=>s+c.weight,0);
+    const doneWeight = data.conditions.filter(c=>state[c.id]).reduce((s,c)=>s+c.weight,0);
+    const pct = Math.round(doneWeight/totalWeight*100);
+
+    if(progress) {
+      const color = pct>=80?'#10b981':pct>=50?'#f59e0b':'#ef4444';
+      progress.innerHTML = `<div style="margin-bottom:8px;display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:12px;font-weight:700">突破進捗度</span>
+        <span style="font-size:20px;font-weight:900;color:${color}">${pct}%</span>
+      </div>
+      <div style="height:12px;background:#ffffff11;border-radius:6px;overflow:hidden">
+        <div style="height:100%;width:${pct}%;background:linear-gradient(90deg,${color},${color}88);border-radius:6px;transition:width 0.3s"></div>
+      </div>
+      <div style="font-size:10px;color:var(--text-dim);margin-top:4px">
+        ${pct>=80?'🎯 参入条件ほぼ整備完了！':pct>=50?'⚡ 主要条件の半分以上達成。残り項目を加速。':'🔴 重要項目が未達。参入前に優先対応が必要。'}
+      </div>`;
+    }
+
+    board.innerHTML = Object.entries(phases).map(([phaseName, items])=>`
+      <div style="margin-bottom:14px">
+        <div style="font-size:11px;font-weight:800;color:var(--accent);margin-bottom:6px;padding:3px 8px;background:var(--accent)22;border-radius:4px;display:inline-block">
+          📌 ${phaseName}
+        </div>
+        ${items.map(c=>`
+          <div onclick="toggleCheck('${stateKey}','${c.id}','${biz}','${area||''}')" style="cursor:pointer;display:flex;align-items:flex-start;gap:10px;padding:8px;
+            background:${state[c.id]?'#10b98111':'#ffffff08'};border:1px solid ${state[c.id]?'#10b98133':'#ffffff15'};
+            border-radius:8px;margin-bottom:5px;transition:all 0.2s">
+            <div style="width:20px;height:20px;border-radius:50%;background:${state[c.id]?'#10b981':'#ffffff22'};
+              border:2px solid ${state[c.id]?'#10b981':'#ffffff44'};display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">
+              ${state[c.id]?'<span style="color:#fff;font-size:12px">✓</span>':''}
+            </div>
+            <div style="flex:1">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px">
+                <span style="font-size:11px;font-weight:700;${state[c.id]?'text-decoration:line-through;color:var(--text-dim)':''}">${c.item}</span>
+                <span style="font-size:9px;background:#f59e0b22;color:#f59e0b;padding:1px 5px;border-radius:4px;flex-shrink:0">重要度${c.weight}</span>
+              </div>
+              <div style="font-size:9px;color:var(--text-dim)">${c.detail}</div>
+            </div>
+          </div>`).join('')}
+      </div>`).join('');
+  }
+
+  bizSel.addEventListener('change', renderChecklist);
+  areaSel.addEventListener('change', renderChecklist);
+  renderChecklist();
+}
+
+function toggleCheck(stateKey, id, biz, area) {
+  if(!checklistState[stateKey]) checklistState[stateKey] = {};
+  checklistState[stateKey][id] = !checklistState[stateKey][id];
+  // 再レンダリング
+  const bizSel = document.getElementById('cl-biz-select');
+  const areaSel = document.getElementById('cl-area-select');
+  const board = document.getElementById('cl-board');
+  const progress = document.getElementById('cl-progress');
+  if(bizSel) bizSel.value = biz;
+  if(areaSel && area) areaSel.value = area;
+  // initChecklist内の関数を直接呼ぶためにイベント発火
+  bizSel && bizSel.dispatchEvent(new Event('change'));
+}
 </script>
 
 <!-- TAB 10: エリア診断ツール -->
@@ -3695,34 +4261,73 @@ function calcYuimaru(){
     <div class="form-grid">
       <div class="form-group">
         <label>① 市町村を選択</label>
-        <select id="d-muni" onchange="updateDistricts()">
-          <option value="">-- 市町村を選択 --</option>
-          <option value="那覇市">那覇市</option>
-          <option value="浦添市">浦添市</option>
-          <option value="宜野湾市">宜野湾市</option>
-          <option value="沖縄市">沖縄市</option>
-          <option value="北谷町">北谷町</option>
-          <option value="北中城村">北中城村</option>
-          <option value="西原町">西原町</option>
-          <option value="うるま市">うるま市</option>
-          <option value="嘉手納町">嘉手納町</option>
-          <option value="読谷村">読谷村</option>
-          <option value="名護市">名護市</option>
-          <option value="恩納村">恩納村</option>
-          <option value="豊見城市">豊見城市</option>
-          <option value="南風原町">南風原町</option>
-          <option value="糸満市">糸満市</option>
-          <option value="南城市">南城市</option>
-          <option value="宮古島市">宮古島市</option>
-          <option value="石垣市">石垣市</option>
-          <option value="金武町">金武町</option>
-          <option value="うるま市（具志川）">うるま市（具志川）</option>
-        </select>
+        <select id="d-muni" onchange="updateDistricts()"><option value="">-- 市町村を選択 --</option>
+            <option value="那覇市">那覇市</option>
+            <option value="浦添市">浦添市</option>
+            <option value="宜野湾市">宜野湾市</option>
+            <option value="沖縄市">沖縄市</option>
+            <option value="豊見城市">豊見城市</option>
+            <option value="うるま市">うるま市</option>
+            <option value="糸満市">糸満市</option>
+            <option value="南城市">南城市</option>
+            <option value="宜野座村">宜野座村</option>
+            <option value="金武町">金武町</option>
+            <option value="恩納村">恩納村</option>
+            <option value="読谷村">読谷村</option>
+            <option value="嘉手納町">嘉手納町</option>
+            <option value="北谷町">北谷町</option>
+            <option value="北中城村">北中城村</option>
+            <option value="西原町">西原町</option>
+            <option value="与那原町">与那原町</option>
+            <option value="南風原町">南風原町</option>
+            <option value="八重瀬町">八重瀬町</option>
+            <option value="名護市">名護市</option>
+            <option value="今帰仁村">今帰仁村</option>
+            <option value="本部町">本部町</option>
+            <option value="大宜味村">大宜味村</option>
+            <option value="国頭村">国頭村</option>
+            <option value="東村">東村</option>
+            <option value="伊江村">伊江村</option>
+            <option value="多良間村">多良間村</option>
+            <option value="渡嘉敷村">渡嘉敷村</option>
+            <option value="座間味村">座間味村</option>
+            <option value="粟国村">粟国村</option>
+            <option value="渡名喜村">渡名喜村</option>
+            <option value="南大東村">南大東村</option>
+            <option value="北大東村">北大東村</option>
+            <option value="伊平屋村">伊平屋村</option>
+            <option value="伊是名村">伊是名村</option>
+            <option value="久米島町">久米島町</option>
+            <option value="石垣市">石垣市</option>
+            <option value="宮古島市">宮古島市</option>
+            <option value="竹富町">竹富町</option>
+            <option value="与那国町">与那国町</option></select>
       </div>
       <div class="form-group">
         <label>② 行政区・字を入力</label>
         <input id="d-district" placeholder="例: 美浜、牧港、大謝名 など" list="district-list">
-        <datalist id="district-list"></datalist>
+        <datalist id="district-list">
+            <option value="久茂地・泉崎（那覇市商業核）">
+            <option value="おもろまち（那覇市）">
+            <option value="牧志・安里（那覇市）">
+            <option value="小禄（那覇市）">
+            <option value="牧港（浦添市）">
+            <option value="城間・屋富祖（浦添市）">
+            <option value="美浜（北谷町）">
+            <option value="北前・桑江（北谷町）">
+            <option value="大謝名（宜野湾市）">
+            <option value="コザ（沖縄市）">
+            <option value="具志川（うるま市）">
+            <option value="名護市街（名護市）">
+            <option value="許田・ジャングリア（名護市）">
+            <option value="豊崎（豊見城市）">
+            <option value="兼城・南風原IC（南風原町）">
+            <option value="喜舎場・イオン（北中城村）">
+            <option value="嘉手納正門（嘉手納町）">
+            <option value="楚辺・残波（読谷村）">
+            <option value="恩納・万座（恩納村）">
+            <option value="平良（宮古島市）">
+            <option value="石垣市街（石垣市）"></datalist>
       </div>
       <div class="form-group">
         <label>③ 道路条件（立地）</label>
@@ -3940,6 +4545,12 @@ function calcYuimaru(){
     <div class="panel" style="background:linear-gradient(135deg,#0f1b2d,#1a0a00);border:2px solid #d9770688">
       <h3 style="color:var(--gold)">📊 全変数統合 診断サマリー</h3>
       <div id="integrated-summary"></div>
+    </div>
+    <!-- シェア機能 -->
+    <div style="text-align:center;margin-top:14px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+      <button onclick="shareDiagResult()" style="background:linear-gradient(135deg,#1D9E75,#0F6E56);color:#fff;border:none;border-radius:8px;padding:10px 20px;font-size:11px;font-weight:700;cursor:pointer">📋 診断結果をコピー（テキスト）</button>
+      <button onclick="printDiagResult()" style="background:linear-gradient(135deg,#3b82f6,#1d4ed8);color:#fff;border:none;border-radius:8px;padding:10px 20px;font-size:11px;font-weight:700;cursor:pointer">🖨️ 印刷・PDF出力</button>
+      <button onclick="downloadDiagCard()" style="background:linear-gradient(135deg,#f59e0b,#b45309);color:#000;border:none;border-radius:8px;padding:10px 20px;font-size:11px;font-weight:700;cursor:pointer">💾 HTMLカード保存</button>
     </div>
 
   </div>
@@ -4456,6 +5067,52 @@ function calcYuimaru(){
   <div class="panel" style="margin-top:14px;border:2px solid #f59e0b44">
     <h3>🧠 なぜ本土企業・那覇型沖縄人には見えないのか — 認知バイアス分析</h3>
     <div id="bias-analysis"></div>
+  </div>
+</div>
+
+
+<div id="t15" class="tab">
+  <div class="sec-head">🪖 SOFA軍属マーケット — 米軍家族市場インテリジェンス</div>
+  <div class="sec-sub">在沖米軍約2.6万世帯の経済・行動・消費パターン分析。英語対応事業者にのみ見える「見えない市場」を数値化。</div>
+
+  <div class="kpi-row" id="t15-kpi-row" style="margin-bottom:16px"></div>
+
+  <div class="g2" style="margin-bottom:14px">
+    <!-- 基地別データ -->
+    <div class="panel">
+      <h3>⚔️ 在沖主要基地 × 軍属人口・市場規模</h3>
+      <div id="t15-base-table"></div>
+    </div>
+    <!-- PCSカレンダー -->
+    <div class="panel">
+      <h3>📅 PCSシーズン × マーケティングカレンダー</h3>
+      <div id="t15-pcs-calendar"></div>
+    </div>
+  </div>
+
+  <div class="g2" style="margin-bottom:14px">
+    <!-- 英語対応ギャップ分析 -->
+    <div class="panel">
+      <h3>🔤 英語対応ギャップ × 業種別市場独占可能性</h3>
+      <div id="t15-english-gap"></div>
+    </div>
+    <!-- FRG口コミ増幅モデル -->
+    <div class="panel">
+      <h3>💬 FRG口コミ増幅モデル × 顧客獲得コスト</h3>
+      <div id="t15-frg-model"></div>
+    </div>
+  </div>
+
+  <!-- SOFA消費者行動パターン -->
+  <div class="panel" style="margin-bottom:14px">
+    <h3>💰 SOFA家族 消費行動プロファイル — 7つの特異構造</h3>
+    <div id="t15-consumer-profile"></div>
+  </div>
+
+  <!-- エリア別SOFA密度 -->
+  <div class="panel">
+    <h3>🗺️ エリア別 SOFA密度 × FTO参入スコア</h3>
+    <div id="t15-area-sofa"></div>
   </div>
 </div>
 
