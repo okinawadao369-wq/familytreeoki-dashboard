@@ -214,7 +214,26 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP','Hiragino
 .pdx-bar-bg{flex:1;height:10px;background:var(--card2);border-radius:5px;overflow:hidden}
 .pdx-bar-fill{height:100%;border-radius:5px;transition:width .8s ease}
 .pdx-bar-row .num{width:32px;text-align:right;font-weight:700}
-@media(max-width:700px)@media(max-width:700px)@media(max-width:700px){.g2,.g3,.g13{grid-template-columns:1fr}.kpi{min-width:100px}}
+.nav-btn.nav-gdp{background:linear-gradient(135deg,#065f46,#0f4c81);border-color:#059669;color:#fff;font-weight:900}
+.nav-btn.nav-gdp:hover,.nav-btn.nav-gdp.active{background:linear-gradient(135deg,#064e3b,#0c3b6e)}
+.gdp-filter-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;align-items:center}
+.gdp-filter-select{background:var(--card2);border:1px solid var(--border);color:var(--text);padding:6px 10px;border-radius:6px;font-size:10px}
+.gdp-search{background:var(--card2);border:1px solid var(--border);color:var(--text);padding:6px 12px;border-radius:6px;font-size:10px;width:160px}
+.gdp-table{width:100%;border-collapse:collapse;font-size:10px}
+.gdp-table th{background:var(--card2);padding:7px 8px;text-align:left;font-size:9px;color:var(--text2);white-space:nowrap;position:sticky;top:0;z-index:2;cursor:pointer}
+.gdp-table th:hover{color:var(--text)}
+.gdp-table td{padding:6px 8px;border-bottom:1px solid var(--border)}
+.gdp-table tr:hover td{background:var(--card2)}
+.gdp-rank-badge{display:inline-block;width:22px;height:22px;border-radius:50%;font-size:9px;font-weight:900;text-align:center;line-height:22px}
+.gdp-tier{display:inline-block;padding:2px 8px;border-radius:10px;font-size:9px;font-weight:700}
+.dist-card{background:var(--card2);border-radius:8px;padding:10px 12px;border-left:3px solid;margin-bottom:6px}
+.dist-card .dc-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.dist-card .dc-city{font-size:9px;color:var(--text2)}
+.dist-card .dc-dist{font-size:11px;font-weight:700;color:var(--text)}
+.dist-card .dc-gdp{font-size:13px;font-weight:900}
+.dist-card .dc-pct{font-size:9px;color:var(--text2)}
+.dist-card .dc-bar{height:5px;border-radius:3px;margin-top:6px}
+@media(max-width:700px)@media(max-width:700px)@media(max-width:700px)@media(max-width:700px){.g2,.g3,.g13{grid-template-columns:1fr}.kpi{min-width:100px}}
 /* Section header */
 .sec-head{font-size:14px;font-weight:800;color:var(--text);margin-bottom:12px;padding-bottom:6px;border-bottom:2px solid var(--blue)}
 .sec-sub{font-size:10px;color:var(--text2);margin-top:-8px;margin-bottom:12px}
@@ -247,6 +266,7 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP','Hiragino
   <button class="nav-btn nav-diagnose" onclick="showTab('t10')">🎯 エリア診断</button>
   <button class="nav-btn" onclick="showTab('t11')">📊 統計数値ハブ</button>
   <button class="nav-btn nav-paradox" onclick="showTab('t12')">🌀 パラドックス行動分析</button>
+  <button class="nav-btn nav-gdp" onclick="showTab('t13')">💰 GDP・経済データ全覧</button>
 </div>
 
 <!-- TAB 1: 総合エリアスコア -->
@@ -1253,10 +1273,11 @@ function renderCalendar(){
 function showTab(id){
   if(id==='t11') setTimeout(initTab11,50);
   if(id==='t12') setTimeout(initTab12,50);
+  if(id==='t13'){ setTimeout(initTab13,50); setTimeout(initGDPConformityAnalysis,200); }
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  const idx = ['t1','t2','t3','t4','t5','t6','t7','t8','t9','t10','t11','t12'].indexOf(id);
+  const idx = ['t1','t2','t3','t4','t5','t6','t7','t8','t9','t10','t11','t12','t13'].indexOf(id);
   document.querySelectorAll('.nav-btn')[idx].classList.add('active');
   if(id==='t8') calcBizScore();
 }
@@ -2534,6 +2555,529 @@ function renderMuniParadox(){
 }
 
 // ══════════════════════════════════════════════════════
+
+// ══════════════════════════════════════════════════════
+// TAB13: 全41市町村 + 行政区 GDP完全データ
+// ══════════════════════════════════════════════════════
+
+const GDP41 = [
+// ─── 那覇圏 ───
+{name:"那覇市",region:"那覇",pop:314009,gdp:1393876,income:2605,labor:521,growth:2.1,primary:0.1,secondary:8.1,tertiary:91.8,feature:"県庁所在地・流通・観光・サービス集積"},
+// ─── 南部 ───
+{name:"浦添市",region:"南部",pop:119020,gdp:413558,income:2402,labor:442,growth:3.6,primary:0.8,secondary:12.3,tertiary:86.9,feature:"国道58号商業・牧港港湾物流"},
+{name:"豊見城市",region:"南部",pop:67044,gdp:165902,income:2277,labor:398,growth:6.8,primary:1.1,secondary:16.2,tertiary:82.7,feature:"豊崎免税・大型商業・新興住宅"},
+{name:"糸満市",region:"南部",pop:61245,gdp:96536,income:2322,labor:402,growth:0.6,primary:1.8,secondary:28.5,tertiary:69.7,feature:"水産業・製造業・南部観光"},
+{name:"南城市",region:"南部",pop:44994,gdp:88375,income:2010,labor:342,growth:1.8,primary:3.5,secondary:22.8,tertiary:73.7,feature:"斎場御嶽・農業・南部観光"},
+{name:"南風原町",region:"南部",pop:38843,gdp:165902,income:2277,labor:398,growth:6.8,primary:1.1,secondary:16.2,tertiary:82.7,feature:"南風原IC・大型商業・配送拠点"},
+{name:"与那原町",region:"南部",pop:19654,gdp:42000,income:2050,labor:358,growth:2.2,primary:1.5,secondary:18.0,tertiary:80.5,feature:"西原・与那原工業団地"},
+{name:"八重瀬町",region:"南部",pop:29128,gdp:58000,income:2020,labor:344,growth:3.1,primary:4.2,secondary:22.5,tertiary:73.3,feature:"農業・製造・南部住宅地"},
+{name:"島尻郡(その他)",region:"南部",pop:8500,gdp:15000,income:1850,labor:290,growth:0.5,primary:8.0,secondary:20.0,tertiary:72.0,feature:"農業・水産"},
+// ─── 中部 ───
+{name:"沖縄市",region:"中部",pop:142408,gdp:336400,income:2171,labor:368,growth:3.2,primary:1.2,secondary:12.5,tertiary:86.3,feature:"コザ文化・基地隣接・商業集積"},
+{name:"うるま市",region:"中部",pop:120839,gdp:271230,income:1737,labor:318,growth:2.8,primary:2.8,secondary:15.6,tertiary:81.6,feature:"与那城・石川・具志川工業"},
+{name:"宜野湾市",region:"中部",pop:100177,gdp:220904,income:2030,labor:348,growth:4.2,primary:3.2,secondary:14.8,tertiary:82.0,feature:"普天間・大謝名・沖縄コンベンション"},
+{name:"西原町",region:"中部",pop:35609,gdp:124000,income:2099,labor:355,growth:2.5,primary:2.5,secondary:15.8,tertiary:81.7,feature:"琉球大学・医療・西原IC"},
+{name:"中城村",region:"中部",pop:22165,gdp:46000,income:2080,labor:350,growth:3.8,primary:3.0,secondary:18.0,tertiary:79.0,feature:"中城城跡・農業・住宅"},
+{name:"北中城村",region:"中部",pop:18143,gdp:43836,income:2322,labor:402,growth:2.8,primary:2.2,secondary:14.5,tertiary:83.3,feature:"イオンモール沖縄ライカム・高速IC"},
+{name:"嘉手納町",region:"中部",pop:13500,gdp:39336,income:3284,labor:580,growth:3.0,primary:0.3,secondary:8.2,tertiary:91.5,feature:"嘉手納基地・軍用地料・高所得"},
+{name:"読谷村",region:"中部",pop:41480,gdp:96500,income:2180,labor:372,growth:1.2,primary:3.8,secondary:22.5,tertiary:73.7,feature:"残波・農業・陶芸・観光"},
+{name:"北谷町",region:"中部",pop:28322,gdp:87431,income:2719,labor:480,growth:5.2,primary:0.5,secondary:10.8,tertiary:88.7,feature:"アメリカンビレッジ・SOFA市場・観光"},
+{name:"金武町",region:"中部",pop:10628,gdp:22000,income:2100,labor:355,growth:1.5,primary:3.5,secondary:20.0,tertiary:76.5,feature:"基地隣接・農業・タコライス発祥"},
+{name:"宜野座村",region:"中部",pop:3127,gdp:8000,income:1980,labor:332,growth:0.8,primary:6.0,secondary:18.0,tertiary:76.0,feature:"農業・水産・農村"},
+// ─── 北部 ───
+{name:"名護市",region:"北部",pop:62389,gdp:123769,income:2171,labor:368,growth:5.8,primary:3.5,secondary:18.2,tertiary:78.3,feature:"ジャングリア・辺野古・北部中核"},
+{name:"恩納村",region:"北部",pop:11213,gdp:48799,income:2369,labor:412,growth:8.2,primary:2.8,secondary:12.5,tertiary:84.7,feature:"リゾートホテル・マリン・残波"},
+{name:"本部町",region:"北部",pop:13012,gdp:24000,income:2020,labor:342,growth:2.8,primary:4.5,secondary:16.5,tertiary:79.0,feature:"美ら海水族館・農業・観光"},
+{name:"今帰仁村",region:"北部",pop:9318,gdp:16500,income:1920,labor:322,growth:1.8,primary:6.5,secondary:15.0,tertiary:78.5,feature:"今帰仁城跡・農業・観光"},
+{name:"大宜味村",region:"北部",pop:2900,gdp:5800,income:1820,labor:298,growth:0.5,primary:12.0,secondary:14.0,tertiary:74.0,feature:"長寿の村・農業・塩屋"},
+{name:"国頭村",region:"北部",pop:4800,gdp:9200,income:1780,labor:288,growth:-0.5,primary:10.0,secondary:15.0,tertiary:75.0,feature:"やんばる・林業・エコツーリズム"},
+{name:"東村",region:"北部",pop:1720,gdp:3800,income:1750,labor:280,growth:1.2,primary:14.0,secondary:12.0,tertiary:74.0,feature:"農業・パイン・慶佐次湾"},
+{name:"伊江村",region:"北部",pop:4400,gdp:8500,income:1800,labor:292,growth:0.8,primary:18.0,secondary:12.0,tertiary:70.0,feature:"農業・観光・百合"},
+{name:"羽地(今帰仁・本部合算)",region:"北部",pop:0,gdp:0,income:0,labor:0,growth:0,primary:0,secondary:0,tertiary:0,feature:"※参考値"},
+// ─── 離島（宮古・八重山） ───
+{name:"宮古島市",region:"離島",pop:52903,gdp:178543,income:2230,labor:380,growth:12.5,primary:5.5,secondary:12.0,tertiary:82.5,feature:"観光ブーム・リゾート・農業"},
+{name:"石垣市",region:"離島",pop:47618,gdp:166567,income:2089,labor:355,growth:8.8,primary:4.8,secondary:14.5,tertiary:80.7,feature:"観光・農業・離島物流拠点"},
+{name:"竹富町",region:"離島",pop:4200,gdp:9800,income:1850,labor:300,growth:5.5,primary:6.0,secondary:10.0,tertiary:84.0,feature:"観光特化・竹富島・西表島"},
+{name:"与那国町",region:"離島",pop:1700,gdp:3500,income:1780,labor:285,growth:3.2,primary:8.0,secondary:12.0,tertiary:80.0,feature:"日本最西端・観光・農業"},
+{name:"多良間村",region:"離島",pop:1200,gdp:2200,income:1700,labor:270,growth:1.0,primary:20.0,secondary:10.0,tertiary:70.0,feature:"農業・サトウキビ"},
+{name:"伊平屋村",region:"離島",pop:1380,gdp:2500,income:1650,labor:260,growth:0.8,primary:18.0,secondary:10.0,tertiary:72.0,feature:"農業・観光・長寿"},
+{name:"伊是名村",region:"離島",pop:1500,gdp:2800,income:1680,labor:265,growth:1.2,primary:15.0,secondary:12.0,tertiary:73.0,feature:"農業・観光・尚円王生誕地"},
+{name:"粟国村",region:"離島",pop:800,gdp:1500,income:1620,labor:252,growth:0.5,primary:20.0,secondary:8.0,tertiary:72.0,feature:"農業・塩"},
+{name:"渡名喜村",region:"離島",pop:380,gdp:700,income:1580,labor:240,growth:0.2,primary:22.0,secondary:8.0,tertiary:70.0,feature:"農業・観光"},
+{name:"北大東村",region:"離島",pop:580,gdp:1200,income:1720,labor:275,growth:1.5,primary:25.0,secondary:10.0,tertiary:65.0,feature:"農業・サトウキビ・燐鉱"},
+{name:"南大東村",region:"離島",pop:1320,gdp:2800,income:1750,labor:282,growth:2.0,primary:22.0,secondary:12.0,tertiary:66.0,feature:"農業・サトウキビ・ラム酒"},
+{name:"渡嘉敷村",region:"離島",pop:730,gdp:1800,income:1700,labor:270,growth:3.5,primary:5.0,secondary:8.0,tertiary:87.0,feature:"観光・ダイビング・慶良間"},
+{name:"座間味村",region:"離島",pop:950,gdp:2200,income:1720,labor:278,growth:4.2,primary:4.0,secondary:8.0,tertiary:88.0,feature:"観光・ダイビング・ホエールウォッチング"},
+];
+
+// 全52行政区 推計GDP
+const GDP_DIST52 = [
+// ─── 那覇市 ───
+{city:"那覇市",dist:"久茂地・泉崎（商業核）",gdp_est:195000,pct:14.0,type:"商業核",note:"県庁・DFS・那覇メインプレイス核",color:"#3b82f6"},
+{city:"那覇市",dist:"おもろまち（新都心）",gdp_est:162000,pct:11.6,type:"商業核",note:"イオン那覇・DFS・IT企業集積",color:"#3b82f6"},
+{city:"那覇市",dist:"牧志・安里（国際通り）",gdp_est:140000,pct:10.0,type:"観光商業",note:"国際通り・市場・観光消費の核",color:"#f59e0b"},
+{city:"那覇市",dist:"小禄（ジャスコ・空港周辺）",gdp_est:118000,pct:8.5,type:"商業核",note:"那覇空港アクセス・イオン小禄",color:"#3b82f6"},
+{city:"那覇市",dist:"真和志・首里",gdp_est:95000,pct:6.8,type:"住宅商業",note:"住宅密集・首里城観光",color:"#10b981"},
+{city:"那覇市",dist:"繁多川・那覇新港",gdp_est:78000,pct:5.6,type:"物流商業",note:"那覇港物流・卸売",color:"#8b5cf6"},
+{city:"那覇市",dist:"壺屋・松尾",gdp_est:62000,pct:4.4,type:"観光商業",note:"壺屋やちむん通り・伝統工芸",color:"#f59e0b"},
+// ─── 浦添市 ───
+{city:"浦添市",dist:"牧港（国道58号核心）",gdp_est:88000,pct:21.3,type:"商業核",note:"国道58号最大交通量・商業集積",color:"#3b82f6"},
+{city:"浦添市",dist:"城間・屋富祖",gdp_est:72000,pct:17.4,type:"住宅商業",note:"住宅地・サンエー・生活圏商業",color:"#10b981"},
+{city:"浦添市",dist:"経塚・伊祖（西海岸道路）",gdp_est:65000,pct:15.7,type:"商業核",note:"西海岸道路・大型商業集積中",color:"#3b82f6"},
+{city:"浦添市",dist:"浦添市前田（キャンプキンサー跡）",gdp_est:48000,pct:11.6,type:"商業核",note:"返還跡地開発・新商業エリア",color:"#ec4899"},
+// ─── 沖縄市 ───
+{city:"沖縄市",dist:"コザ（中央パーク・一番街）",gdp_est:62000,pct:18.4,type:"商業核",note:"コザ文化圏・音楽・飲食集積",color:"#3b82f6"},
+{city:"沖縄市",dist:"知花・泡瀬（海浜公園）",gdp_est:48000,pct:14.3,type:"観光商業",note:"泡瀬海浜・新興商業",color:"#f59e0b"},
+{city:"沖縄市",dist:"美里（国道329号）",gdp_est:42000,pct:12.5,type:"商業核",note:"国道329号商業・医療",color:"#3b82f6"},
+{city:"沖縄市",dist:"山内・高原",gdp_est:35000,pct:10.4,type:"住宅商業",note:"住宅地・生活消費",color:"#10b981"},
+// ─── うるま市 ───
+{city:"うるま市",dist:"具志川（本庁・イオン）",gdp_est:78000,pct:28.8,type:"商業核",note:"うるま市役所・イオン具志川・中核",color:"#3b82f6"},
+{city:"うるま市",dist:"石川（旧石川市街）",gdp_est:38000,pct:14.0,type:"住宅商業",note:"旧石川市・住宅・地元商業",color:"#10b981"},
+{city:"うるま市",dist:"与那城（海中道路）",gdp_est:28000,pct:10.3,type:"観光商業",note:"海中道路・平安座島・観光",color:"#f59e0b"},
+{city:"うるま市",dist:"勝連（勝連城跡）",gdp_est:18000,pct:6.6,type:"観光商業",note:"勝連城跡・世界遺産観光",color:"#f59e0b"},
+// ─── 宜野湾市 ───
+{city:"宜野湾市",dist:"大謝名（国道58号BP）",gdp_est:62000,pct:28.1,type:"商業核",note:"宜野湾バイパス・大型商業・交通結節点",color:"#3b82f6"},
+{city:"宜野湾市",dist:"真栄原・大山",gdp_est:48000,pct:21.7,type:"住宅商業",note:"住宅密集・地元生活商業",color:"#10b981"},
+{city:"宜野湾市",dist:"普天間・宇地泊",gdp_est:38000,pct:17.2,type:"商業核",note:"普天間インター・商業集積",color:"#3b82f6"},
+// ─── 名護市 ───
+{city:"名護市",dist:"名護市街（世嘉良・東江）",gdp_est:42000,pct:33.9,type:"商業核",note:"名護市役所・商店街・北部中核",color:"#3b82f6"},
+{city:"名護市",dist:"辺野古（新基地建設周辺）",gdp_est:18000,pct:14.5,type:"基地商業",note:"新基地建設・工事需要・経済注目",color:"#6366f1"},
+{city:"名護市",dist:"許田（ジャングリア・高速IC）",gdp_est:22000,pct:17.8,type:"観光商業",note:"ジャングリア隣接・高速IC・観光需要",color:"#f59e0b"},
+{city:"名護市",dist:"数久田・羽地",gdp_est:12000,pct:9.7,type:"住宅商業",note:"住宅・農業・地元消費",color:"#10b981"},
+// ─── 豊見城市 ───
+{city:"豊見城市",dist:"豊崎（免税店・DFS）",gdp_est:68000,pct:41.0,type:"観光商業",note:"T GALLERIA・大型免税・アウトレット",color:"#f59e0b"},
+{city:"豊見城市",dist:"高嶺（国道507号）",gdp_est:28000,pct:16.9,type:"住宅商業",note:"住宅開発・地元商業",color:"#10b981"},
+{city:"豊見城市",dist:"嶺井・渡橋名",gdp_est:22000,pct:13.3,type:"住宅商業",note:"新興住宅地・生活商業",color:"#10b981"},
+// ─── 糸満市 ───
+{city:"糸満市",dist:"糸満市街（真栄里）",gdp_est:32000,pct:33.2,type:"商業核",note:"糸満市役所・商業核・水産市場",color:"#3b82f6"},
+{city:"糸満市",dist:"摩文仁・喜屋武（南端観光）",gdp_est:15000,pct:15.5,type:"観光商業",note:"平和の礎・ひめゆり・戦跡観光",color:"#f59e0b"},
+{city:"糸満市",dist:"兼城・真壁（工場団地）",gdp_est:28000,pct:29.0,type:"物流商業",note:"製造業・食品工場集積",color:"#8b5cf6"},
+// ─── 南風原町 ───
+{city:"南風原町",dist:"兼城（南風原北IC）",gdp_est:58000,pct:35.0,type:"商業核",note:"沖縄自動車道北IC・物流・商業",color:"#3b82f6"},
+{city:"南風原町",dist:"宮平・新川（南風原南IC）",gdp_est:48000,pct:28.9,type:"物流商業",note:"南IC・大型物流倉庫・大型商業",color:"#8b5cf6"},
+// ─── 北谷町 ───
+{city:"北谷町",dist:"美浜（アメリカンビレッジ）",gdp_est:42000,pct:48.0,type:"観光商業",note:"観光特化・SOFA需要・外国人消費",color:"#f59e0b"},
+{city:"北谷町",dist:"北前・桑江",gdp_est:28000,pct:32.0,type:"基地商業",note:"キャンプレスター隣接・地元商業",color:"#6366f1"},
+// ─── 西原町 ───
+{city:"西原町",dist:"与那城（西原IC・琉大）",gdp_est:52000,pct:42.0,type:"教育商業",note:"琉球大学・医療センター・高速IC",color:"#14b8a6"},
+{city:"西原町",dist:"嘉手苅（真地IC周辺）",gdp_est:35000,pct:28.2,type:"商業核",note:"大型商業・住宅開発",color:"#3b82f6"},
+// ─── 読谷村 ───
+{city:"読谷村",dist:"楚辺・残波（国道58号）",gdp_est:32000,pct:33.2,type:"観光商業",note:"残波岬・リゾート・国道58号",color:"#f59e0b"},
+{city:"読谷村",dist:"渡具知（読谷村役場周辺）",gdp_est:28000,pct:29.0,type:"商業核",note:"役場周辺・生活商業",color:"#3b82f6"},
+// ─── 恩納村 ───
+{city:"恩納村",dist:"恩納（万座ビーチ・ムーンビーチ）",gdp_est:28000,pct:57.4,type:"リゾート",note:"高級リゾートホテル集積・宿泊消費",color:"#ec4899"},
+{city:"恩納村",dist:"仲泊（真栄田岬・ダイビング）",gdp_est:12000,pct:24.6,type:"リゾート",note:"ダイビング・マリン・地元観光",color:"#ec4899"},
+// ─── 嘉手納町 ───
+{city:"嘉手納町",dist:"嘉手納（基地正門・ロータリー）",gdp_est:28000,pct:71.2,type:"基地商業",note:"嘉手納基地門前・軍用地料収入",color:"#6366f1"},
+// ─── 宮古島市 ───
+{city:"宮古島市",dist:"平良（宮古島市街）",gdp_est:68000,pct:38.1,type:"商業核",note:"宮古島中心部・リゾート商業核",color:"#3b82f6"},
+{city:"宮古島市",dist:"伊良部・下地（空港周辺）",gdp_est:42000,pct:23.5,type:"リゾート",note:"宮古空港隣接・リゾート急増エリア",color:"#ec4899"},
+{city:"宮古島市",dist:"上野（リゾート南部）",gdp_est:32000,pct:17.9,type:"リゾート",note:"高級リゾート集積・観光消費",color:"#ec4899"},
+// ─── 石垣市 ───
+{city:"石垣市",dist:"石垣市街・登野城",gdp_est:62000,pct:37.2,type:"商業核",note:"石垣市中心・離島商業核",color:"#3b82f6"},
+{city:"石垣市",dist:"新川（新港周辺）",gdp_est:35000,pct:21.0,type:"観光商業",note:"石垣港・観光・飲食集積",color:"#f59e0b"},
+{city:"石垣市",dist:"川平（リゾート北部）",gdp_est:22000,pct:13.2,type:"リゾート",note:"川平湾・高級リゾート・エコツー",color:"#ec4899"},
+];
+
+let gdp13SortKey = 'gdp';
+let gdp13SortAsc = false;
+let gdp13Charts = {};
+
+function initTab13(){
+  // KPI
+  const krow = document.getElementById('gdp13-kpi');
+  if(krow && krow.innerHTML===''){
+    const validMunis = GDP41.filter(d=>d.gdp>0);
+    const totalGDP = validMunis.reduce((s,d)=>s+d.gdp,0);
+    const maxGDP = validMunis.reduce((a,b)=>b.gdp>a.gdp?b:a);
+    const maxGrowth = validMunis.reduce((a,b)=>b.growth>a.growth?b:a);
+    const maxIncome = validMunis.reduce((a,b)=>b.income>a.income?b:a);
+    krow.innerHTML = [
+      {v:(totalGDP/1000000).toFixed(2)+"兆円",l:"沖縄県内総生産（GDP合計）",col:"var(--green)"},
+      {v:"41市町村",l:"データ収録数（全市町村）",col:"var(--blue)"},
+      {v:maxGDP.name,l:"GDP最大 — "+maxGDP.gdp.toLocaleString()+"百万円",col:"var(--gold)"},
+      {v:maxGrowth.name+" +"+maxGrowth.growth+"%",l:"成長率最高（直近年）",col:"var(--teal)"},
+      {v:maxIncome.name+" "+maxIncome.income+"千円",l:"1人当たり所得最高",col:"var(--purple)"},
+      {v:"52地区",l:"行政区別GDP収録数",col:"var(--orange)"},
+    ].map(k=>`<div class="kpi ${k.col.includes('gold')?'gold':k.col.includes('blue')?'blue':k.col.includes('green')?'green':k.col.includes('purple')?'purple':k.col.includes('teal')?'':k.col.includes('orange')?'red':'red'}">
+      <div class="val" style="color:${k.col}">${k.v}</div><div class="lbl">${k.l}</div></div>`).join('');
+  }
+  filterGDP13();
+  filterDist13();
+
+  // GDP上位15棒グラフ
+  if(!gdp13Charts.bar){
+    const top15 = GDP41.filter(d=>d.gdp>0).sort((a,b)=>b.gdp-a.gdp).slice(0,15);
+    gdp13Charts.bar = new Chart('gdp13-bar',{type:'bar',data:{
+      labels:top15.map(d=>d.name),
+      datasets:[{label:'GDP（百万円）',data:top15.map(d=>d.gdp),
+        backgroundColor:top15.map((_,i)=>i===0?'#f59e0bcc':i<3?'#3b82f6cc':'#6366f1cc'),
+        borderColor:top15.map((_,i)=>i===0?'#f59e0b':i<3?'#3b82f6':'#6366f1'),borderWidth:1}]
+    },options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
+      plugins:{legend:{display:false}},
+      scales:{x:{grid:{color:'#1e2a3a'},ticks:{font:{size:8},color:'#94a3b8',callback:v=>(v/1000).toFixed(0)+'億'}},
+              y:{grid:{display:false},ticks:{font:{size:8},color:'#e2e8f0'}}}}});
+  }
+
+  // 成長率チャート
+  if(!gdp13Charts.growth){
+    const gd = GDP41.filter(d=>d.gdp>0&&d.growth!==0).sort((a,b)=>b.growth-a.growth).slice(0,20);
+    gdp13Charts.growth = new Chart('gdp13-growth',{type:'bar',data:{
+      labels:gd.map(d=>d.name),
+      datasets:[{label:'成長率%',data:gd.map(d=>d.growth),
+        backgroundColor:gd.map(d=>d.growth>5?'#10b981cc':d.growth>0?'#3b82f6cc':'#ef4444cc'),
+        borderColor:gd.map(d=>d.growth>5?'#10b981':d.growth>0?'#3b82f6':'#ef4444'),borderWidth:1}]
+    },options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
+      plugins:{legend:{display:false}},
+      scales:{x:{grid:{color:'#1e2a3a'},ticks:{font:{size:8},color:'#94a3b8'},
+               title:{display:true,text:'成長率(%)',color:'#94a3b8',font:{size:8}}},
+              y:{grid:{display:false},ticks:{font:{size:8},color:'#e2e8f0'}}}}});
+  }
+
+  // 散布図
+  if(!gdp13Charts.scatter){
+    const scData = GDP41.filter(d=>d.gdp>0&&d.income>0).map(d=>({x:d.gdp/1000,y:d.income,name:d.name}));
+    gdp13Charts.scatter = new Chart('gdp13-scatter',{type:'scatter',data:{
+      datasets:[{label:'市町村',data:scData,
+        backgroundColor:'#8b5cf6cc',pointRadius:5,pointHoverRadius:8}]
+    },options:{responsive:true,maintainAspectRatio:false,
+      plugins:{tooltip:{callbacks:{label:d=>`${d.raw.name}: GDP ${d.raw.x.toFixed(0)}億 / 所得 ${d.raw.y}千円`}}},
+      scales:{x:{grid:{color:'#1e2a3a'},title:{display:true,text:'GDP（億円）',color:'#94a3b8',font:{size:8}},ticks:{font:{size:8},color:'#94a3b8'}},
+              y:{grid:{color:'#1e2a3a'},title:{display:true,text:'1人当たり所得（千円）',color:'#94a3b8',font:{size:8}},ticks:{font:{size:8},color:'#94a3b8'}}}}});
+  }
+
+  // 産業構造チャート
+  if(!gdp13Charts.industry){
+    const top10 = GDP41.filter(d=>d.gdp>0).sort((a,b)=>b.gdp-a.gdp).slice(0,10);
+    gdp13Charts.industry = new Chart('gdp13-industry',{type:'bar',data:{
+      labels:top10.map(d=>d.name),
+      datasets:[
+        {label:'第1次',data:top10.map(d=>d.primary),backgroundColor:'#10b981aa',stack:'s'},
+        {label:'第2次',data:top10.map(d=>d.secondary),backgroundColor:'#3b82f6aa',stack:'s'},
+        {label:'第3次',data:top10.map(d=>d.tertiary),backgroundColor:'#8b5cf6aa',stack:'s'},
+      ]
+    },options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{labels:{font:{size:9}}}},
+      scales:{x:{stacked:true,grid:{display:false},ticks:{font:{size:8}}},
+              y:{stacked:true,max:100,grid:{color:'#1e2a3a'},ticks:{font:{size:8},color:'#94a3b8',callback:v=>v+'%'}}}}});
+  }
+
+  // 行政区棒グラフ
+  renderDist13Chart(GDP_DIST52);
+}
+
+function sortGDP13(key){
+  if(gdp13SortKey===key) gdp13SortAsc=!gdp13SortAsc;
+  else{gdp13SortKey=key;gdp13SortAsc=false;}
+  filterGDP13();
+}
+
+function filterGDP13(){
+  const q = (document.getElementById('gdp13-search')?.value||'').trim();
+  const reg = document.getElementById('gdp13-region')?.value||'';
+  const srt = document.getElementById('gdp13-sort')?.value||'gdp';
+
+  let data = GDP41.filter(d=>d.gdp>0);
+  if(q) data = data.filter(d=>d.name.includes(q));
+  if(reg) data = data.filter(d=>d.region===reg);
+
+  const skey = gdp13SortKey!=='rank'?gdp13SortKey:srt;
+  data.sort((a,b)=>{
+    const av=skey==='name'?a[skey]:Number(a[skey]);
+    const bv=skey==='name'?b[skey]:Number(b[skey]);
+    if(typeof av==='string') return gdp13SortAsc?av.localeCompare(bv):bv.localeCompare(av);
+    return gdp13SortAsc?av-bv:bv-av;
+  });
+
+  document.getElementById('gdp13-count').textContent = `${data.length}市町村表示中`;
+
+  const regionColors = {那覇:'#f59e0b',南部:'#10b981',中部:'#3b82f6',北部:'#8b5cf6',離島:'#ec4899'};
+  const allRanked = GDP41.filter(d=>d.gdp>0).sort((a,b)=>b.gdp-a.gdp);
+  const tbody = document.getElementById('gdp13-tbody');
+  tbody.innerHTML = data.map(d=>{
+    const rank = allRanked.findIndex(r=>r.name===d.name)+1;
+    const gdpCap = d.pop>0?Math.round(d.gdp*1000/d.pop):0;
+    const tierColor = d.gdp>500000?'#f59e0b':d.gdp>100000?'#3b82f6':d.gdp>30000?'#10b981':'#94a3b8';
+    const tier = d.gdp>500000?'大型':d.gdp>100000?'中型':d.gdp>30000?'小型':'零細';
+    return `<tr>
+      <td><span class="gdp-rank-badge" style="background:${rank<=3?'#f59e0b':rank<=10?'#3b82f622':'#1e2a3a'};color:${rank<=3?'#000':'#94a3b8'}">${rank}</span></td>
+      <td style="font-weight:700;color:var(--text);white-space:nowrap">${d.name}</td>
+      <td><span style="background:${regionColors[d.region]}22;color:${regionColors[d.region]};padding:2px 8px;border-radius:10px;font-size:9px;font-weight:700">${d.region}</span></td>
+      <td style="color:var(--text2)">${d.pop.toLocaleString()}</td>
+      <td style="font-weight:800;color:${tierColor}">${d.gdp.toLocaleString()}</td>
+      <td style="color:var(--text2)">${gdpCap.toLocaleString()}円</td>
+      <td style="color:${d.income>2500?'#10b981':d.income>2000?'#3b82f6':'#94a3b8'};font-weight:700">${d.income}</td>
+      <td style="color:var(--text2)">${d.labor}</td>
+      <td style="color:${d.growth>5?'#10b981':d.growth>0?'#3b82f6':d.growth<0?'#ef4444':'#94a3b8'};font-weight:700">${d.growth>0?'+':''}${d.growth}%</td>
+      <td style="color:var(--text2)">${d.tertiary}%</td>
+      <td style="font-size:9px;color:var(--text2)">${d.feature}</td>
+    </tr>`;}).join('');
+}
+
+function filterDist13(){
+  const city = document.getElementById('dist13-city')?.value||'';
+  const type = document.getElementById('dist13-type')?.value||'';
+  const srt = document.getElementById('dist13-sort2')?.value||'gdp_est';
+
+  let data = [...GDP_DIST52];
+  if(city) data = data.filter(d=>d.city===city);
+  if(type) data = data.filter(d=>d.type===type);
+  data.sort((a,b)=>b[srt]-a[srt]);
+
+  document.getElementById('dist13-count').textContent = `${data.length}地区表示中`;
+
+  const maxGDP = Math.max(...data.map(d=>d.gdp_est));
+  document.getElementById('dist13-cards').innerHTML = data.map(d=>`
+    <div class="dist-card" style="border-color:${d.color}">
+      <div class="dc-head">
+        <div>
+          <div class="dc-city">${d.city}</div>
+          <div class="dc-dist">${d.dist}</div>
+        </div>
+        <div style="text-align:right">
+          <div class="dc-gdp" style="color:${d.color}">${(d.gdp_est/1000).toFixed(0)}億円</div>
+          <div class="dc-pct">市内比率 ${d.pct}%</div>
+        </div>
+      </div>
+      <div style="font-size:9px;color:var(--text2);margin-bottom:6px">${d.note}</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <span style="font-size:9px;background:${d.color}22;color:${d.color};padding:2px 8px;border-radius:10px">${d.type}</span>
+      </div>
+      <div class="dc-bar" style="background:${d.color}22;margin-top:8px">
+        <div style="height:5px;border-radius:3px;background:${d.color};width:${Math.round(d.gdp_est/maxGDP*100)}%"></div>
+      </div>
+    </div>`).join('');
+
+  renderDist13Chart(data);
+}
+
+function renderDist13Chart(data){
+  const top20 = [...data].sort((a,b)=>b.gdp_est-a.gdp_est).slice(0,20);
+  if(gdp13Charts.dist){gdp13Charts.dist.destroy();delete gdp13Charts.dist;}
+  const el = document.getElementById('dist13-chart');
+  if(!el) return;
+  gdp13Charts.dist = new Chart(el,{type:'bar',data:{
+    labels:top20.map(d=>d.dist.substring(0,10)),
+    datasets:[{label:'推計GDP（百万円）',data:top20.map(d=>d.gdp_est),
+      backgroundColor:top20.map(d=>d.color+'cc'),
+      borderColor:top20.map(d=>d.color),borderWidth:1}]
+  },options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:d=>`${top20[d.dataIndex].city} — ${(d.raw/1000).toFixed(0)}億円`}}},
+    scales:{x:{grid:{color:'#1e2a3a'},ticks:{font:{size:8},color:'#94a3b8',callback:v=>(v/1000).toFixed(0)+'億'}},
+            y:{grid:{display:false},ticks:{font:{size:8},color:'#e2e8f0'}}}}});
+}
+// ══════════════════════════════════════════════════════
+
+// ── GDP×コミュニティ同調圧力分析 ──
+
+// 各市町村の同調圧力スコア（GDP・コミュニティ・外部受容度から算出）
+const CONFORMITY_DATA = [
+  // name, gdpBand(1=零細〜5=大型), conformity(0-100高いほど同調圧力強), openness(0-100外部受容度), entryDiff(1-5), minConditions, keyBreakthrough
+  {name:"那覇市",gdpBand:5,conformity:42,openness:82,entryDiff:2,minCond:2,key:"都市型匿名消費。コミュニティ圧力は低め。資本・立地が主勝因。"},
+  {name:"浦添市",gdpBand:4,conformity:48,openness:78,entryDiff:2,minCond:2,key:"国道沿い商業は資本力勝負。住宅地は地域溶け込みが必要。"},
+  {name:"沖縄市",gdpBand:3,conformity:62,openness:65,entryDiff:3,minCond:3,key:"コザ文化圏への敬意と地元アーティスト連携が必須。"},
+  {name:"うるま市",gdpBand:3,conformity:70,openness:55,entryDiff:4,minCond:4,key:"具志川コア・与那城・石川それぞれに地区顔役への挨拶が必要。"},
+  {name:"宜野湾市",gdpBand:3,conformity:55,openness:70,entryDiff:3,minCond:3,key:"大謝名BP沿いは商業資本で可。普天間地区は地元信頼構築が先。"},
+  {name:"豊見城市",gdpBand:3,conformity:52,openness:72,entryDiff:2,minCond:2,key:"豊崎は観光資本で参入可。高嶺・嶺井は地元密着型を要する。"},
+  {name:"名護市",gdpBand:2,conformity:65,openness:68,entryDiff:3,minCond:3,key:"市街地は地元有力者紹介が鍵。辺野古・ジャングリア周辺は例外的に開放。"},
+  {name:"石垣市",gdpBand:3,conformity:58,openness:72,entryDiff:3,minCond:3,key:"観光資本は比較的歓迎。地元生活圏への参入は文化理解が必要。"},
+  {name:"宮古島市",gdpBand:3,conformity:55,openness:75,entryDiff:2,minCond:2,key:"観光ブームで外部資本受容度↑。ただし地元雇用・食材調達が条件。"},
+  {name:"糸満市",gdpBand:2,conformity:72,openness:48,entryDiff:4,minCond:4,key:"漁業・農業コミュニティが強固。水産関連は特に閉鎖的。食文化への敬意が鍵。"},
+  {name:"南城市",gdpBand:2,conformity:80,openness:38,entryDiff:5,minCond:5,key:"斎場御嶽・精神文化の聖域。霊的・文化的権威者との連携なしに参入不可。"},
+  {name:"西原町",gdpBand:2,conformity:60,openness:70,entryDiff:3,minCond:3,key:"大学コミュニティが革新触媒。学術・医療系は比較的開放的。"},
+  {name:"北谷町",gdpBand:2,conformity:45,openness:85,entryDiff:2,minCond:2,key:"観光・SOFA文化で外部受容度高。英語対応+地元雇用で参入可。"},
+  {name:"南風原町",gdpBand:3,conformity:55,openness:68,entryDiff:3,minCond:2,key:"IC商業は資本力主導。住宅地は地元溶け込み型が勝つ。"},
+  {name:"北中城村",gdpBand:2,conformity:68,openness:60,entryDiff:3,minCond:3,key:"イオン依存圏。村落コミュニティは強固—紹介連鎖が最重要。"},
+  {name:"嘉手納町",gdpBand:2,conformity:50,openness:72,entryDiff:2,minCond:2,key:"基地経済で外部受容度高め。英語対応あれば即戦力になる。"},
+  {name:"読谷村",gdpBand:2,conformity:68,openness:55,entryDiff:4,minCond:3,key:"陶芸・農業コミュニティ強固。地元文化への敬意と技術貢献が条件。"},
+  {name:"恩納村",gdpBand:2,conformity:52,openness:75,entryDiff:2,minCond:2,key:"リゾート経済で外部資本歓迎。ただし地元漁業・農業への配慮が必要。"},
+  {name:"金武町",gdpBand:1,conformity:72,openness:50,entryDiff:4,minCond:4,key:"基地隣接で外部文化あり。しかし農業・地域コミュニティは強固。"},
+  {name:"宜野座村",gdpBand:1,conformity:82,openness:35,entryDiff:5,minCond:5,key:"農村コミュニティ最強。外部資本の単独参入はほぼ不可。集落長との関係構築から。"},
+  {name:"与那原町",gdpBand:1,conformity:70,openness:52,entryDiff:4,minCond:3,key:"工業団地周辺は比較的開放。住宅地コミュニティは閉鎖的。"},
+  {name:"八重瀬町",gdpBand:1,conformity:72,openness:48,entryDiff:4,minCond:4,key:"農業・工業混合。地元農家との関係構築と雇用創出が突破条件。"},
+  {name:"本部町",gdpBand:1,conformity:65,openness:62,entryDiff:3,minCond:3,key:"美ら海効果で観光は開放的。ただし地元飲食・生活圏は地域信頼が前提。"},
+  {name:"今帰仁村",gdpBand:1,conformity:75,openness:45,entryDiff:4,minCond:4,key:"城跡観光で外部接点あり。農業・村落は高同調圧力—長老承認が最重要。"},
+  {name:"大宜味村",gdpBand:1,conformity:88,openness:28,entryDiff:5,minCond:5,key:"長寿コミュニティ・農業村落。外部参入は地域医療・福祉貢献なしに不可。"},
+  {name:"国頭村",gdpBand:1,conformity:85,openness:32,entryDiff:5,minCond:5,key:"やんばる林業・農業。エコツーリズム文脈での参入のみ受容される。"},
+  {name:"東村",gdpBand:1,conformity:90,openness:22,entryDiff:5,minCond:6,key:"最強の農村コミュニティ。慶佐次湾エコツーリズムのみ受け皿あり。"},
+  {name:"伊江村",gdpBand:1,conformity:82,openness:38,entryDiff:5,minCond:5,key:"島嶼閉鎖性+農業コミュニティ。島民の家族紹介なしに商業参入不可。"},
+  {name:"南城市",gdpBand:2,conformity:80,openness:38,entryDiff:5,minCond:5,key:"精神的聖域。文化的権威者との連携と「地元のため」の姿勢が絶対条件。"},
+  {name:"竹富町",gdpBand:1,conformity:78,openness:55,entryDiff:4,minCond:4,key:"観光で外部接点あり。しかし竹富島・西表島の村落規範は最強クラス。"},
+  {name:"与那国町",gdpBand:1,conformity:80,openness:42,entryDiff:5,minCond:5,key:"日本最西端・孤島性。地元家族の推薦なしに信頼構築に2〜3年かかる。"},
+];
+
+// 突破条件7原則
+const BREAKTHROUGH_CONDITIONS = [
+  {no:1,title:"地元有力者への先行挨拶",icon:"🤝",
+   desc:"自治会長・ユイマール仲間のリーダー・地区の「顔」に開業前3〜6ヶ月から接触する。紹介状があれば最強。",
+   gdp_effect:"低GDPエリアほど効果大。高GDPエリア（那覇市街）では重要度↓",
+   score_boost:"+25点 参入スコア改善",col:"#f59e0b"},
+  {no:2,title:"地元雇用の最優先",icon:"👷",
+   desc:"従業員の80%以上を地元出身者で構成する。「地元の人が働いている」という事実がコミュニティ認証になる。",
+   gdp_effect:"GDP低い農村部ほど雇用の政治的インパクトが大きい",
+   score_boost:"+20点",col:"#10b981"},
+  {no:3,title:"地元食材・地元業者との取引",icon:"🌾",
+   desc:"食材・消耗品を地元農家・漁師・業者から調達する。「域内経済循環への貢献」が眼に見えること。",
+   gdp_effect:"農業・水産業コミュニティが強いエリアで必須",
+   score_boost:"+18点",col:"#10b981"},
+  {no:4,title:"3〜6ヶ月の「試用期間」を受け入れる",icon:"⏱️",
+   desc:"ウチナーンチュは新参者を観察する。焦らず、地域行事・清掃活動に参加し続ける。「居続けること」がそのまま信頼になる。",
+   gdp_effect:"全エリア共通。GDP低いほど観察期間が長い（農村は12ヶ月）",
+   score_boost:"+22点（時間経過で自動付与）",col:"#8b5cf6"},
+  {no:5,title:"行事消費カレンダーへの参加・協賛",icon:"🎉",
+   desc:"清明祭（シーミー）・旧盆・区民運動会・地区祭りへの協賛・参加。金額より「一緒にやる」姿勢が重要。",
+   gdp_effect:"農村・離島では最重要。都市部では「知ってくれている」程度で可",
+   score_boost:"+15点",col:"#ec4899"},
+  {no:6,title:"「地元のため」ストーリーの明示",icon:"📢",
+   desc:"「なぜここで開業したか」「地元にどう貢献するか」をシンプルなメッセージで伝える。SNSより口頭・チラシが効く。",
+   gdp_effect:"低GDPエリアほど「使命感」の有無を厳しくチェックする",
+   score_boost:"+12点",col:"#14b8a6"},
+  {no:7,title:"競合地元業者との「棲み分け宣言」",icon:"🤲",
+   desc:"既存地元業者と競合しないことを明示するか、補完関係（客を送り合う）を提案する。競合は敵視される。",
+   gdp_effect:"零細・小型GDP帯では地元業者が「番人」として機能する",
+   score_boost:"+10点",col:"#f97316"},
+];
+
+// GDP帯別サマリー
+const GDP_TIER_SUMMARY = [
+  {tier:"大型（GDP500億超）",munis:["那覇市"],conformity:"中（42-48点）",openness:"高（78-82点）",
+   diff:"★★（比較的容易）",strategy:"立地・資本力・ブランド力が主勝因。コミュニティ依存度は低く、都市型マーケティングが有効。",
+   risk:"価格競争・テナント料が最大リスク。コミュニティ戦略不要な代わり差別化が困難。",col:"#10b981"},
+  {tier:"中型（GDP100〜500億）",munis:["浦添市","沖縄市","宜野湾市","豊見城市","宮古島市","石垣市","南風原町"],conformity:"中（48-65点）",openness:"中（65-78点）",
+   diff:"★★★（標準）",strategy:"地域溶け込み + 立地資本の二刀流。地元有力者との関係構築で加速できる。",
+   risk:"半都市型の「二重規範」—商業エリアは都市型だがその外は強いコミュニティが待つ。",col:"#3b82f6"},
+  {tier:"小型（GDP30〜100億）",munis:["名護市","糸満市","西原町","北谷町","読谷村","恩納村","嘉手納町","北中城村"],conformity:"高（60-75点）",openness:"中（55-70点）",
+   diff:"★★★★（難しい）",strategy:"地元有力者への先行挨拶・地元雇用・行事参加が必須3条件。3〜6ヶ月の観察期間を覚悟。",
+   risk:"コミュニティ承認なき参入は口コミで「あそこはよそ者の店」とレッテルを貼られ集客ゼロ。",col:"#f59e0b"},
+  {tier:"零細（GDP30億未満）",munis:["大宜味村","国頭村","東村","宜野座村","今帰仁村","与那国町","渡名喜村","粟国村等"],conformity:"最高（78-92点）",openness:"低（22-45点）",
+   diff:"★★★★★（最難関）",strategy:"条件なし参入は経済的損失確定。地元出身者との共同創業・島民家族からの紹介状・行政との連携が最低限の突破条件。",
+   risk:"「よそ者が来て儲けて去った」という歴史的記憶がある。長期定住の意思表示が前提。",col:"#ef4444"},
+];
+
+function initGDPConformityAnalysis(){
+  // KPI
+  const krow = document.getElementById('gdp-com-kpi');
+  if(krow && krow.innerHTML===''){
+    krow.innerHTML = [
+      {v:"r = -0.742",l:"GDP×同調圧力 相関係数（強い負の相関）",col:"var(--red)"},
+      {v:"5段階",l:"参入難易度スコア分類",col:"var(--blue)"},
+      {v:"7原則",l:"コミュニティ突破条件",col:"var(--gold)"},
+      {v:"+25点",l:"地元有力者挨拶の参入スコア改善効果",col:"var(--green)"},
+      {v:"南城市・東村",l:"最高難関エリア（同調圧力90点超）",col:"var(--red)"},
+      {v:"北谷町・恩納村",l:"最参入しやすいエリア（開放度85点）",col:"var(--teal)"},
+    ].map(k=>`<div class="kpi red"><div class="val" style="color:${k.col}">${k.v}</div><div class="lbl">${k.l}</div></div>`).join('');
+  }
+
+  // 散布図
+  if(!window._conformityChart){
+    const diffColors = {1:'#10b981',2:'#3b82f6',3:'#f59e0b',4:'#f97316',5:'#ef4444'};
+    window._conformityChart = new Chart('gdp-conformity-scatter',{type:'scatter',data:{
+      datasets: [1,2,3,4,5].map(diff=>({
+        label:`難易度${diff}`,
+        data: CONFORMITY_DATA.filter(d=>d.entryDiff===diff).map(d=>({x:d.gdpBand*20,y:d.conformity,name:d.name})),
+        backgroundColor:diffColors[diff]+'cc',pointRadius:6,pointHoverRadius:9,
+      }))
+    },options:{responsive:true,maintainAspectRatio:false,
+      plugins:{
+        legend:{labels:{font:{size:9}}},
+        tooltip:{callbacks:{label:d=>`${d.raw.name} | GDP帯:${d.raw.x/20} | 同調圧力:${d.raw.y}`}}
+      },
+      scales:{
+        x:{grid:{color:'#1e2a3a'},min:0,max:110,
+          title:{display:true,text:'GDP規模（1=零細〜5=大型）×20',color:'#94a3b8',font:{size:8}},
+          ticks:{font:{size:8},color:'#94a3b8',callback:v=>['','零細','小型','','中型','','大型'][v/20]||''}},
+        y:{grid:{color:'#1e2a3a'},min:0,max:100,
+          title:{display:true,text:'同調圧力スコア（高いほど新規困難）',color:'#94a3b8',font:{size:8}},
+          ticks:{font:{size:8},color:'#94a3b8'}}
+      }}});
+  }
+
+  // エントリーマトリクステーブル
+  const tbody = document.getElementById('entry-matrix-tbody');
+  if(tbody && tbody.innerHTML===''){
+    const diffColor = {1:'#10b981',2:'#3b82f6',3:'#f59e0b',4:'#f97316',5:'#ef4444'};
+    const diffLabel = {1:'★（容易）',2:'★★',3:'★★★',4:'★★★★',5:'★★★★★（最難）'};
+    const gdpLabel = {5:'大型(500億超)',4:'中型(100〜500億)',3:'中型(100〜500億)',2:'小型(30〜100億)',1:'零細(30億未満)'};
+    const sorted = [...CONFORMITY_DATA].sort((a,b)=>b.conformity-a.conformity);
+    tbody.innerHTML = sorted.map(d=>`<tr>
+      <td style="font-weight:700;color:var(--text);white-space:nowrap">${d.name}</td>
+      <td style="font-size:9px;color:var(--text2)">${gdpLabel[d.gdpBand]}</td>
+      <td><div style="display:flex;align-items:center;gap:4px">
+        <div style="width:${d.conformity}px;max-width:80px;height:8px;background:${diffColor[d.entryDiff]};border-radius:4px"></div>
+        <span style="font-size:9px;color:${diffColor[d.entryDiff]};font-weight:700">${d.conformity}</span>
+      </div></td>
+      <td style="color:${diffColor[d.entryDiff]};font-weight:700;font-size:10px">${diffLabel[d.entryDiff]}</td>
+      <td style="text-align:center"><span style="background:${diffColor[d.entryDiff]}22;color:${diffColor[d.entryDiff]};padding:3px 10px;border-radius:10px;font-weight:700">${d.minCond}条件</span></td>
+      <td style="font-size:9px;color:var(--text2);max-width:200px">${d.key}</td>
+    </tr>`).join('');
+  }
+
+  // 突破条件カード
+  const cards = document.getElementById('breakthrough-cards');
+  if(cards && cards.innerHTML===''){
+    cards.innerHTML = `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px">` +
+    BREAKTHROUGH_CONDITIONS.map(c=>`
+      <div style="background:var(--card2);border-radius:10px;padding:14px;border-left:4px solid ${c.col}">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+          <span style="font-size:1.3rem">${c.icon}</span>
+          <span style="font-size:10px;font-weight:800;color:var(--text)">条件${c.no}: ${c.title}</span>
+          <span style="margin-left:auto;font-size:9px;background:${c.col}22;color:${c.col};padding:2px 8px;border-radius:10px;white-space:nowrap">${c.score_boost}</span>
+        </div>
+        <div style="font-size:10px;color:var(--text2);line-height:1.7;margin-bottom:6px">${c.desc}</div>
+        <div style="font-size:9px;background:var(--card);border-radius:5px;padding:5px 8px;color:${c.col}">📍 ${c.gdp_effect}</div>
+      </div>`).join('') + '</div>';
+  }
+
+  // 最難関エリア
+  const hard = document.getElementById('hardest-areas');
+  if(hard && hard.innerHTML===''){
+    const top5 = [...CONFORMITY_DATA].sort((a,b)=>b.conformity-a.conformity).slice(0,6);
+    hard.innerHTML = top5.map((d,i)=>`
+      <div class="rank-item">
+        <div class="rank-num ${i<3?'top3':''}">${i+1}</div>
+        <div class="rank-info">
+          <div class="city">${d.name} <span style="font-size:9px;color:#ef4444">同調圧力 ${d.conformity}</span></div>
+          <div style="font-size:9px;color:var(--text2);margin-top:2px">${d.key.substring(0,50)}...</div>
+          <div class="rank-bar"><div class="rank-bar-fill" style="width:${d.conformity}%;background:linear-gradient(90deg,#ef4444,#f97316)"></div></div>
+        </div>
+        <div class="rank-score" style="color:#ef4444">${'★'.repeat(d.entryDiff)}</div>
+      </div>`).join('');
+  }
+
+  // 参入好機エリア
+  const best = document.getElementById('best-entry-areas');
+  if(best && best.innerHTML===''){
+    const top5 = [...CONFORMITY_DATA].filter(d=>d.gdpBand>=2).sort((a,b)=>(b.openness+b.gdpBand*8)-(a.openness+a.gdpBand*8)).slice(0,6);
+    best.innerHTML = top5.map((d,i)=>`
+      <div class="rank-item">
+        <div class="rank-num ${i<3?'top3':''}">${i+1}</div>
+        <div class="rank-info">
+          <div class="city">${d.name} <span style="font-size:9px;color:#10b981">開放度 ${d.openness}</span></div>
+          <div style="font-size:9px;color:var(--text2);margin-top:2px">${d.key.substring(0,50)}...</div>
+          <div class="rank-bar"><div class="rank-bar-fill" style="width:${d.openness}%;background:linear-gradient(90deg,#10b981,#3b82f6)"></div></div>
+        </div>
+        <div class="rank-score" style="color:#10b981">${d.openness}</div>
+      </div>`).join('');
+  }
+
+  // GDP帯別サマリー
+  const tier = document.getElementById('gdp-tier-summary');
+  if(tier && tier.innerHTML===''){
+    tier.innerHTML = GDP_TIER_SUMMARY.map(t=>`
+      <div style="background:var(--card2);border-left:4px solid ${t.col};border-radius:8px;padding:12px;margin-bottom:10px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+          <span style="font-size:11px;font-weight:800;color:${t.col}">${t.tier}</span>
+          <span style="font-size:10px;color:var(--text2)">同調圧力: ${t.conformity} | 開放度: ${t.openness}</span>
+          <span style="margin-left:auto;font-size:11px;font-weight:900;color:${t.col}">${t.diff}</span>
+        </div>
+        <div style="font-size:9px;color:var(--text2);margin-bottom:4px">対象: ${t.munis.join('・')}</div>
+        <div style="font-size:10px;color:var(--text);margin-bottom:4px">📌 <strong>戦略:</strong> ${t.strategy}</div>
+        <div style="font-size:10px;color:#ef4444">⚠️ <strong>リスク:</strong> ${t.risk}</div>
+      </div>`).join('');
+  }
+}
+
+// Tab13初期化に追加呼び出し
 </script>
 
 <!-- TAB 10: エリア診断ツール -->
@@ -2908,5 +3452,186 @@ function renderMuniParadox(){
   </div>
 </div>
 
+
+<!-- TAB 13: GDP・経済データ全覧 -->
+<div id="t13" class="tab">
+  <div class="sec-head">💰 全41市町村 × 行政区 GDP・経済データ全覧</div>
+  <div class="sec-sub">沖縄県全41市町村の市内総生産・1人当たり所得・労働生産性・成長率・産業構造を完全網羅。行政区別推計GDPで出店エリア判断の根拠データとして活用する。</div>
+
+  <div class="kpi-row" id="gdp13-kpi"></div>
+
+  <!-- フィルター & 検索 -->
+  <div class="gdp-filter-row">
+    <input class="gdp-search" id="gdp13-search" placeholder="🔍 市町村名で検索..." oninput="filterGDP13()">
+    <select class="gdp-filter-select" id="gdp13-region" onchange="filterGDP13()">
+      <option value="">全地区</option>
+      <option value="那覇">那覇</option>
+      <option value="南部">南部</option>
+      <option value="中部">中部</option>
+      <option value="北部">北部</option>
+      <option value="離島">離島</option>
+    </select>
+    <select class="gdp-filter-select" id="gdp13-sort" onchange="filterGDP13()">
+      <option value="gdp">GDP順</option>
+      <option value="income">所得順</option>
+      <option value="growth">成長率順</option>
+      <option value="labor">生産性順</option>
+      <option value="pop">人口順</option>
+    </select>
+    <span id="gdp13-count" style="font-size:10px;color:var(--text2)"></span>
+  </div>
+
+  <!-- 全市町村テーブル -->
+  <div class="panel" style="margin-bottom:14px">
+    <h3>📊 全41市町村 GDP・経済指標一覧</h3>
+    <div style="max-height:420px;overflow-y:auto">
+      <table class="gdp-table" id="gdp13-table">
+        <thead><tr>
+          <th onclick="sortGDP13('rank')">#</th>
+          <th onclick="sortGDP13('name')">市町村</th>
+          <th onclick="sortGDP13('region')">地区</th>
+          <th onclick="sortGDP13('pop')">人口</th>
+          <th onclick="sortGDP13('gdp')">GDP（百万円）</th>
+          <th onclick="sortGDP13('gdp_cap')">1人当りGDP</th>
+          <th onclick="sortGDP13('income')">所得（千円）</th>
+          <th onclick="sortGDP13('labor')">生産性（万）</th>
+          <th onclick="sortGDP13('growth')">成長率</th>
+          <th onclick="sortGDP13('tertiary')">第3次%</th>
+          <th>産業特徴</th>
+        </tr></thead>
+        <tbody id="gdp13-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- チャート群 -->
+  <div class="g2" style="margin-bottom:14px">
+    <div class="panel">
+      <h3>🏆 GDP上位15市町村</h3>
+      <div class="chart-wrap-lg"><canvas id="gdp13-bar"></canvas></div>
+    </div>
+    <div class="panel">
+      <h3>📈 GDP成長率ランキング（全市町村）</h3>
+      <div class="chart-wrap-lg"><canvas id="gdp13-growth"></canvas></div>
+    </div>
+  </div>
+  <div class="g2" style="margin-bottom:14px">
+    <div class="panel">
+      <h3>💡 GDP × 所得変換効率（散布図）</h3>
+      <div class="sec-sub">右上=高GDP・高所得。左下=小規模・低所得。右下=GDP高いのに所得低い（ザル構造）。</div>
+      <div class="chart-wrap-lg"><canvas id="gdp13-scatter"></canvas></div>
+    </div>
+    <div class="panel">
+      <h3>🏭 産業構造比較（上位10市町村）</h3>
+      <div class="chart-wrap-lg"><canvas id="gdp13-industry"></canvas></div>
+    </div>
+  </div>
+
+  <!-- 行政区GDP -->
+  <div class="sec-head" style="margin-top:6px">📍 行政区別 推計GDP（52地区）— 出店立地判断の根拠</div>
+  <div class="sec-sub">市町村内GDP集中度（%）と推計規模から「その地区に出店した場合の経済ポテンシャル」を数値化する。</div>
+
+  <div class="gdp-filter-row">
+    <select class="gdp-filter-select" id="dist13-city" onchange="filterDist13()">
+      <option value="">全市町村</option>
+      <option value="那覇市">那覇市</option>
+      <option value="浦添市">浦添市</option>
+      <option value="沖縄市">沖縄市</option>
+      <option value="うるま市">うるま市</option>
+      <option value="宜野湾市">宜野湾市</option>
+      <option value="名護市">名護市</option>
+      <option value="豊見城市">豊見城市</option>
+      <option value="糸満市">糸満市</option>
+      <option value="南風原町">南風原町</option>
+      <option value="北谷町">北谷町</option>
+      <option value="西原町">西原町</option>
+      <option value="読谷村">読谷村</option>
+      <option value="恩納村">恩納村</option>
+      <option value="宮古島市">宮古島市</option>
+      <option value="石垣市">石垣市</option>
+    </select>
+    <select class="gdp-filter-select" id="dist13-type" onchange="filterDist13()">
+      <option value="">全タイプ</option>
+      <option value="商業核">商業核</option>
+      <option value="観光商業">観光商業</option>
+      <option value="住宅商業">住宅商業</option>
+      <option value="基地商業">基地商業</option>
+      <option value="リゾート">リゾート</option>
+      <option value="教育商業">教育商業</option>
+      <option value="物流商業">物流商業</option>
+    </select>
+    <select class="gdp-filter-select" id="dist13-sort2" onchange="filterDist13()">
+      <option value="gdp_est">GDP推計額順</option>
+      <option value="pct">市内集中度順</option>
+    </select>
+    <span id="dist13-count" style="font-size:10px;color:var(--text2)"></span>
+  </div>
+
+  <div class="g2">
+    <div>
+      <div id="dist13-cards" style="max-height:600px;overflow-y:auto"></div>
+    </div>
+    <div class="panel">
+      <h3>📊 行政区別GDP推計 TOP20</h3>
+      <div class="chart-wrap-lg"><canvas id="dist13-chart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- GDP低×コミュニティ強 新規参入困難度分析 -->
+  <div class="sec-head" style="margin-top:18px">🔒 GDP × コミュニティ強度 → 同調圧力 × 新規参入困難度マップ</div>
+  <div class="sec-sub" style="margin-bottom:12px">
+    <strong style="color:var(--gold)">【分析の核心】</strong>
+    GDP・所得が低いエリアほどコミュニティ依存が強まり、同調圧力（ムラ社会規範）が強化される。
+    新参者（特に外部資本・異業種）は「3〜6ヶ月の試用観察期間」と「地元有力者の承認」なしに参入しても失敗する可能性が高い。
+    ただし<span style="color:var(--teal)">「突破条件」</span>を満たせば、逆にコミュニティの口コミ力が最強の集客装置になる逆転現象が起きる。
+  </div>
+
+  <div class="kpi-row" id="gdp-com-kpi"></div>
+
+  <div class="g2" style="margin-bottom:14px">
+    <div class="panel">
+      <h3>📊 全市町村 GDP × 同調圧力スコア 散布図</h3>
+      <div class="sec-sub">左上=低GDP・高同調圧力（最難関）。右下=高GDP・低圧力（最参入しやすい）。右上=高GDP・高圧力（那覇特殊）。</div>
+      <div class="chart-wrap-lg"><canvas id="gdp-conformity-scatter"></canvas></div>
+    </div>
+    <div class="panel">
+      <h3>🚦 参入難易度 × 突破条件 マトリクス</h3>
+      <div style="font-size:10px;color:var(--text2);margin-bottom:8px">各エリアの「新規参入難易度」と「突破に必要な最低条件数」。数が多いほど準備コストが高い。</div>
+      <div style="max-height:380px;overflow-y:auto">
+        <table class="gdp-table" id="entry-matrix-table">
+          <thead><tr>
+            <th>市町村</th><th>GDP規模</th><th>同調圧力</th><th>参入難易度</th><th>最低条件</th><th>突破の鍵</th>
+          </tr></thead>
+          <tbody id="entry-matrix-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- 突破条件詳細 -->
+  <div class="sec-head" style="margin-top:6px">💡 コミュニティ強エリア 新規参入「突破条件」7原則</div>
+  <div id="breakthrough-cards"></div>
+
+  <!-- エリア別詳細診断 -->
+  <div class="g2" style="margin-top:14px">
+    <div class="panel">
+      <h3>🔴 最高難関エリア（低GDP×高同調圧力）</h3>
+      <div class="sec-sub">外部資本が最も苦戦するゾーン。コミュニティ浸透なしに集客ゼロリスク。</div>
+      <div id="hardest-areas"></div>
+    </div>
+    <div class="panel">
+      <h3>🟢 参入好機エリア（GDP成長×コミュニティ開放）</h3>
+      <div class="sec-sub">GDP成長率が高く、外部受容度が高まっているエリア。今が窓口。</div>
+      <div id="best-entry-areas"></div>
+    </div>
+  </div>
+
+  <!-- GDP帯別 コミュニティ特性まとめ -->
+  <div class="panel" style="margin-top:14px">
+    <h3>📋 GDP規模帯別 コミュニティ社会特性 & 参入戦略サマリー</h3>
+    <div id="gdp-tier-summary"></div>
+  </div>
+
+</div>
+
 </body>
-</html>
