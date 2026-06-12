@@ -942,210 +942,9 @@ Chart.defaults.borderColor='#2d3748';
 Chart.defaults.font.family="'Noto Sans JP','Hiragino Sans','Yu Gothic',sans-serif";
 
 function initCharts(){
-  // TOP20 Bar
-  const top20 = TOP50.slice(0,20);
-  new Chart('top20chart',{type:'bar',data:{
-    labels:top20.map(d=>`${d.rank}.${d.city}・${d.dist.substring(0,6)}`),
-    datasets:[{label:'エリアスコア',data:top20.map(d=>d.score),
-      backgroundColor:top20.map(d=>d.score>=90?'#f59e0b':d.score>=80?'#3b82f6':d.score>=70?'#10b981':'#8b5cf6'),
-      borderRadius:3}]
-  },options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
-    scales:{x:{min:60,max:100,grid:{color:'#1e2a3a'}},y:{grid:{color:'#1e2a3a'},ticks:{font:{size:9}}}},
-    plugins:{legend:{display:false}}}});
-
-  // AXIS Radar
-  new Chart('axischart',{type:'radar',data:{
-    labels:['コミュニティ','経済','心理','道路','基地','歴史','成長','業種適合'],
-    datasets:[
-      {label:'美浜(北谷)',data:[70,95,88,96,82,75,85,95],borderColor:'#f59e0b',backgroundColor:'#f59e0b22',pointBackgroundColor:'#f59e0b'},
-      {label:'牧港(浦添)',data:[68,92,82,98,78,72,78,88],borderColor:'#3b82f6',backgroundColor:'#3b82f622',pointBackgroundColor:'#3b82f6'},
-      {label:'大謝名(宜野湾)',data:[60,88,78,96,80,70,82,90],borderColor:'#10b981',backgroundColor:'#10b98122',pointBackgroundColor:'#10b981'},
-      {label:'喜舎場(北中城)',data:[75,85,70,90,72,68,75,85],borderColor:'#8b5cf6',backgroundColor:'#8b5cf622',pointBackgroundColor:'#8b5cf6'},
-      {label:'恩納(恩納村)',data:[65,80,85,72,45,80,90,78],borderColor:'#ec4899',backgroundColor:'#ec489922',pointBackgroundColor:'#ec4899'},
-    ]
-  },options:{responsive:true,maintainAspectRatio:false,
-    scales:{r:{min:40,max:100,grid:{color:'#2d3748'},ticks:{font:{size:8},backdropColor:'transparent'},pointLabels:{font:{size:9},color:'#94a3b8'}}},
-    plugins:{legend:{labels:{font:{size:9}}}}}});
-
-  // Region pie
-  const regions = {};
-  MUNI_DATA.forEach(d=>{regions[d.region]=(regions[d.region]||0)+1});
-  new Chart('regionchart',{type:'doughnut',data:{
-    labels:Object.keys(regions),
-    datasets:[{data:Object.values(regions),backgroundColor:['#f59e0b','#3b82f6','#10b981','#8b5cf6','#ec4899'],borderColor:'#1a2236',borderWidth:2}]
-  },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:9}}}}}});
-
-  // GDP chart
-  const gdpTop = MUNI_DATA.sort((a,b)=>b.gdp-a.gdp).slice(0,10);
-  new Chart('gdpchart',{type:'bar',data:{
-    labels:gdpTop.map(d=>d.name),
-    datasets:[{label:'GDP（百万円）',data:gdpTop.map(d=>d.gdp),backgroundColor:'#3b82f6aa',borderRadius:3}]
-  },options:{responsive:true,maintainAspectRatio:false,scales:{x:{ticks:{font:{size:8}},grid:{color:'#1e2a3a'}},y:{grid:{color:'#1e2a3a'}}},plugins:{legend:{display:false}}}});
-
-  // Traffic chart
-  const trafficTop = TOP50.sort((a,b)=>b.traffic-a.traffic).slice(0,10);
-  new Chart('trafficchart',{type:'bar',data:{
-    labels:trafficTop.map(d=>`${d.city}・${d.dist.substring(0,5)}`),
-    datasets:[{label:'交通量（台/日）',data:trafficTop.map(d=>d.traffic),backgroundColor:'#10b981aa',borderRadius:3}]
-  },options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',scales:{x:{grid:{color:'#1e2a3a'}},y:{ticks:{font:{size:8}},grid:{color:'#1e2a3a'}}},plugins:{legend:{display:false}}}});
-
-  // Dual psychology scatter
-  new Chart('dualChart',{type:'scatter',data:{
-    datasets:[
-      {label:'都市部（匿名消費強）',data:[{x:82,y:45,l:"那覇市"},{x:78,y:52,l:"浦添市"},{x:85,y:42,l:"北谷町"},{x:80,y:48,l:"宜野湾"}],backgroundColor:'#3b82f6',pointRadius:6},
-      {label:'農村部（ローカル愛着強）',data:[{x:35,y:88,l:"糸満市"},{x:28,y:90,l:"南城市"},{x:25,y:92,l:"国頭村"},{x:32,y:86,l:"宜野座"}],backgroundColor:'#10b981',pointRadius:6},
-      {label:'基地周辺（二面性強）',data:[{x:70,y:70,l:"嘉手納"},{x:75,y:68,l:"金武"},{x:72,y:72,l:"沖縄市"}],backgroundColor:'#f59e0b',pointRadius:6},
-    ]
-  },options:{responsive:true,maintainAspectRatio:false,
-    scales:{x:{title:{display:true,text:'匿名消費指数 →',color:'#94a3b8',font:{size:9}},min:0,max:100,grid:{color:'#1e2a3a'}},
-      y:{title:{display:true,text:'ローカル愛着スコア ↑',color:'#94a3b8',font:{size:9}},min:0,max:100,grid:{color:'#1e2a3a'}}},
-    plugins:{legend:{labels:{font:{size:9}}}}}});
-
-  // Failure avoidance
-  new Chart('avoidChart',{type:'radar',data:{
-    labels:['失敗回避','継続性重視','コミュニティ同調','新規拒否','口コミ依存','価格安定志向'],
-    datasets:[
-      {label:'農村部',data:[90,88,92,85,88,82],borderColor:'#10b981',backgroundColor:'#10b98122',pointBackgroundColor:'#10b981'},
-      {label:'都市部',data:[65,60,70,55,72,75],borderColor:'#3b82f6',backgroundColor:'#3b82f622',pointBackgroundColor:'#3b82f6'},
-      {label:'観光地',data:[45,42,50,38,60,55],borderColor:'#f59e0b',backgroundColor:'#f59e0b22',pointBackgroundColor:'#f59e0b'},
-    ]
-  },options:{responsive:true,maintainAspectRatio:false,
-    scales:{r:{min:0,max:100,grid:{color:'#2d3748'},ticks:{backdropColor:'transparent',font:{size:8}},pointLabels:{font:{size:8},color:'#94a3b8'}}},
-    plugins:{legend:{labels:{font:{size:9}}}}}});
-
-  // Car chart
-  new Chart('carChart',{type:'scatter',data:{
-    datasets:[{label:'新中比率×所得（都道府県）',
-      data:[{x:100,y:650},{x:127,y:508},{x:150,y:430},{x:180,y:380},{x:210,y:320},{x:250,y:270},{x:276,y:241}],
-      backgroundColor:['#3b82f6','#3b82f6','#3b82f6','#8b5cf6','#f59e0b','#f59e0b','#ef4444'],
-      pointRadius:[4,4,4,5,5,5,8],
-    }]
-  },options:{responsive:true,maintainAspectRatio:false,
-    scales:{x:{title:{display:true,text:'新中比率（中古/新車 %）r=-0.60',color:'#94a3b8',font:{size:9}},grid:{color:'#1e2a3a'}},
-      y:{title:{display:true,text:'1人当たり所得（万円）',color:'#94a3b8',font:{size:9}},grid:{color:'#1e2a3a'}}},
-    plugins:{legend:{display:false},
-      tooltip:{callbacks:{label:c=>c.dataIndex===6?`沖縄: 所得${c.parsed.y}万・新中${c.parsed.x}%`:c.dataIndex===0?`東京: 所得${c.parsed.y}万`:`所得${c.parsed.y}万・新中${c.parsed.x}%`}}}}});
-
-  // Psy donut
-  new Chart('psyChart',{type:'doughnut',data:{
-    labels:['匿名消費型（大型モール）','ローカル愛着型（地元商店）','二面性バランス型','基地影響受けるSOFAミックス'],
-    datasets:[{data:[28,35,27,10],backgroundColor:['#3b82f6','#10b981','#8b5cf6','#f59e0b'],borderColor:'#1a2236',borderWidth:2}]
-  },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:9}}}}}});
-
-  // Zaru economy
-  new Chart('zarChart',{type:'bar',data:{
-    labels:['宿泊費\n(30%)','飲食費\n(22%)','土産費\n(22%)','移動費\n(14%)','その他\n(12%)'],
-    datasets:[
-      {label:'域内循環（地元企業）',data:[15,35,25,20,60],backgroundColor:'#10b981aa',borderRadius:3},
-      {label:'域外流出（本土・海外資本）',data:[85,65,75,80,40],backgroundColor:'#ef4444aa',borderRadius:3},
-    ]
-  },options:{responsive:true,maintainAspectRatio:false,scales:{x:{stacked:true,grid:{color:'#1e2a3a'}},y:{stacked:true,grid:{color:'#1e2a3a'},max:100,ticks:{callback:v=>v+'%'}}},
-    plugins:{legend:{labels:{font:{size:10}}}}}});
-
-  // Circulation chart
-  const bizTypes = ['地元食材飲食','地元産土産','地域密着サービス','カジュアル飲食','観光業','外資チェーン','大型ショッピング'];
-  new Chart('cirChart',{type:'bar',data:{
-    labels:bizTypes,
-    datasets:[{label:'域内循環スコア',data:[88,82,80,55,45,25,20],
-      backgroundColor:['#10b981','#10b981','#10b981','#f59e0b','#f59e0b','#ef4444','#ef4444'],borderRadius:3}]
-  },options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
-    scales:{x:{min:0,max:100,grid:{color:'#1e2a3a'}},y:{ticks:{font:{size:9}},grid:{color:'#1e2a3a'}}},
-    plugins:{legend:{display:false}}}});
-
-  // Income conversion
-  const incTop = MUNI_DATA.slice(0,10);
-  new Chart('incChart',{type:'bar',data:{
-    labels:incTop.map(d=>d.name),
-    datasets:[{label:'1人当たり所得（千円）',data:incTop.map(d=>d.income),
-      backgroundColor:incTop.map(d=>d.income>2500?'#f59e0b':d.income>2200?'#3b82f6':'#8b5cf6'),borderRadius:3}]
-  },options:{responsive:true,maintainAspectRatio:false,scales:{x:{ticks:{font:{size:8}},grid:{color:'#1e2a3a'}},y:{grid:{color:'#1e2a3a'}}},plugins:{legend:{display:false}}}});
-
-  // GDP vs income conversion scatter
-  new Chart('convChart',{type:'scatter',data:{
-    datasets:[{label:'市町村（GDP vs 所得変換率）',
-      data:MUNI_DATA.map(d=>({x:Math.log10(d.gdp),y:d.income,name:d.name})),
-      backgroundColor:'#8b5cf6',pointRadius:5}]
-  },options:{responsive:true,maintainAspectRatio:false,
-    scales:{x:{title:{display:true,text:'log10(GDP)',color:'#94a3b8',font:{size:9}},grid:{color:'#1e2a3a'}},
-      y:{title:{display:true,text:'1人当たり所得（千円）',color:'#94a3b8',font:{size:9}},grid:{color:'#1e2a3a'}}}}});
-
-  // Road chart
-  new Chart('roadChart',{type:'bar',data:{
-    labels:['国道沿線','高速IC近接','県道沿線','市町村道沿線','離島内道路'],
-    datasets:[
-      {label:'平均エリアスコア',data:[82,84,65,52,45],backgroundColor:'#3b82f6aa',borderRadius:3},
-      {label:'商業成功率指数',data:[88,90,62,48,42],backgroundColor:'#f59e0baa',borderRadius:3},
-    ]
-  },options:{responsive:true,maintainAspectRatio:false,scales:{x:{grid:{color:'#1e2a3a'}},y:{min:0,max:100,grid:{color:'#1e2a3a'}}},plugins:{legend:{labels:{font:{size:9}}}}}});
-
-  // Traffic rank
-  new Chart('trafficChart2',{type:'bar',data:{
-    labels:['北谷美浜\n国道58','浦添牧港\n国道58','那覇空港\n国道331','宜野湾大謝名\n国道58','北中城喜舎場\n高速IC','那覇久茂地\n国道58','浦添城間\n国道58','那覇おもろ\n国道58','嘉手納\n国道58','読谷喜名\n国道58'],
-    datasets:[{label:'交通量（台/日）',data:[63851,55000,55000,45000,54529,50000,48000,42000,28676,28676],
-      backgroundColor:'#14b8a6aa',borderRadius:3}]
-  },options:{responsive:true,maintainAspectRatio:false,
-    scales:{x:{ticks:{font:{size:8}},grid:{color:'#1e2a3a'}},y:{grid:{color:'#1e2a3a'}}},
-    plugins:{legend:{display:false}}}});
-
-  // Road distribution
-  new Chart('roadDistChart',{type:'doughnut',data:{
-    labels:['国道沿線','高速IC近接','県道沿線','市町村道'],
-    datasets:[{data:[28,15,35,22],backgroundColor:['#b91c1c','#7c2d12','#1d4ed8','#166534'],borderColor:'#1a2236',borderWidth:2}]
-  },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:9}}}}}});
-
-  // Base chart
-  new Chart('baseChart',{type:'doughnut',data:{
-    labels:MILITARY_BASES.map(b=>`${b.name.split('（')[0]} (${b.pop.toLocaleString()}人)`),
-    datasets:[{data:MILITARY_BASES.map(b=>b.pop),
-      backgroundColor:['#3b82f6','#ef4444','#10b981','#f59e0b','#8b5cf6','#14b8a6','#ec4899'],
-      borderColor:'#1a2236',borderWidth:2}]
-  },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{font:{size:9}}}}}});
-
-  // English score
-  const engData = [
-    {c:"北谷町",s:95},{c:"嘉手納町",s:92},{c:"宜野湾市",s:88},{c:"浦添市",s:82},{c:"北中城村",s:80},
-    {c:"金武町",s:78},{c:"沖縄市",s:75},{c:"名護市",s:60},{c:"那覇市",s:65},{c:"うるま市",s:62}
-  ];
-  new Chart('engChart',{type:'bar',data:{
-    labels:engData.map(d=>d.c),
-    datasets:[{label:'英語対応需要スコア',data:engData.map(d=>d.s),
-      backgroundColor:engData.map(d=>d.s>=90?'#f59e0b':d.s>=75?'#3b82f6':'#8b5cf6'),borderRadius:3}]
-  },options:{responsive:true,maintainAspectRatio:false,scales:{x:{ticks:{font:{size:9}},grid:{color:'#1e2a3a'}},y:{min:0,max:100,grid:{color:'#1e2a3a'}}},plugins:{legend:{display:false}}}});
-
-  // Base income
-  new Chart('basIncChart',{type:'doughnut',data:{
-    labels:['軍用地料（881億）','軍雇用所得（540億）','その他基地内消費（1,291億）'],
-    datasets:[{data:[881,540,1291],backgroundColor:['#f59e0b','#3b82f6','#10b981'],borderColor:'#1a2236',borderWidth:2}]
-  },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:9}}}}}});
-
-  // Calendar
-  new Chart('calChart',{type:'bar',data:{
-    labels:CEREMONY_DATA.map(d=>d.name.split('（')[0]),
-    datasets:[{label:'消費指数',data:[60,80,65,100,80,50,60,95,65,60,45,78],
-      backgroundColor:['#3b82f6','#f59e0b','#3b82f6','#ef4444','#f59e0b','#8b5cf6','#3b82f6','#ef4444','#3b82f6','#3b82f6','#10b981','#f59e0b'],
-      borderRadius:3}]
-  },options:{responsive:true,maintainAspectRatio:false,scales:{x:{ticks:{font:{size:8}},grid:{color:'#1e2a3a'}},y:{max:110,grid:{color:'#1e2a3a'}}},plugins:{legend:{display:false}}}});
-
-  // Event categories
-  new Chart('eventChart',{type:'radar',data:{
-    labels:['食料品','外食','贈答品','衣料','観光消費','体験・行事'],
-    datasets:[
-      {label:'シーミー（4月）',data:[95,88,70,40,60,85],borderColor:'#ef4444',backgroundColor:'#ef444422',pointBackgroundColor:'#ef4444'},
-      {label:'旧盆（8月）',data:[90,85,95,60,70,80],borderColor:'#f59e0b',backgroundColor:'#f59e0b22',pointBackgroundColor:'#f59e0b'},
-      {label:'年末行事（12月）',data:[65,92,88,82,50,90],borderColor:'#8b5cf6',backgroundColor:'#8b5cf622',pointBackgroundColor:'#8b5cf6'},
-    ]
-  },options:{responsive:true,maintainAspectRatio:false,
-    scales:{r:{min:0,max:100,grid:{color:'#2d3748'},ticks:{backdropColor:'transparent',font:{size:8}},pointLabels:{font:{size:9},color:'#94a3b8'}}},
-    plugins:{legend:{labels:{font:{size:9}}}}}});
-
-  // Biz chart (initial)
-  window.bizChartObj = new Chart('bizChart',{type:'bar',data:{labels:[],datasets:[{data:[],backgroundColor:[],borderRadius:3}]},
-    options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
-      scales:{x:{min:0,max:100,grid:{color:'#1e2a3a'}},y:{ticks:{font:{size:9}},grid:{color:'#1e2a3a'}}},
-      plugins:{legend:{display:false}}}});
+  // Charts are now lazily initialized per-tab in initTab3/4/5/6/8/9
+  // to avoid rendering into display:none containers (zero-size bug)
 }
-
-// ===================== MUNI RANK =====================
 function renderMuniRank(){
   const el = document.getElementById('muni-rank-list');
   const sorted = MUNI_DATA.sort((a,b)=>b.score-a.score).slice(0,10);
@@ -1275,6 +1074,7 @@ function renderBizMatrix(){
 
 // ===================== BIZ SCORE =====================
 function calcBizScore(){
+  if(!window.bizChartObj) return;
   const btype = document.getElementById('biz-type').value;
   const ttype = document.getElementById('target-type').value;
   const bizData = BIZ_MATRIX.types[btype];
@@ -1322,6 +1122,12 @@ function renderCalendar(){
 function showTab(id){
   if(id==='t1') setTimeout(initTab1Dynamic,50);
   if(id==='t2') setTimeout(initTab2,50);
+  if(id==='t3') setTimeout(initTab3,50);
+  if(id==='t4') setTimeout(initTab4,50);
+  if(id==='t5') setTimeout(initTab5,50);
+  if(id==='t6') setTimeout(initTab6,50);
+  if(id==='t8') setTimeout(initTab8,50);
+  if(id==='t9') setTimeout(initTab9,50);
   if(id==='t11') setTimeout(initTab11,50);
   if(id==='t12') setTimeout(initTab12,50);
   if(id==='t13'){ setTimeout(initTab13,50); setTimeout(initGDPConformityAnalysis,200); }
@@ -1333,7 +1139,6 @@ function showTab(id){
   document.getElementById(id).classList.add('active');
   const idx = ['t1','t2','t3','t4','t5','t6','t7','t8','t9','t10','t11','t12','t13','t14','t15','t16'].indexOf(id);
   document.querySelectorAll('.nav-btn')[idx].classList.add('active');
-  if(id==='t8') calcBizScore();
 }
 
 // ===================== INIT =====================
@@ -2457,6 +2262,202 @@ function initTab2(){
       y:{title:{display:true,text:'ローカルブランド愛着力',color:'#94a3b8',font:{size:9}},grid:{color:'#1e2a3a'}}}}});
 }
 
+
+// === t3 — lazy chart init ===
+let t3ChartsInit = false;
+function initTab3(){
+  if(t3ChartsInit) return;
+  t3ChartsInit = true;
+  // Dual psychology scatter
+  new Chart('dualChart',{type:'scatter',data:{
+    datasets:[
+      {label:'都市部（匿名消費強）',data:[{x:82,y:45,l:"那覇市"},{x:78,y:52,l:"浦添市"},{x:85,y:42,l:"北谷町"},{x:80,y:48,l:"宜野湾"}],backgroundColor:'#3b82f6',pointRadius:6},
+      {label:'農村部（ローカル愛着強）',data:[{x:35,y:88,l:"糸満市"},{x:28,y:90,l:"南城市"},{x:25,y:92,l:"国頭村"},{x:32,y:86,l:"宜野座"}],backgroundColor:'#10b981',pointRadius:6},
+      {label:'基地周辺（二面性強）',data:[{x:70,y:70,l:"嘉手納"},{x:75,y:68,l:"金武"},{x:72,y:72,l:"沖縄市"}],backgroundColor:'#f59e0b',pointRadius:6},
+    ]
+  },options:{responsive:true,maintainAspectRatio:false,
+    scales:{x:{title:{display:true,text:'匿名消費指数 →',color:'#94a3b8',font:{size:9}},min:0,max:100,grid:{color:'#1e2a3a'}},
+      y:{title:{display:true,text:'ローカル愛着スコア ↑',color:'#94a3b8',font:{size:9}},min:0,max:100,grid:{color:'#1e2a3a'}}},
+    plugins:{legend:{labels:{font:{size:9}}}}}});
+
+  // Failure avoidance
+  new Chart('avoidChart',{type:'radar',data:{
+    labels:['失敗回避','継続性重視','コミュニティ同調','新規拒否','口コミ依存','価格安定志向'],
+    datasets:[
+      {label:'農村部',data:[90,88,92,85,88,82],borderColor:'#10b981',backgroundColor:'#10b98122',pointBackgroundColor:'#10b981'},
+      {label:'都市部',data:[65,60,70,55,72,75],borderColor:'#3b82f6',backgroundColor:'#3b82f622',pointBackgroundColor:'#3b82f6'},
+      {label:'観光地',data:[45,42,50,38,60,55],borderColor:'#f59e0b',backgroundColor:'#f59e0b22',pointBackgroundColor:'#f59e0b'},
+    ]
+  },options:{responsive:true,maintainAspectRatio:false,
+    scales:{r:{min:0,max:100,grid:{color:'#2d3748'},ticks:{backdropColor:'transparent',font:{size:8}},pointLabels:{font:{size:8},color:'#94a3b8'}}},
+    plugins:{legend:{labels:{font:{size:9}}}}}});
+
+  // Car chart
+  new Chart('carChart',{type:'scatter',data:{
+    datasets:[{label:'新中比率×所得（都道府県）',
+      data:[{x:100,y:650},{x:127,y:508},{x:150,y:430},{x:180,y:380},{x:210,y:320},{x:250,y:270},{x:276,y:241}],
+      backgroundColor:['#3b82f6','#3b82f6','#3b82f6','#8b5cf6','#f59e0b','#f59e0b','#ef4444'],
+      pointRadius:[4,4,4,5,5,5,8],
+    }]
+  },options:{responsive:true,maintainAspectRatio:false,
+    scales:{x:{title:{display:true,text:'新中比率（中古/新車 %）r=-0.60',color:'#94a3b8',font:{size:9}},grid:{color:'#1e2a3a'}},
+      y:{title:{display:true,text:'1人当たり所得（万円）',color:'#94a3b8',font:{size:9}},grid:{color:'#1e2a3a'}}},
+    plugins:{legend:{display:false},
+      tooltip:{callbacks:{label:c=>c.dataIndex===6?`沖縄: 所得${c.parsed.y}万・新中${c.parsed.x}%`:c.dataIndex===0?`東京: 所得${c.parsed.y}万`:`所得${c.parsed.y}万・新中${c.parsed.x}%`}}}}});
+
+  // Psy donut
+  new Chart('psyChart',{type:'doughnut',data:{
+    labels:['匿名消費型（大型モール）','ローカル愛着型（地元商店）','二面性バランス型','基地影響受けるSOFAミックス'],
+    datasets:[{data:[28,35,27,10],backgroundColor:['#3b82f6','#10b981','#8b5cf6','#f59e0b'],borderColor:'#1a2236',borderWidth:2}]
+  },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:9}}}}}});
+
+}
+
+// === t4 — lazy chart init ===
+let t4ChartsInit = false;
+function initTab4(){
+  if(t4ChartsInit) return;
+  t4ChartsInit = true;
+  // Zaru economy
+  new Chart('zarChart',{type:'bar',data:{
+    labels:['宿泊費\n(30%)','飲食費\n(22%)','土産費\n(22%)','移動費\n(14%)','その他\n(12%)'],
+    datasets:[
+      {label:'域内循環（地元企業）',data:[15,35,25,20,60],backgroundColor:'#10b981aa',borderRadius:3},
+      {label:'域外流出（本土・海外資本）',data:[85,65,75,80,40],backgroundColor:'#ef4444aa',borderRadius:3},
+    ]
+  },options:{responsive:true,maintainAspectRatio:false,scales:{x:{stacked:true,grid:{color:'#1e2a3a'}},y:{stacked:true,grid:{color:'#1e2a3a'},max:100,ticks:{callback:v=>v+'%'}}},
+    plugins:{legend:{labels:{font:{size:10}}}}}});
+
+  // Circulation chart
+  const bizTypes = ['地元食材飲食','地元産土産','地域密着サービス','カジュアル飲食','観光業','外資チェーン','大型ショッピング'];
+  new Chart('cirChart',{type:'bar',data:{
+    labels:bizTypes,
+    datasets:[{label:'域内循環スコア',data:[88,82,80,55,45,25,20],
+      backgroundColor:['#10b981','#10b981','#10b981','#f59e0b','#f59e0b','#ef4444','#ef4444'],borderRadius:3}]
+  },options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
+    scales:{x:{min:0,max:100,grid:{color:'#1e2a3a'}},y:{ticks:{font:{size:9}},grid:{color:'#1e2a3a'}}},
+    plugins:{legend:{display:false}}}});
+
+  // Income conversion
+  const incTop = MUNI_DATA.slice(0,10);
+  new Chart('incChart',{type:'bar',data:{
+    labels:incTop.map(d=>d.name),
+    datasets:[{label:'1人当たり所得（千円）',data:incTop.map(d=>d.income),
+      backgroundColor:incTop.map(d=>d.income>2500?'#f59e0b':d.income>2200?'#3b82f6':'#8b5cf6'),borderRadius:3}]
+  },options:{responsive:true,maintainAspectRatio:false,scales:{x:{ticks:{font:{size:8}},grid:{color:'#1e2a3a'}},y:{grid:{color:'#1e2a3a'}}},plugins:{legend:{display:false}}}});
+
+  // GDP vs income conversion scatter
+  new Chart('convChart',{type:'scatter',data:{
+    datasets:[{label:'市町村（GDP vs 所得変換率）',
+      data:MUNI_DATA.map(d=>({x:Math.log10(d.gdp),y:d.income,name:d.name})),
+      backgroundColor:'#8b5cf6',pointRadius:5}]
+  },options:{responsive:true,maintainAspectRatio:false,
+    scales:{x:{title:{display:true,text:'log10(GDP)',color:'#94a3b8',font:{size:9}},grid:{color:'#1e2a3a'}},
+      y:{title:{display:true,text:'1人当たり所得（千円）',color:'#94a3b8',font:{size:9}},grid:{color:'#1e2a3a'}}}}});
+
+}
+
+// === t5 — lazy chart init ===
+let t5ChartsInit = false;
+function initTab5(){
+  if(t5ChartsInit) return;
+  t5ChartsInit = true;
+  // Road chart
+  new Chart('roadChart',{type:'bar',data:{
+    labels:['国道沿線','高速IC近接','県道沿線','市町村道沿線','離島内道路'],
+    datasets:[
+      {label:'平均エリアスコア',data:[82,84,65,52,45],backgroundColor:'#3b82f6aa',borderRadius:3},
+      {label:'商業成功率指数',data:[88,90,62,48,42],backgroundColor:'#f59e0baa',borderRadius:3},
+    ]
+  },options:{responsive:true,maintainAspectRatio:false,scales:{x:{grid:{color:'#1e2a3a'}},y:{min:0,max:100,grid:{color:'#1e2a3a'}}},plugins:{legend:{labels:{font:{size:9}}}}}});
+
+  // Traffic rank
+  new Chart('trafficChart2',{type:'bar',data:{
+    labels:['北谷美浜\n国道58','浦添牧港\n国道58','那覇空港\n国道331','宜野湾大謝名\n国道58','北中城喜舎場\n高速IC','那覇久茂地\n国道58','浦添城間\n国道58','那覇おもろ\n国道58','嘉手納\n国道58','読谷喜名\n国道58'],
+    datasets:[{label:'交通量（台/日）',data:[63851,55000,55000,45000,54529,50000,48000,42000,28676,28676],
+      backgroundColor:'#14b8a6aa',borderRadius:3}]
+  },options:{responsive:true,maintainAspectRatio:false,
+    scales:{x:{ticks:{font:{size:8}},grid:{color:'#1e2a3a'}},y:{grid:{color:'#1e2a3a'}}},
+    plugins:{legend:{display:false}}}});
+
+  // Road distribution
+  new Chart('roadDistChart',{type:'doughnut',data:{
+    labels:['国道沿線','高速IC近接','県道沿線','市町村道'],
+    datasets:[{data:[28,15,35,22],backgroundColor:['#b91c1c','#7c2d12','#1d4ed8','#166534'],borderColor:'#1a2236',borderWidth:2}]
+  },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:9}}}}}});
+
+}
+
+// === t6 — lazy chart init ===
+let t6ChartsInit = false;
+function initTab6(){
+  if(t6ChartsInit) return;
+  t6ChartsInit = true;
+  // Base chart
+  new Chart('baseChart',{type:'doughnut',data:{
+    labels:MILITARY_BASES.map(b=>`${b.name.split('（')[0]} (${b.pop.toLocaleString()}人)`),
+    datasets:[{data:MILITARY_BASES.map(b=>b.pop),
+      backgroundColor:['#3b82f6','#ef4444','#10b981','#f59e0b','#8b5cf6','#14b8a6','#ec4899'],
+      borderColor:'#1a2236',borderWidth:2}]
+  },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{font:{size:9}}}}}});
+
+  // English score
+  const engData = [
+    {c:"北谷町",s:95},{c:"嘉手納町",s:92},{c:"宜野湾市",s:88},{c:"浦添市",s:82},{c:"北中城村",s:80},
+    {c:"金武町",s:78},{c:"沖縄市",s:75},{c:"名護市",s:60},{c:"那覇市",s:65},{c:"うるま市",s:62}
+  ];
+  new Chart('engChart',{type:'bar',data:{
+    labels:engData.map(d=>d.c),
+    datasets:[{label:'英語対応需要スコア',data:engData.map(d=>d.s),
+      backgroundColor:engData.map(d=>d.s>=90?'#f59e0b':d.s>=75?'#3b82f6':'#8b5cf6'),borderRadius:3}]
+  },options:{responsive:true,maintainAspectRatio:false,scales:{x:{ticks:{font:{size:9}},grid:{color:'#1e2a3a'}},y:{min:0,max:100,grid:{color:'#1e2a3a'}}},plugins:{legend:{display:false}}}});
+
+  // Base income
+  new Chart('basIncChart',{type:'doughnut',data:{
+    labels:['軍用地料（881億）','軍雇用所得（540億）','その他基地内消費（1,291億）'],
+    datasets:[{data:[881,540,1291],backgroundColor:['#f59e0b','#3b82f6','#10b981'],borderColor:'#1a2236',borderWidth:2}]
+  },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:9}}}}}});
+
+}
+
+// === t9 — lazy chart init ===
+let t9ChartsInit = false;
+function initTab9(){
+  if(t9ChartsInit) return;
+  t9ChartsInit = true;
+  // Calendar
+  new Chart('calChart',{type:'bar',data:{
+    labels:CEREMONY_DATA.map(d=>d.name.split('（')[0]),
+    datasets:[{label:'消費指数',data:[60,80,65,100,80,50,60,95,65,60,45,78],
+      backgroundColor:['#3b82f6','#f59e0b','#3b82f6','#ef4444','#f59e0b','#8b5cf6','#3b82f6','#ef4444','#3b82f6','#3b82f6','#10b981','#f59e0b'],
+      borderRadius:3}]
+  },options:{responsive:true,maintainAspectRatio:false,scales:{x:{ticks:{font:{size:8}},grid:{color:'#1e2a3a'}},y:{max:110,grid:{color:'#1e2a3a'}}},plugins:{legend:{display:false}}}});
+
+  // Event categories
+  new Chart('eventChart',{type:'radar',data:{
+    labels:['食料品','外食','贈答品','衣料','観光消費','体験・行事'],
+    datasets:[
+      {label:'シーミー（4月）',data:[95,88,70,40,60,85],borderColor:'#ef4444',backgroundColor:'#ef444422',pointBackgroundColor:'#ef4444'},
+      {label:'旧盆（8月）',data:[90,85,95,60,70,80],borderColor:'#f59e0b',backgroundColor:'#f59e0b22',pointBackgroundColor:'#f59e0b'},
+      {label:'年末行事（12月）',data:[65,92,88,82,50,90],borderColor:'#8b5cf6',backgroundColor:'#8b5cf622',pointBackgroundColor:'#8b5cf6'},
+    ]
+  },options:{responsive:true,maintainAspectRatio:false,
+    scales:{r:{min:0,max:100,grid:{color:'#2d3748'},ticks:{backdropColor:'transparent',font:{size:8}},pointLabels:{font:{size:9},color:'#94a3b8'}}},
+    plugins:{legend:{labels:{font:{size:9}}}}}});
+
+}
+
+// === t8 — lazy chart init ===
+let t8ChartsInit = false;
+function initTab8(){
+  if(t8ChartsInit) return;
+  t8ChartsInit = true;
+  // Biz chart (initial)
+  window.bizChartObj = new Chart('bizChart',{type:'bar',data:{labels:[],datasets:[{data:[],backgroundColor:[],borderRadius:3}]},
+    options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
+      scales:{x:{min:0,max:100,grid:{color:'#1e2a3a'}},y:{ticks:{font:{size:9}},grid:{color:'#1e2a3a'}}},
+      plugins:{legend:{display:false}}}});  calcBizScore();
+}
 function initTab11(){
   // マクロKPI
   const macroEl = document.getElementById('macro-kpis');
