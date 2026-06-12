@@ -3707,126 +3707,103 @@ function calcYuimaru(){
 // 改善B: Tab1 動的KPI初期化
 // ══════════════════════════════════════════════════════════
 function initTab1Dynamic() {
-  // KPI計算
-  const munis = Object.keys(STOREDATA||{});
-  const totalMunis = munis.length;
-  let totalPop = 0, totalGDP = 0, topScore = 0, topMuni = '';
-  munis.forEach(m => {
-    const d = STOREDATA[m];
-    if(d && d.pop) totalPop += d.pop;
+  if(typeof GDP41 === 'undefined') return;
+
+  const totalMunis = GDP41.length;
+  let totalPop = 0, totalGDP = 0;
+  GDP41.forEach(r => { totalPop += r.pop||0; totalGDP += r.gdp||0; });
+
+  let topScore = 0, topMuni = '';
+  let scoreSum = 0;
+  GDP41.forEach(r => {
+    const s = calcAxisScore(r.name);
+    if(s > topScore){ topScore = s; topMuni = r.name; }
+    scoreSum += s;
   });
-  // GDP41から総GDP
-  if(typeof GDP41 !== 'undefined') {
-    GDP41.forEach(r => { if(r.gdp) totalGDP += r.gdp; });
-  }
-  // 平均スコア計算
-  let scoreSum = 0, scoreCount = 0;
-  munis.forEach(m => {
-    const s = calcAxisScore(m);
-    if(s > topScore){ topScore = s; topMuni = m; }
-    scoreSum += s; scoreCount++;
-  });
-  const avgScore = scoreCount ? (scoreSum/scoreCount).toFixed(1) : '—';
-  const gdpT = totalGDP ? (totalGDP/1000000).toFixed(1) : '—';
+  const avgScore = (scoreSum / totalMunis).toFixed(1);
+  const gdpT = (totalGDP / 10000).toFixed(0); // 億円
 
   const kpiRow = document.getElementById('t1-kpi-row');
-  if(kpiRow) kpiRow.innerHTML = [
-    {icon:'🏙️', label:'対象市町村', val: totalMunis+'市町村', sub:'全41自治体'},
-    {icon:'👥', label:'総人口', val: (totalPop/10000).toFixed(0)+'万人', sub:'2024年推計'},
-    {icon:'💴', label:'県内総GDP', val: gdpT+'億円', sub:'市町村合算'},
-    {icon:'🏆', label:'最高AXISスコア', val: topScore+'点', sub: topMuni},
-    {icon:'📊', label:'平均AXISスコア', val: avgScore+'点', sub:'全市町村平均'},
-    {icon:'🪖', label:'SOFA市場規模', val: '~2.6万世帯', sub: '在沖米軍家族'},
-  ].map(k=>`<div class="kpi-card"><div class="kpi-icon">${k.icon}</div><div class="kpi-val">${k.val}</div><div class="kpi-label">${k.label}</div><div class="kpi-sub">${k.sub}</div></div>`).join('');
+  if(kpiRow) kpiRow.innerHTML = `
+    <div class="kpi gold"><div class="val">${totalMunis}</div><div class="lbl">🏙️ 対象市町村</div></div>
+    <div class="kpi blue"><div class="val">${(totalPop/10000).toFixed(0)}万</div><div class="lbl">👥 総人口</div></div>
+    <div class="kpi green"><div class="val">${gdpT}億</div><div class="lbl">💴 県内総GDP</div></div>
+    <div class="kpi purple"><div class="val">${topScore}</div><div class="lbl">🏆 最高AXIS ${topMuni}</div></div>
+    <div class="kpi gold"><div class="val">${avgScore}</div><div class="lbl">📊 平均AXISスコア</div></div>
+    <div class="kpi red"><div class="val">~2.6万</div><div class="lbl">🪖 SOFA世帯数</div></div>`;
 
-  // SOFA KPI
   const sofaKpi = document.getElementById('t1-sofa-kpi');
-  if(sofaKpi) sofaKpi.innerHTML = [
-    {icon:'🪖', label:'SOFA総世帯数', val:'~26,000世帯', sub:'基地外居住含む'},
-    {icon:'💰', label:'年間消費総額', val:'~¥520億', sub:'世帯年収¥800万×0.25'},
-    {icon:'🤰', label:'年間出産数', val:'~1,300件/年', sub:'出生率2.1想定'},
-    {icon:'🏆', label:'英語サービスシェア', val:'実質独占', sub:'日系店舗の英語対応率<5%'},
-    {icon:'🔄', label:'PCS顧客更新率', val:'33%/年', sub:'2-3年毎転勤'},
-    {icon:'💬', label:'FRG口コミ増幅率', val:'×3.2倍', sub:'1顧客→3.2紹介'},
-  ].map(k=>`<div class="kpi-card"><div class="kpi-icon">${k.icon}</div><div class="kpi-val">${k.val}</div><div class="kpi-label">${k.label}</div><div class="kpi-sub">${k.sub}</div></div>`).join('');
+  if(sofaKpi) sofaKpi.innerHTML = `
+    <div class="kpi gold"><div class="val">~¥520億</div><div class="lbl">💰 SOFA年間消費</div></div>
+    <div class="kpi green"><div class="val">独占</div><div class="lbl">🤝 英語サービス競合</div></div>
+    <div class="kpi purple"><div class="val">33%</div><div class="lbl">🔄 PCS年間更新率</div></div>
+    <div class="kpi blue"><div class="val">×3.2</div><div class="lbl">💬 FRG口コミ増幅</div></div>`;
 
-  // ランキング
+  // 市町村ランキング
   const rankDiv = document.getElementById('t1-muni-ranking');
   if(rankDiv) {
-    const ranked = munis.map(m=>({m, s:calcAxisScore(m)})).sort((a,b)=>b.s-a.s).slice(0,10);
+    const ranked = GDP41.map(r=>({m:r.name,s:calcAxisScore(r.name)})).sort((a,b)=>b.s-a.s).slice(0,10);
     rankDiv.innerHTML = ranked.map((r,i)=>`
-      <div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid #ffffff11">
-        <span style="width:20px;text-align:center;font-size:11px;color:var(--gold);font-weight:700">${i+1}</span>
-        <div style="flex:1">
-          <span style="font-size:11px;font-weight:700">${r.m}</span>
-        </div>
-        <div style="width:120px;height:8px;background:#ffffff11;border-radius:4px;overflow:hidden">
+      <div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid var(--border)">
+        <span style="width:18px;text-align:center;font-size:11px;color:var(--gold);font-weight:700">${i+1}</span>
+        <span style="flex:1;font-size:11px;font-weight:700">${r.m}</span>
+        <div style="width:100px;height:7px;background:var(--card2);border-radius:4px;overflow:hidden">
           <div style="height:100%;width:${r.s}%;background:linear-gradient(90deg,#10b981,#3b82f6)"></div>
         </div>
-        <span style="width:35px;text-align:right;font-size:11px;font-weight:700;color:#10b981">${r.s}</span>
+        <span style="width:32px;text-align:right;font-size:11px;font-weight:700;color:#10b981">${r.s}</span>
       </div>`).join('');
   }
 
-  // AXIS凡例
+  // AXIS次元凡例
   const axisLeg = document.getElementById('t1-axis-legend');
   if(axisLeg) axisLeg.innerHTML = [
-    {k:'C',n:'Community',d:'コミュニティ・ユイマール結束度'},
-    {k:'E',n:'Economy',d:'域内経済循環・市場規模'},
-    {k:'P',n:'Psychology',d:'消費者心理・行動パターン'},
-    {k:'R',n:'Road',d:'道路交通量・アクセス性'},
-    {k:'M',n:'Military',d:'軍属市場・SOFA密度'},
-    {k:'H',n:'History',d:'歴史的文脈・地域感情'},
-    {k:'G',n:'Growth',d:'人口成長・開発ポテンシャル'},
-    {k:'B',n:'Business',d:'業種適合・競合密度'},
-  ].map(a=>`<div style="display:flex;align-items:center;gap:8px;padding:3px 0;border-bottom:1px solid #ffffff11">
-    <span style="width:22px;height:22px;background:var(--accent);border-radius:4px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:10px">${a.k}</span>
+    {k:'E',n:'Economy',c:'var(--green)',d:'GDP・経済循環・域内市場規模'},
+    {k:'G',n:'Growth',c:'var(--blue)',d:'人口成長・開発ポテンシャル'},
+    {k:'B',n:'Business',c:'var(--purple)',d:'業種適合・第三次産業比率'},
+    {k:'C',n:'Community',c:'var(--gold)',d:'コミュニティ開放性・ユイマール'},
+    {k:'M',n:'Military',c:'#ef4444',d:'軍属SOFA市場・英語需要密度'},
+    {k:'P',n:'Psychology',c:'var(--accent)',d:'所得水準・消費力'},
+    {k:'R',n:'Road',c:'#f59e0b',d:'交通アクセス・主要幹線近接'},
+    {k:'H',n:'History',c:'#a78bfa',d:'歴史的文化集積・多様性'},
+  ].map(a=>`<div style="display:flex;align-items:center;gap:8px;padding:3px 0;border-bottom:1px solid var(--border)">
+    <span style="width:22px;height:22px;background:${a.c}33;border:1px solid ${a.c};border-radius:4px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:10px;color:${a.c}">${a.k}</span>
     <div><div style="font-size:11px;font-weight:700">${a.n}</div><div style="font-size:9px;color:var(--text-dim)">${a.d}</div></div>
   </div>`).join('');
 
   // GDP Top10チャート
   const gdpCtx = document.getElementById('t1-gdp-chart');
-  if(gdpCtx && typeof Chart !== 'undefined' && typeof GDP41 !== 'undefined') {
+  if(gdpCtx && typeof Chart !== 'undefined') {
+    if(gdpCtx._chartInst) gdpCtx._chartInst.destroy();
     const top10 = [...GDP41].sort((a,b)=>b.gdp-a.gdp).slice(0,10);
-    new Chart(gdpCtx, {
+    gdpCtx._chartInst = new Chart(gdpCtx, {
       type:'bar',
-      data:{ labels: top10.map(r=>r.city), datasets:[{
-        label:'GDP(億円)', data: top10.map(r=>+(r.gdp/10000).toFixed(1)),
-        backgroundColor:'rgba(99,102,241,0.7)', borderRadius:4
+      data:{labels:top10.map(r=>r.name),datasets:[{
+        label:'GDP(億円)', data:top10.map(r=>+(r.gdp/10000).toFixed(1)),
+        backgroundColor:'rgba(99,102,241,0.75)', borderRadius:4
       }]},
-      options:{ responsive:true, maintainAspectRatio:false,
-        plugins:{ legend:{display:false} },
-        scales:{ x:{ticks:{color:'#aaa',font:{size:9}}}, y:{ticks:{color:'#aaa',font:{size:9}}} } }
+      options:{responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{display:false}},
+        scales:{x:{ticks:{color:'#aaa',font:{size:9}}},y:{ticks:{color:'#aaa',font:{size:9}}}}}
     });
   }
 
-  // 地域別分布チャート
+  // 地域別GDP分布チャート
   const regCtx = document.getElementById('t1-region-chart');
   if(regCtx && typeof Chart !== 'undefined') {
-    const regions = {'南部圏':['那覇市','浦添市','豊見城市','糸満市','南城市','南風原町','与那原町','八重瀬町'],
-      '中部圏':['宜野湾市','沖縄市','うるま市','北谷町','嘉手納町','読谷村','北中城村','西原町','中城村'],
-      '北部圏':['名護市','今帰仁村','本部町','大宜味村','国頭村','東村','宜野座村','金武町','恩納村','伊江村'],
-      '離島圏':['石垣市','宮古島市','竹富町','与那国町','久米島町','多良間村','座間味村','渡嘉敷村','粟国村','渡名喜村','南大東村','北大東村','伊平屋村','伊是名村']};
-    const gdpMap = {};
-    if(typeof GDP41 !== 'undefined') GDP41.forEach(r=>{ gdpMap[r.city] = r.gdp||0; });
-    const regGDP = Object.entries(regions).map(([name,ms])=>({name, gdp:ms.reduce((s,m)=>s+(gdpMap[m]||0),0)}));
-    new Chart(regCtx, {
+    if(regCtx._chartInst) regCtx._chartInst.destroy();
+    const regMap = {};
+    GDP41.forEach(r => { if(!regMap[r.region]) regMap[r.region]=0; regMap[r.region]+=r.gdp||0; });
+    const regData = Object.entries(regMap).sort((a,b)=>b[1]-a[1]);
+    regCtx._chartInst = new Chart(regCtx, {
       type:'doughnut',
-      data:{ labels: regGDP.map(r=>r.name), datasets:[{
-        data: regGDP.map(r=>+(r.gdp/10000).toFixed(0)),
-        backgroundColor:['#6366f1','#10b981','#f59e0b','#ef4444']
+      data:{labels:regData.map(r=>r[0]),datasets:[{
+        data:regData.map(r=>+(r[1]/10000).toFixed(0)),
+        backgroundColor:['#6366f1','#10b981','#f59e0b','#ef4444','#a78bfa','#60a5fa']
       }]},
-      options:{ responsive:true, maintainAspectRatio:false,
-        plugins:{ legend:{position:'bottom', labels:{color:'#aaa',font:{size:9}}} } }
+      options:{responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{position:'bottom',labels:{color:'#aaa',font:{size:9},boxWidth:10}}}}
     });
   }
-}
-
-// calcAxisScoreがなければフォールバック
-function calcAxisScore(muni) {
-  const d = STOREDATA && STOREDATA[muni];
-  if(!d) return 50;
-  const c = d.competition||5, a = d.access||5, g = d.growth||5, l = d.land||5, div = d.diversity||5;
-  return Math.round(((10-c)*0.2 + a*0.2 + g*0.2 + l*0.2 + div*0.2)*10);
 }
 
 // ══════════════════════════════════════════════════════════
