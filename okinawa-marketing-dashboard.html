@@ -989,34 +989,6 @@ function initCharts(){
     datasets:[{label:'交通量（台/日）',data:trafficTop.map(d=>d.traffic),backgroundColor:'#10b981aa',borderRadius:3}]
   },options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',scales:{x:{grid:{color:'#1e2a3a'}},y:{ticks:{font:{size:8}},grid:{color:'#1e2a3a'}}},plugins:{legend:{display:false}}}});
 
-  // Knowledge Gap chart
-  new Chart('gapChart',{type:'bar',data:{
-    labels:COMMUNITY.map(d=>d.city),
-    datasets:[
-      {label:'地域知識ギャップ指数',data:COMMUNITY.map(d=>d.gap),backgroundColor:COMMUNITY.map(d=>d.gap>70?'#7c3aed':d.gap>50?'#f59e0b':'#10b981'),borderRadius:3},
-    ]
-  },options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
-    scales:{x:{min:0,max:100,grid:{color:'#1e2a3a'},title:{display:true,text:'ギャップスコア（高い=外部認知>地元活用）',color:'#94a3b8',font:{size:9}}},y:{ticks:{font:{size:9}},grid:{color:'#1e2a3a'}}},
-    plugins:{legend:{display:false}}}});
-
-  // Yuimaru
-  new Chart('yuiChart',{type:'bar',data:{
-    labels:COMMUNITY.slice(0,12).map(d=>d.city),
-    datasets:[
-      {label:'ユイマール係数',data:COMMUNITY.slice(0,12).map(d=>d.yuimaru),backgroundColor:'#f59e0baa',borderRadius:3},
-      {label:'モアイ密度',data:COMMUNITY.slice(0,12).map(d=>d.moai),backgroundColor:'#8b5cf6aa',borderRadius:3},
-    ]
-  },options:{responsive:true,maintainAspectRatio:false,scales:{x:{ticks:{font:{size:8}},grid:{color:'#1e2a3a'}},y:{grid:{color:'#1e2a3a'}}},plugins:{legend:{labels:{font:{size:9}}}}}});
-
-  // Moai chart
-  new Chart('moaiChart',{type:'scatter',data:{
-    datasets:[{label:'市町村（モアイ密度×ローカルブランド力）',
-      data:COMMUNITY.map(d=>({x:d.moai,y:d.localBrand,name:d.city})),
-      backgroundColor:'#8b5cf6',pointRadius:5}]
-  },options:{responsive:true,maintainAspectRatio:false,
-    scales:{x:{title:{display:true,text:'モアイ密度スコア',color:'#94a3b8',font:{size:9}},grid:{color:'#1e2a3a'}},
-      y:{title:{display:true,text:'ローカルブランド愛着力',color:'#94a3b8',font:{size:9}},grid:{color:'#1e2a3a'}}}}});
-
   // Dual psychology scatter
   new Chart('dualChart',{type:'scatter',data:{
     datasets:[
@@ -1349,6 +1321,7 @@ function renderCalendar(){
 // ===================== TAB SWITCH =====================
 function showTab(id){
   if(id==='t1') setTimeout(initTab1Dynamic,50);
+  if(id==='t2') setTimeout(initTab2,50);
   if(id==='t11') setTimeout(initTab11,50);
   if(id==='t12') setTimeout(initTab12,50);
   if(id==='t13'){ setTimeout(initTab13,50); setTimeout(initGDPConformityAnalysis,200); }
@@ -2450,6 +2423,39 @@ const MACRO_KPI = [
   {v:"349万円",l:"労働生産性（全国508万円）",col:"var(--red)"},
   {v:"70.3%",l:"全国米軍施設の沖縄集中率",col:"var(--purple)"},
 ];
+
+
+// === t2 コミュニティ構造 — lazy chart init ===
+let t2ChartsInit = false;
+function initTab2(){
+  if(t2ChartsInit) return;
+  t2ChartsInit = true;
+  // Knowledge Gap chart
+  new Chart('gapChart',{type:'bar',data:{
+    labels:COMMUNITY.map(d=>d.city),
+    datasets:[
+      {label:'地域知識ギャップ指数',data:COMMUNITY.map(d=>d.gap),backgroundColor:COMMUNITY.map(d=>d.gap>70?'#7c3aed':d.gap>50?'#f59e0b':'#10b981'),borderRadius:3},
+    ]
+  },options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
+    scales:{x:{min:0,max:100,grid:{color:'#1e2a3a'},title:{display:true,text:'ギャップスコア（高い=外部認知>地元活用）',color:'#94a3b8',font:{size:9}}},y:{ticks:{font:{size:9}},grid:{color:'#1e2a3a'}}},
+    plugins:{legend:{display:false}}}});
+  // Yuimaru
+  new Chart('yuiChart',{type:'bar',data:{
+    labels:COMMUNITY.slice(0,12).map(d=>d.city),
+    datasets:[
+      {label:'ユイマール係数',data:COMMUNITY.slice(0,12).map(d=>d.yuimaru),backgroundColor:'#f59e0baa',borderRadius:3},
+      {label:'モアイ密度',data:COMMUNITY.slice(0,12).map(d=>d.moai),backgroundColor:'#8b5cf6aa',borderRadius:3},
+    ]
+  },options:{responsive:true,maintainAspectRatio:false,scales:{x:{ticks:{font:{size:8}},grid:{color:'#1e2a3a'}},y:{grid:{color:'#1e2a3a'}}},plugins:{legend:{labels:{font:{size:9}}}}}});
+  // Moai chart
+  new Chart('moaiChart',{type:'scatter',data:{
+    datasets:[{label:'市町村（モアイ密度×ローカルブランド力）',
+      data:COMMUNITY.map(d=>({x:d.moai,y:d.localBrand,name:d.city})),
+      backgroundColor:'#8b5cf6',pointRadius:5}]
+  },options:{responsive:true,maintainAspectRatio:false,
+    scales:{x:{title:{display:true,text:'モアイ密度スコア',color:'#94a3b8',font:{size:9}},grid:{color:'#1e2a3a'}},
+      y:{title:{display:true,text:'ローカルブランド愛着力',color:'#94a3b8',font:{size:9}},grid:{color:'#1e2a3a'}}}}});
+}
 
 function initTab11(){
   // マクロKPI
