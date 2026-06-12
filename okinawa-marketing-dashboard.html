@@ -261,8 +261,6 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP','Hiragino
 .insight-box{background:linear-gradient(135deg,#1e3a8a22,#164e6322);border:1px solid #3b82f633;border-radius:8px;padding:10px 12px;margin-bottom:12px;font-size:11px;line-height:1.6}
 .insight-box strong{color:var(--gold)}
 </style>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" crossorigin="">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js" crossorigin=""></script>
 </head>
 <body>
 <div id="header">
@@ -286,7 +284,6 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP','Hiragino
   <button class="nav-btn nav-yuimaru" onclick="showTab('t14')">🌺 ユイマール変数分析</button>
   <button class="nav-btn" onclick="showTab('t15')">🪖 SOFA軍属市場</button>
   <button class="nav-btn" onclick="showTab('t16')">✅ 突破チェックリスト</button>
-  <button class="nav-btn" onclick="showTab('t17')">🗺️ 立地マップ</button>
 </div>
 
 <!-- TAB 1: 総合エリアスコア -->
@@ -1287,11 +1284,10 @@ function showTab(id){
   if(id==='t14') setTimeout(initTab14,50);
   if(id==='t15') setTimeout(initTab15,50);
   if(id==='t16') setTimeout(initChecklist,50);
-  if(id==='t17') setTimeout(initMapTab,100);
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  const idx = ['t1','t2','t3','t4','t5','t6','t7','t8','t9','t10','t11','t12','t13','t14','t15','t16','t17'].indexOf(id);
+  const idx = ['t1','t2','t3','t4','t5','t6','t7','t8','t9','t10','t11','t12','t13','t14','t15','t16'].indexOf(id);
   document.querySelectorAll('.nav-btn')[idx].classList.add('active');
   if(id==='t8') calcBizScore();
 }
@@ -4131,7 +4127,126 @@ const CHECKLIST_DATA = {
       {id:'yg05',phase:'コミュニティ',item:'基地内ウェルネスフェア参加・デモクラス提供',weight:9,detail:'無料体験が最も効果的な獲得手段'},
       {id:'yg06',phase:'料金',item:'月額制・回数券制 両プラン設定',weight:7,detail:'PCS前後の転入出に対応する柔軟な料金体系'},
     ]
-  }
+  },
+  "美容サロン・エステ": {
+    conditions: [
+      {id:'es01',phase:'スタッフ',item:'英語対応スタイリスト・セラピスト確保',weight:10,detail:'施術中の会話がサービス品質の中核。英語力は必須'},
+      {id:'es02',phase:'メニュー',item:'英語メニュー表・料金表作成',weight:9,detail:'カタカナ英語では通じない。正確な英語表記が必要'},
+      {id:'es03',phase:'メニュー',item:'黒人・混血・多様な髪質への技術習得',weight:9,detail:'軍属の人種は多様。アフリカ系・ラテン系の髪質対応が競合優位の鍵'},
+      {id:'es04',phase:'マーケ',item:'Instagram英語ビフォーアフター投稿',weight:8,detail:'ビジュアル訴求が最も効果的。実績の写真投稿を継続'},
+      {id:'es05',phase:'マーケ',item:'Google Business Profile英語登録・写真充実',weight:8,detail:'"hair salon near Kadena Air Base"等の検索に対応'},
+      {id:'es06',phase:'オペレーション',item:'オンライン予約システム（英語）導入',weight:7,detail:'電話予約を避けたい軍家族には英語オンライン予約が必須'},
+      {id:'es07',phase:'コミュニティ',item:'FRG・軍属Facebook グループでの認知獲得',weight:9,detail:'口コミで一気に広がる。初回割引クーポンのFRG配布が効果的'},
+      {id:'es08',phase:'立地',item:'基地周辺または来店しやすい駐車場完備の立地',weight:7,detail:'駐車場がないと来店率が大幅に下がる'},
+    ]
+  },
+  "英語学習・学習塾": {
+    conditions: [
+      {id:'el01',phase:'ターゲット',item:'対象を明確化（日本人子供・大人/帰国子女）',weight:9,detail:'軍属向けではなく、米軍家族との交流で英語力を伸ばしたい日本人向けが有望'},
+      {id:'el02',phase:'講師',item:'ネイティブ講師またはバイリンガル日本人講師採用',weight:10,detail:'軍属コミュニティとのコネクションがある講師は即戦力'},
+      {id:'el03',phase:'カリキュラム',item:'TOEIC・英検・大学受験対応コース設計',weight:8,detail:'保護者が求めるのは資格・受験対策。目標が明確なコースが選ばれる'},
+      {id:'el04',phase:'カリキュラム',item:'軍属家族との交流イベント・会話練習セッション設置',weight:7,detail:'実際の米軍家族との交流機会が他塾との最大差別化'},
+      {id:'el05',phase:'マーケ',item:'学校・幼稚園への英語体験授業提案',weight:8,detail:'基地周辺の学校・幼稚園で無料体験授業を行い認知拡大'},
+      {id:'el06',phase:'マーケ',item:'季節講習（夏・冬）集中コース設計',weight:6,detail:'短期成果が見えやすい集中講座が保護者に評価される'},
+      {id:'el07',phase:'オペレーション',item:'振替授業・録画視聴対応',weight:6,detail:'習い事と掛け持ちする家庭への柔軟対応が入会決め手になる'},
+    ]
+  },
+  "整体・マッサージ": {
+    conditions: [
+      {id:'se01',phase:'資格',item:'国家資格（柔道整復師・あん摩マッサージ指圧師等）取得',weight:10,detail:'資格証明書の英語翻訳版を準備。軍家族は医療資格を重視する'},
+      {id:'se02',phase:'スタッフ',item:'英語でのカウンセリング・症状説明能力',weight:10,detail:'腰痛・肩こり・スポーツ外傷の英語説明が必須。体の部位英語は全員習得'},
+      {id:'se03',phase:'メニュー',item:'軍人・帰還兵向けPTSD/慢性痛メニュー設計',weight:8,detail:'戦闘帰還兵の慢性疲労・PTSD関連症状への対応プロトコル整備'},
+      {id:'se04',phase:'メニュー',item:'スポーツ整体・ランニング障害対応メニュー',weight:7,detail:'軍人は体を使う仕事。スポーツ系ケアへの需要が高い'},
+      {id:'se05',phase:'保険',item:'TRICARE対象外サービスの価格設定最適化',weight:6,detail:'保険適用外でも払えるプレミアム価格設定が可能'},
+      {id:'se06',phase:'マーケ',item:'基地内Military Medical Centerとの連携検討',weight:7,detail:'医療機関からの紹介ルートを構築できれば安定集客'},
+      {id:'se07',phase:'オペレーション',item:'オンライン予約・英語リマインダーSMS対応',weight:7,detail:'ドタキャン対策と英語でのコミュニケーション効率化'},
+    ]
+  },
+  "保育・託児・子育て支援": {
+    conditions: [
+      {id:'ch01',phase:'認可・法務',item:'認可保育所または認可外届出保育施設登録',weight:10,detail:'法的根拠のある施設は軍家族の信頼度が格段に上がる'},
+      {id:'ch02',phase:'スタッフ',item:'保育士資格保有者の確保（英語対応者優先）',weight:10,detail:'資格と英語力の両立が最強の差別化。バイリンガル保育士は希少価値大'},
+      {id:'ch03',phase:'安全',item:'安全管理マニュアルの英語版作成',weight:9,detail:'避難訓練・事故対応・アレルギー管理の英語マニュアルで軍家族安心感UP'},
+      {id:'ch04',phase:'プログラム',item:'バイリンガル保育プログラム設計',weight:8,detail:'日英2言語環境での保育は軍家族の最大ニーズ。英語優位な環境が好まれる'},
+      {id:'ch05',phase:'連絡',item:'英語連絡帳アプリ・保護者通知システム導入',weight:8,detail:'毎日の様子報告を英語でアプリ送信。透明性が信頼につながる'},
+      {id:'ch06',phase:'コミュニティ',item:'ASYMCA・基地内子育て支援機関との連携',weight:7,detail:'ASYMCA（軍人家族向けYMCA）との提携で公認感を演出'},
+      {id:'ch07',phase:'マーケ',item:'PCS新着家族へのウェルカムパッケージ同梱',weight:9,detail:'転入直後の家族は保育先を即探す。ゲート近くのサービスに問い合わせが集中する'},
+    ]
+  },
+  "ネイル・まつ毛・アイブロウ": {
+    conditions: [
+      {id:'na01',phase:'技術',item:'英語でのデザイン提案・カウンセリング対応',weight:9,detail:'ネイルはコミュニケーションが命。英語でビジョンを共有できないと失客'},
+      {id:'na02',phase:'技術',item:'ジェルネイル・アクリル・ネイルアート全技術習得',weight:8,detail:'米軍家族はネイルアートへの投資額が大きい。クリエイティブな提案力が集客の鍵'},
+      {id:'na03',phase:'SNS',item:'Instagram ネイル作品を英語タグで毎日投稿',weight:10,detail:'#okinawanails #militarynails等のタグで基地周辺の軍家族にリーチ'},
+      {id:'na04',phase:'マーケ',item:'FRG・基地イベントでのネイルプロモーション実施',weight:8,detail:'基地内ブースでミニネイル体験→予約獲得が最速の集客ルート'},
+      {id:'na05',phase:'オペレーション',item:'英語オンライン予約・デザイン見本サイト整備',weight:7,detail:'写真でデザインを選べるシステムで言語バリアを解消'},
+      {id:'na06',phase:'料金',item:'ドル建て決済対応',weight:6,detail:'円換算が面倒な軍家族向けにドル価格表示・USD決済対応'},
+    ]
+  },
+  "フォトスタジオ・記念撮影": {
+    conditions: [
+      {id:'ph01',phase:'サービス',item:'英語対応カメラマン確保',weight:10,detail:'撮影中の指示・表情引き出しには英語コミュニケーション必須'},
+      {id:'ph02',phase:'サービス',item:'マタニティ・ニューボーン・ファミリーフォトメニュー設計',weight:9,detail:'軍家族は「PCS前の家族写真」「赤ちゃん誕生記念」需要が特に高い'},
+      {id:'ph03',phase:'サービス',item:'データ納品・オンライン共有システム（英語UI）',weight:8,detail:'写真をクラウド共有→本国の家族へシェアできる仕組みが口コミを生む'},
+      {id:'ph04',phase:'マーケ',item:'Instagram英語ポートフォリオ整備（週2投稿以上）',weight:9,detail:'ビフォーアフターや雰囲気写真でスタイルを伝える。フォロワー数より一貫性が重要'},
+      {id:'ph05',phase:'マーケ',item:'PCSシーズン前（2月・5月）の先行予約キャンペーン',weight:8,detail:'帰国前の家族写真需要は3〜4ヶ月前から高まる。早期予約割引が有効'},
+      {id:'ph06',phase:'立地',item:'沖縄らしい撮影背景・ロケーション確保',weight:7,detail:'青い海・城壁・ハイビスカス等の沖縄固有背景が「思い出価値」を高める'},
+      {id:'ph07',phase:'コミュニティ',item:'FRG主催イベントでの集合写真撮影協力',weight:7,detail:'無料でFRGイベントを撮影→口コミ起点に。コスト対効果が非常に高い'},
+    ]
+  },
+  "小売・雑貨・インテリア": {
+    conditions: [
+      {id:'rt01',phase:'商品',item:'英語商品説明・POPの整備',weight:9,detail:'日本語のみでは軍家族は手に取らない。英語説明で購買転換率が大幅UP'},
+      {id:'rt02',phase:'商品',item:'沖縄工芸・琉球ガラス・やちむん等の特産品取り扱い',weight:8,detail:'軍家族は「沖縄らしいもの」を求めている。本国への土産需要が特に高い'},
+      {id:'rt03',phase:'決済',item:'クレジットカード・海外発行カード・ApplePay対応',weight:10,detail:'現金のみは致命的。特に海外発行カードの受付が必須'},
+      {id:'rt04',phase:'オペレーション',item:'英語接客・電話対応（基本フレーズ習得）',weight:8,detail:'完璧な英語不要。笑顔と基本フレーズで乗り越えられる'},
+      {id:'rt05',phase:'マーケ',item:'Google Shopping・Instagram Shop 英語登録',weight:7,detail:'オンライン検索から実店舗への誘導。英語商品名でのSEO対策'},
+      {id:'rt06',phase:'マーケ',item:'Okinawa Military Flea Market への出店',weight:8,detail:'基地内フリマは軍家族だけが参加する閉じたマーケット。知名度構築の最短ルート'},
+      {id:'rt07',phase:'立地',item:'基地ゲート周辺または観光地との重複エリア',weight:7,detail:'軍家族と観光客の両方が来る立地が最も安定した売上を生む'},
+    ]
+  },
+  "不動産・賃貸仲介": {
+    conditions: [
+      {id:'re01',phase:'資格',item:'宅地建物取引士資格（英語業務対応者）',weight:10,detail:'英語で契約内容を説明できる担当者は沖縄全域で極めて希少'},
+      {id:'re02',phase:'サービス',item:'英語賃貸契約書・重要事項説明書の準備',weight:10,detail:'SOFA家族の最大困難は日本語契約書。英語版があるだけで競合から圧倒的に差別化'},
+      {id:'re03',phase:'ネットワーク',item:'OHA（海外住宅手当）対応物件リストの整備',weight:9,detail:'OHA上限額に合わせた物件提案が軍家族の最大ニーズ'},
+      {id:'re04',phase:'サービス',item:'生活セットアップ支援（電気・ガス・ネット英語手続き）',weight:8,detail:'転入直後の生活立ち上げをワンストップで英語サポートできれば口コミが爆発的に広がる'},
+      {id:'re05',phase:'コミュニティ',item:'基地内リロケーション担当者との関係構築',weight:9,detail:'基地のHousing Officeとの連携が最強の紹介ルート'},
+      {id:'re06',phase:'マーケ',item:'Military.com・MilitaryByOwner等への物件掲載',weight:8,detail:'軍家族専用不動産サイトへの掲載で全国の転勤予定者にリーチ'},
+      {id:'re07',phase:'サービス',item:'PCS出発前の解約・清算英語サポート',weight:7,detail:'出発サポートをすることで次のPCS転入家族への紹介につながる'},
+    ]
+  },
+  "コワーキング・シェアオフィス": {
+    conditions: [
+      {id:'co01',phase:'環境',item:'高速Wi-Fi（1Gbps以上）・安定回線の整備',weight:10,detail:'リモートワーク需要の核心。速度が全て'},
+      {id:'co02',phase:'環境',item:'英語表示・英語スタッフ対応',weight:9,detail:'軍属配偶者（スポーズ）のリモートワーク需要を取り込む'},
+      {id:'co03',phase:'サービス',item:'時間単位・月額制 複数プラン設定',weight:8,detail:'PCS不確定性に対応した短期プランが必須。月契約だけでは選ばれない'},
+      {id:'co04',phase:'サービス',item:'VPN接続・セキュリティ対応（軍規制準拠）',weight:7,detail:'軍関係のリモートワークにはVPN必須。使用禁止ツールの確認が重要'},
+      {id:'co05',phase:'コミュニティ',item:'ネットワーキングイベント（英日バイリンガル）定期開催',weight:7,detail:'日米起業家・フリーランスが混在するコミュニティは唯一無二の価値を生む'},
+      {id:'co06',phase:'立地',item:'基地周辺かつ飲食店アクセス良好な立地',weight:8,detail:'ランチ・コーヒーに歩いていける環境がコワーキング選択の重要基準'},
+      {id:'co07',phase:'マーケ',item:'SOFA配偶者向け起業支援・スモールビジネス支援連携',weight:8,detail:'基地内SOSプログラムとの連携で軍属配偶者の起業コミュニティを獲得'},
+    ]
+  },
+  "ペットケア・動物病院": {
+    conditions: [
+      {id:'pt01',phase:'医療',item:'獣医師または動物看護師資格（英語対応者）',weight:10,detail:'米軍家族のペット同伴率は約60%。英語で病状説明できる獣医は極めて稀'},
+      {id:'pt02',phase:'サービス',item:'PCS同伴ペットの検疫・帰国手続き英語サポート',weight:9,detail:'帰国時のペット検疫手続きは複雑。英語でサポートできれば絶大な信頼を得る'},
+      {id:'pt03',phase:'サービス',item:'ペットホテル・一時預かり（演習・出張時対応）',weight:8,detail:'軍人の演習や出張でペットを預ける需要が定期的に発生'},
+      {id:'pt04',phase:'マーケ',item:'Okinawa Pet Owners（Facebook）グループ参加・認知拡大',weight:8,detail:'基地内外の軍属ペットオーナーのコミュニティで認知獲得'},
+      {id:'pt05',phase:'マーケ',item:'Google Business・Yelp英語登録',weight:7,detail:'英語の口コミ・評価が軍家族の選択基準。口コミ依頼も英語で行う'},
+      {id:'pt06',phase:'サービス',item:'フード・用品のUSブランド取り扱い',weight:6,detail:'アメリカンドッグフード・用品への需要あり。輸入品の取り扱いが付加価値に'},
+    ]
+  },
+  "自動車販売・カーシェア": {
+    conditions: [
+      {id:'ca01',phase:'法務',item:'米軍向け自動車販売の法的要件確認（SOFA対応）',weight:10,detail:'SOFA規定に基づく軍属への自動車販売には特有の手続きが必要'},
+      {id:'ca02',phase:'サービス',item:'英語での契約・保険・登録手続き代行',weight:10,detail:'ナンバープレート登録・自賠責・任意保険を英語で全サポートできれば独占状態'},
+      {id:'ca03',phase:'商品',item:'左ハンドル車・右ハンドル車 両方の取り扱い',weight:8,detail:'アメリカンスタイルを好む軍人向けに左ハンドル車の扱いが差別化'},
+      {id:'ca04',phase:'サービス',item:'短期リース・PCS特化プラン（1〜3年）設定',weight:9,detail:'転勤サイクルに合わせた短期リースが軍家族の最大ニーズ'},
+      {id:'ca05',phase:'マーケ',item:'基地内掲示板・Facebook グループでの広告',weight:8,detail:'MCCS（基地内サービス）との連携や掲示板活用が効果的'},
+      {id:'ca06',phase:'サービス',item:'PCS帰国時の買取・車両処分サポート',weight:8,detail:'帰国前の車処分サポートが口コミを生む。次の転入家族への紹介につながる'},
+    ]
+  },
 };
 
 let checklistState = {};
@@ -4229,337 +4344,7 @@ function toggleCheck(stateKey, id, biz, area) {
   bizSel && bizSel.dispatchEvent(new Event('change'));
 }
 
-// ══════════════════════════════════════════════════════════
-// Tab17: 店舗立地マップ — Leaflet + Nominatim + Overpass
-// ══════════════════════════════════════════════════════════
-let _mapInstance = null;
-let _mapMarker = null;
-let _roadLayers = [];
 
-// 道路種別カラーマッピング (OSM highway tag → 日本語種別)
-const ROAD_TYPE_MAP = {
-  motorway:     {label:'高速道路',     color:'#cc0000', weight:5},
-  trunk:        {label:'国道（主要）', color:'#e63000', weight:4},
-  primary:      {label:'国道',         color:'#e65000', weight:3},
-  secondary:    {label:'県道',         color:'#0066cc', weight:3},
-  tertiary:     {label:'市町村道（主）',color:'#009933', weight:2},
-  unclassified: {label:'市町村道',     color:'#666666', weight:2},
-  residential:  {label:'生活道路',     color:'#999999', weight:1},
-  service:      {label:'サービス道路', color:'#bbbbbb', weight:1},
-  path:         {label:'歩道・小径',   color:'#ccaa00', weight:1},
-  cycleway:     {label:'自転車道',     color:'#00aacc', weight:1},
-};
-
-// 日本の道路参照番号から種別判定
-function classifyRoadByRef(ref, highway) {
-  if(!ref) return ROAD_TYPE_MAP[highway] || {label:'その他道路', color:'#aaaaaa', weight:1};
-  // 国道: 国X, E表記, 数字のみ(1-507)
-  if(/^国道/.test(ref) || /^(国|E)\d/.test(ref)) return {label:'国道 '+ref, color:'#e65000', weight:3};
-  // 県道/沖縄では「県道」もしくは数字3桁
-  if(/^県道/.test(ref) || /^沖縄県道/.test(ref) || /^\d{3}$/.test(ref)) return {label:'県道 '+ref, color:'#0066cc', weight:3};
-  // R + 数字
-  if(/^R\d+$/.test(ref)) return {label:'国道 R'+ref.replace('R',''), color:'#e65000', weight:3};
-  return ROAD_TYPE_MAP[highway] || {label:ref, color:'#888888', weight:2};
-}
-
-function initMapTab() {
-  if(_mapInstance) { _mapInstance.invalidateSize(); return; }
-  // Leafletが読み込まれているか確認
-  if(typeof L === 'undefined') {
-    document.getElementById('map-status').textContent = '⚠️ 地図ライブラリ読み込み中...';
-    setTimeout(initMapTab, 500);
-    return;
-  }
-  _mapInstance = L.map('map-container', {
-    center: [26.3344, 127.8056], // 沖縄中心
-    zoom: 11,
-    zoomControl: true
-  });
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-    maxZoom: 19
-  }).addTo(_mapInstance);
-
-  // 沖縄41市町村の市役所マーカー（薄く）
-  const CITY_HALLS = [
-    {n:'那覇市',lat:26.2124,lng:127.6809},{n:'浦添市',lat:26.2459,lng:127.7215},
-    {n:'宜野湾市',lat:26.2816,lng:127.7779},{n:'沖縄市',lat:26.3344,lng:127.8025},
-    {n:'名護市',lat:26.5917,lng:127.9778},{n:'石垣市',lat:24.3403,lng:124.1555},
-    {n:'北谷町',lat:26.3089,lng:127.7575},{n:'嘉手納町',lat:26.3650,lng:127.7531},
-  ];
-  CITY_HALLS.forEach(c => {
-    L.circleMarker([c.lat, c.lng], {radius:4,color:'#6366f188',fillColor:'#6366f1',fillOpacity:0.4,weight:1})
-      .addTo(_mapInstance)
-      .bindTooltip(c.n, {permanent:false, direction:'top', className:'leaflet-tooltip-custom'});
-  });
-  document.getElementById('map-status').textContent = '地図を読み込みました。住所を入力して検索してください。';
-}
-
-async function searchAddress() {
-  const addr = document.getElementById('map-addr-input').value.trim();
-  if(!addr) { setMapStatus('⚠️ 住所を入力してください', 'red'); return; }
-  setMapStatus('🔍 住所を検索中...', 'var(--gold)');
-  try {
-    const q = encodeURIComponent(addr + ', 沖縄県, 日本');
-    const url = `https://nominatim.openstreetmap.org/search?q=${q}&format=json&countrycodes=jp&addressdetails=1&limit=3`;
-    const res = await fetch(url, {headers:{'Accept-Language':'ja'}});
-    const data = await res.json();
-    if(!data || data.length === 0) {
-      // 沖縄限定を外して再試行
-      const url2 = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(addr)}&format=json&addressdetails=1&limit=3`;
-      const res2 = await fetch(url2, {headers:{'Accept-Language':'ja'}});
-      const data2 = await res2.json();
-      if(!data2 || data2.length === 0) { setMapStatus('❌ 住所が見つかりませんでした。もう少し詳しく入力してください。', '#ef4444'); return; }
-      await processGeoResult(data2[0]);
-    } else {
-      await processGeoResult(data[0]);
-    }
-  } catch(e) { setMapStatus('❌ 通信エラー: ' + e.message, '#ef4444'); }
-}
-
-async function getGPS() {
-  if(!navigator.geolocation) { setMapStatus('❌ このブラウザはGPSに対応していません', '#ef4444'); return; }
-  setMapStatus('📡 GPS取得中...', 'var(--gold)');
-  navigator.geolocation.getCurrentPosition(async pos => {
-    const lat = pos.coords.latitude, lng = pos.coords.longitude;
-    setMapStatus(`📡 GPS取得: ${lat.toFixed(5)}, ${lng.toFixed(5)} — 逆ジオコーディング中...`, '#10b981');
-    try {
-      const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&addressdetails=1`;
-      const res = await fetch(url, {headers:{'Accept-Language':'ja'}});
-      const data = await res.json();
-      data.lat = lat; data.lon = lng;
-      // 住所欄に設定
-      const addrText = data.display_name || `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
-      document.getElementById('map-addr-input').value = addrText;
-      await processGeoResult(data);
-    } catch(e) { setMapStatus('❌ 逆ジオコーディングエラー: ' + e.message, '#ef4444'); }
-  }, err => {
-    const msgs = {1:'位置情報の許可が必要です', 2:'位置情報を取得できませんでした', 3:'タイムアウトしました'};
-    setMapStatus('❌ GPS: ' + (msgs[err.code] || err.message), '#ef4444');
-  }, {timeout:15000, maximumAge:60000});
-}
-
-async function processGeoResult(geo) {
-  const lat = parseFloat(geo.lat), lng = parseFloat(geo.lon);
-  if(isNaN(lat)||isNaN(lng)) { setMapStatus('❌ 座標が取得できませんでした', '#ef4444'); return; }
-
-  if(!_mapInstance) initMapTab();
-  // マーカー設置
-  if(_mapMarker) _mapInstance.removeLayer(_mapMarker);
-  const icon = L.divIcon({html:'<div style="width:28px;height:28px;background:#ef4444;border:3px solid #fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;box-shadow:0 2px 8px #00000066">📍</div>', iconSize:[28,28], iconAnchor:[14,28], className:''});
-  _mapMarker = L.marker([lat,lng], {icon}).addTo(_mapInstance).bindPopup(`<b>${geo.display_name || ''}</b>`).openPopup();
-  _mapInstance.setView([lat,lng], 15);
-
-  setMapStatus(`✓ 座標: ${lat.toFixed(5)}, ${lng.toFixed(5)} — 道路データ取得中...`, '#10b981');
-
-  // 市町村の特定
-  const addr = geo.address || {};
-  const muni = addr.city || addr.town || addr.village || addr.county || '不明';
-  const district = addr.suburb || addr.neighbourhood || addr.quarter || '';
-
-  // GDP・スコア表示
-  showMuniInfo(muni, district, lat, lng);
-
-  // 道路データ取得
-  await fetchNearbyRoads(lat, lng);
-}
-
-function showMuniInfo(muni, district, lat, lng) {
-  // GDP41から市町村データ検索
-  let gdpEntry = null;
-  if(typeof GDP41 !== 'undefined') {
-    gdpEntry = GDP41.find(r => r.city && (r.city.includes(muni) || muni.includes(r.city.replace(/[市町村]/,'').slice(0,3))));
-  }
-  // STOREDATAから
-  let storeEntry = null;
-  if(typeof STOREDATA !== 'undefined') {
-    const key = Object.keys(STOREDATA).find(k => k.includes(muni.slice(0,3)));
-    if(key) storeEntry = STOREDATA[key];
-  }
-  // AXIS score
-  const axisScore = storeEntry ? calcAxisScore(Object.keys(STOREDATA).find(k=>k.includes(muni.slice(0,3)))) : '—';
-
-  // conformityMap
-  let conformity = '—';
-  if(typeof conformityMap !== 'undefined') {
-    const ck = Object.keys(conformityMap).find(k=>k.includes(muni.slice(0,3)));
-    if(ck) conformity = conformityMap[ck];
-  }
-
-  // 市町村情報パネル
-  document.getElementById('map-muni-info').innerHTML = `
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
-      <div style="background:#6366f111;border-radius:6px;padding:8px">
-        <div style="font-size:9px;color:var(--text-dim)">市町村</div>
-        <div style="font-size:16px;font-weight:900;color:#a78bfa">${muni}</div>
-        ${district ? `<div style="font-size:10px;color:var(--text-dim)">${district}</div>` : ''}
-      </div>
-      <div style="background:#10b98111;border-radius:6px;padding:8px">
-        <div style="font-size:9px;color:var(--text-dim)">座標</div>
-        <div style="font-size:11px;font-weight:700;color:#10b981">${lat.toFixed(4)}N</div>
-        <div style="font-size:11px;font-weight:700;color:#10b981">${lng.toFixed(4)}E</div>
-      </div>
-      ${storeEntry ? `
-        <div style="background:#f59e0b11;border-radius:6px;padding:8px">
-          <div style="font-size:9px;color:var(--text-dim)">人口</div>
-          <div style="font-size:13px;font-weight:700;color:#f59e0b">${storeEntry.pop ? storeEntry.pop.toLocaleString()+'人' : '—'}</div>
-        </div>` : ''}
-      <div style="background:#ef444411;border-radius:6px;padding:8px">
-        <div style="font-size:9px;color:var(--text-dim)">同調圧力スコア</div>
-        <div style="font-size:13px;font-weight:700;color:#ef4444">${conformity !== '—' ? conformity+'点' : '—'}</div>
-      </div>
-    </div>`;
-
-  // AXIS スコアパネル
-  const scoreColor = axisScore >= 70 ? '#10b981' : axisScore >= 50 ? '#f59e0b' : '#ef4444';
-  document.getElementById('map-axis-score').innerHTML = axisScore !== '—' ? `
-    <div style="text-align:center;padding:10px">
-      <div style="font-size:48px;font-weight:900;color:${scoreColor}">${axisScore}</div>
-      <div style="font-size:11px;color:var(--text-dim)">OKINAWA-AXIS 総合スコア</div>
-      <div style="height:8px;background:#ffffff11;border-radius:4px;margin:8px 0;overflow:hidden">
-        <div style="height:100%;width:${axisScore}%;background:linear-gradient(90deg,${scoreColor},${scoreColor}88)"></div>
-      </div>
-      <div style="font-size:10px;color:${scoreColor}">${axisScore>=80?'🟢 参入適性：高':axisScore>=60?'🟡 参入適性：中':'🔴 参入適性：要検討'}</div>
-    </div>` : '<div style="color:var(--text-dim)">スコアデータなし（沖縄県外の可能性）</div>';
-
-  // GDP パネル
-  const gdpInfoDiv = document.getElementById('map-gdp-info');
-  if(gdpEntry) {
-    gdpInfoDiv.innerHTML = `
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <div style="background:#10b98111;border:1px solid #10b98133;border-radius:8px;padding:10px;flex:1;min-width:120px">
-          <div style="font-size:9px;color:var(--text-dim)">市町村GDP</div>
-          <div style="font-size:16px;font-weight:900;color:#10b981">${gdpEntry.gdp ? (gdpEntry.gdp/10000).toFixed(1)+'億円' : '—'}</div>
-          <div style="font-size:9px;color:var(--text-dim)">${gdpEntry.city}</div>
-        </div>
-        <div style="background:#6366f111;border:1px solid #6366f133;border-radius:8px;padding:10px;flex:1;min-width:120px">
-          <div style="font-size:9px;color:var(--text-dim)">一人当たり所得</div>
-          <div style="font-size:16px;font-weight:900;color:#a78bfa">${gdpEntry.income ? gdpEntry.income.toLocaleString()+'万円' : '—'}</div>
-        </div>
-        ${gdpEntry.gdp_per_cap ? `<div style="background:#f59e0b11;border:1px solid #f59e0b33;border-radius:8px;padding:10px;flex:1;min-width:120px">
-          <div style="font-size:9px;color:var(--text-dim)">一人当たりGDP</div>
-          <div style="font-size:16px;font-weight:900;color:#f59e0b">${gdpEntry.gdp_per_cap.toFixed(0)}万円</div>
-        </div>` : ''}
-      </div>
-      <div style="margin-top:8px;font-size:10px;color:var(--text-dim)">
-        ※ 出典: 沖縄県市町村民所得推計（2022年度）
-      </div>`;
-  } else {
-    gdpInfoDiv.innerHTML = '<div style="color:var(--text-dim)">GDP データが見つかりませんでした（沖縄県外または離島の可能性）</div>';
-  }
-
-  setMapStatus(`✓ ${muni}${district?' '+district:''} の情報を取得しました`, '#10b981');
-}
-
-async function fetchNearbyRoads(lat, lng) {
-  const roadDiv = document.getElementById('map-road-info');
-  roadDiv.innerHTML = '<div style="color:var(--gold)">🛣️ 周辺道路データを取得中...</div>';
-
-  // 既存道路レイヤーを削除
-  _roadLayers.forEach(l => _mapInstance.removeLayer(l));
-  _roadLayers = [];
-
-  const radius = 500; // 500m
-  const overpassQuery = `
-[out:json][timeout:20];
-(
-  way["highway"](around:${radius},${lat},${lng});
-);
-out geom qt;`;
-  const overpassUrl = 'https://overpass-api.de/api/interpreter';
-
-  try {
-    const res = await fetch(overpassUrl, {
-      method:'POST',
-      body:'data=' + encodeURIComponent(overpassQuery),
-      headers:{'Content-Type':'application/x-www-form-urlencoded'},
-    });
-    const data = await res.json();
-    const elements = data.elements || [];
-
-    if(elements.length === 0) {
-      roadDiv.innerHTML = '<div style="color:var(--text-dim)">周辺500m以内に道路データが見つかりませんでした</div>';
-      return;
-    }
-
-    // 道路を分類集計
-    const roadGroups = {};
-    const seenNames = new Set();
-
-    elements.forEach(el => {
-      const hw = el.tags?.highway;
-      const ref = el.tags?.ref;
-      const name = el.tags?.name || el.tags?.['name:ja'] || '';
-      const classified = classifyRoadByRef(ref, hw);
-      const groupKey = classified.label;
-
-      if(!roadGroups[groupKey]) {
-        roadGroups[groupKey] = {label:classified.label, color:classified.color, weight:classified.weight, count:0, refs:new Set(), names:new Set()};
-      }
-      roadGroups[groupKey].count++;
-      if(ref) roadGroups[groupKey].refs.add(ref);
-      if(name) roadGroups[groupKey].names.add(name);
-
-      // 地図上に道路を描画
-      if(el.geometry && el.geometry.length > 0) {
-        const latlngs = el.geometry.map(g => [g.lat, g.lon]);
-        const roadLine = L.polyline(latlngs, {
-          color: classified.color,
-          weight: classified.weight + 1,
-          opacity: 0.8,
-        }).addTo(_mapInstance);
-
-        const tooltip = `${classified.label}${ref?' ('+ref+')':''}${name?' '+name:''}`;
-        roadLine.bindTooltip(tooltip, {sticky:true});
-        _roadLayers.push(roadLine);
-      }
-    });
-
-    // 国道・県道のフィルタ（重複除去）
-    const roadList = Object.values(roadGroups).sort((a,b) => {
-      const order = {
-        '高速道路':0, '国道（主要）':1, '国道':2, '県道':3,
-        '市町村道（主）':4, '市町村道':5, '生活道路':6, 'サービス道路':7
-      };
-      return (order[a.label]??9) - (order[b.label]??9);
-    }).filter(r => !r.label.includes('歩道') && !r.label.includes('自転車'));
-
-    // パネル更新
-    roadDiv.innerHTML = `
-      <div style="margin-bottom:8px;font-size:10px;color:var(--text-dim)">半径500m以内の道路（計${elements.length}セグメント）</div>
-      ${roadList.map(r => `
-        <div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid #ffffff11">
-          <div style="width:28px;height:4px;background:${r.color};border-radius:2px;flex-shrink:0"></div>
-          <div style="flex:1">
-            <span style="font-size:11px;font-weight:700">${r.label}</span>
-            ${r.refs.size > 0 ? `<span style="font-size:9px;color:var(--text-dim);margin-left:4px">${[...r.refs].slice(0,3).join(' / ')}</span>` : ''}
-            ${r.names.size > 0 ? `<div style="font-size:9px;color:var(--text-dim)">${[...r.names].slice(0,2).join(' / ')}</div>` : ''}
-          </div>
-          <span style="font-size:9px;color:var(--text-dim)">${r.count}区間</span>
-        </div>`).join('')}
-      <div style="margin-top:8px;font-size:9px;color:var(--text-dim)">地図上で色付き線をクリックすると道路名が表示されます</div>`;
-
-    // 道路密度スコア
-    const hasNationalRoad = roadList.some(r => r.label.includes('国道'));
-    const hasPrefRoad    = roadList.some(r => r.label.includes('県道'));
-    const trafficScore   = (hasNationalRoad?40:0) + (hasPrefRoad?30:0) + Math.min(elements.length*0.5, 30);
-    setMapStatus(`✓ ${elements.length}本の道路を検出。交通アクセス評価: ${Math.min(100,Math.round(trafficScore))}点`, '#10b981');
-
-  } catch(e) {
-    roadDiv.innerHTML = `<div style="color:#f59e0b">⚠️ 道路データ取得エラー: ${e.message}<br><small>Overpass API に接続できません。インターネット接続を確認してください。</small></div>`;
-  }
-}
-
-function setMapStatus(msg, color='var(--text-dim)') {
-  const el = document.getElementById('map-status');
-  if(el) { el.textContent = msg; el.style.color = color; }
-}
-
-// Enterキーで検索
-document.addEventListener('DOMContentLoaded', () => {
-  const inp = document.getElementById('map-addr-input');
-  if(inp) inp.addEventListener('keydown', e => { if(e.key === 'Enter') searchAddress(); });
-});
 </script>
 
 <!-- TAB 10: エリア診断ツール -->
@@ -5450,47 +5235,5 @@ document.addEventListener('DOMContentLoaded', () => {
   </div>
 </div>
 
-<div id="t17" class="tab">
-  <div class="sec-head">🗺️ 店舗立地マップ — 住所入力→道路・GDP・エリアスコア即時確認</div>
-  <div class="sec-sub">住所を入力するか現在地GPSで、周辺道路種別（国道・県道・市町村道）・市町村GDP・OKINAWA-AXISスコアを表示します。</div>
-
-  <div class="panel" style="margin-bottom:12px">
-    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end">
-      <div style="flex:1;min-width:200px">
-        <label style="font-size:10px;font-weight:700;color:var(--gold);display:block;margin-bottom:4px">📍 店舗住所（例: 沖縄県沖縄市山内2-9-16）</label>
-        <input id="map-addr-input" type="text" placeholder="沖縄県〇〇市〇〇町〇〇番地"
-          style="width:100%;box-sizing:border-box;background:#1e2533;color:#e2e8f0;border:1px solid #ffffff33;border-radius:6px;padding:8px 10px;font-size:12px"/>
-      </div>
-      <button onclick="searchAddress()" style="background:linear-gradient(135deg,#6366f1,#4f46e5);color:#fff;border:none;border-radius:8px;padding:9px 18px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap">🔍 検索</button>
-      <button onclick="getGPS()" style="background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;border-radius:8px;padding:9px 18px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap">📡 GPS現在地</button>
-    </div>
-    <div id="map-status" style="margin-top:8px;font-size:10px;color:var(--text-dim)">住所を入力して検索するか、GPS現在地ボタンを押してください。</div>
-  </div>
-
-  <div class="g2" style="margin-bottom:12px">
-    <div class="panel" style="padding:0;overflow:hidden;border-radius:10px;min-height:380px">
-      <div id="map-container" style="width:100%;height:400px;border-radius:10px"></div>
-    </div>
-    <div>
-      <div class="panel" style="margin-bottom:10px" id="map-muni-panel">
-        <h3>🏙️ 市町村情報</h3>
-        <div id="map-muni-info" style="color:var(--text-dim);font-size:10px">住所を検索すると表示されます</div>
-      </div>
-      <div class="panel" style="margin-bottom:10px">
-        <h3>🛣️ 周辺道路（500m圏内）</h3>
-        <div id="map-road-info" style="color:var(--text-dim);font-size:10px">住所を検索すると表示されます</div>
-      </div>
-      <div class="panel">
-        <h3>📊 OKINAWA-AXIS スコア</h3>
-        <div id="map-axis-score" style="color:var(--text-dim);font-size:10px">住所を検索すると表示されます</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="panel" id="map-gdp-panel">
-    <h3>💴 GDP・経済規模データ</h3>
-    <div id="map-gdp-info" style="color:var(--text-dim);font-size:10px">住所を検索すると表示されます</div>
-  </div>
-</div>
 
 </body>
