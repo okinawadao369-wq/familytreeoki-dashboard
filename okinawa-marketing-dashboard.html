@@ -947,6 +947,7 @@ function initCharts(){
 }
 function renderMuniRank(){
   const el = document.getElementById('muni-rank-list');
+  if(!el) return;  // element removed in current layout
   const sorted = MUNI_DATA.sort((a,b)=>b.score-a.score).slice(0,10);
   el.innerHTML = sorted.map((d,i)=>`
     <div class="rank-item">
