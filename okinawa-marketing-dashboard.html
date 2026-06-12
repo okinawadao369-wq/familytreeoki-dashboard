@@ -3825,6 +3825,12 @@ function calcYuimaru(){
 // ══════════════════════════════════════════════════════════
 // 改善B: Tab1 動的KPI初期化
 // ══════════════════════════════════════════════════════════
+// === AXIS スコア参照 ===
+function calcAxisScore(muniName) {
+  const m = MUNI_DATA.find(r => r.name === muniName);
+  return m ? (m.score || 0) : 0;
+}
+
 function initTab1Dynamic() {
   if(typeof GDP41 === 'undefined') return;
 
