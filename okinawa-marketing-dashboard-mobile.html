@@ -319,6 +319,32 @@ h4{font-size:11px}
   height:200px !important;
 }
 
+/* テーブル全件: 横スクロール */
+.data-table,.stat-table,.gdp-table,.matrix-table,[id$="-table"]{
+  display:block;overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%;
+}
+/* セレクト・インプット */
+select,input[type="number"],input[type="text"]{
+  font-size:14px;width:100%;box-sizing:border-box;margin-bottom:6px;
+}
+/* パネル内のフレックス行を縦積みに */
+.row,.flex-row{flex-direction:column !important}
+/* 大きいキャプション */
+.caption,.note,.insight-box{font-size:10px}
+/* レーダーコンテナ */
+canvas{max-width:100% !important}
+
+/* t1チャートキャンバス */
+#t1-region-chart,#t1-gdp-chart{height:160px !important;max-height:160px}
+/* ym-compare */
+#ym-compare-chart{height:180px !important}
+/* radar系 */
+#diag-radar{height:200px !important}
+
+/* KPI値・ラベル改行防止 */
+.kpi .val{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:1.1rem}
+.kpi .lbl{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
 </style>
 </head>
 <body>
