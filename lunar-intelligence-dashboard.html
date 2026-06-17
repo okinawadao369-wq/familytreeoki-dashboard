@@ -232,7 +232,7 @@
     <div class="header-sub">沖縄旧暦信仰OS × グローバル金融市場 ― 旧暦一日・十五日が市場に刻む無意識のリズム</div>
     <div class="header-badges">
       <span class="badge">📊 BTC・日経・S&P500・NASDAQ・USDJPY・GOLD 7資産</span>
-      <span class="badge">📅 過去10年分析 (2015-2025)</span>
+      <span class="badge">📅 過去30年分析 (1995-2025)</span>
       <span class="badge">🌑 新月(一日) 149回</span>
       <span class="badge">🌕 満月(十五日) 148回</span>
       <span class="badge">統計的検証付き</span>
@@ -318,12 +318,12 @@
   </div>
 </div>
   <div class="sec-title">📊 7資産 × 月相別 統計分析</div>
-  <div class="sec-sub">旧暦一日(新月)・十五日(満月)前後±1日の市場リターンを10年分(2015-2025)で検証。p値 < 0.2を準有意、< 0.1を有意として評価。</div>
+  <div class="sec-sub">旧暦一日(新月)・十五日(満月)前後±1日の市場リターンを30年分(1995-2025)で検証。p値 < 0.2を準有意、< 0.1を有意として評価。</div>
 
   <div class="chart-card">
     <h3>月相別リターン ヒートマップ</h3>
     <div class="chart-desc">各資産・各月相の平均リターン(%)。色が濃いほど大きな差異。</div>
-    <div class="chart-wrap-tall"><canvas id="chart-heatmap"></canvas></div>
+    <div class="chart-wrap-tall" style="height:520px;overflow:visible;"><canvas id="chart-heatmap"></canvas></div>
   </div>
 
   <div class="chart-card">
@@ -649,79 +649,150 @@ function buildHeatmap() {
   if (!canvas || !analysis) return;
   const ctx = canvas.getContext('2d');
 
-  const instruments = ['btc','gold','usdjpy','eurjpy','eurusd','sp500','nasdaq','dji','nikkei'];
-  const instrNames  = ['₿ BTC','🥇 GOLD','💴 USD/JPY','💶 EUR/JPY','💱 EUR/USD','🇺🇸 S&P500','📊 NASDAQ','📈 ダウ','🗾 日経225'];
-  const phaseNames  = ['🌑新月','眉月','🌓上弦','十三夜','🌕満月','十六夜','🌗下弦','晴日月'];
+  const instruments = ['btc','gold','sp500','nasdaq','dji','nikkei','usdjpy','eurjpy','eurusd'];
+  const instrNames  = ['₿ BTC','🥇 GOLD','🇺🇸 S&P500','📊 NASDAQ','📈 ダウ','🗾 日経225','💴 USD/JPY','💶 EUR/JPY','💱 EUR/USD'];
+  const phaseNames  = ['🌑 新月','眉月','🌓 上弦','十三夜','🌕 満月','十六夜','🌗 下弦','晦日月'];
+  const instrColors = ['#f7931a','#ffd700','#4299e1','#9f7aea','#ed8936','#e53e3e','#48bb78','#0bc5ea','#f6e05e'];
 
+  // Collect values for normalization
   const allVals = [];
   instruments.forEach(k => {
     if (!analysis[k] || !analysis[k].phase_means) return;
     Object.values(analysis[k].phase_means).forEach(v => allVals.push(v));
   });
-  const maxAbs = Math.max(0.001, ...allVals.map(Math.abs));
+  const maxAbs = Math.max(0.05, ...allVals.map(Math.abs));
 
-  const cellW = 72, cellH = 36, padL = 116, padT = 64, padB = 36;
+  const dpr = window.devicePixelRatio || 1;
+  const cellW = 84, cellH = 48, padL = 130, padT = 80, padB = 50, padR = 20;
   const rows = instruments.length, cols = 8;
-  const W = padL + cols * cellW + 10;
+  const W = padL + cols * cellW + padR;
   const H = padT + rows * cellH + padB;
-  canvas.width = W; canvas.height = H;
-  canvas.style.width = '100%';
-  canvas.style.height = H + 'px';
 
-  ctx.fillStyle = '#0b1929';
+  canvas.width = W * dpr;
+  canvas.height = H * dpr;
+  canvas.style.width = W + 'px';
+  canvas.style.height = H + 'px';
+  ctx.scale(dpr, dpr);
+
+  // Dark gradient background
+  const bgGrad = ctx.createLinearGradient(0, 0, 0, H);
+  bgGrad.addColorStop(0, '#050e1a');
+  bgGrad.addColorStop(1, '#091525');
+  ctx.fillStyle = bgGrad;
   ctx.fillRect(0, 0, W, H);
 
-  ctx.font = 'bold 11px sans-serif';
-  ctx.textAlign = 'center';
+  // Column headers
   phaseNames.forEach((name, j) => {
+    const cx = padL + j * cellW + cellW / 2;
+    // Header background pill
+    ctx.fillStyle = 'rgba(201,168,76,0.12)';
+    ctx.beginPath();
+    ctx.roundRect(padL + j * cellW + 3, padT - 44, cellW - 6, 30, 6);
+    ctx.fill();
+    ctx.font = 'bold 11.5px "Segoe UI", sans-serif';
+    ctx.textAlign = 'center';
     ctx.fillStyle = '#c9a84c';
-    ctx.fillText(name, padL + j * cellW + cellW / 2, padT - 12);
+    ctx.fillText(name, cx, padT - 23);
   });
 
+  // Row labels + cells
   instruments.forEach((k, i) => {
     const d = analysis[k];
     const y = padT + i * cellH;
-    ctx.font = '12px sans-serif';
+    const cy = y + cellH / 2;
+
+    // Row separator line
+    if (i > 0) {
+      ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(padL, y);
+      ctx.lineTo(W - padR, y);
+      ctx.stroke();
+    }
+
+    // Row label
+    ctx.font = 'bold 13px "Segoe UI", monospace';
     ctx.textAlign = 'right';
-    ctx.fillStyle = '#d4a017';
-    ctx.fillText(instrNames[i], padL - 6, y + cellH / 2 + 4);
+    ctx.fillStyle = instrColors[i];
+    ctx.fillText(instrNames[i], padL - 10, cy + 4);
+
     if (!d || !d.phase_means) return;
+
     for (let j = 0; j < 8; j++) {
       const val = d.phase_means[String(j)] || 0;
       const norm = Math.max(-1, Math.min(1, val / maxAbs));
-      let r, g, b;
-      if (norm >= 0) {
-        r = Math.round(30 + norm * 197);
-        g = Math.round(50 + norm * 130);
-        b = Math.round(70 - norm * 30);
+      const cx = padL + j * cellW + cellW / 2;
+      const x = padL + j * cellW;
+
+      // Cell color — vivid gradient
+      let fillColor;
+      if (norm > 0) {
+        // Positive: deep navy → rich amber/gold
+        const t = norm;
+        const r = Math.round(10 + t * 230);
+        const g = Math.round(20 + t * 155);
+        const b = Math.round(40 - t * 30);
+        fillColor = `rgba(${r},${g},${b},${0.25 + t * 0.75})`;
       } else {
-        const a = -norm;
-        r = Math.round(30 + a * 190);
-        g = Math.round(50 - a * 30);
-        b = Math.round(70 - a * 40);
+        // Negative: deep navy → vivid crimson
+        const t = -norm;
+        const r = Math.round(10 + t * 210);
+        const g = Math.round(20 - t * 10);
+        const b = Math.round(40 - t * 20);
+        fillColor = `rgba(${r},${g},${b},${0.25 + t * 0.75})`;
       }
-      const alpha = 0.3 + 0.7 * Math.abs(norm);
-      ctx.fillStyle = `rgba(${r},${g},${b},${alpha})`;
-      ctx.fillRect(padL + j * cellW + 1, y + 1, cellW - 2, cellH - 2);
-      ctx.font = 'bold 11px monospace';
+
+      // Cell with rounded corners
+      ctx.fillStyle = fillColor;
+      ctx.beginPath();
+      ctx.roundRect(x + 2, y + 3, cellW - 4, cellH - 6, 5);
+      ctx.fill();
+
+      // Highlight border for strong values
+      if (Math.abs(norm) > 0.6) {
+        ctx.strokeStyle = norm > 0 ? 'rgba(240,185,50,0.5)' : 'rgba(220,50,50,0.5)';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      }
+
+      // Value text
+      const absNorm = Math.abs(norm);
+      ctx.font = `bold ${absNorm > 0.5 ? 12 : 11}px monospace`;
       ctx.textAlign = 'center';
-      ctx.fillStyle = Math.abs(norm) > 0.5 ? '#fff' : '#aac';
-      ctx.fillText((val >= 0 ? '+' : '') + val.toFixed(3) + '%', padL + j * cellW + cellW / 2, y + cellH / 2 + 4);
+      ctx.fillStyle = absNorm > 0.45 ? '#ffffff' : (norm > 0 ? '#f0c060' : '#ff8080');
+      const prefix = val >= 0 ? '+' : '';
+      ctx.fillText(prefix + val.toFixed(3) + '%', cx, cy + 4);
     }
   });
 
-  const lx = padL, ly = H - 28, lw = cols * cellW, lh = 10;
+  // Column separator lines
+  for (let j = 1; j < cols; j++) {
+    ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(padL + j * cellW, padT - 46);
+    ctx.lineTo(padL + j * cellW, padT + rows * cellH);
+    ctx.stroke();
+  }
+
+  // Legend
+  const lx = padL, ly = H - 34, lw = cols * cellW, lh = 12;
   const grad = ctx.createLinearGradient(lx, 0, lx + lw, 0);
-  grad.addColorStop(0,   'rgba(220,40,40,0.9)');
-  grad.addColorStop(0.5, 'rgba(30,40,70,0.6)');
-  grad.addColorStop(1,   'rgba(227,177,25,0.9)');
+  grad.addColorStop(0,    'rgba(220,30,30,1)');
+  grad.addColorStop(0.3,  'rgba(140,20,40,0.7)');
+  grad.addColorStop(0.5,  'rgba(15,25,50,0.5)');
+  grad.addColorStop(0.7,  'rgba(100,80,10,0.7)');
+  grad.addColorStop(1,    'rgba(240,185,20,1)');
   ctx.fillStyle = grad;
-  ctx.fillRect(lx, ly, lw, lh);
-  ctx.font = '10px sans-serif';
-  ctx.fillStyle = '#8aa';
-  ctx.textAlign = 'left';  ctx.fillText('マイナス', lx, ly + lh + 14);
-  ctx.textAlign = 'center';ctx.fillText('ゼロ',     lx + lw/2, ly + lh + 14);
-  ctx.textAlign = 'right'; ctx.fillText('プラス',   lx + lw, ly + lh + 14);
+  ctx.beginPath();
+  ctx.roundRect(lx, ly, lw, lh, 4);
+  ctx.fill();
+  ctx.font = '10px "Segoe UI", sans-serif';
+  ctx.fillStyle = 'rgba(180,200,220,0.8)';
+  ctx.textAlign = 'left';  ctx.fillText('▼ マイナス', lx, ly + lh + 14);
+  ctx.textAlign = 'center';ctx.fillText('ゼロ',       lx + lw/2, ly + lh + 14);
+  ctx.textAlign = 'right'; ctx.fillText('プラス ▲',   lx + lw, ly + lh + 14);
 }
 // ===== BTC Price Chart =====
 function buildBTCPrice() {
