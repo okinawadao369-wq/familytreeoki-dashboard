@@ -606,37 +606,123 @@ function buildMechanism() {
 
 // ===== Stats Table =====
 function buildStatsTable() {
-  const r = DATA.results;
-  const assets = DATA.assets;
+  const analysis = DATA.stats_30y ? DATA.stats_30y.analysis : null;
   const table = document.getElementById('stats-table');
   const sigClass = p => p < 0.1 ? 'sig' : p < 0.2 ? 'pos' : 'neutral';
   const retClass = v => parseFloat(v) > 0 ? 'pos' : parseFloat(v) < 0 ? 'neg' : 'neutral';
+  const keys30 = ['nikkei','sp500','dji','nasdaq','usdjpy','eurjpy','eurusd','btc','gold'];
+  if (!analysis) {
+    table.innerHTML = '<tr><td colspan="9" style="color:#888">データ読み込み中...</td></tr>';
+    return;
+  }
+  const nameColor = {'nikkei':'#e53e3e','sp500':'#4299e1','dji':'#ed8936','nasdaq':'#9f7aea','usdjpy':'#48bb78','eurjpy':'#0bc5ea','eurusd':'#f6e05e','btc':'#f7931a','gold':'#ffd700'};
   table.innerHTML = `
-    <tr><th>資産</th><th>🌑新月 平均%</th><th>🌕満月 平均%</th><th>通常日 平均%</th><th>新月 正率</th><th>満月 正率</th><th>通常 正率</th><th>p値(新月)</th><th>p値(満月)</th><th>評価</th></tr>
-    ${assets.map(a => {
-      const d = r[a];
-      const nm = d.new_moon_mean.toFixed(3);
-      const fm = d.full_moon_mean.toFixed(3);
-      const no = d.normal_mean.toFixed(3);
-      const pn = d.p_new_moon.toFixed(3);
-      const pf = d.p_full_moon.toFixed(3);
-      const score = (d.p_new_moon < 0.2 ? 1 : 0) + (d.p_full_moon < 0.2 ? 1 : 0);
-      const eval_ = score >= 2 ? '🔴 注目' : score == 1 ? '🟡 参考' : '⚪ 弱い';
+    <tr><th>資産</th><th>🌑旧暦一日 平均%</th><th>🌕旧暦十五日 平均%</th><th>全日 平均%</th><th>Cohen's d (一日)</th><th>Cohen's d (十五日)</th><th>p値(一日)</th><th>p値(十五日)</th><th>評価</th></tr>
+    ${keys30.filter(k => analysis[k]).map(k => {
+      const d = analysis[k];
+      const nm = (d.day1_mean||0).toFixed(3);
+      const fm = (d.day15_mean||0).toFixed(3);
+      const all = (d.all_mean||0).toFixed(3);
+      const pn = (d.day1_p||1).toFixed(3);
+      const pf = (d.day15_p||1).toFixed(3);
+      const cdn = (d.day1_cohen_d||0).toFixed(3);
+      const cdf = (d.day15_cohen_d||0).toFixed(3);
+      const score = ((d.day1_p||1) < 0.2 ? 1 : 0) + ((d.day15_p||1) < 0.2 ? 1 : 0);
+      const eval_ = score >= 2 ? '\u{1F534} 注目' : score == 1 ? '\u{1F7E1} 参考' : '⚪ 弱い';
       return `<tr>
-        <td style="color:${COLORS[a]||'#fff'};font-weight:700">${ASSET_LABELS[a]||a}</td>
+        <td style="color:${nameColor[k]||'#fff'};font-weight:700">${d.name||k}</td>
         <td class="${retClass(nm)}">${nm}%</td>
         <td class="${retClass(fm)}">${fm}%</td>
-        <td class="${retClass(no)}">${no}%</td>
-        <td>${d.nm_positive_rate.toFixed(1)}%</td>
-        <td>${d.fm_positive_rate.toFixed(1)}%</td>
-        <td>${d.normal_positive_rate.toFixed(1)}%</td>
-        <td class="${sigClass(d.p_new_moon)}">${pn}</td>
-        <td class="${sigClass(d.p_full_moon)}">${pf}</td>
+        <td class="${retClass(all)}">${all}%</td>
+        <td>${cdn}</td>
+        <td>${cdf}</td>
+        <td class="${sigClass(d.day1_p||1)}">${pn}</td>
+        <td class="${sigClass(d.day15_p||1)}">${pf}</td>
         <td>${eval_}</td>
       </tr>`;
     }).join('')}`;
 }
 
+function buildHeatmap() {
+  const analysis = DATA.stats_30y ? DATA.stats_30y.analysis : null;
+  const canvas = document.getElementById('chart-heatmap');
+  if (!canvas || !analysis) return;
+  const ctx = canvas.getContext('2d');
+
+  const instruments = ['btc','gold','usdjpy','eurjpy','eurusd','sp500','nasdaq','dji','nikkei'];
+  const instrNames  = ['₿ BTC','🥇 GOLD','💴 USD/JPY','💶 EUR/JPY','💱 EUR/USD','🇺🇸 S&P500','📊 NASDAQ','📈 ダウ','🗾 日経225'];
+  const phaseNames  = ['🌑新月','眉月','🌓上弦','十三夜','🌕満月','十六夜','🌗下弦','晴日月'];
+
+  const allVals = [];
+  instruments.forEach(k => {
+    if (!analysis[k] || !analysis[k].phase_means) return;
+    Object.values(analysis[k].phase_means).forEach(v => allVals.push(v));
+  });
+  const maxAbs = Math.max(0.001, ...allVals.map(Math.abs));
+
+  const cellW = 72, cellH = 36, padL = 116, padT = 64, padB = 36;
+  const rows = instruments.length, cols = 8;
+  const W = padL + cols * cellW + 10;
+  const H = padT + rows * cellH + padB;
+  canvas.width = W; canvas.height = H;
+  canvas.style.width = '100%';
+  canvas.style.height = H + 'px';
+
+  ctx.fillStyle = '#0b1929';
+  ctx.fillRect(0, 0, W, H);
+
+  ctx.font = 'bold 11px sans-serif';
+  ctx.textAlign = 'center';
+  phaseNames.forEach((name, j) => {
+    ctx.fillStyle = '#c9a84c';
+    ctx.fillText(name, padL + j * cellW + cellW / 2, padT - 12);
+  });
+
+  instruments.forEach((k, i) => {
+    const d = analysis[k];
+    const y = padT + i * cellH;
+    ctx.font = '12px sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillStyle = '#d4a017';
+    ctx.fillText(instrNames[i], padL - 6, y + cellH / 2 + 4);
+    if (!d || !d.phase_means) return;
+    for (let j = 0; j < 8; j++) {
+      const val = d.phase_means[String(j)] || 0;
+      const norm = Math.max(-1, Math.min(1, val / maxAbs));
+      let r, g, b;
+      if (norm >= 0) {
+        r = Math.round(30 + norm * 197);
+        g = Math.round(50 + norm * 130);
+        b = Math.round(70 - norm * 30);
+      } else {
+        const a = -norm;
+        r = Math.round(30 + a * 190);
+        g = Math.round(50 - a * 30);
+        b = Math.round(70 - a * 40);
+      }
+      const alpha = 0.3 + 0.7 * Math.abs(norm);
+      ctx.fillStyle = `rgba(${r},${g},${b},${alpha})`;
+      ctx.fillRect(padL + j * cellW + 1, y + 1, cellW - 2, cellH - 2);
+      ctx.font = 'bold 11px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillStyle = Math.abs(norm) > 0.5 ? '#fff' : '#aac';
+      ctx.fillText((val >= 0 ? '+' : '') + val.toFixed(3) + '%', padL + j * cellW + cellW / 2, y + cellH / 2 + 4);
+    }
+  });
+
+  const lx = padL, ly = H - 28, lw = cols * cellW, lh = 10;
+  const grad = ctx.createLinearGradient(lx, 0, lx + lw, 0);
+  grad.addColorStop(0,   'rgba(220,40,40,0.9)');
+  grad.addColorStop(0.5, 'rgba(30,40,70,0.6)');
+  grad.addColorStop(1,   'rgba(227,177,25,0.9)');
+  ctx.fillStyle = grad;
+  ctx.fillRect(lx, ly, lw, lh);
+  ctx.font = '10px sans-serif';
+  ctx.fillStyle = '#8aa';
+  ctx.textAlign = 'left';  ctx.fillText('マイナス', lx, ly + lh + 14);
+  ctx.textAlign = 'center';ctx.fillText('ゼロ',     lx + lw/2, ly + lh + 14);
+  ctx.textAlign = 'right'; ctx.fillText('プラス',   lx + lw, ly + lh + 14);
+}
 // ===== BTC Price Chart =====
 function buildBTCPrice() {
   const monthly = DATA.price_monthly.BTC;
@@ -900,6 +986,7 @@ window.onload = function() {
   buildOverviewBar();
   buildMechanism();
   buildStatsTable();
+  buildHeatmap();
   buildBTCPrice();
   buildBTCKPI();
   buildBTCVol();
