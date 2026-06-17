@@ -323,7 +323,7 @@
   <div class="chart-card">
     <h3>月相別リターン ヒートマップ</h3>
     <div class="chart-desc">各資産・各月相の平均リターン(%)。色が濃いほど大きな差異。</div>
-    <div class="chart-wrap-tall" style="height:520px;overflow:visible;"><canvas id="chart-heatmap"></canvas></div>
+    <div id="heatmap-container" style="width:100%;overflow-x:auto;padding:4px 0;"></div>
   </div>
 
   <div class="chart-card">
@@ -645,16 +645,15 @@ function buildStatsTable() {
 
 function buildHeatmap() {
   const analysis = DATA.stats_30y ? DATA.stats_30y.analysis : null;
-  const canvas = document.getElementById('chart-heatmap');
-  if (!canvas || !analysis) return;
-  const ctx = canvas.getContext('2d');
+  const container = document.getElementById('heatmap-container');
+  if (!container || !analysis) return;
 
   const instruments = ['btc','gold','sp500','nasdaq','dji','nikkei','usdjpy','eurjpy','eurusd'];
   const instrNames  = ['₿ BTC','🥇 GOLD','🇺🇸 S&P500','📊 NASDAQ','📈 ダウ','🗾 日経225','💴 USD/JPY','💶 EUR/JPY','💱 EUR/USD'];
+  const instrColors = {'btc':'#f7931a','gold':'#ffd700','sp500':'#4299e1','nasdaq':'#9f7aea','dji':'#ed8936','nikkei':'#e53e3e','usdjpy':'#48bb78','eurjpy':'#0bc5ea','eurusd':'#f6e05e'};
   const phaseNames  = ['🌑 新月','眉月','🌓 上弦','十三夜','🌕 満月','十六夜','🌗 下弦','晦日月'];
-  const instrColors = ['#f7931a','#ffd700','#4299e1','#9f7aea','#ed8936','#e53e3e','#48bb78','#0bc5ea','#f6e05e'];
 
-  // Collect values for normalization
+  // Collect all values for normalization
   const allVals = [];
   instruments.forEach(k => {
     if (!analysis[k] || !analysis[k].phase_means) return;
@@ -662,139 +661,71 @@ function buildHeatmap() {
   });
   const maxAbs = Math.max(0.05, ...allVals.map(Math.abs));
 
-  const dpr = window.devicePixelRatio || 1;
-  const cellW = 84, cellH = 48, padL = 130, padT = 80, padB = 50, padR = 20;
-  const rows = instruments.length, cols = 8;
-  const W = padL + cols * cellW + padR;
-  const H = padT + rows * cellH + padB;
-
-  canvas.width = W * dpr;
-  canvas.height = H * dpr;
-  canvas.style.width = W + 'px';
-  canvas.style.height = H + 'px';
-  ctx.scale(dpr, dpr);
-
-  // Dark gradient background
-  const bgGrad = ctx.createLinearGradient(0, 0, 0, H);
-  bgGrad.addColorStop(0, '#050e1a');
-  bgGrad.addColorStop(1, '#091525');
-  ctx.fillStyle = bgGrad;
-  ctx.fillRect(0, 0, W, H);
-
-  // Column headers
-  phaseNames.forEach((name, j) => {
-    const cx = padL + j * cellW + cellW / 2;
-    // Header background pill
-    ctx.fillStyle = 'rgba(201,168,76,0.12)';
-    ctx.beginPath();
-    ctx.roundRect(padL + j * cellW + 3, padT - 44, cellW - 6, 30, 6);
-    ctx.fill();
-    ctx.font = 'bold 11.5px "Segoe UI", sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillStyle = '#c9a84c';
-    ctx.fillText(name, cx, padT - 23);
-  });
-
-  // Row labels + cells
-  instruments.forEach((k, i) => {
-    const d = analysis[k];
-    const y = padT + i * cellH;
-    const cy = y + cellH / 2;
-
-    // Row separator line
-    if (i > 0) {
-      ctx.strokeStyle = 'rgba(255,255,255,0.04)';
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.moveTo(padL, y);
-      ctx.lineTo(W - padR, y);
-      ctx.stroke();
+  function cellColor(val) {
+    const norm = Math.max(-1, Math.min(1, val / maxAbs));
+    if (norm >= 0) {
+      const t = norm;
+      const r = Math.round(10  + t * 230);
+      const g = Math.round(20  + t * 150);
+      const b = Math.round(40  - t * 20);
+      const a = 0.18 + t * 0.82;
+      return { bg: `rgba(${r},${g},${b},${a})`, border: norm > 0.5 ? 'rgba(240,185,50,0.6)' : 'transparent', bright: norm > 0.45 };
+    } else {
+      const t = -norm;
+      const r = Math.round(10  + t * 210);
+      const g = Math.round(20  - t * 10);
+      const b = Math.round(40  - t * 20);
+      const a = 0.18 + t * 0.82;
+      return { bg: `rgba(${r},${g},${b},${a})`, border: t > 0.5 ? 'rgba(220,50,50,0.6)' : 'transparent', bright: t > 0.45 };
     }
-
-    // Row label
-    ctx.font = 'bold 13px "Segoe UI", monospace';
-    ctx.textAlign = 'right';
-    ctx.fillStyle = instrColors[i];
-    ctx.fillText(instrNames[i], padL - 10, cy + 4);
-
-    if (!d || !d.phase_means) return;
-
-    for (let j = 0; j < 8; j++) {
-      const val = d.phase_means[String(j)] || 0;
-      const norm = Math.max(-1, Math.min(1, val / maxAbs));
-      const cx = padL + j * cellW + cellW / 2;
-      const x = padL + j * cellW;
-
-      // Cell color — vivid gradient
-      let fillColor;
-      if (norm > 0) {
-        // Positive: deep navy → rich amber/gold
-        const t = norm;
-        const r = Math.round(10 + t * 230);
-        const g = Math.round(20 + t * 155);
-        const b = Math.round(40 - t * 30);
-        fillColor = `rgba(${r},${g},${b},${0.25 + t * 0.75})`;
-      } else {
-        // Negative: deep navy → vivid crimson
-        const t = -norm;
-        const r = Math.round(10 + t * 210);
-        const g = Math.round(20 - t * 10);
-        const b = Math.round(40 - t * 20);
-        fillColor = `rgba(${r},${g},${b},${0.25 + t * 0.75})`;
-      }
-
-      // Cell with rounded corners
-      ctx.fillStyle = fillColor;
-      ctx.beginPath();
-      ctx.roundRect(x + 2, y + 3, cellW - 4, cellH - 6, 5);
-      ctx.fill();
-
-      // Highlight border for strong values
-      if (Math.abs(norm) > 0.6) {
-        ctx.strokeStyle = norm > 0 ? 'rgba(240,185,50,0.5)' : 'rgba(220,50,50,0.5)';
-        ctx.lineWidth = 1.5;
-        ctx.stroke();
-      }
-
-      // Value text
-      const absNorm = Math.abs(norm);
-      ctx.font = `bold ${absNorm > 0.5 ? 12 : 11}px monospace`;
-      ctx.textAlign = 'center';
-      ctx.fillStyle = absNorm > 0.45 ? '#ffffff' : (norm > 0 ? '#f0c060' : '#ff8080');
-      const prefix = val >= 0 ? '+' : '';
-      ctx.fillText(prefix + val.toFixed(3) + '%', cx, cy + 4);
-    }
-  });
-
-  // Column separator lines
-  for (let j = 1; j < cols; j++) {
-    ctx.strokeStyle = 'rgba(255,255,255,0.05)';
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.moveTo(padL + j * cellW, padT - 46);
-    ctx.lineTo(padL + j * cellW, padT + rows * cellH);
-    ctx.stroke();
   }
 
-  // Legend
-  const lx = padL, ly = H - 34, lw = cols * cellW, lh = 12;
-  const grad = ctx.createLinearGradient(lx, 0, lx + lw, 0);
-  grad.addColorStop(0,    'rgba(220,30,30,1)');
-  grad.addColorStop(0.3,  'rgba(140,20,40,0.7)');
-  grad.addColorStop(0.5,  'rgba(15,25,50,0.5)');
-  grad.addColorStop(0.7,  'rgba(100,80,10,0.7)');
-  grad.addColorStop(1,    'rgba(240,185,20,1)');
-  ctx.fillStyle = grad;
-  ctx.beginPath();
-  ctx.roundRect(lx, ly, lw, lh, 4);
-  ctx.fill();
-  ctx.font = '10px "Segoe UI", sans-serif';
-  ctx.fillStyle = 'rgba(180,200,220,0.8)';
-  ctx.textAlign = 'left';  ctx.fillText('▼ マイナス', lx, ly + lh + 14);
-  ctx.textAlign = 'center';ctx.fillText('ゼロ',       lx + lw/2, ly + lh + 14);
-  ctx.textAlign = 'right'; ctx.fillText('プラス ▲',   lx + lw, ly + lh + 14);
+  let html = `<style>
+    #hm-table { width:100%; border-collapse:separate; border-spacing:3px; table-layout:fixed; }
+    #hm-table th { padding:7px 4px; text-align:center; font-size:11px; font-weight:700;
+      color:#c9a84c; background:rgba(201,168,76,0.10); border-radius:5px; white-space:nowrap; }
+    #hm-table td.lbl { text-align:right; padding:0 10px 0 4px; white-space:nowrap;
+      font-size:12.5px; font-weight:700; width:108px; }
+    #hm-table td.cell { text-align:center; padding:10px 2px; border-radius:6px;
+      font-size:11.5px; font-weight:700; font-family:monospace; white-space:nowrap;
+      transition:filter 0.15s; cursor:default; }
+    #hm-table td.cell:hover { filter:brightness(1.3); }
+    .hm-legend { display:flex; align-items:center; gap:10px; margin-top:10px; padding:0 4px; }
+    .hm-legend-bar { flex:1; height:10px; border-radius:5px;
+      background:linear-gradient(to right,rgba(220,30,30,1),rgba(30,40,70,0.4),rgba(240,185,20,1)); }
+    .hm-legend-label { font-size:10px; color:rgba(150,180,210,0.8); white-space:nowrap; }
+  </style>
+  <table id="hm-table">
+    <thead><tr>
+      <th style="width:108px;"></th>
+      ${phaseNames.map(n => `<th>${n}</th>`).join('')}
+    </tr></thead>
+    <tbody>`;
+
+  instruments.forEach((k, i) => {
+    const d = analysis[k];
+    const col = instrColors[k] || '#ccc';
+    html += `<tr><td class="lbl" style="color:${col}">${instrNames[i]}</td>`;
+    for (let j = 0; j < 8; j++) {
+      const val = (d && d.phase_means) ? (d.phase_means[String(j)] || 0) : 0;
+      const { bg, border, bright } = cellColor(val);
+      const textCol = bright ? '#ffffff' : (val >= 0 ? '#f0c060' : '#ff8888');
+      const prefix = val >= 0 ? '+' : '';
+      html += `<td class="cell" style="background:${bg};box-shadow:inset 0 0 0 1.5px ${border};color:${textCol};">${prefix}${val.toFixed(3)}%</td>`;
+    }
+    html += '</tr>';
+  });
+
+  html += `</tbody></table>
+    <div class="hm-legend">
+      <span class="hm-legend-label">▼ マイナス</span>
+      <div class="hm-legend-bar"></div>
+      <span class="hm-legend-label">プラス ▲</span>
+    </div>`;
+
+  container.innerHTML = html;
 }
-// ===== BTC Price Chart =====
+
 function buildBTCPrice() {
   const monthly = DATA.price_monthly.BTC;
   const moonPrices = DATA.btc_moon_prices;
