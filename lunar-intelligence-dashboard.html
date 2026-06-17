@@ -1254,107 +1254,113 @@ function renderPhaseWheel(){
   cv.style.width=SIZE+'px'; cv.style.height=SIZE+'px';
   var ctx=cv.getContext('2d');
   ctx.scale(dpr,dpr);
-  var cx=SIZE/2, cy=SIZE/2, R=180, iR=52;
+  var cx=SIZE/2, cy=SIZE/2, R=182, iR=54;
 
-  // Background
-  ctx.fillStyle='#05101f'; ctx.fillRect(0,0,SIZE,SIZE);
+  ctx.fillStyle='#050e1d'; ctx.fillRect(0,0,SIZE,SIZE);
 
-  /* Sectors: fill=明るい基色, edge=外縁ハイライト */
+  /* 明るい・くっきりした色を使用 */
   var PH=[
-    {n:'新月',  sub:'祈願',     s:-22, e:22,  fill:'#2255cc', edge:'#88aaff', t:'思考期', em:'🌑'},
-    {n:'三日月',sub:'芽吹き',   s:22,  e:75,  fill:'#1a8830', edge:'#44ee66', t:'活動期', em:'🌒'},
-    {n:'上弦',  sub:'決断',     s:75,  e:102, fill:'#1e9e38', edge:'#55ff80', t:'活動期', em:'🌓'},
-    {n:'十三夜',sub:'最盛',     s:102, e:168, fill:'#22b040', edge:'#66ff88', t:'活動期', em:'🌔'},
-    {n:'満月',  sub:'感謝',     s:168, e:192, fill:'#bb7700', edge:'#ffdd44', t:'思考期', em:'🌕'},
-    {n:'十六夜',sub:'振り返り', s:192, e:258, fill:'#1a3899', edge:'#5577ff', t:'停滞期', em:'🌖'},
-    {n:'下弦',  sub:'整理',     s:258, e:285, fill:'#152e88', edge:'#4466ee', t:'停滞期', em:'🌗'},
-    {n:'晦日',  sub:'休息',     s:285, e:338, fill:'#0f2060', edge:'#3355cc', t:'停滞期', em:'🌘'}
+    {n:'新月',  sub:'祈願',     s:-22, e:22,  light:'#3d6fff', dark:'#1a3da8', edge:'#99bbff', t:'思考期', em:'🌑'},
+    {n:'三日月',sub:'芽吹き',   s:22,  e:75,  light:'#2db84a', dark:'#1a7a30', edge:'#66ff88', t:'活動期', em:'🌒'},
+    {n:'上弦',  sub:'決断',     s:75,  e:102, light:'#33cc55', dark:'#1e9040', edge:'#77ffaa', t:'活動期', em:'🌓'},
+    {n:'十三夜',sub:'最盛',     s:102, e:168, light:'#2ecc50', dark:'#1e9840', edge:'#66ff88', t:'活動期', em:'🌔'},
+    {n:'満月',  sub:'感謝',     s:168, e:192, light:'#e09400', dark:'#8a5a00', edge:'#ffe066', t:'思考期', em:'🌕'},
+    {n:'十六夜',sub:'振り返り', s:192, e:258, light:'#2e4fd4', dark:'#162688', edge:'#6688ff', t:'停滞期', em:'🌖'},
+    {n:'下弦',  sub:'整理',     s:258, e:285, light:'#2644c8', dark:'#0f1e7a', edge:'#5577ff', t:'停滞期', em:'🌗'},
+    {n:'晦日',  sub:'休息',     s:285, e:338, light:'#1a34aa', dark:'#0b1660', edge:'#4466ee', t:'停滞期', em:'🌘'}
   ];
 
   PH.forEach(function(p){
     var s=(p.s-90)*Math.PI/180, e=(p.e-90)*Math.PI/180;
     var mid=((p.s+p.e)/2-90)*Math.PI/180;
+    var ex=cx+R*Math.cos(mid), ey=cy+R*Math.sin(mid);
 
-    /* ── Sector fill: 中心=暗め → 外=鮮やか ── */
-    var gx=cx+R*0.72*Math.cos(mid), gy=cy+R*0.72*Math.sin(mid);
-    var rg=ctx.createLinearGradient(cx,cy,gx,gy);
-    rg.addColorStop(0,  p.fill+'55');
-    rg.addColorStop(0.5,p.fill+'bb');
-    rg.addColorStop(1,  p.fill+'ff');
+    /* ソリッドな塗り: dark(中心) → light(外縁) — 両方不透明 */
+    var lg=ctx.createLinearGradient(cx,cy,ex,ey);
+    lg.addColorStop(0, p.dark);
+    lg.addColorStop(0.55, p.light+'dd');
+    lg.addColorStop(1,  p.light);
     ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,R,s,e); ctx.closePath();
-    ctx.fillStyle=rg; ctx.fill();
+    ctx.fillStyle=lg; ctx.fill();
 
-    /* ── Outer colored border (thick) ── */
+    /* 外縁アーク — 太く・発光 */
+    ctx.save();
+    ctx.shadowColor=p.edge; ctx.shadowBlur=16;
     ctx.beginPath(); ctx.arc(cx,cy,R,s,e);
-    ctx.strokeStyle=p.edge; ctx.lineWidth=9;
-    ctx.shadowColor=p.edge; ctx.shadowBlur=12;
-    ctx.stroke(); ctx.shadowBlur=0;
+    ctx.strokeStyle=p.edge; ctx.lineWidth=9; ctx.stroke();
+    ctx.restore();
 
-    /* ── Divider lines ── */
+    /* 区切り線 */
     [s,e].forEach(function(a){
       ctx.beginPath();
       ctx.moveTo(cx+iR*Math.cos(a),cy+iR*Math.sin(a));
-      ctx.lineTo(cx+(R+1)*Math.cos(a),cy+(R+1)*Math.sin(a));
-      ctx.strokeStyle='rgba(0,0,0,0.7)'; ctx.lineWidth=2; ctx.stroke();
+      ctx.lineTo(cx+R*Math.cos(a),cy+R*Math.sin(a));
+      ctx.strokeStyle='rgba(0,0,0,0.8)'; ctx.lineWidth=2; ctx.stroke();
     });
   });
 
-  /* ── Labels ── */
+  /* ── テキストラベル ── */
   PH.forEach(function(p){
     var mid=((p.s+p.e)/2-90)*Math.PI/180;
     var span=p.e-p.s;
     var lr=R*0.60, lx=cx+lr*Math.cos(mid), ly=cy+lr*Math.sin(mid);
 
-    /* Text pill background */
+    /* テキスト背景 */
     ctx.save(); ctx.translate(lx,ly);
-    var bw=span<35?52:58, bh=span<35?18:30;
-    ctx.fillStyle='rgba(0,0,0,0.55)';
-    ctx.beginPath(); ctx.roundRect(-bw/2,-bh/2,bw,bh,5); ctx.fill();
+    var bw=span<38?54:60, bh=span<38?20:32;
+    ctx.fillStyle='rgba(0,0,0,0.65)';
+    try{ ctx.beginPath(); ctx.roundRect(-bw/2,-bh/2,bw,bh,6); ctx.fill(); }
+    catch(e){ ctx.fillRect(-bw/2,-bh/2,bw,bh); }
 
-    /* Phase name */
-    ctx.shadowColor=p.edge; ctx.shadowBlur=10;
     ctx.textAlign='center'; ctx.textBaseline='middle';
-    ctx.font='bold 12px "Segoe UI",sans-serif'; ctx.fillStyle='#ffffff';
-    ctx.fillText(p.n, 0, span<35 ? 0 : -7);
-    /* Sub keyword */
-    if(span>=35){
-      ctx.font='bold 10px "Segoe UI",sans-serif'; ctx.fillStyle=p.edge;
-      ctx.shadowBlur=6; ctx.fillText(p.sub, 0, 8);
+    ctx.shadowColor=p.edge; ctx.shadowBlur=8;
+    ctx.font='bold 12.5px "Segoe UI",Arial,sans-serif';
+    ctx.fillStyle='#ffffff';
+    ctx.fillText(p.n, 0, span<38 ? 0 : -8);
+    if(span>=38){
+      ctx.font='bold 10px "Segoe UI",Arial,sans-serif';
+      ctx.fillStyle=p.edge; ctx.shadowBlur=4;
+      ctx.fillText(p.sub, 0, 8);
     }
-    ctx.shadowBlur=0; ctx.restore();
+    ctx.restore();
 
-    /* Emoji */
-    var er=R*0.855, ex=cx+er*Math.cos(mid), ey=cy+er*Math.sin(mid);
+    /* 絵文字 */
+    var er=R*0.865, emx=cx+er*Math.cos(mid), emy=cy+er*Math.sin(mid);
     ctx.font='15px serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
-    ctx.fillText(p.em, ex, ey);
+    ctx.fillText(p.em, emx, emy);
   });
 
-  /* ── Center circle ── */
+  /* ── センター ── */
   var cg=ctx.createRadialGradient(cx,cy,0,cx,cy,iR);
-  cg.addColorStop(0,'#162840'); cg.addColorStop(1,'#04090f');
+  cg.addColorStop(0,'#1c3050'); cg.addColorStop(1,'#040c18');
   ctx.beginPath(); ctx.arc(cx,cy,iR,0,2*Math.PI);
   ctx.fillStyle=cg; ctx.fill();
-  ctx.strokeStyle='rgba(200,164,76,0.8)'; ctx.lineWidth=2;
-  ctx.shadowColor='rgba(200,164,76,0.6)'; ctx.shadowBlur=8;
-  ctx.stroke(); ctx.shadowBlur=0;
+  ctx.save();
+  ctx.shadowColor='rgba(200,164,76,0.8)'; ctx.shadowBlur=10;
+  ctx.strokeStyle='rgba(200,164,76,0.9)'; ctx.lineWidth=2.5;
+  ctx.beginPath(); ctx.arc(cx,cy,iR,0,2*Math.PI); ctx.stroke();
+  ctx.restore();
 
-  /* ── Today pointer ── */
+  /* ── 今日ポインター ── */
   var td=DATA.mkt_today_data;
   if(td){
     var an=(td.angle-90)*Math.PI/180;
     ctx.save();
-    ctx.shadowColor='rgba(255,255,255,0.9)'; ctx.shadowBlur=18;
+    ctx.shadowColor='rgba(255,255,255,1)'; ctx.shadowBlur=20;
     ctx.beginPath(); ctx.moveTo(cx,cy);
-    ctx.lineTo(cx+(R+10)*Math.cos(an),cy+(R+10)*Math.sin(an));
-    ctx.strokeStyle='#ffffff'; ctx.lineWidth=3; ctx.stroke();
-    ctx.beginPath(); ctx.arc(cx+R*Math.cos(an),cy+R*Math.sin(an),6,0,2*Math.PI);
+    ctx.lineTo(cx+(R+12)*Math.cos(an),cy+(R+12)*Math.sin(an));
+    ctx.strokeStyle='#ffffff'; ctx.lineWidth=3.5; ctx.stroke();
+    ctx.beginPath(); ctx.arc(cx+R*Math.cos(an),cy+R*Math.sin(an),6.5,0,2*Math.PI);
     ctx.fillStyle='#ffffff'; ctx.fill();
     ctx.restore();
-    ctx.font='bold 12px "Segoe UI",sans-serif';
+    ctx.save();
+    ctx.shadowColor='rgba(240,200,80,0.9)'; ctx.shadowBlur=8;
+    ctx.font='bold 12px "Segoe UI",Arial,sans-serif';
     ctx.fillStyle='#f0c850'; ctx.textAlign='center'; ctx.textBaseline='middle';
-    ctx.shadowColor='rgba(240,200,80,0.8)'; ctx.shadowBlur=6;
-    ctx.fillText('今日',cx,cy-9); ctx.shadowBlur=0;
-    ctx.font='14px serif'; ctx.fillStyle='#bbccdd';
+    ctx.fillText('今日',cx,cy-10);
+    ctx.restore();
+    ctx.font='14px serif'; ctx.fillStyle='#ccd8ee';
+    ctx.textAlign='center'; ctx.textBaseline='middle';
     ctx.fillText(td.emoji||'🌒',cx,cy+10);
   }
 }
