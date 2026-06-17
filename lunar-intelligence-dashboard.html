@@ -1777,39 +1777,6 @@ function initActivityCards(){
   });
 }
 
-function renderPhaseWheel(){
-  var cv=document.getElementById('phaseWheel');if(!cv)return;
-  var ctx=cv.getContext('2d'),W=cv.width,H=cv.height,cx=W/2,cy=H/2,R=165;
-  ctx.clearRect(0,0,W,H);
-  var PH=[{n:'新月\n祈願',s:-20,e:20,c:'#1a2640',t:'思考期',em:'🌑'},
-          {n:'三日月\n芽吹き',s:20,e:75,c:'#1a3a1c',t:'活動期',em:'🌒'},
-          {n:'上弦\n決断',s:75,e:100,c:'#1f5223',t:'活動期',em:'🌓'},
-          {n:'十三夜\n最盛',s:100,e:170,c:'#2d5e2e',t:'活動期',em:'🌔'},
-          {n:'満月\n感謝',s:170,e:195,c:'#3a2d10',t:'思考期',em:'🌕'},
-          {n:'十六夜\n振返り',s:195,e:265,c:'#1a2040',t:'停滞期',em:'🌖'},
-          {n:'下弦\n整理',s:265,e:290,c:'#1e1840',t:'停滞期',em:'🌗'},
-          {n:'晦日\n休息',s:290,e:340,c:'#1a1e2e',t:'停滞期',em:'🌘'}];
-  var CM={'活動期':'#5ba85d','思考期':'#c8a45a','停滞期':'#4a6fa5'};
-  PH.forEach(function(p){
-    var s=(p.s-90)*Math.PI/180,e=(p.e-90)*Math.PI/180;
-    ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,R,s,e);ctx.closePath();ctx.fillStyle=p.c;ctx.fill();
-    ctx.beginPath();ctx.arc(cx,cy,R,s,e);ctx.strokeStyle=CM[p.t];ctx.lineWidth=5;ctx.stroke();
-    var mid=(p.s+p.e)/2-90,lr=R*.63,lx=cx+lr*Math.cos(mid*Math.PI/180),ly=cy+lr*Math.sin(mid*Math.PI/180);
-    ctx.save();ctx.translate(lx,ly);ctx.textAlign='center';ctx.textBaseline='middle';ctx.font='bold 10px sans-serif';ctx.fillStyle='#ccc';
-    p.n.split('\n').forEach(function(l,i,a){ctx.fillText(l,0,(i-a.length/2+.5)*13);});ctx.restore();
-    var er=R*.86,ex=cx+er*Math.cos(mid*Math.PI/180),ey=cy+er*Math.sin(mid*Math.PI/180);
-    ctx.font='13px serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(p.em,ex,ey);
-  });
-  ctx.beginPath();ctx.arc(cx,cy,40,0,2*Math.PI);ctx.fillStyle='#0a1220';ctx.fill();
-  ctx.strokeStyle='#c8a45a44';ctx.lineWidth=1;ctx.stroke();
-  var td=DATA.mkt_today_data;
-  if(td){var an=(td.angle-90)*Math.PI/180;
-    ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+(R+12)*Math.cos(an),cy+(R+12)*Math.sin(an));
-    ctx.strokeStyle='#fff';ctx.lineWidth=3;ctx.stroke();
-    ctx.beginPath();ctx.arc(cx+R*Math.cos(an),cy+R*Math.sin(an),5,0,2*Math.PI);ctx.fillStyle='#fff';ctx.fill();
-    ctx.font='bold 11px sans-serif';ctx.fillStyle='#c8a45a';ctx.textAlign='center';ctx.fillText('今日',cx,cy-8);
-    ctx.font='13px serif';ctx.fillStyle='#888';ctx.fillText(td.emoji,cx,cy+8);}
-}
 
 function initPhaseCards(){
   var D=[{n:'新月・祈願',e:'🌑',a:'思考期'},{n:'三日月・芽吹き',e:'🌒',a:'活動期'},
