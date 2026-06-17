@@ -50,8 +50,8 @@
   .nav { background: var(--bg2); border-bottom: 1px solid var(--border); padding: 0 16px; overflow-x: auto; }
   .nav-inner { max-width: none; margin: 0 auto; display: flex; gap: 0; min-width: max-content; }
   .nav-btn {
-    padding: 12px 13px; border: none; background: none; color: var(--text2);
-    cursor: pointer; font-size: 0.88rem; border-bottom: 2px solid transparent;
+    padding: 10px 10px; border: none; background: none; color: var(--text2);
+    cursor: pointer; font-size: 0.79rem; border-bottom: 2px solid transparent;
     transition: all 0.2s; white-space: nowrap;
   }
   .nav-btn:hover { color: var(--text); }
@@ -937,25 +937,89 @@ window.onload = function() {
 <!-- ===== 広告カレンダー ===== -->
 <div id="sec-mktcal" class="section">
 <div class="main">
-  <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
+
+  <!-- コントロール行 -->
+  <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px;">
     <select id="cal-month" onchange="renderMktCalendar()" style="background:var(--card2);color:var(--text);border:1px solid var(--border);padding:7px 12px;border-radius:7px;font-size:0.82rem;">
-      <option value="2026-06">2026年6月</option><option value="2026-07">2026年7月</option>
-      <option value="2026-08">2026年8月</option><option value="2026-09">2026年9月</option>
+      <option value="2026-06">2026年6月</option>
+      <option value="2026-07">2026年7月</option>
+      <option value="2026-08">2026年8月</option>
+      <option value="2026-09">2026年9月</option>
     </select>
-    <span style="display:flex;align-items:center;gap:5px;font-size:0.76rem;"><span style="width:8px;height:8px;border-radius:50%;background:#5ba85d;display:inline-block;"></span>活動期</span>
-    <span style="display:flex;align-items:center;gap:5px;font-size:0.76rem;"><span style="width:8px;height:8px;border-radius:50%;background:#c8a45a;display:inline-block;"></span>思考期</span>
-    <span style="display:flex;align-items:center;gap:5px;font-size:0.76rem;"><span style="width:8px;height:8px;border-radius:50%;background:#4a6fa5;display:inline-block;"></span>停滞期</span>
+    <span style="display:flex;align-items:center;gap:5px;font-size:0.75rem;"><span style="width:8px;height:8px;border-radius:50%;background:#5ba85d;display:inline-block;"></span>活動期（推奨）</span>
+    <span style="display:flex;align-items:center;gap:5px;font-size:0.75rem;"><span style="width:8px;height:8px;border-radius:50%;background:#c8a45a;display:inline-block;"></span>思考期（ブランド）</span>
+    <span style="display:flex;align-items:center;gap:5px;font-size:0.75rem;"><span style="width:8px;height:8px;border-radius:50%;background:#4a6fa5;display:inline-block;"></span>停滞期（避推奨）</span>
+    <span style="display:flex;align-items:center;gap:5px;font-size:0.75rem;"><span style="width:10px;height:10px;border-radius:2px;background:#e8a020;display:inline-block;"></span>広告予定あり</span>
   </div>
-  <div id="mkt-cal-grid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:12px;">
-    <div style="text-align:center;padding:6px;font-size:0.7rem;color:var(--text2);">日</div>
-    <div style="text-align:center;padding:6px;font-size:0.7rem;color:var(--text2);">月</div>
-    <div style="text-align:center;padding:6px;font-size:0.7rem;color:var(--text2);">火</div>
-    <div style="text-align:center;padding:6px;font-size:0.7rem;color:var(--text2);">水</div>
-    <div style="text-align:center;padding:6px;font-size:0.7rem;color:var(--text2);">木</div>
-    <div style="text-align:center;padding:6px;font-size:0.7rem;color:var(--text2);">金</div>
-    <div style="text-align:center;padding:6px;font-size:0.7rem;color:var(--text2);">土</div>
+
+  <!-- カレンダーグリッド -->
+  <div style="background:var(--card2);border-radius:12px;padding:16px;margin-bottom:18px;">
+    <div id="mkt-cal-header" style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:6px;">
+      <div style="text-align:center;padding:6px;font-size:0.7rem;color:#e05555;">日</div>
+      <div style="text-align:center;padding:6px;font-size:0.7rem;color:var(--text2);">月</div>
+      <div style="text-align:center;padding:6px;font-size:0.7rem;color:var(--text2);">火</div>
+      <div style="text-align:center;padding:6px;font-size:0.7rem;color:var(--text2);">水</div>
+      <div style="text-align:center;padding:6px;font-size:0.7rem;color:var(--text2);">木</div>
+      <div style="text-align:center;padding:6px;font-size:0.7rem;color:var(--text2);">金</div>
+      <div style="text-align:center;padding:6px;font-size:0.7rem;color:#6ab0f5;">土</div>
+    </div>
+    <div id="mkt-cal-grid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;"></div>
   </div>
-  <div class="card"><div class="card-title">📌 今月の月相イベントと広告推奨</div><div id="month-events-list"></div></div>
+
+  <!-- 広告予定入力パネル -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px;">
+    <div class="card">
+      <div class="card-title">➕ 広告予定を追加</div>
+      <div style="display:grid;gap:9px;">
+        <div>
+          <label style="font-size:0.72rem;color:var(--text2);display:block;margin-bottom:3px;">📅 日付</label>
+          <input type="date" id="ad-date" style="width:100%;background:var(--bg);color:var(--text);border:1px solid var(--border);padding:8px 10px;border-radius:7px;font-size:0.82rem;box-sizing:border-box;">
+        </div>
+        <div>
+          <label style="font-size:0.72rem;color:var(--text2);display:block;margin-bottom:3px;">📣 広告タイトル</label>
+          <input type="text" id="ad-title" placeholder="例: 産後ヨガ体験キャンペーン" style="width:100%;background:var(--bg);color:var(--text);border:1px solid var(--border);padding:8px 10px;border-radius:7px;font-size:0.82rem;box-sizing:border-box;">
+        </div>
+        <div>
+          <label style="font-size:0.72rem;color:var(--text2);display:block;margin-bottom:3px;">📺 チャネル</label>
+          <select id="ad-channel" style="width:100%;background:var(--bg);color:var(--text);border:1px solid var(--border);padding:8px 10px;border-radius:7px;font-size:0.82rem;box-sizing:border-box;">
+            <option>Instagram</option>
+            <option>Facebook</option>
+            <option>LINE広告</option>
+            <option>Google広告</option>
+            <option>メールマガジン</option>
+            <option>チラシ・DM</option>
+            <option>イベント告知</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:0.72rem;color:var(--text2);display:block;margin-bottom:3px;">💰 予算 (USD)</label>
+          <input type="number" id="ad-budget" placeholder="例: 150" style="width:100%;background:var(--bg);color:var(--text);border:1px solid var(--border);padding:8px 10px;border-radius:7px;font-size:0.82rem;box-sizing:border-box;">
+        </div>
+        <button onclick="addAdEvent()" style="background:var(--gold);color:#0a1220;border:none;padding:10px;border-radius:8px;font-weight:700;font-size:0.85rem;cursor:pointer;">✓ 追加して適正チェック</button>
+      </div>
+    </div>
+    <!-- 適正チェック結果 -->
+    <div class="card">
+      <div class="card-title">🔍 月相適正チェック結果</div>
+      <div id="ad-check-result" style="font-size:0.8rem;color:var(--text2);padding:12px 0;">
+        左のフォームで広告予定を入力すると<br>旧暦・月相との適合性を自動判定します。
+      </div>
+    </div>
+  </div>
+
+  <!-- 登録済み広告予定一覧 -->
+  <div class="card">
+    <div class="card-title">📋 登録済み広告予定</div>
+    <div id="ad-events-list">
+      <div style="color:var(--text2);font-size:0.8rem;padding:10px 0;">まだ広告予定がありません。上のフォームから追加してください。</div>
+    </div>
+  </div>
+
+  <!-- 月イベント -->
+  <div class="card" style="margin-top:18px;">
+    <div class="card-title">🌙 今月の月相イベントと推奨広告</div>
+    <div id="month-events-list"></div>
+  </div>
 </div>
 </div>
 
@@ -1266,6 +1330,406 @@ function initBudgetCharts(){
       '<div style="font-size:0.67rem;color:var(--text2);border-top:1px solid var(--border);padding-top:6px;">📅 '+s.ph+'</div></div>';
   }).join('');
 }
+</script>
+<script>
+/* ──────────────────────────────────────────────────────────
+   旧暦マーケティングOS — 全JS
+────────────────────────────────────────────────────────── */
+window._adEvents = JSON.parse(localStorage.getItem('fto_ad_events') || '[]');
+function _saveAds(){localStorage.setItem('fto_ad_events',JSON.stringify(window._adEvents));}
+
+function _ac(t){return t==='活動期'?'#5ba85d':t==='思考期'?'#c8a45a':'#4a6fa5';}
+function _bc(p){return p>=25?'#e8a020':p>=15?'#5ba85d':p>=8?'#4a6fa5':'#444';}
+
+/* ══ 適正スコア計算 ══ */
+function _adScore(cd){
+  if(!cd)return{score:0,label:'データなし',color:'#888',detail:'このデータ範囲外の日付です。',recs:[]};
+  var a=cd.activity_type, p=cd.phase_name, ky=cd.kyureki_day, bp=cd.marketing.budget_pct;
+  var score=0,detail=[],recs=[];
+  if(a==='活動期'){score+=50;detail.push('⚡ 活動期：感情エネルギーが高く広告効果が出やすい期間');}
+  else if(a==='思考期'){score+=25;detail.push('🌟 思考期：新月・満月前後、ブランド訴求に向く');}
+  else{score+=5;detail.push('🔵 停滞期：感情的エネルギーが低く、新規獲得広告は効果薄');}
+  if(ky===1||ky===2){score+=20;recs.push('🌑 旧暦一日：祈願・新スタートの感情。「始める」コピーが刺さる');}
+  if(ky===15||ky===14||ky===16){score+=20;recs.push('🌕 旧暦十五日前後：感謝・コミュニティ感情のピーク。体験談・口コミ訴求最強');}
+  if(bp>=20){score+=15;recs.push('💰 予算効率高日（'+bp+'%）：月相データ上ROI最大化期間');}
+  else if(bp>=12){score+=8;}
+  var label,color;
+  if(score>=75){label='🏆 最適';color='#5ba85d';}
+  else if(score>=50){label='✅ 良い';color='#88bb66';}
+  else if(score>=30){label='⚠️ 普通';color='#c8a45a';}
+  else{label='❌ 避推奨';color='#e05555';}
+  return{score:score,label:label,color:color,
+    detail:detail.join('<br>'),recs:recs,
+    phase:p,activity:a,kyureki:ky,budget:bp,
+    emotion:cd.marketing.emotion,theme:cd.marketing.theme,
+    fto:cd.marketing.family_tree_oki,channels:cd.marketing.channels};
+}
+
+/* ══ 代替推奨日を検索 ══ */
+function _findBestDates(dateStr, n){
+  var cm={};DATA.mkt_calendar.forEach(function(d){cm[d.date]=d;});
+  var base=new Date(dateStr);
+  var candidates=[];
+  for(var d=-14;d<=14;d++){
+    var dt=new Date(base.getTime()+d*86400000);
+    var ds=dt.toISOString().slice(0,10);
+    if(cm[ds]){
+      var s=_adScore(cm[ds]);
+      if(s.score>=60) candidates.push({date:ds,score:s.score,label:s.label,phase:s.phase,fto:s.fto});
+    }
+  }
+  candidates.sort(function(a,b){return b.score-a.score;});
+  return candidates.slice(0,n);
+}
+
+/* ══ 広告追加 ══ */
+function addAdEvent(){
+  var date=document.getElementById('ad-date').value;
+  var title=document.getElementById('ad-title').value.trim();
+  var channel=document.getElementById('ad-channel').value;
+  var budget=document.getElementById('ad-budget').value;
+  if(!date||!title){alert('日付と広告タイトルを入力してください');return;}
+  var cm={};DATA.mkt_calendar.forEach(function(d){cm[d.date]=d;});
+  var cd=cm[date];
+  var sc=_adScore(cd);
+  var ev={id:Date.now(),date:date,title:title,channel:channel,budget:budget,score:sc.score,label:sc.label,color:sc.color};
+  window._adEvents.push(ev);_saveAds();
+  /* チェック結果表示 */
+  var alts=_findBestDates(date,3);
+  var html2='<div style="border:2px solid '+sc.color+';border-radius:10px;padding:14px;margin-bottom:10px;">'+
+    '<div style="display:flex;align-items:center;gap:10px;margin-bottom:9px;">'+
+    '<span style="font-size:1.8rem;">'+sc.label+'</span>'+
+    '<div><div style="font-size:0.92rem;font-weight:700;color:'+sc.color+';">スコア: '+sc.score+'/100</div>'+
+    '<div style="font-size:0.75rem;color:var(--text2);">'+date+' | '+sc.phase+' | 旧暦'+sc.kyureki+'日</div></div></div>'+
+    '<div style="font-size:0.76rem;color:var(--text2);margin-bottom:7px;">'+sc.detail+'</div>'+
+    (sc.recs.length?'<div style="background:rgba(200,164,90,.1);border-radius:6px;padding:8px;margin-bottom:7px;font-size:0.73rem;color:var(--gold);">'+sc.recs.join('<br>')+'</div>':'')+
+    '<div style="font-size:0.74rem;color:var(--text2);margin-top:5px;">感情: <span style="color:var(--text)">'+sc.emotion+'</span> | テーマ: <span style="color:var(--text)">'+sc.theme+'</span></div>'+
+    '<div style="font-size:0.72rem;color:var(--gold);margin-top:4px;">🌺 '+sc.fto+'</div>'+
+    '<div style="font-size:0.7rem;color:var(--text2);margin-top:3px;">推奨チャネル: '+sc.channels+'</div></div>';
+  if(alts.length&&sc.score<60){
+    html2+='<div style="background:var(--card2);border-radius:8px;padding:10px;"><div style="font-size:0.76rem;font-weight:700;color:var(--gold);margin-bottom:6px;">💡 ±2週間内のより良い日程</div>'+
+    alts.map(function(a){return '<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border);font-size:0.73rem;">'+
+      '<div>'+a.date+' <span style="color:var(--text2);">'+a.phase+'</span></div>'+
+      '<div style="color:#5ba85d;font-weight:700;">'+a.label+' ('+a.score+')</div></div>';}).join('')+'</div>';
+  }
+  document.getElementById('ad-check-result').innerHTML=html2;
+  renderAdEventsList();
+  renderMktCalendar();
+  document.getElementById('ad-title').value='';
+  document.getElementById('ad-date').value='';
+}
+
+/* ══ 広告一覧描画 ══ */
+function renderAdEventsList(){
+  var el=document.getElementById('ad-events-list');if(!el)return;
+  if(!window._adEvents.length){el.innerHTML='<div style="color:var(--text2);font-size:0.8rem;padding:10px 0;">まだ広告予定がありません。</div>';return;}
+  var sorted=[...window._adEvents].sort(function(a,b){return a.date.localeCompare(b.date);});
+  el.innerHTML=sorted.map(function(ev){
+    return '<div style="display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;margin-bottom:5px;background:var(--card2);border-left:4px solid '+ev.color+';">'+
+      '<div style="flex:1;">'+
+        '<div style="display:flex;align-items:center;gap:7px;">'+
+          '<span style="font-size:0.85rem;font-weight:700;color:var(--text);">'+ev.title+'</span>'+
+          '<span style="font-size:0.65rem;padding:1px 6px;border-radius:8px;background:'+ev.color+'22;color:'+ev.color+';font-weight:700;">'+ev.label+'</span>'+
+        '</div>'+
+        '<div style="font-size:0.72rem;color:var(--text2);margin-top:2px;">'+ev.date+' | '+ev.channel+(ev.budget?' | $'+ev.budget:'')+'</div>'+
+      '</div>'+
+      '<button onclick="removeAd('+ev.id+')" style="background:none;border:none;color:#e05555;cursor:pointer;font-size:1.1rem;padding:4px;">✕</button>'+
+    '</div>';
+  }).join('');
+}
+
+function removeAd(id){
+  window._adEvents=window._adEvents.filter(function(e){return e.id!==id;});
+  _saveAds();renderAdEventsList();renderMktCalendar();
+}
+
+/* ══ カレンダー描画 ══ */
+function renderMktCalendar(){
+  var sel=document.getElementById('cal-month');if(!sel)return;
+  var val=sel.value;
+  var yr=parseInt(val.split('-')[0]),mo=parseInt(val.split('-')[1]);
+  var first=new Date(yr,mo-1,1),last=new Date(yr,mo,0);
+  var grid=document.getElementById('mkt-cal-grid');if(!grid)return;
+  grid.innerHTML='';
+  var cm={};DATA.mkt_calendar.forEach(function(d){cm[d.date]=d;});
+  var adMap={};window._adEvents.forEach(function(e){if(!adMap[e.date])adMap[e.date]=[];adMap[e.date].push(e);});
+  for(var i=0;i<first.getDay();i++){var e=document.createElement('div');e.style.minHeight='72px';grid.appendChild(e);}
+  for(var d=1;d<=last.getDate();d++){
+    var ds=yr+'-'+String(mo).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+    var cd=cm[ds],ads=adMap[ds]||[];
+    var cell=document.createElement('div');
+    var isToday=ds===DATA.mkt_today;
+    cell.style.cssText='border-radius:7px;padding:4px 4px 3px;min-height:72px;position:relative;transition:all .15s;cursor:pointer;'+
+      (isToday?'border:2px solid var(--gold);box-shadow:0 0 6px rgba(200,164,90,.3);':'border:1px solid transparent;');
+    if(cd){
+      var col=_ac(cd.activity_type);
+      var sc=_adScore(cd);
+      cell.style.borderLeft='3px solid '+col;
+      cell.style.background=col+'0e';
+      cell.innerHTML=
+        '<div style="display:flex;justify-content:space-between;align-items:start;">'+
+          '<span style="font-size:0.76rem;font-weight:700;color:'+col+';">'+d+'</span>'+
+          '<span style="font-size:0.65rem;color:var(--text2);">旧'+cd.kyureki_day+'</span>'+
+        '</div>'+
+        '<div style="font-size:0.88rem;text-align:center;margin:1px 0;">'+cd.emoji+'</div>'+
+        (cd.event_label?'<div style="font-size:0.52rem;padding:1px 2px;border-radius:2px;background:'+col+'22;color:'+col+';font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+cd.event_label+'</div>':'')+
+        (ads.length?'<div style="margin-top:2px;">'+ads.map(function(a){
+          return '<div style="font-size:0.52rem;padding:1px 3px;border-radius:3px;background:'+a.color+'33;color:'+a.color+';white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600;margin-bottom:1px;">📣'+a.title+'</div>';
+        }).join('')+'</div>':'')+
+        '<div style="position:absolute;bottom:2px;right:2px;font-size:0.5rem;color:'+(sc.score>=60?'#5ba85d':sc.score>=30?'#c8a45a':'#e05555')+';">'+sc.score+'</div>';
+      (function(cd2,col2,ads2,ds2){
+        cell.onclick=function(){_showDayDetail(ds2,cd2,ads2);};
+      })(cd,col,ads,ds);
+    }else{
+      cell.innerHTML='<div style="font-size:0.76rem;font-weight:700;">'+d+'</div>';
+    }
+    grid.appendChild(cell);
+  }
+  /* 月イベント */
+  var evts=DATA.mkt_moon_events.filter(function(e){return e.date.startsWith(val);});
+  var el=document.getElementById('month-events-list');if(!el)return;
+  el.innerHTML=evts.length===0?'<p style="color:var(--text2);font-size:0.8rem;">このデータ範囲外</p>':
+    evts.map(function(e){
+      var cd2=cm[e.date];if(!cd2)return'';
+      var sc2=_adScore(cd2);
+      return '<div style="display:flex;justify-content:space-between;padding:9px;background:var(--card2);border-radius:7px;margin-bottom:6px;border-left:3px solid '+sc2.color+';">'+
+        '<div><span style="font-size:1rem;">'+e.label+'</span>'+
+        '<span style="margin-left:8px;font-weight:700;font-size:0.85rem;">'+e.date+'</span>'+
+        '<span style="margin-left:5px;font-size:0.72rem;color:var(--text2);">旧暦'+cd2.kyureki_day+'日</span>'+
+        '<div style="font-size:0.72rem;color:var(--text2);margin-top:3px;">'+cd2.marketing.emotion+' | '+cd2.marketing.theme+'</div></div>'+
+        '<div style="text-align:right;"><div style="color:'+sc2.color+';font-weight:700;font-size:0.85rem;">'+sc2.label+'</div>'+
+        '<div style="font-size:0.68rem;color:var(--gold);margin-top:2px;">'+cd2.marketing.family_tree_oki+'</div></div></div>';
+    }).join('');
+}
+
+/* ══ 日詳細ポップアップ ══ */
+function _showDayDetail(ds,cd,ads){
+  var sc=_adScore(cd);
+  var existing=document.getElementById('day-detail-modal');
+  if(existing)existing.remove();
+  var modal=document.createElement('div');
+  modal.id='day-detail-modal';
+  modal.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);z-index:1000;display:flex;align-items:center;justify-content:center;';
+  modal.innerHTML='<div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px;width:360px;max-width:90vw;max-height:80vh;overflow-y:auto;position:relative;">'+
+    '<button onclick="document.getElementById(\'day-detail-modal\').remove()" style="position:absolute;top:10px;right:12px;background:none;border:none;color:var(--text2);font-size:1.3rem;cursor:pointer;">✕</button>'+
+    '<div style="font-size:0.9rem;font-weight:700;color:var(--gold);margin-bottom:12px;">'+cd.emoji+' '+ds+' (旧暦'+cd.kyureki_day+'日)</div>'+
+    '<div style="display:inline-block;padding:3px 10px;border-radius:10px;background:'+sc.color+'22;color:'+sc.color+';font-weight:700;font-size:0.8rem;margin-bottom:10px;">'+sc.label+' スコア:'+sc.score+'</div>'+
+    '<div style="font-size:0.78rem;color:var(--text2);margin-bottom:8px;">'+sc.detail+'</div>'+
+    (sc.recs.length?'<div style="background:rgba(200,164,90,.1);border-radius:6px;padding:8px;margin-bottom:10px;font-size:0.72rem;color:var(--gold);">'+sc.recs.join('<br>')+'</div>':'')+
+    '<div style="font-size:0.75rem;color:var(--text2);">感情: <span style="color:var(--text)">'+sc.emotion+'</span></div>'+
+    '<div style="font-size:0.75rem;color:var(--text2);">テーマ: <span style="color:var(--text)">'+sc.theme+'</span></div>'+
+    '<div style="font-size:0.72rem;color:var(--gold);margin:5px 0;">🌺 '+sc.fto+'</div>'+
+    (ads.length?'<div style="margin-top:10px;border-top:1px solid var(--border);padding-top:10px;"><div style="font-size:0.75rem;font-weight:700;color:var(--text);margin-bottom:5px;">📣 登録済み広告</div>'+
+      ads.map(function(a){return '<div style="font-size:0.72rem;padding:4px;background:var(--card2);border-radius:5px;margin-bottom:3px;color:'+a.color+';">'+a.label+' '+a.title+' ('+a.channel+')</div>';}).join('')+'</div>':'')+
+    '<button onclick="document.getElementById(\'ad-date\').value=\''+ds+'\';document.getElementById(\'day-detail-modal\').remove();" style="margin-top:12px;width:100%;background:var(--gold);color:#0a1220;border:none;padding:9px;border-radius:7px;font-weight:700;cursor:pointer;font-size:0.82rem;">この日に広告を追加</button>'+
+    '</div>';
+  modal.onclick=function(e){if(e.target===modal)modal.remove();};
+  document.body.appendChild(modal);
+}
+
+/* ══ 以下は他タブのinit関数（変更なし） ══ */
+function initTodayTab(){
+  var t=DATA.mkt_today_data;if(!t)return;
+  var mkt=t.marketing,col=_ac(t.activity_type);
+  document.getElementById('today-big-emoji').textContent=t.emoji;
+  document.getElementById('today-title').textContent=t.phase_name+'期';
+  document.getElementById('today-meta').textContent=DATA.mkt_today+' | 旧暦'+t.kyureki_day+'日目';
+  var badge=document.getElementById('today-type-badge');
+  badge.textContent=t.activity_type;badge.style.cssText='display:inline-block;padding:3px 12px;border-radius:18px;font-size:0.76rem;font-weight:700;background:'+col+'22;color:'+col+';border:1px solid '+col+'44;';
+  document.getElementById('today-panel').style.borderColor=col;
+  document.getElementById('today-action-grid').innerHTML=
+    '<div class="tday-cell"><div class="tday-lbl">💡 感情状態</div><div class="tday-val" style="color:'+col+'">'+mkt.emotion+'</div></div>'+
+    '<div class="tday-cell"><div class="tday-lbl">📣 広告テーマ</div><div class="tday-val">'+mkt.theme+'</div></div>'+
+    '<div class="tday-cell"><div class="tday-lbl">✍️ コピー方向</div><div class="tday-val">'+mkt.copy_direction+'</div></div>'+
+    '<div class="tday-cell"><div class="tday-lbl">📺 推奨チャネル</div><div class="tday-val">'+mkt.channels+'</div></div>'+
+    '<div class="tday-cell"><div class="tday-lbl">🌺 Family Tree Oki</div><div class="tday-val" style="color:var(--gold)">'+mkt.family_tree_oki+'</div></div>'+
+    '<div class="tday-cell"><div class="tday-lbl">💰 予算強度</div><div class="tday-val">月間の'+mkt.budget_pct+'% | CTA:'+mkt.cta_intensity+'</div></div>';
+  var today=DATA.mkt_today;
+  var up=DATA.mkt_moon_events.filter(function(e){return e.date>=today;}).slice(0,5);
+  document.getElementById('upcoming-events').innerHTML=up.map(function(e){
+    var d=Math.round((new Date(e.date)-new Date(today))/86400000);
+    return '<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);">'+
+      '<div><span style="font-size:1rem;">'+(e.type==='new_moon'?'🌑':'🌕')+'</span>'+
+      '<span style="margin-left:7px;font-size:0.8rem;">'+e.label+'</span>'+
+      '<div style="font-size:0.68rem;color:var(--text2);">'+e.date+'</div></div>'+
+      '<div style="color:'+(e.type==='new_moon'?'#4a6fa5':'#c8a45a')+';font-weight:700;">'+(d===0?'今日!':d+'日後')+'</div></div>';
+  }).join('');
+  var june=DATA.mkt_calendar.filter(function(d){return d.date.startsWith('2026-06');});
+  var dist=[june.filter(function(d){return d.activity_type==='活動期';}).length,
+            june.filter(function(d){return d.activity_type==='思考期';}).length,
+            june.filter(function(d){return d.activity_type==='停滞期';}).length];
+  if(window._mdC)window._mdC.destroy();
+  window._mdC=new Chart(document.getElementById('monthDistChart'),{type:'doughnut',
+    data:{labels:['活動期','思考期','停滞期'],datasets:[{data:dist,backgroundColor:['#5ba85d','#c8a45a','#4a6fa5'],borderWidth:0}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#8a9ab8',font:{size:11}}}}}});
+  var nxt=up[0];var dt=nxt?Math.round((new Date(nxt.date)-new Date(today))/86400000):0;
+  document.getElementById('countdown-panel').innerHTML=nxt?
+    '<div style="font-size:2.6rem;margin-bottom:5px;">'+(nxt.type==='new_moon'?'🌑':'🌕')+'</div>'+
+    '<div style="font-size:2.8rem;font-weight:900;color:var(--gold);">'+dt+'</div>'+
+    '<div style="font-size:0.82rem;color:var(--text2);">日後</div>'+
+    '<div style="font-size:0.9rem;color:var(--text);margin:6px 0;">'+nxt.label+'</div>'+
+    '<div style="font-size:0.68rem;color:var(--text2);">'+nxt.date+'</div>'+
+    '<div style="margin-top:9px;padding:8px;background:var(--card2);border-radius:7px;font-size:0.7rem;color:var(--text2);">'+
+    (nxt.type==='new_moon'?'🌑 活動期ラストスパート！<br>積極的な広告を今打て':'🌕 感謝・コミュニティ訴求へ<br>ロイヤル顧客アプローチ最適期')+'</div>'
+    :'予定なし';
+}
+
+function initActivityCards(){
+  var m={'活動期':'act-active','思考期':'act-think','停滞期':'act-stagnant'};
+  Object.entries(DATA.mkt_activity_summary).forEach(function(kv){
+    var el=document.getElementById(m[kv[0]]);if(!el)return;
+    el.querySelector('.act-desc').textContent=kv[1].description;
+    el.querySelector('.act-phases').textContent='フェーズ: '+kv[1].phases.join(' / ');
+    el.querySelector('.act-evidence').textContent='📊 '+kv[1].market_data;
+  });
+}
+
+function renderPhaseWheel(){
+  var cv=document.getElementById('phaseWheel');if(!cv)return;
+  var ctx=cv.getContext('2d'),W=cv.width,H=cv.height,cx=W/2,cy=H/2,R=165;
+  ctx.clearRect(0,0,W,H);
+  var PH=[{n:'新月\n祈願',s:-20,e:20,c:'#1a2640',t:'思考期',em:'🌑'},
+          {n:'三日月\n芽吹き',s:20,e:75,c:'#1a3a1c',t:'活動期',em:'🌒'},
+          {n:'上弦\n決断',s:75,e:100,c:'#1f5223',t:'活動期',em:'🌓'},
+          {n:'十三夜\n最盛',s:100,e:170,c:'#2d5e2e',t:'活動期',em:'🌔'},
+          {n:'満月\n感謝',s:170,e:195,c:'#3a2d10',t:'思考期',em:'🌕'},
+          {n:'十六夜\n振返り',s:195,e:265,c:'#1a2040',t:'停滞期',em:'🌖'},
+          {n:'下弦\n整理',s:265,e:290,c:'#1e1840',t:'停滞期',em:'🌗'},
+          {n:'晦日\n休息',s:290,e:340,c:'#1a1e2e',t:'停滞期',em:'🌘'}];
+  var CM={'活動期':'#5ba85d','思考期':'#c8a45a','停滞期':'#4a6fa5'};
+  PH.forEach(function(p){
+    var s=(p.s-90)*Math.PI/180,e=(p.e-90)*Math.PI/180;
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,R,s,e);ctx.closePath();ctx.fillStyle=p.c;ctx.fill();
+    ctx.beginPath();ctx.arc(cx,cy,R,s,e);ctx.strokeStyle=CM[p.t];ctx.lineWidth=5;ctx.stroke();
+    var mid=(p.s+p.e)/2-90,lr=R*.63,lx=cx+lr*Math.cos(mid*Math.PI/180),ly=cy+lr*Math.sin(mid*Math.PI/180);
+    ctx.save();ctx.translate(lx,ly);ctx.textAlign='center';ctx.textBaseline='middle';ctx.font='bold 10px sans-serif';ctx.fillStyle='#ccc';
+    p.n.split('\n').forEach(function(l,i,a){ctx.fillText(l,0,(i-a.length/2+.5)*13);});ctx.restore();
+    var er=R*.86,ex=cx+er*Math.cos(mid*Math.PI/180),ey=cy+er*Math.sin(mid*Math.PI/180);
+    ctx.font='13px serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(p.em,ex,ey);
+  });
+  ctx.beginPath();ctx.arc(cx,cy,40,0,2*Math.PI);ctx.fillStyle='#0a1220';ctx.fill();
+  ctx.strokeStyle='#c8a45a44';ctx.lineWidth=1;ctx.stroke();
+  var td=DATA.mkt_today_data;
+  if(td){var an=(td.angle-90)*Math.PI/180;
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+(R+12)*Math.cos(an),cy+(R+12)*Math.sin(an));
+    ctx.strokeStyle='#fff';ctx.lineWidth=3;ctx.stroke();
+    ctx.beginPath();ctx.arc(cx+R*Math.cos(an),cy+R*Math.sin(an),5,0,2*Math.PI);ctx.fillStyle='#fff';ctx.fill();
+    ctx.font='bold 11px sans-serif';ctx.fillStyle='#c8a45a';ctx.textAlign='center';ctx.fillText('今日',cx,cy-8);
+    ctx.font='13px serif';ctx.fillStyle='#888';ctx.fillText(td.emoji,cx,cy+8);}
+}
+
+function initPhaseCards(){
+  var D=[{n:'新月・祈願',e:'🌑',a:'思考期'},{n:'三日月・芽吹き',e:'🌒',a:'活動期'},
+         {n:'上弦・決断',e:'🌓',a:'活動期'},{n:'十三夜・最盛',e:'🌔',a:'活動期'},
+         {n:'満月・感謝',e:'🌕',a:'思考期'},{n:'十六夜・振り返り',e:'🌖',a:'停滞期'},
+         {n:'下弦・整理',e:'🌗',a:'停滞期'},{n:'晦日・休息',e:'🌘',a:'停滞期'}];
+  document.getElementById('phase-cards-grid').innerHTML=D.map(function(p){
+    var mkt=DATA.mkt_marketing[p.n]||{},col=_ac(p.a),bp=mkt.budget_pct||0;
+    return '<div style="background:var(--card2);border-radius:11px;padding:14px;border-left:4px solid '+col+';">'+
+      '<div style="display:flex;align-items:center;gap:8px;margin-bottom:9px;">'+
+      '<span style="font-size:1.6rem;">'+p.e+'</span>'+
+      '<div><div style="font-size:0.9rem;font-weight:700;color:'+col+';">'+p.n+'</div>'+
+      '<span style="display:inline-block;padding:1px 6px;border-radius:8px;font-size:0.65rem;font-weight:600;background:'+col+'22;color:'+col+';margin-top:2px;">'+p.a+'</span></div></div>'+
+      '<div style="font-size:0.74rem;color:var(--text2);margin:2px 0;">感情: <span style="color:var(--text)">'+(mkt.emotion||'-')+'</span></div>'+
+      '<div style="font-size:0.74rem;color:var(--text2);margin:2px 0;">テーマ: <span style="color:var(--text)">'+(mkt.theme||'-')+'</span></div>'+
+      '<div style="font-size:0.68rem;color:var(--gold);margin:4px 0;">'+(mkt.family_tree_oki||'')+'</div>'+
+      '<div style="margin-top:6px;"><div style="display:flex;justify-content:space-between;font-size:0.67rem;margin-bottom:2px;">'+
+      '<span style="color:var(--text2)">予算</span><span style="color:'+_bc(bp)+'">'+bp+'%</span></div>'+
+      '<div style="height:4px;background:var(--bg);border-radius:2px;overflow:hidden;">'+
+      '<div style="height:100%;width:'+(bp*3.3)+'%;background:'+_bc(bp)+';border-radius:2px;"></div></div></div></div>';
+  }).join('');
+}
+
+function initStrategyRows(){
+  var D=[{n:'新月・祈願',e:'🌑',a:'思考期'},{n:'三日月・芽吹き',e:'🌒',a:'活動期'},
+         {n:'上弦・決断',e:'🌓',a:'活動期'},{n:'十三夜・最盛',e:'🌔',a:'活動期'},
+         {n:'満月・感謝',e:'🌕',a:'思考期'},{n:'十六夜・振り返り',e:'🌖',a:'停滞期'},
+         {n:'下弦・整理',e:'🌗',a:'停滞期'},{n:'晦日・休息',e:'🌘',a:'停滞期'}];
+  document.getElementById('strategy-rows').innerHTML=D.map(function(p){
+    var mkt=DATA.mkt_marketing[p.n]||{},col=_ac(p.a),bp=mkt.budget_pct||0;
+    return '<div style="display:grid;grid-template-columns:140px 1fr 1fr 1fr 62px;gap:8px;padding:10px 12px;border-radius:8px;margin-bottom:5px;background:var(--card2);">'+
+      '<div style="display:flex;align-items:center;gap:7px;font-weight:700;color:'+col+';font-size:0.83rem;">'+
+      '<span>'+p.e+'</span><div><div>'+p.n+'</div>'+
+      '<span style="display:inline-block;padding:1px 5px;border-radius:6px;font-size:0.6rem;background:'+col+'22;color:'+col+';margin-top:2px;">'+p.a+'</span></div></div>'+
+      '<div style="font-size:0.72rem;color:var(--text2);line-height:1.4;"><strong style="color:var(--text);display:block;margin-bottom:2px;">'+(mkt.theme||'')+'</strong>'+(mkt.copy_direction||'')+'</div>'+
+      '<div style="font-size:0.72rem;color:var(--text2);line-height:1.4;"><strong style="color:var(--text);display:block;margin-bottom:2px;">'+(mkt.target||'')+'</strong>'+(mkt.channels||'')+'</div>'+
+      '<div style="font-size:0.72rem;color:var(--gold);line-height:1.4;">'+(mkt.family_tree_oki||'')+'</div>'+
+      '<div style="text-align:center;"><div style="border:1px solid '+_bc(bp)+'44;border-radius:16px;padding:2px 6px;font-size:0.76rem;font-weight:700;color:'+_bc(bp)+';">'+bp+'%</div>'+
+      '<div style="font-size:0.6rem;color:var(--text2);margin-top:3px;">CTA:'+(mkt.cta_intensity||'-')+'</div></div></div>';
+  }).join('');
+}
+
+function initMechanism(){
+  var steps=DATA.mkt_mechanism.steps;
+  document.getElementById('mech-flow').innerHTML=steps.map(function(s,i){
+    return '<div style="background:var(--card2);border-radius:9px;padding:15px;min-width:140px;flex:1;text-align:center;">'+
+      '<div style="font-size:1.8rem;margin-bottom:7px;">'+s.icon+'</div>'+
+      '<div style="font-size:0.8rem;color:var(--gold);font-weight:700;margin-bottom:5px;">'+s.title+'</div>'+
+      '<div style="font-size:0.67rem;color:var(--text2);line-height:1.5;">'+s.desc+'</div></div>'+
+      (i<steps.length-1?'<div style="display:flex;align-items:center;padding:0 4px;color:var(--gold);font-size:1.2rem;flex-shrink:0;">→</div>':'');
+  }).join('');
+  var tbl=document.getElementById('evidence-table');
+  [['USDJPY','満月翌日','p=0.124','準有意・最強'],
+   ['Nikkei225','新月・満月','通常比3-4倍','月相日リターン著増'],
+   ['BTC','月相後Day+4','+1.24〜1.58%','遅延共鳴パターン'],
+   ['SP500','新月後','正のドリフト','上昇モメンタム起点'],
+   ['集合行動','満月','感情的高揚↑','ER受診・衝動行動増'],
+   ['沖縄旧暦','一日・十五日','1000年の実践','集合行動規範として定着']
+  ].forEach(function(row){
+    var tr=document.createElement('tr');
+    tr.innerHTML=row.map(function(c,i){return '<td style="padding:8px 12px;border-bottom:1px solid var(--border);'+(i===2?'color:var(--gold);font-weight:700':'')+'">' +c+'</td>';}).join('');
+    tbl.appendChild(tr);
+  });
+  if(window._wC)window._wC.destroy();
+  var wc=document.getElementById('waveChart');if(!wc)return;
+  var lb=[],ad=[],rd=[];
+  for(var i=0;i<=30;i++){lb.push(i===0?'新月':i===15?'満月':i===30?'新月':String(i));ad.push(50+45*Math.sin(i*Math.PI/15-Math.PI/4));rd.push(60+40*Math.cos(i*Math.PI/15));}
+  window._wC=new Chart(wc,{type:'line',data:{labels:lb,datasets:[
+    {label:'行動エネルギー',data:ad,borderColor:'#5ba85d',backgroundColor:'#5ba85d22',fill:true,tension:0.4},
+    {label:'内省エネルギー',data:rd,borderColor:'#c8a45a',backgroundColor:'#c8a45a22',fill:true,tension:0.4}
+  ]},options:{responsive:true,maintainAspectRatio:false,
+    scales:{x:{ticks:{color:'#555',maxTicksLimit:8},grid:{color:'#1a2030'}},y:{ticks:{color:'#555'},grid:{color:'#1a2030'},min:0,max:100}},
+    plugins:{legend:{labels:{color:'#8a9ab8'}}}}});
+}
+
+function initBudgetCharts(){
+  var PH=['新月・祈願','三日月・芽吹き','上弦・決断','十三夜・最盛','満月・感謝','十六夜・振り返り','下弦・整理','晦日・休息'];
+  var AT=['思考期','活動期','活動期','活動期','思考期','停滞期','停滞期','停滞期'];
+  var bd=PH.map(function(p){return DATA.mkt_marketing[p]?DATA.mkt_marketing[p].budget_pct:0;});
+  var bc=AT.map(function(a){return _ac(a);});
+  if(window._bC)window._bC.destroy();
+  window._bC=new Chart(document.getElementById('budgetChart'),{type:'bar',
+    data:{labels:PH.map(function(p){return p.replace('・','\n');}),datasets:[{label:'予算比率(%)',data:bd,backgroundColor:bc,borderRadius:4}]},
+    options:{responsive:true,maintainAspectRatio:false,
+      scales:{x:{ticks:{color:'#666',font:{size:8}},grid:{display:false}},y:{ticks:{color:'#666'},grid:{color:'#1a2030'},max:35}},
+      plugins:{legend:{display:false}}}});
+  var c90=DATA.mkt_calendar.filter(function(d){return d.date>=DATA.mkt_today;}).slice(0,90);
+  if(window._tC)window._tC.destroy();
+  window._tC=new Chart(document.getElementById('timelineChart'),{type:'bar',
+    data:{labels:c90.map(function(d){return d.date.slice(5);}),
+          datasets:[{label:'日次予算強度',data:c90.map(function(d){return d.marketing.budget_pct;}),
+                     backgroundColor:c90.map(function(d){return _ac(d.activity_type);}),borderRadius:2}]},
+    options:{responsive:true,maintainAspectRatio:false,
+      scales:{x:{ticks:{color:'#555',maxTicksLimit:12,font:{size:7}},grid:{display:false}},y:{ticks:{color:'#666'},grid:{color:'#1a2030'},max:35}},
+      plugins:{legend:{display:false}}}});
+  document.getElementById('budget-strategy-grid').innerHTML=[
+    {t:'活動期',i:'⚡',c:'#5ba85d',p:'70%',d:'広告費の70%を集中投下。新規獲得・リターゲ・プッシュ通知を最大化。CTA強度を上げ限定感・緊急感を演出。',ph:'三日月〜十三夜（旧暦2〜13日）'},
+    {t:'思考期',i:'🌟',c:'#c8a45a',p:'20%',d:'既存顧客との絆を深める。ロイヤリティ・コミュニティ・感謝コンテンツへ。紹介プログラムにも最適。',ph:'新月（旧暦1日）・満月（旧暦15日）'},
+    {t:'停滞期',i:'🔵',c:'#4a6fa5',p:'10-18%',d:'SEO・ブログ・YouTube等の長期資産投資。次の活動期の仕込みに集中。',ph:'十六夜〜晦日（旧暦16〜29日）'},
+  ].map(function(s){
+    return '<div style="background:var(--card2);border-radius:10px;padding:16px;border-top:4px solid '+s.c+';">'+
+      '<div style="font-size:1.5rem;margin-bottom:5px;">'+s.i+'</div>'+
+      '<div style="font-size:0.92rem;font-weight:700;color:'+s.c+';margin-bottom:3px;">'+s.t+'</div>'+
+      '<div style="font-size:1.8rem;font-weight:900;color:'+s.c+';margin-bottom:6px;">'+s.p+'</div>'+
+      '<div style="font-size:0.72rem;color:var(--text2);line-height:1.5;margin-bottom:8px;">'+s.d+'</div>'+
+      '<div style="font-size:0.67rem;color:var(--text2);border-top:1px solid var(--border);padding-top:6px;">📅 '+s.ph+'</div></div>';
+  }).join('');
+}
+
+/* onload: 広告データ復元 */
+window.addEventListener('load', function(){
+  if(window._adEvents && window._adEvents.length) renderAdEventsList();
+});
 </script>
 </body>
 </html>
