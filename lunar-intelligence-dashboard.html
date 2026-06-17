@@ -1042,7 +1042,7 @@ window.onload = function() {
     </div>
   </div>
   <div style="display:flex;justify-content:center;margin-bottom:22px;">
-    <canvas id="phaseWheel" width="400" height="400"></canvas>
+    <div id="phaseWheelSVG" style="width:400px;height:400px;margin:auto;"></div>
   </div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;" id="phase-cards-grid"></div>
 </div>
@@ -1247,122 +1247,116 @@ function initActivityCards(){
 }
 
 function renderPhaseWheel(){
-  var cv=document.getElementById('phaseWheel');if(!cv)return;
-  var dpr=window.devicePixelRatio||1;
-  var SIZE=420;
-  cv.width=SIZE*dpr; cv.height=SIZE*dpr;
-  cv.style.width=SIZE+'px'; cv.style.height=SIZE+'px';
-  var ctx=cv.getContext('2d');
-  ctx.scale(dpr,dpr);
-  var cx=SIZE/2, cy=SIZE/2, R=182, iR=54;
+  var container = document.getElementById('phaseWheelSVG');
+  if(!container) return;
 
-  ctx.fillStyle='#050e1d'; ctx.fillRect(0,0,SIZE,SIZE);
+  var cx=200, cy=200, R=178, iR=52;
+  var td = DATA.mkt_today_data;
 
-  /* 明るい・くっきりした色を使用 */
   var PH=[
-    {n:'新月',  sub:'祈願',     s:-22, e:22,  light:'#3d6fff', dark:'#1a3da8', edge:'#99bbff', t:'思考期', em:'🌑'},
-    {n:'三日月',sub:'芽吹き',   s:22,  e:75,  light:'#2db84a', dark:'#1a7a30', edge:'#66ff88', t:'活動期', em:'🌒'},
-    {n:'上弦',  sub:'決断',     s:75,  e:102, light:'#33cc55', dark:'#1e9040', edge:'#77ffaa', t:'活動期', em:'🌓'},
-    {n:'十三夜',sub:'最盛',     s:102, e:168, light:'#2ecc50', dark:'#1e9840', edge:'#66ff88', t:'活動期', em:'🌔'},
-    {n:'満月',  sub:'感謝',     s:168, e:192, light:'#e09400', dark:'#8a5a00', edge:'#ffe066', t:'思考期', em:'🌕'},
-    {n:'十六夜',sub:'振り返り', s:192, e:258, light:'#2e4fd4', dark:'#162688', edge:'#6688ff', t:'停滞期', em:'🌖'},
-    {n:'下弦',  sub:'整理',     s:258, e:285, light:'#2644c8', dark:'#0f1e7a', edge:'#5577ff', t:'停滞期', em:'🌗'},
-    {n:'晦日',  sub:'休息',     s:285, e:338, light:'#1a34aa', dark:'#0b1660', edge:'#4466ee', t:'停滞期', em:'🌘'}
+    {n:'新月',  sub:'祈願',     s:-22, e:22,  fill:'#2d5eee', fill2:'#1a3aaa', edge:'#88aaff', t:'思考期', em:'🌑'},
+    {n:'三日月',sub:'芽吹き',   s:22,  e:75,  fill:'#2ab84a', fill2:'#176e2c', edge:'#55ee77', t:'活動期', em:'🌒'},
+    {n:'上弦',  sub:'決断',     s:75,  e:102, fill:'#30d458', fill2:'#1a8a36', edge:'#77ffaa', t:'活動期', em:'🌓'},
+    {n:'十三夜',sub:'最盛',     s:102, e:168, fill:'#28c84e', fill2:'#168230', edge:'#66ff88', t:'活動期', em:'🌔'},
+    {n:'満月',  sub:'感謝',     s:168, e:192, fill:'#e09800', fill2:'#8a5c00', edge:'#ffdd44', t:'思考期', em:'🌕'},
+    {n:'十六夜',sub:'振り返り', s:192, e:258, fill:'#2e50dd', fill2:'#152888', edge:'#6688ff', t:'停滞期', em:'🌖'},
+    {n:'下弦',  sub:'整理',     s:258, e:285, fill:'#2540cc', fill2:'#102077', edge:'#5577ee', t:'停滞期', em:'🌗'},
+    {n:'晦日',  sub:'休息',     s:285, e:338, fill:'#1a30bb', fill2:'#0c1866', edge:'#4466dd', t:'停滞期', em:'🌘'}
   ];
 
-  PH.forEach(function(p){
-    var s=(p.s-90)*Math.PI/180, e=(p.e-90)*Math.PI/180;
-    var mid=((p.s+p.e)/2-90)*Math.PI/180;
-    var ex=cx+R*Math.cos(mid), ey=cy+R*Math.sin(mid);
-
-    /* ソリッドな塗り: dark(中心) → light(外縁) — 両方不透明 */
-    var lg=ctx.createLinearGradient(cx,cy,ex,ey);
-    lg.addColorStop(0, p.dark);
-    lg.addColorStop(0.55, p.light+'dd');
-    lg.addColorStop(1,  p.light);
-    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,R,s,e); ctx.closePath();
-    ctx.fillStyle=lg; ctx.fill();
-
-    /* 外縁アーク — 太く・発光 */
-    ctx.save();
-    ctx.shadowColor=p.edge; ctx.shadowBlur=16;
-    ctx.beginPath(); ctx.arc(cx,cy,R,s,e);
-    ctx.strokeStyle=p.edge; ctx.lineWidth=9; ctx.stroke();
-    ctx.restore();
-
-    /* 区切り線 */
-    [s,e].forEach(function(a){
-      ctx.beginPath();
-      ctx.moveTo(cx+iR*Math.cos(a),cy+iR*Math.sin(a));
-      ctx.lineTo(cx+R*Math.cos(a),cy+R*Math.sin(a));
-      ctx.strokeStyle='rgba(0,0,0,0.8)'; ctx.lineWidth=2; ctx.stroke();
-    });
-  });
-
-  /* ── テキストラベル ── */
-  PH.forEach(function(p){
-    var mid=((p.s+p.e)/2-90)*Math.PI/180;
-    var span=p.e-p.s;
-    var lr=R*0.60, lx=cx+lr*Math.cos(mid), ly=cy+lr*Math.sin(mid);
-
-    /* テキスト背景 */
-    ctx.save(); ctx.translate(lx,ly);
-    var bw=span<38?54:60, bh=span<38?20:32;
-    ctx.fillStyle='rgba(0,0,0,0.65)';
-    try{ ctx.beginPath(); ctx.roundRect(-bw/2,-bh/2,bw,bh,6); ctx.fill(); }
-    catch(e){ ctx.fillRect(-bw/2,-bh/2,bw,bh); }
-
-    ctx.textAlign='center'; ctx.textBaseline='middle';
-    ctx.shadowColor=p.edge; ctx.shadowBlur=8;
-    ctx.font='bold 12.5px "Segoe UI",Arial,sans-serif';
-    ctx.fillStyle='#ffffff';
-    ctx.fillText(p.n, 0, span<38 ? 0 : -8);
-    if(span>=38){
-      ctx.font='bold 10px "Segoe UI",Arial,sans-serif';
-      ctx.fillStyle=p.edge; ctx.shadowBlur=4;
-      ctx.fillText(p.sub, 0, 8);
-    }
-    ctx.restore();
-
-    /* 絵文字 */
-    var er=R*0.865, emx=cx+er*Math.cos(mid), emy=cy+er*Math.sin(mid);
-    ctx.font='15px serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
-    ctx.fillText(p.em, emx, emy);
-  });
-
-  /* ── センター ── */
-  var cg=ctx.createRadialGradient(cx,cy,0,cx,cy,iR);
-  cg.addColorStop(0,'#1c3050'); cg.addColorStop(1,'#040c18');
-  ctx.beginPath(); ctx.arc(cx,cy,iR,0,2*Math.PI);
-  ctx.fillStyle=cg; ctx.fill();
-  ctx.save();
-  ctx.shadowColor='rgba(200,164,76,0.8)'; ctx.shadowBlur=10;
-  ctx.strokeStyle='rgba(200,164,76,0.9)'; ctx.lineWidth=2.5;
-  ctx.beginPath(); ctx.arc(cx,cy,iR,0,2*Math.PI); ctx.stroke();
-  ctx.restore();
-
-  /* ── 今日ポインター ── */
-  var td=DATA.mkt_today_data;
-  if(td){
-    var an=(td.angle-90)*Math.PI/180;
-    ctx.save();
-    ctx.shadowColor='rgba(255,255,255,1)'; ctx.shadowBlur=20;
-    ctx.beginPath(); ctx.moveTo(cx,cy);
-    ctx.lineTo(cx+(R+12)*Math.cos(an),cy+(R+12)*Math.sin(an));
-    ctx.strokeStyle='#ffffff'; ctx.lineWidth=3.5; ctx.stroke();
-    ctx.beginPath(); ctx.arc(cx+R*Math.cos(an),cy+R*Math.sin(an),6.5,0,2*Math.PI);
-    ctx.fillStyle='#ffffff'; ctx.fill();
-    ctx.restore();
-    ctx.save();
-    ctx.shadowColor='rgba(240,200,80,0.9)'; ctx.shadowBlur=8;
-    ctx.font='bold 12px "Segoe UI",Arial,sans-serif';
-    ctx.fillStyle='#f0c850'; ctx.textAlign='center'; ctx.textBaseline='middle';
-    ctx.fillText('今日',cx,cy-10);
-    ctx.restore();
-    ctx.font='14px serif'; ctx.fillStyle='#ccd8ee';
-    ctx.textAlign='center'; ctx.textBaseline='middle';
-    ctx.fillText(td.emoji||'🌒',cx,cy+10);
+  function polar(angle_deg, r){
+    var rad = (angle_deg - 90) * Math.PI / 180;
+    return [cx + r*Math.cos(rad), cy + r*Math.sin(rad)];
   }
+  function sectorPath(s, e, r){
+    var p1=polar(s,r), p2=polar(e,r);
+    var large = (e-s) > 180 ? 1 : 0;
+    return 'M '+cx+' '+cy+' L '+p1[0].toFixed(2)+' '+p1[1].toFixed(2)+
+           ' A '+r+' '+r+' 0 '+large+' 1 '+p2[0].toFixed(2)+' '+p2[1].toFixed(2)+' Z';
+  }
+
+  var defs = '<defs>';
+  PH.forEach(function(p, i){
+    var mid = (p.s+p.e)/2;
+    var mp = polar(mid, R*0.7);
+    defs += '<linearGradient id="sg'+i+'" x1="'+cx+'" y1="'+cy+'" x2="'+mp[0].toFixed(1)+'" y2="'+mp[1].toFixed(1)+'" gradientUnits="userSpaceOnUse">';
+    defs += '<stop offset="0%" stop-color="'+p.fill2+'" stop-opacity="0.9"/>';
+    defs += '<stop offset="100%" stop-color="'+p.fill+'" stop-opacity="1"/>';
+    defs += '</linearGradient>';
+    defs += '<filter id="glow'+i+'"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>';
+  });
+  defs += '<filter id="textglow"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>';
+  defs += '<filter id="ptrglow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>';
+  defs += '</defs>';
+
+  var sectors = '';
+  PH.forEach(function(p, i){
+    sectors += '<path d="'+sectorPath(p.s,p.e,R)+'" fill="url(#sg'+i+')" stroke="#000" stroke-width="1.5"/>';
+    // Outer colored arc
+    var p1=polar(p.s,R), p2=polar(p.e,R);
+    var large=(p.e-p.s)>180?1:0;
+    sectors += '<path d="M '+p1[0].toFixed(2)+' '+p1[1].toFixed(2)+' A '+R+' '+R+' 0 '+large+' 1 '+p2[0].toFixed(2)+' '+p2[1].toFixed(2)+'"';
+    sectors += ' fill="none" stroke="'+p.edge+'" stroke-width="9" stroke-linecap="butt" filter="url(#glow'+i+')" opacity="0.95"/>';
+  });
+
+  // Labels
+  var labels = '';
+  PH.forEach(function(p){
+    var mid = (p.s+p.e)/2;
+    var span = p.e - p.s;
+    var lp = polar(mid, R*0.60);
+    var ep = polar(mid, R*0.865);
+
+    // Text background pill
+    var bw = span<38 ? 56 : 62, bh = span<38 ? 20 : 32;
+    labels += '<rect x="'+(lp[0]-bw/2).toFixed(1)+'" y="'+(lp[1]-bh/2).toFixed(1)+'"';
+    labels += ' width="'+bw+'" height="'+bh+'" rx="5" fill="rgba(0,0,0,0.7)"/>';
+
+    // Name
+    var ty = span<38 ? lp[1].toFixed(1) : (lp[1]-7).toFixed(1);
+    labels += '<text x="'+lp[0].toFixed(1)+'" y="'+ty+'" text-anchor="middle" dominant-baseline="middle"';
+    labels += ' font-family="Segoe UI,Arial,sans-serif" font-weight="bold" font-size="12.5" fill="#ffffff"';
+    labels += ' filter="url(#textglow)">'+p.n+'</text>';
+
+    // Sub keyword
+    if(span >= 38){
+      var sy = (lp[1]+8).toFixed(1);
+      labels += '<text x="'+lp[0].toFixed(1)+'" y="'+sy+'" text-anchor="middle" dominant-baseline="middle"';
+      labels += ' font-family="Segoe UI,Arial,sans-serif" font-weight="bold" font-size="10" fill="'+p.edge+'">';
+      labels += p.sub+'</text>';
+    }
+
+    // Emoji
+    labels += '<text x="'+ep[0].toFixed(1)+'" y="'+ep[1].toFixed(1)+'" text-anchor="middle" dominant-baseline="middle" font-size="15">'+p.em+'</text>';
+  });
+
+  // Center circle
+  var center = '<circle cx="'+cx+'" cy="'+cy+'" r="'+iR+'" fill="url(#cgrad)"/>';
+  center += '<circle cx="'+cx+'" cy="'+cy+'" r="'+iR+'" fill="none" stroke="rgba(200,164,76,0.85)" stroke-width="2.5" filter="url(#textglow)"/>';
+  defs = defs.replace('</defs>',
+    '<radialGradient id="cgrad" cx="40%" cy="40%"><stop offset="0%" stop-color="#1e3555"/><stop offset="100%" stop-color="#04090f"/></radialGradient></defs>');
+
+  // Today pointer
+  var pointer = '';
+  if(td){
+    var an_deg = td.angle;
+    var pp = polar(an_deg, R+10);
+    var pb = polar(an_deg, R);
+    pointer += '<line x1="'+cx+'" y1="'+cy+'" x2="'+pp[0].toFixed(2)+'" y2="'+pp[1].toFixed(2)+'"';
+    pointer += ' stroke="white" stroke-width="3.5" stroke-linecap="round" filter="url(#ptrglow)"/>';
+    pointer += '<circle cx="'+pb[0].toFixed(2)+'" cy="'+pb[1].toFixed(2)+'" r="6" fill="white" filter="url(#ptrglow)"/>';
+  }
+
+  var centerText = '<text x="'+cx+'" y="'+(cy-10)+'" text-anchor="middle" dominant-baseline="middle"'
+    +' font-family="Segoe UI,Arial,sans-serif" font-weight="bold" font-size="12" fill="#f0c850" filter="url(#textglow)">今日</text>';
+  var centerEmoji = td ? '<text x="'+cx+'" y="'+(cy+10)+'" text-anchor="middle" dominant-baseline="middle" font-size="14">'+(td.emoji||'🌒')+'</text>' : '';
+
+  var svg = '<svg width="400" height="400" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">'
+    + '<rect width="400" height="400" fill="#050e1d"/>'
+    + defs + sectors + labels + center + pointer + centerText + centerEmoji
+    + '</svg>';
+
+  container.innerHTML = svg;
 }
 
 function initPhaseCards(){
