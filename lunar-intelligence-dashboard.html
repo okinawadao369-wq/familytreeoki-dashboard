@@ -1317,36 +1317,112 @@ function initActivityCards(){
 
 function renderPhaseWheel(){
   var cv=document.getElementById('phaseWheel');if(!cv)return;
-  var ctx=cv.getContext('2d'),W=cv.width,H=cv.height,cx=W/2,cy=H/2,R=165;
-  ctx.clearRect(0,0,W,H);
-  var PH=[{n:'新月\n祈願',s:-20,e:20,c:'#1a2640',t:'思考期',em:'🌑'},
-          {n:'三日月\n芽吹き',s:20,e:75,c:'#1a3a1c',t:'活動期',em:'🌒'},
-          {n:'上弦\n決断',s:75,e:100,c:'#1f5223',t:'活動期',em:'🌓'},
-          {n:'十三夜\n最盛',s:100,e:170,c:'#2d5e2e',t:'活動期',em:'🌔'},
-          {n:'満月\n感謝',s:170,e:195,c:'#3a2d10',t:'思考期',em:'🌕'},
-          {n:'十六夜\n振返り',s:195,e:265,c:'#1a2040',t:'停滞期',em:'🌖'},
-          {n:'下弦\n整理',s:265,e:290,c:'#1e1840',t:'停滞期',em:'🌗'},
-          {n:'晦日\n休息',s:290,e:340,c:'#1a1e2e',t:'停滞期',em:'🌘'}];
-  var CM={'活動期':'#5ba85d','思考期':'#c8a45a','停滞期':'#4a6fa5'};
-  PH.forEach(function(p){
-    var s=(p.s-90)*Math.PI/180,e=(p.e-90)*Math.PI/180;
-    ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,R,s,e);ctx.closePath();ctx.fillStyle=p.c;ctx.fill();
-    ctx.beginPath();ctx.arc(cx,cy,R,s,e);ctx.strokeStyle=CM[p.t];ctx.lineWidth=5;ctx.stroke();
-    var mid=(p.s+p.e)/2-90,lr=R*.63,lx=cx+lr*Math.cos(mid*Math.PI/180),ly=cy+lr*Math.sin(mid*Math.PI/180);
-    ctx.save();ctx.translate(lx,ly);ctx.textAlign='center';ctx.textBaseline='middle';ctx.font='bold 10px sans-serif';ctx.fillStyle='#ccc';
-    p.n.split('\n').forEach(function(l,i,a){ctx.fillText(l,0,(i-a.length/2+.5)*13);});ctx.restore();
-    var er=R*.86,ex=cx+er*Math.cos(mid*Math.PI/180),ey=cy+er*Math.sin(mid*Math.PI/180);
-    ctx.font='13px serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(p.em,ex,ey);
+  var dpr=window.devicePixelRatio||1;
+  var SIZE=380;
+  cv.width=SIZE*dpr; cv.height=SIZE*dpr;
+  cv.style.width=SIZE+'px'; cv.style.height=SIZE+'px';
+  var ctx=cv.getContext('2d');
+  ctx.scale(dpr,dpr);
+  var W=SIZE,H=SIZE,cx=W/2,cy=H/2,R=168,innerR=46;
+
+  // Deep background glow
+  var bgGrad=ctx.createRadialGradient(cx,cy,0,cx,cy,R*1.1);
+  bgGrad.addColorStop(0,'#0e1f38');
+  bgGrad.addColorStop(1,'#030810');
+  ctx.fillStyle=bgGrad; ctx.fillRect(0,0,W,H);
+
+  // Outer decorative ring
+  ctx.beginPath(); ctx.arc(cx,cy,R+14,0,2*Math.PI);
+  ctx.strokeStyle='rgba(200,164,76,0.18)'; ctx.lineWidth=1; ctx.stroke();
+  ctx.beginPath(); ctx.arc(cx,cy,R+20,0,2*Math.PI);
+  ctx.strokeStyle='rgba(200,164,76,0.07)'; ctx.lineWidth=1; ctx.stroke();
+
+  var PH=[
+    {n:'新月\n祈願',   s:-22,e:22,  fill:'#0a2255', border:'#6a8fd8', t:'思考期', em:'🌑'},
+    {n:'三日月\n芽吹き',s:22, e:75, fill:'#0d3a18', border:'#4caf6a', t:'活動期', em:'🌒'},
+    {n:'上弦\n決断',   s:75, e:102, fill:'#0f4a20', border:'#56d46e', t:'活動期', em:'🌓'},
+    {n:'十三夜\n最盛', s:102,e:168, fill:'#1a5e22', border:'#5ddb72', t:'活動期', em:'🌔'},
+    {n:'満月\n感謝',   s:168,e:192, fill:'#3d2a05', border:'#f0b930', t:'思考期', em:'🌕'},
+    {n:'十六夜\n振返り',s:192,e:258,fill:'#0d1e48', border:'#5577cc', t:'停滞期', em:'🌖'},
+    {n:'下弦\n整理',   s:258,e:285, fill:'#0c1840', border:'#4466bb', t:'停滞期', em:'🌗'},
+    {n:'晦日\n休息',   s:285,e:338, fill:'#080f28', border:'#3355aa', t:'停滞期', em:'🌘'}
+  ];
+
+  // Sector glow/gradient fills
+  PH.forEach(function(p,idx){
+    var s=(p.s-90)*Math.PI/180, e=(p.e-90)*Math.PI/180;
+    var mid=((p.s+p.e)/2-90)*Math.PI/180;
+    var gx=cx+(R*0.5)*Math.cos(mid), gy=cy+(R*0.5)*Math.sin(mid);
+
+    // Main sector fill with radial gradient for depth
+    var rg=ctx.createRadialGradient(cx,cy,innerR,gx,gy,R*0.8);
+    rg.addColorStop(0, p.fill+'cc');
+    rg.addColorStop(1, p.fill+'ff');
+    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,R,s,e); ctx.closePath();
+    ctx.fillStyle=rg; ctx.fill();
+
+    // Border arc (outer edge, thick colored)
+    ctx.beginPath(); ctx.arc(cx,cy,R,s,e);
+    ctx.strokeStyle=p.border; ctx.lineWidth=5; ctx.stroke();
+
+    // Inner separator lines
+    ctx.beginPath(); ctx.moveTo(cx,cy);
+    ctx.lineTo(cx+R*Math.cos(s), cy+R*Math.sin(s));
+    ctx.strokeStyle='rgba(0,0,0,0.5)'; ctx.lineWidth=1.5; ctx.stroke();
   });
-  ctx.beginPath();ctx.arc(cx,cy,40,0,2*Math.PI);ctx.fillStyle='#0a1220';ctx.fill();
-  ctx.strokeStyle='#c8a45a44';ctx.lineWidth=1;ctx.stroke();
+
+  // Labels
+  PH.forEach(function(p){
+    var mid=((p.s+p.e)/2-90)*Math.PI/180;
+    var lr=R*0.60, lx=cx+lr*Math.cos(mid), ly=cy+lr*Math.sin(mid);
+    var er=R*0.86, ex=cx+er*Math.cos(mid), ey=cy+er*Math.sin(mid);
+
+    // Emoji
+    ctx.font='16px serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(p.em, ex, ey);
+
+    // Text (phase name + keyword)
+    ctx.save(); ctx.translate(lx,ly); ctx.textAlign='center'; ctx.textBaseline='middle';
+    var lines=p.n.split('\n');
+    // Shadow for readability
+    ctx.shadowColor='rgba(0,0,0,0.9)'; ctx.shadowBlur=6;
+    ctx.font='bold 11.5px "Segoe UI",sans-serif';
+    ctx.fillStyle='#ffffff';
+    ctx.fillText(lines[0],0,-7);
+    ctx.font='10px "Segoe UI",sans-serif';
+    ctx.fillStyle=p.border;
+    ctx.fillText(lines[1]||'',0,7);
+    ctx.shadowBlur=0;
+    ctx.restore();
+  });
+
+  // Center circle
+  var cg=ctx.createRadialGradient(cx,cy,0,cx,cy,innerR);
+  cg.addColorStop(0,'#162540'); cg.addColorStop(1,'#080f20');
+  ctx.beginPath(); ctx.arc(cx,cy,innerR,0,2*Math.PI);
+  ctx.fillStyle=cg; ctx.fill();
+  ctx.strokeStyle='rgba(200,164,76,0.5)'; ctx.lineWidth=1.5; ctx.stroke();
+
+  // Today pointer
   var td=DATA.mkt_today_data;
-  if(td){var an=(td.angle-90)*Math.PI/180;
-    ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+(R+12)*Math.cos(an),cy+(R+12)*Math.sin(an));
-    ctx.strokeStyle='#fff';ctx.lineWidth=3;ctx.stroke();
-    ctx.beginPath();ctx.arc(cx+R*Math.cos(an),cy+R*Math.sin(an),5,0,2*Math.PI);ctx.fillStyle='#fff';ctx.fill();
-    ctx.font='bold 11px sans-serif';ctx.fillStyle='#c8a45a';ctx.textAlign='center';ctx.fillText('今日',cx,cy-8);
-    ctx.font='13px serif';ctx.fillStyle='#888';ctx.fillText(td.emoji,cx,cy+8);}
+  if(td){
+    var an=(td.angle-90)*Math.PI/180;
+    // Pointer line with glow
+    ctx.save();
+    ctx.shadowColor='rgba(255,255,255,0.8)'; ctx.shadowBlur=8;
+    ctx.beginPath(); ctx.moveTo(cx,cy);
+    ctx.lineTo(cx+(R+10)*Math.cos(an), cy+(R+10)*Math.sin(an));
+    ctx.strokeStyle='rgba(255,255,255,0.95)'; ctx.lineWidth=2.5; ctx.stroke();
+    // Tip dot
+    ctx.beginPath(); ctx.arc(cx+R*Math.cos(an),cy+R*Math.sin(an),5,0,2*Math.PI);
+    ctx.fillStyle='#ffffff'; ctx.fill();
+    ctx.restore();
+    // Center label
+    ctx.font='bold 11px "Segoe UI",sans-serif'; ctx.fillStyle='#c8a45a';
+    ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('今日',cx,cy-8);
+    ctx.font='14px serif'; ctx.fillStyle='#aabbcc';
+    ctx.fillText(td.emoji,cx,cy+9);
+  }
 }
 
 function initPhaseCards(){
