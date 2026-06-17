@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>月の知性マーケティングOS | Lunar Intelligence Marketing</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root {
+  --bg: #070b14;
+  --bg2: #0d1320;
+  --bg3: #121929;
+  --card: #161e2e;
+  --card2: #1c2640;
+  --border: #2a3650;
+  --gold: #c8a45a;
+  --gold2: #f0c875;
+  --text: #e0e8f5;
+  --text2: #8a9ab8;
+  --active: #5ba85d;
+  --think: #c8a45a;
+  --stagnant: #4a6fa5;
+  --new-moon: #4a6fa5;
+  --waxing: #5ba85d;
+  --full-moon: #c8a45a;
+  --waning: #7b8ec8;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg); color:var(--text); font-family:'Segoe UI',sans-serif; min-height:100vh; }
+
+/* ── Header ── */
+.header {
+  background: linear-gradient(135deg, #070b14 0%, #0d1320 50%, #07111f 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 20px 30px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.header-title { display:flex; align-items:center; gap:16px; }
+.header-title h1 { font-size:1.4rem; color:var(--gold); font-weight:700; }
+.header-title .sub { font-size:0.85rem; color:var(--text2); }
+.today-badge {
+  background: var(--card2); border: 1px solid var(--border); border-radius:12px;
+  padding: 10px 20px; text-align:center;
+}
+.today-badge .phase-emoji { font-size:2rem; }
+.today-badge .phase-name { font-size:0.9rem; color:var(--gold); font-weight:600; }
+.today-badge .lunar-day { font-size:0.75rem; color:var(--text2); }
+
+/* ── Tabs ── */
+.tabs { display:flex; gap:0; border-bottom:1px solid var(--border); background:var(--bg2); overflow-x:auto; }
+.tab {
+  padding:14px 20px; cursor:pointer; font-size:0.85rem; color:var(--text2);
+  border-bottom:3px solid transparent; white-space:nowrap; transition:all .2s;
+}
+.tab:hover { color:var(--text); background:var(--card); }
+.tab.active { color:var(--gold); border-bottom-color:var(--gold); background:var(--bg); }
+
+/* ── Content ── */
+.content { padding:28px; max-width:1600px; margin:0 auto; }
+.section { display:none; }
+.section.active { display:block; }
+
+/* ── Cards ── */
+.card {
+  background:var(--card); border:1px solid var(--border); border-radius:14px;
+  padding:22px; margin-bottom:20px;
+}
+.card-title { font-size:1rem; color:var(--gold); font-weight:700; margin-bottom:16px; }
+.grid2 { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+.grid3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:20px; }
+.grid4 { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
+
+/* ── Phase Wheel ── */
+#wheel-container {
+  display:flex; justify-content:center; margin:24px 0;
+}
+#phaseWheel { max-width:420px; width:100%; }
+
+/* ── Phase Cards ── */
+.phase-card {
+  background:var(--card2); border-radius:12px; padding:18px;
+  border-left:4px solid var(--border); transition:transform .2s;
+}
+.phase-card:hover { transform:translateY(-2px); }
+.phase-card .phase-header { display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+.phase-card .phase-emoji-lg { font-size:1.8rem; }
+.phase-card .phase-title { font-size:0.95rem; font-weight:700; }
+.phase-card .phase-type-badge {
+  display:inline-block; padding:2px 8px; border-radius:10px;
+  font-size:0.7rem; font-weight:600; margin-top:3px;
+}
+.badge-active { background:rgba(91,168,93,0.2); color:#7fd481; }
+.badge-think { background:rgba(200,164,90,0.2); color:#f0c875; }
+.badge-stagnant { background:rgba(74,111,165,0.2); color:#7ba0d9; }
+
+.phase-row { display:flex; justify-content:space-between; margin:6px 0; font-size:0.82rem; }
+.phase-row .label { color:var(--text2); }
+.phase-row .value { color:var(--text); font-weight:500; }
+.intensity-bar {
+  height:6px; background:var(--bg); border-radius:3px; margin-top:8px; overflow:hidden;
+}
+.intensity-fill { height:100%; border-radius:3px; transition:width .5s; }
+
+/* ── Calendar ── */
+.cal-controls { display:flex; gap:12px; margin-bottom:20px; align-items:center; }
+.cal-controls select {
+  background:var(--card2); color:var(--text); border:1px solid var(--border);
+  padding:8px 14px; border-radius:8px; font-size:0.85rem;
+}
+.cal-grid {
+  display:grid; grid-template-columns:repeat(7, 1fr); gap:4px; margin-bottom:20px;
+}
+.cal-header { text-align:center; padding:8px; font-size:0.75rem; color:var(--text2); }
+.cal-day {
+  background:var(--card2); border-radius:8px; padding:8px 6px; cursor:pointer;
+  transition:all .2s; border:1px solid transparent; position:relative; min-height:80px;
+}
+.cal-day:hover { border-color:var(--gold); transform:scale(1.02); z-index:2; }
+.cal-day.today { border-color:var(--gold); box-shadow:0 0 10px rgba(200,164,90,0.3); }
+.cal-day.other-month { opacity:0.3; }
+.cal-day .cal-date { font-size:0.8rem; font-weight:700; }
+.cal-day .cal-kyureki { font-size:0.65rem; color:var(--text2); }
+.cal-day .cal-emoji { font-size:1.1rem; text-align:center; margin:4px 0; }
+.cal-day .cal-event { font-size:0.6rem; padding:1px 4px; border-radius:3px; margin-top:2px; font-weight:600; }
+.cal-day .cal-budget {
+  position:absolute; bottom:5px; right:5px;
+  font-size:0.6rem; color:var(--text2);
+}
+.cal-legend { display:flex; gap:16px; flex-wrap:wrap; margin-bottom:20px; }
+.cal-legend-item { display:flex; align-items:center; gap:6px; font-size:0.8rem; }
+.legend-dot { width:10px; height:10px; border-radius:50%; }
+
+/* ── Tooltip popup ── */
+#cal-tooltip {
+  position:fixed; background:var(--card); border:1px solid var(--border); border-radius:12px;
+  padding:16px; width:280px; z-index:100; pointer-events:none;
+  box-shadow:0 10px 30px rgba(0,0,0,0.5); display:none;
+}
+#cal-tooltip h4 { color:var(--gold); margin-bottom:10px; }
+#cal-tooltip p { font-size:0.8rem; color:var(--text2); margin:4px 0; }
+#cal-tooltip .tt-value { color:var(--text); }
+
+/* ── Strategy Table ── */
+.strategy-row {
+  display:grid; grid-template-columns:160px 1fr 1fr 1fr 80px;
+  gap:12px; padding:14px; border-radius:10px; margin-bottom:8px;
+  background:var(--card2); align-items:start;
+}
+.strategy-row:hover { background:var(--card); }
+.strategy-header {
+  display:grid; grid-template-columns:160px 1fr 1fr 1fr 80px;
+  gap:12px; padding:10px 14px; font-size:0.75rem; color:var(--text2); font-weight:600;
+}
+.strategy-phase { display:flex; align-items:center; gap:8px; font-weight:700; font-size:0.85rem; }
+.strategy-cell { font-size:0.78rem; color:var(--text2); line-height:1.5; }
+.strategy-cell strong { color:var(--text); display:block; margin-bottom:3px; }
+.budget-badge {
+  background:var(--bg); border-radius:20px; padding:3px 10px;
+  font-size:0.8rem; font-weight:700; text-align:center;
+}
+
+/* ── Mechanism Flow ── */
+.mech-flow { display:flex; align-items:stretch; gap:0; overflow-x:auto; padding:10px 0; }
+.mech-step {
+  background:var(--card2); border-radius:12px; padding:20px; min-width:160px; flex:1;
+  text-align:center; position:relative;
+}
+.mech-arrow {
+  display:flex; align-items:center; padding:0 8px; color:var(--gold); font-size:1.5rem;
+}
+.mech-icon { font-size:2.2rem; margin-bottom:10px; }
+.mech-title { font-size:0.85rem; color:var(--gold); font-weight:700; margin-bottom:6px; }
+.mech-desc { font-size:0.72rem; color:var(--text2); line-height:1.5; }
+
+/* ── Budget Chart ── */
+.chart-container { position:relative; height:300px; }
+
+/* ── Activity Type Overview ── */
+.activity-card {
+  background:var(--card2); border-radius:14px; padding:22px;
+  border-top:4px solid var(--border);
+}
+.activity-icon { font-size:2rem; margin-bottom:10px; }
+.activity-name { font-size:1.1rem; font-weight:700; margin-bottom:8px; }
+.activity-desc { font-size:0.82rem; color:var(--text2); line-height:1.5; margin-bottom:12px; }
+.activity-phases { font-size:0.75rem; color:var(--text2); margin-bottom:10px; }
+.evidence-tag {
+  background:rgba(200,164,90,0.1); border:1px solid rgba(200,164,90,0.2);
+  border-radius:6px; padding:6px 10px; font-size:0.72rem; color:var(--gold);
+  margin-bottom:8px;
+}
+
+/* ── Today Panel ── */
+.today-panel {
+  background: linear-gradient(135deg, #0d1828 0%, #141e30 100%);
+  border:2px solid var(--gold); border-radius:20px; padding:30px;
+  text-align:center; margin-bottom:24px;
+}
+.today-panel .big-emoji { font-size:4rem; margin-bottom:10px; }
+.today-panel h2 { font-size:1.6rem; color:var(--gold); margin-bottom:6px; }
+.today-panel .today-meta { font-size:0.9rem; color:var(--text2); margin-bottom:20px; }
+.today-action-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; text-align:left; }
+.today-action { background:var(--card); border-radius:12px; padding:16px; }
+.today-action .label { font-size:0.75rem; color:var(--text2); margin-bottom:4px; }
+.today-action .value { font-size:0.9rem; color:var(--text); line-height:1.4; }
+
+/* ── Evidence table ── */
+.ev-table { width:100%; border-collapse:collapse; font-size:0.82rem; }
+.ev-table th { background:var(--bg); padding:10px 14px; text-align:left; color:var(--gold); }
+.ev-table td { padding:10px 14px; border-bottom:1px solid var(--border); }
+.ev-table tr:hover td { background:var(--card2); }
+
+/* ── Responsive ── */
+@media(max-width:900px) {
+  .grid2,.grid3,.grid4 { grid-template-columns:1fr; }
+  .strategy-row,.strategy-header { grid-template-columns:1fr; }
+  .mech-flow { flex-direction:column; }
+  .mech-arrow { transform:rotate(90deg); align-self:center; }
+}
+</style>
+</head>
+<body>
+<div id="cal-tooltip">
+  <h4 id="tt-title"></h4>
+  <p>感情状態: <span id="tt-emotion" class="tt-value"></span></p>
+  <p>広告テーマ: <span id="tt-theme" class="tt-value"></span></p>
+  <p>推奨チャネル: <span id="tt-channels" class="tt-value"></span></p>
+  <p>予算強度: <span id="tt-budget" class="tt-value"></span></p>
+  <p>FTO推奨アクション: <span id="tt-fto" class="tt-value"></span></p>
+</div>
+
+<div class="header">
+  <div class="header-title">
+    <div style="font-size:2rem">🌙</div>
+    <div>
+      <h1>月の知性マーケティングOS</h1>
+      <div class="sub">Lunar Intelligence Marketing System | 合同会社koya × Family Tree Oki</div>
+    </div>
+  </div>
+  <div class="today-badge" id="today-badge">
+    <div class="phase-emoji" id="today-emoji">🌒</div>
+    <div class="phase-name" id="today-phase">三日月・芽吹き</div>
+    <div class="lunar-day" id="today-lunar">旧暦3日 | 活動期</div>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="showTab('overview')">🌙 今日の状態</div>
+  <div class="tab" onclick="showTab('phases')">⚡ 月相フレームワーク</div>
+  <div class="tab" onclick="showTab('calendar')">📅 広告カレンダー</div>
+  <div class="tab" onclick="showTab('strategy')">📋 戦略テーブル</div>
+  <div class="tab" onclick="showTab('mechanism')">🧠 感情メカニズム</div>
+  <div class="tab" onclick="showTab('budget')">💰 予算配分</div>
+</div>
+
+<div class="content">
+
+<!-- ═══ TAB 1: TODAY ═══ -->
+<div id="tab-overview" class="section active">
+  <div class="today-panel" id="today-panel">
+    <div class="big-emoji" id="today-big-emoji">🌒</div>
+    <h2 id="today-title">三日月・芽吹き期</h2>
+    <div class="today-meta" id="today-meta">2026年6月17日（水）旧暦6月3日 | 活動期</div>
+    <div class="today-action-grid" id="today-action-grid">
+    </div>
+  </div>
+  
+  <div class="grid3">
+    <div class="card">
+      <div class="card-title">📅 今後の月相イベント</div>
+      <div id="upcoming-events"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">⚡ 今月の活動フェーズ分布</div>
+      <div class="chart-container"><canvas id="monthDistChart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">💡 次の転換点まで</div>
+      <div id="countdown-panel" style="text-align:center; padding:20px;">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ TAB 2: PHASES ═══ -->
+<div id="tab-phases" class="section">
+  <div class="grid3" style="margin-bottom:24px;">
+    <div class="activity-card" style="border-top-color:#5ba85d;" id="act-active">
+      <div class="activity-icon">⚡</div>
+      <div class="activity-name" style="color:#5ba85d;">活動期</div>
+      <div class="activity-desc"></div>
+      <div class="activity-phases"></div>
+      <div class="evidence-tag"></div>
+    </div>
+    <div class="activity-card" style="border-top-color:#c8a45a;" id="act-think">
+      <div class="activity-icon">🌟</div>
+      <div class="activity-name" style="color:#c8a45a;">思考期</div>
+      <div class="activity-desc"></div>
+      <div class="activity-phases"></div>
+      <div class="evidence-tag"></div>
+    </div>
+    <div class="activity-card" style="border-top-color:#4a6fa5;" id="act-stagnant">
+      <div class="activity-icon">🔵</div>
+      <div class="activity-name" style="color:#4a6fa5;">停滞期</div>
+      <div class="activity-desc"></div>
+      <div class="activity-phases"></div>
+      <div class="evidence-tag"></div>
+    </div>
+  </div>
+
+  <div style="margin-bottom:12px;display:flex;justify-content:center;">
+    <div id="wheel-container"><canvas id="phaseWheel" width="400" height="400"></canvas></div>
+  </div>
+  
+  <div class="grid2" id="phase-cards-grid">
+  </div>
+</div>
+
+<!-- ═══ TAB 3: CALENDAR ═══ -->
+<div id="tab-calendar" class="section">
+  <div class="cal-controls">
+    <select id="cal-month" onchange="renderCalendar()">
+      <option value="2026-06">2026年6月</option>
+      <option value="2026-07">2026年7月</option>
+      <option value="2026-08">2026年8月</option>
+      <option value="2026-09">2026年9月</option>
+    </select>
+    <div class="cal-legend">
+      <div class="cal-legend-item"><div class="legend-dot" style="background:#5ba85d"></div>活動期</div>
+      <div class="cal-legend-item"><div class="legend-dot" style="background:#c8a45a"></div>思考期（月相ピーク）</div>
+      <div class="cal-legend-item"><div class="legend-dot" style="background:#4a6fa5"></div>停滞期</div>
+      <div class="cal-legend-item"><div class="legend-dot" style="background:#c8a45a;border:2px solid #fff"></div>新月/満月</div>
+    </div>
+  </div>
+  <div class="cal-grid" id="cal-grid">
+    <div class="cal-header">日</div><div class="cal-header">月</div>
+    <div class="cal-header">火</div><div class="cal-header">水</div>
+    <div class="cal-header">木</div><div class="cal-header">金</div>
+    <div class="cal-header">土</div>
+  </div>
+  
+  <div class="card" style="margin-top:20px;">
+    <div class="card-title">📌 選択月の月相イベント一覧</div>
+    <div id="month-events-list"></div>
+  </div>
+</div>
+
+<!-- ═══ TAB 4: STRATEGY ═══ -->
+<div id="tab-strategy" class="section">
+  <div class="card">
+    <div class="card-title">📋 8フェーズ 広告戦略マトリクス</div>
+    <div class="strategy-header">
+      <div>月相フェーズ</div>
+      <div>広告コピー方向</div>
+      <div>ターゲット / チャネル</div>
+      <div>Family Tree Oki 具体例</div>
+      <div>予算比率</div>
+    </div>
+    <div id="strategy-rows"></div>
+  </div>
+</div>
+
+<!-- ═══ TAB 5: MECHANISM ═══ -->
+<div id="tab-mechanism" class="section">
+  <div class="card">
+    <div class="card-title">🧠 感情が知らずに動かされるメカニズム</div>
+    <div class="mech-flow" id="mech-flow"></div>
+  </div>
+  
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title">📊 統計的証拠</div>
+      <table class="ev-table" id="evidence-table">
+        <tr><th>指標</th><th>月相</th><th>統計値</th><th>解釈</th></tr>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-title">🌊 集合意識モデル</div>
+      <div style="padding:10px;">
+        <canvas id="waveChart" height="200"></canvas>
+      </div>
+      <div style="font-size:0.8rem;color:var(--text2);padding:10px;line-height:1.6;">
+        月相サイクルに沿った集合的感情エネルギーの変動モデル。
+        29.5日周期で「行動エネルギー」「内省エネルギー」が波動する。
+        広告はこの波に「乗る」ことでROIを最大化できる。
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ TAB 6: BUDGET ═══ -->
+<div id="tab-budget" class="section">
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title">💰 月相別 推奨予算配分（月間比率）</div>
+      <div class="chart-container"><canvas id="budgetChart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">📈 90日間 予算最適化タイムライン</div>
+      <div class="chart-container"><canvas id="timelineChart"></canvas></div>
+    </div>
+  </div>
+  
+  <div class="card">
+    <div class="card-title">🎯 フェーズ別 予算投下戦略</div>
+    <div class="grid3" id="budget-strategy-grid"></div>
+  </div>
+</div>
+
+</div><!-- /content -->
+
+<script>
+const DATA = {"calendar": [{"date": "2026-06-01", "weekday": "Mon", "day_in_cycle": 16, "kyureki_day": 17, "angle": 192.0, "phase_key": "full_moon", "phase_name": "満月・感謝", "emoji": "🌕", "activity_type": "思考期", "event_label": "", "is_today": false, "marketing": {"theme": "達成・感謝・コミュニティ", "cta_intensity": "低", "budget_pct": 12, "channels": "メールマーケティング / コミュニティSNS / リファラル", "copy_direction": "「ありがとう」「あなたと一緒に」「感謝を込めて」", "content_type": "感謝・コミュニティ・ロイヤリティ型", "emotion": "達成感・感謝・つながり・感情的高揚", "family_tree_oki": "「満月感謝ナイトヨガ🌕」既存会員限定イベント", "color": "#c8a45a"}}, {"date": "2026-06-02", "weekday": "Tue", "day_in_cycle": 17, "kyureki_day": 18, "angle": 204.0, "phase_key": "waning_gibbous", "phase_name": "十六夜・振り返り", "emoji": "🌖", "activity_type": "停滞期", "event_label": "", "is_today": false, "marketing": {"theme": "内省・学び・証拠", "cta_intensity": "低", "budget_pct": 8, "channels": "ブログ / YouTube / ポッドキャスト / 事例研究", "copy_direction": "「知らなかった◯◯」「データが示す真実」「お客様の声」", "content_type": "教育・事例・証拠型", "emotion": "分析欲・知識欲・振り返り", "family_tree_oki": "「産前産後ヨガで変わった3つのこと」体験談ブログ", "color": "#7b8ec8"}}, {"date": "2026-06-03", "weekday": "Wed", "day_in_cycle": 18, "kyureki_day": 19, "angle": 216.0, "phase_key": "waning_gibbous", "phase_name": "十六夜・振り返り", "emoji": "🌖", "activity_type": "停滞期", "event_label": "", "is_today": false, "marketing": {"theme": "内省・学び・証拠", "cta_intensity": "低", "budget_pct": 8, "channels": "ブログ / YouTube / ポッドキャスト / 事例研究", "copy_direction": "「知らなかった◯◯」「データが示す真実」「お客様の声」", "content_type": "教育・事例・証拠型", "emotion": "分析欲・知識欲・振り返り", "family_tree_oki": "「産前産後ヨガで変わった3つのこと」体験談ブログ", "color": "#7b8ec8"}}, {"date": "2026-06-04", "weekday": "Thu", "day_in_cycle": 19, "kyureki_day": 20, "angle": 228.0, "phase_key": "waning_gibbous", "phase_name": "十六夜・振り返り", "emoji": "🌖", "activity_type": "停滞期", "event_label": "", "is_today": false, "marketing": {"theme": "内省・学び・証拠", "cta_intensity": "低", "budget_pct": 8, "channels": "ブログ / YouTube / ポッドキャスト / 事例研究", "copy_direction": "「知らなかった◯◯」「データが示す真実」「お客様の声」", "content_type": "教育・事例・証拠型", "emotion": "分析欲・知識欲・振り返り", "family_tree_oki": "「産前産後ヨガで変わった3つのこと」体験談ブログ", "color": "#7b8ec8"}}, {"date": "2026-06-05", "weekday": "Fri", "day_in_cycle": 20, "kyureki_day": 21, "angle": 240.0, "phase_key": "waning_gibbous", "phase_name": "十六夜・振り返り", "emoji": "🌖", "activity_type": "停滞期", "event_label": "", "is_today": false, "marketing": {"theme": "内省・学び・証拠", "cta_intensity": "低", "budget_pct": 8, "channels": "ブログ / YouTube / ポッドキャスト / 事例研究", "copy_direction": "「知らなかった◯◯」「データが示す真実」「お客様の声」", "content_type": "教育・事例・証拠型", "emotion": "分析欲・知識欲・振り返り", "family_tree_oki": "「産前産後ヨガで変わった3つのこと」体験談ブログ", "color": "#7b8ec8"}}, {"date": "2026-06-06", "weekday": "Sat", "day_in_cycle": 21, "kyureki_day": 22, "angle": 252.0, "phase_key": "waning_gibbous", "phase_name": "十六夜・振り返り", "emoji": "🌖", "activity_type": "停滞期", "event_label": "", "is_today": false, "marketing": {"theme": "内省・学び・証拠", "cta_intensity": "低", "budget_pct": 8, "channels": "ブログ / YouTube / ポッドキャスト / 事例研究", "copy_direction": "「知らなかった◯◯」「データが示す真実」「お客様の声」", "content_type": "教育・事例・証拠型", "emotion": "分析欲・知識欲・振り返り", "family_tree_oki": "「産前産後ヨガで変わった3つのこと」体験談ブログ", "color": "#7b8ec8"}}, {"date": "2026-06-07", "weekday": "Sun", "day_in_cycle": 22, "kyureki_day": 23, "angle": 264.0, "phase_key": "waning_gibbous", "phase_name": "十六夜・振り返り", "emoji": "🌖", "activity_type": "停滞期", "event_label": "", "is_today": false, "marketing": {"theme": "内省・学び・証拠", "cta_intensity": "低", "budget_pct": 8, "channels": "ブログ / YouTube / ポッドキャスト / 事例研究", "copy_direction": "「知らなかった◯◯」「データが示す真実」「お客様の声」", "content_type": "教育・事例・証拠型", "emotion": "分析欲・知識欲・振り返り", "family_tree_oki": "「産前産後ヨガで変わった3つのこと」体験談ブログ", "color": "#7b8ec8"}}, {"date": "2026-06-08", "weekday": "Mon", "day_in_cycle": 23, "kyureki_day": 24, "angle": 276.0, "phase_key": "last_quarter", "phase_name": "下弦・整理", "emoji": "🌗", "activity_type": "停滞期", "event_label": "", "is_today": false, "marketing": {"theme": "手放し・整理・最後のチャンス", "cta_intensity": "中", "budget_pct": 5, "channels": "メール / LINE / リマーケティング", "copy_direction": "「今月最後の機会」「スッキリ手放して」「次のステージへ」", "content_type": "クロージング・手放し型", "emotion": "手放し・浄化・次への準備", "family_tree_oki": "「今月分のキャンセル待ちリスト受付中」", "color": "#9a6bab"}}, {"date": "2026-06-09", "weekday": "Tue", "day_in_cycle": 24, "kyureki_day": 25, "angle": 288.0, "phase_key": "last_quarter", "phase_name": "下弦・整理", "emoji": "🌗", "activity_type": "停滞期", "event_label": "", "is_today": false, "marketing": {"theme": "手放し・整理・最後のチャンス", "cta_intensity": "中", "budget_pct": 5, "channels": "メール / LINE / リマーケティング", "copy_direction": "「今月最後の機会」「スッキリ手放して」「次のステージへ」", "content_type": "クロージング・手放し型", "emotion": "手放し・浄化・次への準備", "family_tree_oki": "「今月分のキャンセル待ちリスト受付中」", "color": "#9a6bab"}}, {"date": "2026-06-10", "weekday": "Wed", "day_in_cycle": 25, "kyureki_day": 26, "angle": 300.0, "phase_key": "waning_crescent", "phase_name": "晦日・休息", "emoji": "🌘", "activity_type": "停滞期", "event_label": "", "is_today": false, "marketing": {"theme": "休息・次サイクルへの準備", "cta_intensity": "最低", "budget_pct": 5, "channels": "SEO / ブログ / ナーチャリングメール", "copy_direction": "「次の旅立ちを準備中」「来月の新プログラム告知」", "content_type": "ティーザー・期待値醸成型", "emotion": "内省・準備・疲労回復", "family_tree_oki": "「来月の新月ヨガスケジュール先行予告」", "color": "#6b7a8d"}}, {"date": "2026-06-11", "weekday": "Thu", "day_in_cycle": 26, "kyureki_day": 27, "angle": 312.0, "phase_key": "waning_crescent", "phase_name": "晦日・休息", "emoji": "🌘", "activity_type": "停滞期", "event_label": "", "is_today": false, "marketing": {"theme": "休息・次サイクルへの準備", "cta_intensity": "最低", "budget_pct": 5, "channels": "SEO / ブログ / ナーチャリングメール", "copy_direction": "「次の旅立ちを準備中」「来月の新プログラム告知」", "content_type": "ティーザー・期待値醸成型", "emotion": "内省・準備・疲労回復", "family_tree_oki": "「来月の新月ヨガスケジュール先行予告」", "color": "#6b7a8d"}}, {"date": "2026-06-12", "weekday": "Fri", "day_in_cycle": 27, "kyureki_day": 28, "angle": 324.0, "phase_key": "waning_crescent", "phase_name": "晦日・休息", "emoji": "🌘", "activity_type": "停滞期", "event_label": "", "is_today": false, "marketing": {"theme": "休息・次サイクルへの準備", "cta_intensity": "最低", "budget_pct": 5, "channels": "SEO / ブログ / ナーチャリングメール", "copy_direction": "「次の旅立ちを準備中」「来月の新プログラム告知」", "content_type": "ティーザー・期待値醸成型", "emotion": "内省・準備・疲労回復", "family_tree_oki": "「来月の新月ヨガスケジュール先行予告」", "color": "#6b7a8d"}}, {"date": "2026-06-13", "weekday": "Sat", "day_in_cycle": 28, "kyureki_day": 29, "angle": 336.0, "phase_key": "waning_crescent", "phase_name": "晦日・休息", "emoji": "🌘", "activity_type": "停滞期", "event_label": "", "is_today": false, "marketing": {"theme": "休息・次サイクルへの準備", "cta_intensity": "最低", "budget_pct": 5, "channels": "SEO / ブログ / ナーチャリングメール", "copy_direction": "「次の旅立ちを準備中」「来月の新プログラム告知」", "content_type": "ティーザー・期待値醸成型", "emotion": "内省・準備・疲労回復", "family_tree_oki": "「来月の新月ヨガスケジュール先行予告」", "color": "#6b7a8d"}}, {"date": "2026-06-14", "weekday": "Sun", "day_in_cycle": 29, "kyureki_day": 30, "angle": 348.0, "phase_key": "new_moon", "phase_name": "新月・祈願", "emoji": "🌑", "activity_type": "思考期", "event_label": "", "is_today": false, "marketing": {"theme": "新しい始まりへの希望", "cta_intensity": "低", "budget_pct": 8, "channels": "コンテンツSEO / PR / ストーリー性SNS", "copy_direction": "「新しい自分へ」「今月の誓い」「変化のとき」", "content_type": "インスピレーション型", "emotion": "期待・希望・リセット", "family_tree_oki": "「新月のヨガ体験」「今月の祈りと身体のリセット」", "color": "#4a6fa5"}}, {"date": "2026-06-15", "weekday": "Mon", "day_in_cycle": 30, "kyureki_day": 31, "angle": 360.0, "phase_key": "new_moon", "phase_name": "新月・祈願", "emoji": "🌑", "activity_type": "思考期", "event_label": "", "is_today": false, "marketing": {"theme": "新しい始まりへの希望", "cta_intensity": "低", "budget_pct": 8, "channels": "コンテンツSEO / PR / ストーリー性SNS", "copy_direction": "「新しい自分へ」「今月の誓い」「変化のとき」", "content_type": "インスピレーション型", "emotion": "期待・希望・リセット", "family_tree_oki": "「新月のヨガ体験」「今月の祈りと身体のリセット」", "color": "#4a6fa5"}}, {"date": "2026-06-16", "weekday": "Tue", "day_in_cycle": 1, "kyureki_day": 2, "angle": 12.4, "phase_key": "new_moon", "phase_name": "新月・祈願", "emoji": "🌑", "activity_type": "思考期", "event_label": "旧暦一日", "is_today": false, "marketing": {"theme": "新しい始まりへの希望", "cta_intensity": "低", "budget_pct": 8, "channels": "コンテンツSEO / PR / ストーリー性SNS", "copy_direction": "「新しい自分へ」「今月の誓い」「変化のとき」", "content_type": "インスピレーション型", "emotion": "期待・希望・リセット", "family_tree_oki": "「新月のヨガ体験」「今月の祈りと身体のリセット」", "color": "#4a6fa5"}}, {"date": "2026-06-17", "weekday": "Wed", "day_in_cycle": 2, "kyureki_day": 3, "angle": 24.8, "phase_key": "waxing_crescent", "phase_name": "三日月・芽吹き", "emoji": "🌒", "activity_type": "活動期", "event_label": "", "is_today": true, "marketing": {"theme": "エネルギー上昇・行動開始", "cta_intensity": "中", "budget_pct": 22, "channels": "SNS動画広告 / インフルエンサー / ディスカバリー", "copy_direction": "「始めよう」「チャレンジ」「一歩踏み出す」", "content_type": "動機付け型・ストーリー型", "emotion": "期待感・行動意欲・好奇心", "family_tree_oki": "「今月も通いたくなるヨガ体験」新規入会プロモ開始", "color": "#5ba85d"}}, {"date": "2026-06-18", "weekday": "Thu", "day_in_cycle": 3, "kyureki_day": 4, "angle": 37.2, "phase_key": "waxing_crescent", "phase_name": "三日月・芽吹き", "emoji": "🌒", "activity_type": "活動期", "event_label": "", "is_today": false, "marketing": {"theme": "エネルギー上昇・行動開始", "cta_intensity": "中", "budget_pct": 22, "channels": "SNS動画広告 / インフルエンサー / ディスカバリー", "copy_direction": "「始めよう」「チャレンジ」「一歩踏み出す」", "content_type": "動機付け型・ストーリー型", "emotion": "期待感・行動意欲・好奇心", "family_tree_oki": "「今月も通いたくなるヨガ体験」新規入会プロモ開始", "color": "#5ba85d"}}, {"date": "2026-06-19", "weekday": "Fri", "day_in_cycle": 4, "kyureki_day": 5, "angle": 49.7, "phase_key": "waxing_crescent", "phase_name": "三日月・芽吹き", "emoji": "🌒", "activity_type": "活動期", "event_label": "", "is_today": false, "marketing": {"theme": "エネルギー上昇・行動開始", "cta_intensity": "中", "budget_pct": 22, "channels": "SNS動画広告 / インフルエンサー / ディスカバリー", "copy_direction": "「始めよう」「チャレンジ」「一歩踏み出す」", "content_type": "動機付け型・ストーリー型", "emotion": "期待感・行動意欲・好奇心", "family_tree_oki": "「今月も通いたくなるヨガ体験」新規入会プロモ開始", "color": "#5ba85d"}}, {"date": "2026-06-20", "weekday": "Sat", "day_in_cycle": 5, "kyureki_day": 6, "angle": 62.1, "phase_key": "waxing_crescent", "phase_name": "三日月・芽吹き", "emoji": "🌒", "activity_type": "活動期", "event_label": "", "is_today": false, "marketing": {"theme": "エネルギー上昇・行動開始", "cta_intensity": "中", "budget_pct": 22, "channels": "SNS動画広告 / インフルエンサー / ディスカバリー", "copy_direction": "「始めよう」「チャレンジ」「一歩踏み出す」", "content_type": "動機付け型・ストーリー型", "emotion": "期待感・行動意欲・好奇心", "family_tree_oki": "「今月も通いたくなるヨガ体験」新規入会プロモ開始", "color": "#5ba85d"}}, {"date": "2026-06-21", "weekday": "Sun", "day_in_cycle": 6, "kyureki_day": 7, "angle": 74.5, "phase_key": "waxing_crescent", "phase_name": "三日月・芽吹き", "emoji": "🌒", "activity_type": "活動期", "event_label": "", "is_today": false, "marketing": {"theme": "エネルギー上昇・行動開始", "cta_intensity": "中", "budget_pct": 22, "channels": "SNS動画広告 / インフルエンサー / ディスカバリー", "copy_direction": "「始めよう」「チャレンジ」「一歩踏み出す」", "content_type": "動機付け型・ストーリー型", "emotion": "期待感・行動意欲・好奇心", "family_tree_oki": "「今月も通いたくなるヨガ体験」新規入会プロモ開始", "color": "#5ba85d"}}, {"date": "2026-06-22", "weekday": "Mon", "day_in_cycle": 7, "kyureki_day": 8, "angle": 86.9, "phase_key": "first_quarter", "phase_name": "上弦・決断", "emoji": "🌓", "activity_type": "活動期", "event_label": "", "is_today": false, "marketing": {"theme": "決断・コミットメント", "cta_intensity": "高", "budget_pct": 18, "channels": "リターゲティング / Google検索広告 / LINE", "copy_direction": "「今が決め時」「あなたの選択が未来を変える」", "content_type": "比較・CTA強化型", "emotion": "決断力・責任感・コミット意欲", "family_tree_oki": "「無料体験クラスの予約」「入会特典は今週末まで」", "color": "#3d9e6b"}}, {"date": "2026-06-23", "weekday": "Tue", "day_in_cycle": 8, "kyureki_day": 9, "angle": 99.3, "phase_key": "first_quarter", "phase_name": "上弦・決断", "emoji": "🌓", "activity_type": "活動期", "event_label": "", "is_today": false, "marketing": {"theme": "決断・コミットメント", "cta_intensity": "高", "budget_pct": 18, "channels": "リターゲティング / Google検索広告 / LINE", "copy_direction": "「今が決め時」「あなたの選択が未来を変える」", "content_type": "比較・CTA強化型", "emotion": "決断力・責任感・コミット意欲", "family_tree_oki": "「無料体験クラスの予約」「入会特典は今週末まで」", "color": "#3d9e6b"}}, {"date": "2026-06-24", "weekday": "Wed", "day_in_cycle": 9, "kyureki_day": 10, "angle": 111.7, "phase_key": "waxing_gibbous", "phase_name": "十三夜・最盛", "emoji": "🌔", "activity_type": "活動期", "event_label": "", "is_today": false, "marketing": {"theme": "活動最盛・緊迫感・限定感", "cta_intensity": "最高", "budget_pct": 30, "channels": "全チャネル最大化 / リターゲ強化 / プッシュ通知", "copy_direction": "「残り〇〇時間」「限定枠あとわずか」「今すぐ」", "content_type": "緊迫・限定・社会的証明型", "emotion": "緊張感・達成欲・FOMO", "family_tree_oki": "「満月前の最終枠！マタニティヨガ体験クラス」", "color": "#e8a020"}}, {"date": "2026-06-25", "weekday": "Thu", "day_in_cycle": 10, "kyureki_day": 11, "angle": 124.1, "phase_key": "waxing_gibbous", "phase_name": "十三夜・最盛", "emoji": "🌔", "activity_type": "活動期", "event_label": "", "is_today": false, "marketing": {"theme": "活動最盛・緊迫感・限定感", "cta_intensity": "最高", "budget_pct": 30, "channels": "全チャネル最大化 / リターゲ強化 / プッシュ通知", "copy_direction": "「残り〇〇時間」「限定枠あとわずか」「今すぐ」", "content_type": "緊迫・限定・社会的証明型", "emotion": "緊張感・達成欲・FOMO", "family_tree_oki": "「満月前の最終枠！マタニティヨガ体験クラス」", "color": "#e8a020"}}, {"date": "2026-06-26", "weekday": "Fri", "day_in_cycle": 11, "kyureki_day": 12, "angle": 136.6, "phase_key": "waxing_gibbous", "phase_name": "十三夜・最盛", "emoji": "🌔", "activity_type": "活動期", "event_label": "", "is_today": false, "marketing": {"theme": "活動最盛・緊迫感・限定感", "cta_intensity": "最高", "budget_pct": 30, "channels": "全チャネル最大化 / リターゲ強化 / プッシュ通知", "copy_direction": "「残り〇〇時間」「限定枠あとわずか」「今すぐ」", "content_type": "緊迫・限定・社会的証明型", "emotion": "緊張感・達成欲・FOMO", "family_tree_oki": "「満月前の最終枠！マタニティヨガ体験クラス」", "color": "#e8a020"}}, {"date": "2026-06-27", "weekday": "Sat", "day_in_cycle": 12, "kyureki_day": 13, "angle": 149.0, "phase_key": "waxing_gibbous", "phase_name": "十三夜・最盛", "emoji": "🌔", "activity_type": "活動期", "event_label": "", "is_today": false, "marketing": {"theme": "活動最盛・緊迫感・限定感", "cta_intensity": "最高", "budget_pct": 30, "channels": "全チャネル最大化 / リターゲ強化 / プッシュ通知", "copy_direction": "「残り〇〇時間」「限定枠あとわずか」「今すぐ」", "content_type": "緊迫・限定・社会的証明型", "emotion": "緊張感・達成欲・FOMO", "family_tree_oki": "「満月前の最終枠！マタニティヨガ体験クラス」", "color": "#e8a020"}}, {"date": "2026-06-28", "weekday": "Sun", "day_in_cycle": 13, "kyureki_day": 14, "angle": 161.4, "phase_key": "waxing_gibbous", "phase_name": "十三夜・最盛", "emoji": "🌔", "activity_type": "活動期", "event_label": "", "is_today": false, "marketing": {"theme": "活動最盛・緊迫感・限定感", "cta_intensity": "最高", "budget_pct": 30, "channels": "全チャネル最大化 / リターゲ強化 / プッシュ通知", "copy_direction": "「残り〇〇時間」「限定枠あとわずか」「今すぐ」", "content_type": "緊迫・限定・社会的証明型", "emotion": "緊張感・達成欲・FOMO", "family_tree_oki": "「満月前の最終枠！マタニティヨガ体験クラス」", "color": "#e8a020"}}, {"date": "2026-06-29", "weekday": "Mon", "day_in_cycle": 14, "kyureki_day": 15, "angle": 173.8, "phase_key": "full_moon", "phase_name": "満月・感謝", "emoji": "🌕", "activity_type": "思考期", "event_label": "旧暦十五日", "is_today": false, "marketing": {"theme": "達成・感謝・コミュニティ", "cta_intensity": "低", "budget_pct": 12, "channels": "メールマーケティング / コミュニティSNS / リファラル", "copy_direction": "「ありがとう」「あなたと一緒に」「感謝を込めて」", "content_type": "感謝・コミュニティ・ロイヤリティ型", "emotion": "達成感・感謝・つながり・感情的高揚", "family_tree_oki": "「満月感謝ナイトヨガ🌕」既存会員限定イベント", "color": "#c8a45a"}}, {"date": "2026-06-30", "weekday": "Tue", "day_in_cycle": 15, "kyureki_day": 16, "angle": 186.2, "phase_key": "full_moon", "phase_name": "満月・感謝", "emoji": "🌕", "activity_type": "思考期", "event_label": "満月🌕", "is_today": false, "marketing": {"theme": "達成・感謝・コミュニティ", "cta_intensity": "低", "budget_pct": 12, "channels": "メールマーケティング / コミュニティSNS / リファラル", "copy_direction": "「ありがとう」「あなたと一緒に」「感謝を込めて」", "content_type": "感謝・コミュニティ・ロイヤリティ型", "emotion": "達成感・感謝・つながり・感情的高揚", "family_tree_oki": "「満月感謝ナイトヨガ🌕」既存会員限定イベント", "color": "#c8a45a"}}, {"date": "2026-07-01", "weekday": "Wed", "day_in_cycle": 16, "kyureki_day": 17, "angle": 198.6, "phase_key": "waning_gibbous", "phase_name": "十六夜・振り返り", "emoji": "🌖", "activity_type": "停滞期", "event_label": "", "is_today": false, "marketing": {"theme": "内省・学び・証拠", "cta_intensity": "低", "budget_pct": 8, "channels": "ブログ / YouTube / ポッドキャスト / 事例研究", "copy_direction": "「知らなかった◯◯」「データが示す真実」「お客様の声」", "content_type": "教育・事例・証拠型", "emotion": "分析欲・知識欲・振り返り", "family_tree_oki": "「産前産後ヨガで変わった3つのこと」体験談ブログ", "color": "#7b8ec8"}}, {"date": "2026-07-02", "weekday": "Thu", "day_in_cycle": 17, "kyureki_day": 18, "angle": 211.0, "phase_key": "waning_gibbous", "phase_name": "十六夜・振り返り", "emoji": "🌖", "activity_type": "停滞期", "event_label": "", "is_today": false, "marketing": {"theme": "内省・学び・証拠", "cta_intensity": "低", "budget_pct": 8, "channels": "ブログ / YouTube / ポッドキャスト / 事例研究", "copy_direction": "「知らなかった◯◯」「データが示す真実」「お客様の声」", "content_type": "教育・事例・証拠型", "emotion": "分析欲・知識欲・振り返り", "family_tree_oki": "「産前産後ヨガで変わった3つのこと」体験談ブログ", "color": "#7b8ec8"}}, {"date": "2026-07-03", "weekday": "Fri", "day_in_cycle": 18, "kyureki_day": 19, "angle": 223.4, "phase_key": "waning_gibbous", "phase_name": "十六夜・振り返り", "emoji": "🌖", "activity_type": "停滞期", "event_label": "", "is_today": false, "marketing": {"theme": "内省・学び・証拠", "cta_intensity": "低", "budget_pct": 8, "channels": "ブログ / YouTube / ポッドキャスト / 事例研究", "copy_direction": "「知らなかった◯◯」「データが示す真実」「お客様の声」", "content_type": "教育・事例・証拠型", "emotion": "分析欲・知識欲・振り返り", "family_tree_oki": "「産前産後ヨガで変わった3つのこと」体験談ブログ", "color": "#7b8ec8"}}, {"date": "2026-07-04", "weekday": "Sat", "day_in_cycle": 19, "kyureki_day": 20, "angle": 235.9, "phase_key": "waning_gibbous", "phase_name": "十六夜・振り返り", "emoji": "🌖", "activity_type": "停滞期", "event_label": "", "is_today": false, "marketing": {"theme": "内省・学び・証拠", "cta_intensity": "低", "budget_pct": 8, "channels": "ブログ / YouTube / ポッドキャスト / 事例研究", "copy_direction": "「知らなかった◯◯」「データが示す真実」「お客様の声」", "content_type": "教育・事例・証拠型", "emotion": "分析欲・知識欲・振り返り", "family_tree_oki": "「産前産後ヨガで変わった3つのこと」体験談ブログ", "color": "#7b8ec8"}}, {"date": "2026-07-05", "weekday": "Sun", "day_in_cycle": 20, "kyureki_day": 21, "angle": 248.3, "phase_key": "waning_gibbous", "phase_name": "十六夜・振り返り", "emoji": "🌖", "activity_type": "停滞期", "event_label": "", "is_today": false, "marketing": {"theme": "内省・学び・証拠", "cta_intensity": "低", "budget_pct": 8, "channels": "ブログ / YouTube / ポッドキャスト / 事例研究", "copy_direction": "「知らなかった◯◯」「データが示す真実」「お客様の声」", "content_type": "教育・事例・証拠型", "emotion": "分析欲・知識欲・振り返り", "family_tree_oki": "「産前産後ヨガで変わった3つのこと」体験談ブログ", "color": "#7b8ec8"}}, {"date": "2026-07-06", "weekday": "Mon", "day_in_cycle": 21, "kyureki_day": 22, "angle": 260.7, "phase_key": "waning_gibbous", "phase_name": "十六夜・振り返り", "emoji": "🌖", "activity_type": "停滞期", "event_label": "", "is_today": false, "marketing": {"theme": "内省・学び・証拠", "cta_intensity": "低", "budget_pct": 8, "channels": "ブログ / YouTube / ポッドキャスト / 事例研究", "copy_direction": "「知らなかった◯◯」「データが示す真実」「お客様の声」", "content_type": "教育・事例・証拠型", "emotion": "分析欲・知識欲・振り返り", "family_tree_oki": "「産前産後ヨガで変わった3つのこと」体験談ブログ", "color": "#7b8ec8"}}, {"date": "2026-07-07", "weekday": "Tue", "day_in_cycle": 22, "kyureki_day": 23, "angle": 273.1, "phase_key": "last_quarter", "phase_name": "下弦・整理", "emoji": "🌗", "activity_type": "停滞期", "event_label": "", "is_today": false, "marketing": {"theme": "手放し・整理・最後のチャンス", "cta_intensity": "中", "budget_pct": 5, "channels": "メール / LINE / リマーケティング", "copy_direction": "「今月最後の機会」「スッキリ手放して」「次のステージへ」", "content_type": "クロージング・手放し型", "emotion": "手放し・浄化・次への準備", "family_tree_oki": "「今月分のキャンセル待ちリスト受付中」", "color": "#9a6bab"}}, {"date": "2026-07-08", "weekday": "Wed", "day_in_cycle": 23, "kyureki_day": 24, "angle": 285.5, "phase_key": "last_quarter", "phase_name": "下弦・整理", "emoji": "🌗", "activity_type": "停滞期", "event_label": "", "is_today": false, "marketing": {"theme": "手放し・整理・最後のチャンス", "cta_intensity": "中", "budget_pct": 5, "channels": "メール / LINE / リマーケティング", "copy_direction": "「今月最後の機会」「スッキリ手放して」「次のステージへ」", "content_type": "クロージング・手放し型", "emotion": "手放し・浄化・次への準備", "family_tree_oki": "「今月分のキャンセル待ちリスト受付中」", "color": "#9a6bab"}}, {"date": "2026-07-09", "weekday": "Thu", "day_in_cycle": 24, "kyureki_day": 25, "angle": 297.9, "phase_key": "waning_crescent", "phase_name": "晦日・休息", "emoji": "🌘", "activity_type": "停滞期", "event_label": "", "is_today": false, "marketing": {"theme": "休息・次サイクルへの準備", "cta_intensity": "最低", "budget_pct": 5, "channels": "SEO / ブログ / ナーチャリングメール", "copy_direction": "「次の旅立ちを準備中」「来月の新プログラム告知」", "content_type": "ティーザー・期待値醸成型", "emotion": "内省・準備・疲労回復", "family_tree_oki": "「来月の新月ヨガスケジュール先行予告」", "color": "#6b7a8d"}}, {"date": "2026-07-10", "weekday": "Fri", "day_in_cycle": 25, "kyureki_day": 26, "angle": 310.3, "phase_key": "waning_crescent", "phase_name": "晦日・休息", "emoji": "🌘", "activity_type": "停滞期", "event_label": "", "is_today": false, "marketing": {"theme": "休息・次サイクルへの準備", "cta_intensity": "最低", "budget_pct": 5, "channels": "SEO / ブログ / ナーチャリングメール", "copy_direction": "「次の旅立ちを準備中」「来月の新プログラム告知」", "content_type": "ティーザー・期待値醸成型", "emotion": "内省・準備・疲労回復", "family_tree_oki": "「来月の新月ヨガスケジュール先行予告」", "color": "#6b7a8d"}}, {"date": "2026-07-11", "weekday": "Sat", "day_in_cycle": 26, "kyureki_day": 27, "angle": 322.8, "phase_key": "waning_crescent", "phase_name": "晦日・休息", "emoji": "🌘", "activity_type": "停滞期", "event_label": "", "is_today": false, "marketing": {"theme": "休息・次サイクルへの準備", "cta_intensity": "最低", "budget_pct": 5, "channels": "SEO / ブログ / ナーチャリングメール", "copy_direction": "「次の旅立ちを準備中」「来月の新プログラム告知」", "content_type": "ティーザー・期待値醸成型", "emotion": "内省・準備・疲労回復", "family_tree_oki": "「来月の新月ヨガスケジュール先行予告」", "color": "#6b7a8d"}}, {"date": "2026-07-12", "weekday": "Sun", "day_in_cycle": 27, "kyureki_day": 28, "angle": 335.2, "phase_key": "waning_crescent", "phase_name": "晦日・休息", "emoji": "🌘", "activity_type": "停滞期", "event_label": "", "is_today": false, "marketing": {"theme": "休息・次サイクルへの準備", "cta_intensity": "最低", "budget_pct": 5, "channels": "SEO / ブログ / ナーチャリングメール", "copy_direction": "「次の旅立ちを準備中」「来月の新プログラム告知」", "content_type": "ティーザー・期待値醸成型", "emotion": "内省・準備・疲労回復", "family_tree_oki": "「来月の新月ヨガスケジュール先行予告」", "color": "#6b7a8d"}}, {"date": "2026-07-13", "weekday": "Mon", "day_in_cycle": 28, "kyureki_day": 29, "angle": 347.6, "phase_key": "new_moon", "phase_name": "新月・祈願", "emoji": "🌑", "activity_type": "思考期", "event_label": "", "is_today": false, "marketing": {"theme": "新しい始まりへの希望", "cta_intensity": "低", "budget_pct": 8, "channels": "コンテンツSEO / PR / ストーリー性SNS", "copy_direction": "「新しい自分へ」「今月の誓い」「変化のとき」", "content_type": "インスピレーション型", "emotion": "期待・希望・リセット", "family_tree_oki": "「新月のヨガ体験」「今月の祈りと身体のリセット」", "color": "#4a6fa5"}}, {"date": "2026-07-14", "weekday": "Tue", "day_in_cycle": 29, "kyureki_day": 30, "angle": 360.0, "phase_key": "new_moon", "phase_name": "新月・祈願", "emoji": "🌑", "activity_type": "思考期", "event_label": "", "is_today": false, "marketing": {"theme": "新しい始まりへの希望", "cta_intensity": "低", "budget_pct": 8, "channels": "コンテンツSEO / PR / ストーリー性SNS", "copy_direction": "「新しい自分へ」「今月の誓い」「変化のとき」", "content_type": "インスピレーション型", "emotion": "期待・希望・リセット", "family_tree_oki": "「新月のヨガ体験」「今月の祈りと身体のリセット」", "color": "#4a6fa5"}}, {"date": "2026-07-15", "weekday": "Wed", "day_in_cycle": 1, "kyureki_day": 2, "angle": 12.4, "phase_key": "new_moon", "phase_name": "新月・祈願", "emoji": "🌑", "activity_type": "思考期", "event_label": "旧暦一日", "is_today": false, "marketing": {"theme": "新しい始まりへの希望", "cta_intensity": "低", "budget_pct": 8, "channels": "コンテンツSEO / PR / ストーリー性SNS", "copy_direction": "「新しい自分へ」「今月の誓い」「変化のとき」", "content_type": "インスピレーション型", "emotion": "期待・希望・リセット", "family_tree_oki": "「新月のヨガ体験」「今月の祈りと身体のリセット」", "color": "#4a6fa5"}}, {"date": "2026-07-16", "weekday": "Thu", "day_in_cycle": 2, "kyureki_day": 3, "angle": 24.8, "phase_key": "waxing_crescent", "phase_name": "三日月・芽吹き", "emoji": "🌒", "activity_type": "活動期", "event_label": "", "is_today": false, "marketing": {"theme": "エネルギー上昇・行動開始", "cta_intensity": "中", "budget_pct": 22, "channels": "SNS動画広告 / インフルエンサー / ディスカバリー", "copy_direction": "「始めよう」「チャレンジ」「一歩踏み出す」", "content_type": "動機付け型・ストーリー型", "emotion": "期待感・行動意欲・好奇心", "family_tree_oki": "「今月も通いたくなるヨガ体験」新規入会プロモ開始", "color": "#5ba85d"}}, {"date": "2026-07-17", "weekday": "Fri", "day_in_cycle": 3, "kyureki_day": 4, "angle": 37.2, "phase_key": "waxing_crescent", "phase_name": "三日月・芽吹き", "emoji": "🌒", "activity_type": "活動期", "event_label": "", "is_today": false, "marketing": {"theme": "エネルギー上昇・行動開始", "cta_intensity": "中", "budget_pct": 22, "channels": "SNS動画広告 / インフルエンサー / ディスカバリー", "copy_direction": "「始めよう」「チャレンジ」「一歩踏み出す」", "content_type": "動機付け型・ストーリー型", "emotion": "期待感・行動意欲・好奇心", "family_tree_oki": "「今月も通いたくなるヨガ体験」新規入会プロモ開始", "color": "#5ba85d"}}, {"date": "2026-07-18", "weekday": "Sat", "day_in_cycle": 4, "kyureki_day": 5, "angle": 49.7, "phase_key": "waxing_crescent", "phase_name": "三日月・芽吹き", "emoji": "🌒", "activity_type": "活動期", "event_label": "", "is_today": false, "marketing": {"theme": "エネルギー上昇・行動開始", "cta_intensity": "中", "budget_pct": 22, "channels": "SNS動画広告 / インフルエンサー / ディスカバリー", "copy_direction": "「始めよう」「チャレンジ」「一歩踏み出す」", "content_type": "動機付け型・ストーリー型", "emotion": "期待感・行動意欲・好奇心", "family_tree_oki": "「今月も通いたくなるヨガ体験」新規入会プロモ開始", "color": "#5ba85d"}}, {"date": "2026-07-19", "weekday": "Sun", "day_in_cycle": 5, "kyureki_day": 6, "angle": 62.1, "phase_key": "waxing_crescent", "phase_name": "三日月・芽吹き", "emoji": "🌒", "activity_type": "活動期", "event_label": "", "is_today": false, "marketing": {"theme": "エネルギー上昇・行動開始", "cta_intensity": "中", "budget_pct": 22, "channels": "SNS動画広告 / インフルエンサー / ディスカバリー", "copy_direction": "「始めよう」「チャレンジ」「一歩踏み出す」", "content_type": "動機付け型・ストーリー型", "emotion": "期待感・行動意欲・好奇心", "family_tree_oki": "「今月も通いたくなるヨガ体験」新規入会プロモ開始", "color": "#5ba85d"}}, {"date": "2026-07-20", "weekday": "Mon", "day_in_cycle": 6, "kyureki_day": 7, "angle": 74.5, "phase_key": "waxing_crescent", "phase_name": "三日月・芽吹き", "emoji": "🌒", "activity_type": "活動期", "event_label": "", "is_today": false, "marketing": {"theme": "エネルギー上昇・行動開始", "cta_intensity": "中", "budget_pct": 22, "channels": "SNS動画広告 / インフルエンサー / ディスカバリー", "copy_direction": "「始めよう」「チャレンジ」「一歩踏み出す」", "content_type": "動機付け型・ストーリー型", "emotion": "期待感・行動意欲・好奇心", "family_tree_oki": "「今月も通いたくなるヨガ体験」新規入会プロモ開始", "color": "#5ba85d"}}, {"date": "2026-07-21", "weekday": "Tue", "day_in_cycle": 7, "kyureki_day": 8, "angle": 86.9, "phase_key": "first_quarter", "phase_name": "上弦・決断", "emoji": "🌓", "activity_type": "活動期", "event_label": "", "is_today": false, "marketing": {"theme": "決断・コミットメント", "cta_intensity": "高", "budget_pct": 18, "channels": "リターゲティング / Google検索広告 / LINE", "copy_direction": "「今が決め時」「あなたの選択が未来を変える」", "content_type": "比較・CTA強化型", "emotion": "決断力・責任感・コミット意欲", "family_tree_oki": "「無料体験クラスの予約」「入会特典は今週末まで」", "color": "#3d9e6b"}}, {"date": "2026-07-22", "weekday": "Wed", "day_in_cycle": 8, "kyureki_day": 9, "angle": 99.3, "phase_key": "first_quarter", "phase_name": "上弦・決断", "emoji": "🌓", "activity_type": "活動期", "event_label": "", "is_today": false, "marketing": {"theme": "決断・コミットメント", "cta_intensity": "高", "budget_pct": 18, "channels": "リターゲティング / Google検索広告 / LINE", "copy_direction": "「今が決め時」「あなたの選択が未来を変える」", "content_type": "比較・CTA強化型", "emotion": "決断力・責任感・コミット意欲", "family_tree_oki": "「無料体験クラスの予約」「入会特典は今週末まで」", "color": "#3d9e6b"}}, {"date": "2026-07-23", "weekday": "Thu", "day_in_cycle": 9, "kyureki_day": 10, "angle": 111.7, "phase_key": "waxing_gibbous", "phase_name": "十三夜・最盛", "emoji": "🌔", "activity_type": "活動期", "event_label": "", "is_today": false, "marketing": {"theme": "活動最盛・緊迫感・限定感", "cta_intensity": "最高", "budget_pct": 30, "channels": "全チャネル最大化 / リターゲ強化 / プッシュ通知", "copy_direction": "「残り〇〇時間」「限定枠あとわずか」「今すぐ」", "content_type": "緊迫・限定・社会的証明型", "emotion": "緊張感・達成欲・FOMO", "family_tree_oki": "「満月前の最終枠！マタニティヨガ体験クラス」", "color": "#e8a020"}}, {"date": "2026-07-24", "weekday": "Fri", "day_in_cycle": 10, "kyureki_day": 11, "angle": 124.1, "phase_key": "waxing_gibbous", "phase_name": "十三夜・最盛", "emoji": "🌔", "activity_type": "活動期", "event_label": "", "is_today": false, "marketing": {"theme": "活動最盛・緊迫感・限定感", "cta_intensity": "最高", "budget_pct": 30, "channels": "全チャネル最大化 / リターゲ強化 / プッシュ通知", "copy_direction": "「残り〇〇時間」「限定枠あとわずか」「今すぐ」", "content_type": "緊迫・限定・社会的証明型", "emotion": "緊張感・達成欲・FOMO", "family_tree_oki": "「満月前の最終枠！マタニティヨガ体験クラス」", "color": "#e8a020"}}, {"date": "2026-07-25", "weekday": "Sat", "day_in_cycle": 11, "kyureki_day": 12, "angle": 136.6, "phase_key": "waxing_gibbous", "phase_name": "十三夜・最盛", "emoji": "🌔", "activity_type": "活動期", "event_label": "", "is_today": false, "marketing": {"theme": "活動最盛・緊迫感・限定感", "cta_intensity": "最高", "budget_pct": 30, "channels": "全チャネル最大化 / リターゲ強化 / プッシュ通知", "copy_direction": "「残り〇〇時間」「限定枠あとわずか」「今すぐ」", "content_type": "緊迫・限定・社会的証明型", "emotion": "緊張感・達成欲・FOMO", "family_tree_oki": "「満月前の最終枠！マタニティヨガ体験クラス」", "color": "#e8a020"}}, {"date": "2026-07-26", "weekday": "Sun", "day_in_cycle": 12, "kyureki_day": 13, "angle": 149.0, "phase_key": "waxing_gibbous", "phase_name": "十三夜・最盛", "emoji": "🌔", "activity_type": "活動期", "event_label": "", "is_today": false, "marketing": {"theme": "活動最盛・緊迫感・限定感", "cta_intensity": "最高", "budget_pct": 30, "channels": "全チャネル最大化 / リターゲ強化 / プッシュ通知", "copy_direction": "「残り〇〇時間」「限定枠あとわずか」「今すぐ」", "content_type": "緊迫・限定・社会的証明型", "emotion": "緊張感・達成欲・FOMO", "family_tree_oki": "「満月前の最終枠！マタニティヨガ体験クラス」", "color": "#e8a020"}}, {"date": "2026-07-27", "weekday": "Mon", "day_in_cycle": 13, "kyureki_day": 14, "angle": 161.4, "phase_key": "waxing_gibbous", "phase_name": "十三夜・最盛", "emoji": "🌔", "activity_type": "活動期", "event_label": "", "is_today": false, "marketing": {"theme": "活動最盛・緊迫感・限定感", "cta_intensity": "最高", "budget_pct": 30, "channels": "全チャネル最大化 / リターゲ強化 / プッシュ通知", "copy_direction": "「残り〇〇時間」「限定枠あとわずか」「今すぐ」", "content_type": "緊迫・限定・社会的証明型", "emotion": "緊張感・達成欲・FOMO", "family_tree_oki": "「満月前の最終枠！マタニティヨガ体験クラス」", "color": "#e8a020"}}, {"date": "2026-07-28", "weekday": "Tue", "day_in_cycle": 14, "kyureki_day": 15, "angle": 173.8, "phase_key": "full_moon", "phase_name": "満月・感謝", "emoji": "🌕", "activity_type": "思考期", "event_label": "旧暦十五日", "is_today": false, "marketing": {"theme": "達成・感謝・コミュニティ", "cta_intensity": "低", "budget_pct": 12, "channels": "メールマーケティング / コミュニティSNS / リファラル", "copy_direction": "「ありがとう」「あなたと一緒に」「感謝を込めて」", "content_type": "感謝・コミュニティ・ロイヤリティ型", "emotion": "達成感・感謝・つながり・感情的高揚", "family_tree_oki": "「満月感謝ナイトヨガ🌕」既存会員限定イベント", "color": "#c8a45a"}}, {"date": "2026-07-29", "weekday": "Wed", "day_in_cycle": 15, "kyureki_day": 16, "angle": 186.2, "phase_key": "full_moon", "phase_name": "満月・感謝", "emoji": "🌕", "activity_type": "思考期", "event_label": "満月🌕", "is_today": false, "marketing": {"theme": "達成・感謝・コミュニティ", "cta_intensity": "低", "budget_pct": 12, "channels": "メールマーケティング / コミュニティSNS / リファラル", "copy_direction": "「ありがとう」「あなたと一緒に」「感謝を込めて」", "content_type": "感謝・コミュニティ・ロイヤリティ型", "emotion": "達成感・感謝・つながり・感情的高揚", "family_tree_oki": "「満月感謝ナイトヨガ🌕」既存会員限定イベント", "color": "#c8a45a"}}, {"date": "2026-07-30", "weekday": "Thu", "day_in_cycle": 16, "kyureki_day": 17, "angle": 198.6, "phase_key": "waning_gibbous", "phase_name": "十六夜・振り返り", "emoji": "🌖", "activity_type": "停滞期", "event_label": "", "is_today": false, "marketing": {"theme": "内省・学び・証拠", "cta_intensity": "低", "budget_pct": 8, "channels": "ブログ / YouTube / ポッドキャスト / 事例研究", "copy_direction": "「知らなかった◯◯」「データが示す真実」「お客様の声」", "content_type": "教育・事例・証拠型", "emotion": "分析欲・知識欲・振り返り", "family_tree_oki": "「産前産後ヨガで変わった3つのこと」体験談ブログ", "color": "#7b8ec8"}}, {"date": "2026-07-31", "weekday": "Fri", "day_in_cycle": 17, "kyureki_day": 18, "angle": 211.0, "phase_key": "waning_gibbous", "phase_name": "十六夜・振り返り", "emoji": "🌖", "activity_type": "停滞期", "event_label": "", "is_today": false, "marketing": {"theme": "内省・学び・証拠", "cta_intensity": "低", "budget_pct": 8, "channels": "ブログ / YouTube / ポッドキャスト / 事例研究", "copy_direction": "「知らなかった◯◯」「データが示す真実」「お客様の声」", "content_type": "教育・事例・証拠型", "emotion": "分析欲・知識欲・振り返り", "family_tree_oki": "「産前産後ヨガで変わった3つのこと」体験談ブログ", "color": "#7b8ec8"}}, {"date": "2026-08-01", "weekday": "Sat", "day_in_cycle": 18, "kyureki_day": 19, "angle": 223.4, "phase_key": "waning_gibbous", "phase_name": "十六夜・振り返り", "emoji": "🌖", "activity_type": "停滞期", "event_label": "", "is_today": false, "marketing": {"theme": "内省・学び・証拠", "cta_intensity": "低", "budget_pct": 8, "channels": "ブログ / YouTube / ポッドキャスト / 事例研究", "copy_direction": "「知らなかった◯◯」「データが示す真実」「お客様の声」", "content_type": "教育・事例・証拠型", "emotion": "分析欲・知識欲・振り返り", "family_tree_oki": "「産前産後ヨガで変わった3つのこと」体験談ブログ", "color": "#7b8ec8"}}, {"date": "2026-08-02", "weekday": "Sun", "day_in_cycle": 19, "kyureki_day": 20, "angle": 235.9, "phase_key": "waning_gibbous", "phase_name": "十六夜・振り返り", "emoji": "🌖", "activity_type": "停滞期", "event_label": "", "is_today": false, "marketing": {"theme": "内省・学び・証拠", "cta_intensity": "低", "budget_pct": 8, "channels": "ブログ / YouTube / ポッドキャスト / 事例研究", "copy_direction": "「知らなかった◯◯」「データが示す真実」「お客様の声」", "content_type": "教育・事例・証拠型", "emotion": "分析欲・知識欲・振り返り", "family_tree_oki": "「産前産後ヨガで変わった3つのこと」体験談ブログ", "color": "#7b8ec8"}}, {"date": "2026-08-03", "weekday": "Mon", "day_in_cycle": 20, "kyureki_day": 21, "angle": 248.3, "phase_key": "waning_gibbous", "phase_name": "十六夜・振り返り", "emoji": "🌖", "activity_type": "停滞期", "event_label": "", "is_today": false, "marketing": {"theme": "内省・学び・証拠", "cta_intensity": "低", "budget_pct": 8, "channels": "ブログ / YouTube / ポッドキャスト / 事例研究", "copy_direction": "「知らなかった◯◯」「データが示す真実」「お客様の声」", "content_type": "教育・事例・証拠型", "emotion": "分析欲・知識欲・振り返り", "family_tree_oki": "「産前産後ヨガで変わった3つのこと」体験談ブログ", "color": "#7b8ec8"}}, {"date": "2026-08-04", "weekday": "Tue", "day_in_cycle": 21, "kyureki_day": 22, "angle": 260.7, "phase_key": "waning_gibbous", "phase_name": "十六夜・振り返り", "emoji": "🌖", "activity_type": "停滞期", "event_label": "", "is_today": false, "marketing": {"theme": "内省・学び・証拠", "cta_intensity": "低", "budget_pct": 8, "channels": "ブログ / YouTube / ポッドキャスト / 事例研究", "copy_direction": "「知らなかった◯◯」「データが示す真実」「お客様の声」", "content_type": "教育・事例・証拠型", "emotion": "分析欲・知識欲・振り返り", "family_tree_oki": "「産前産後ヨガで変わった3つのこと」体験談ブログ", "color": "#7b8ec8"}}, {"date": "2026-08-05", "weekday": "Wed", "day_in_cycle": 22, "kyureki_day": 23, "angle": 273.1, "phase_key": "last_quarter", "phase_name": "下弦・整理", "emoji": "🌗", "activity_type": "停滞期", "event_label": "", "is_today": false, "marketing": {"theme": "手放し・整理・最後のチャンス", "cta_intensity": "中", "budget_pct": 5, "channels": "メール / LINE / リマーケティング", "copy_direction": "「今月最後の機会」「スッキリ手放して」「次のステージへ」", "content_type": "クロージング・手放し型", "emotion": "手放し・浄化・次への準備", "family_tree_oki": "「今月分のキャンセル待ちリスト受付中」", "color": "#9a6bab"}}, {"date": "2026-08-06", "weekday": "Thu", "day_in_cycle": 23, "kyureki_day": 24, "angle": 285.5, "phase_key": "last_quarter", "phase_name": "下弦・整理", "emoji": "🌗", "activity_type": "停滞期", "event_label": "", "is_today": false, "marketing": {"theme": "手放し・整理・最後のチャンス", "cta_intensity": "中", "budget_pct": 5, "channels": "メール / LINE / リマーケティング", "copy_direction": "「今月最後の機会」「スッキリ手放して」「次のステージへ」", "content_type": "クロージング・手放し型", "emotion": "手放し・浄化・次への準備", "family_tree_oki": "「今月分のキャンセル待ちリスト受付中」", "color": "#9a6bab"}}, {"date": "2026-08-07", "weekday": "Fri", "day_in_cycle": 24, "kyureki_day": 25, "angle": 297.9, "phase_key": "waning_crescent", "phase_name": "晦日・休息", "emoji": "🌘", "activity_type": "停滞期", "event_label": "", "is_today": false, "marketing": {"theme": "休息・次サイクルへの準備", "cta_intensity": "最低", "budget_pct": 5, "channels": "SEO / ブログ / ナーチャリングメール", "copy_direction": "「次の旅立ちを準備中」「来月の新プログラム告知」", "content_type": "ティーザー・期待値醸成型", "emotion": "内省・準備・疲労回復", "family_tree_oki": "「来月の新月ヨガスケジュール先行予告」", "color": "#6b7a8d"}}, {"date": "2026-08-08", "weekday": "Sat", "day_in_cycle": 25, "kyureki_day": 26, "angle": 310.3, "phase_key": "waning_crescent", "phase_name": "晦日・休息", "emoji": "🌘", "activity_type": "停滞期", "event_label": "", "is_today": false, "marketing": {"theme": "休息・次サイクルへの準備", "cta_intensity": "最低", "budget_pct": 5, "channels": "SEO / ブログ / ナーチャリングメール", "copy_direction": "「次の旅立ちを準備中」「来月の新プログラム告知」", "content_type": "ティーザー・期待値醸成型", "emotion": "内省・準備・疲労回復", "family_tree_oki": "「来月の新月ヨガスケジュール先行予告」", "color": "#6b7a8d"}}, {"date": "2026-08-09", "weekday": "Sun", "day_in_cycle": 26, "kyureki_day": 27, "angle": 322.8, "phase_key": "waning_crescent", "phase_name": "晦日・休息", "emoji": "🌘", "activity_type": "停滞期", "event_label": "", "is_today": false, "marketing": {"theme": "休息・次サイクルへの準備", "cta_intensity": "最低", "budget_pct": 5, "channels": "SEO / ブログ / ナーチャリングメール", "copy_direction": "「次の旅立ちを準備中」「来月の新プログラム告知」", "content_type": "ティーザー・期待値醸成型", "emotion": "内省・準備・疲労回復", "family_tree_oki": "「来月の新月ヨガスケジュール先行予告」", "color": "#6b7a8d"}}, {"date": "2026-08-10", "weekday": "Mon", "day_in_cycle": 27, "kyureki_day": 28, "angle": 335.2, "phase_key": "waning_crescent", "phase_name": "晦日・休息", "emoji": "🌘", "activity_type": "停滞期", "event_label": "", "is_today": false, "marketing": {"theme": "休息・次サイクルへの準備", "cta_intensity": "最低", "budget_pct": 5, "channels": "SEO / ブログ / ナーチャリングメール", "copy_direction": "「次の旅立ちを準備中」「来月の新プログラム告知」", "content_type": "ティーザー・期待値醸成型", "emotion": "内省・準備・疲労回復", "family_tree_oki": "「来月の新月ヨガスケジュール先行予告」", "color": "#6b7a8d"}}, {"date": "2026-08-11", "weekday": "Tue", "day_in_cycle": 28, "kyureki_day": 29, "angle": 347.6, "phase_key": "new_moon", "phase_name": "新月・祈願", "emoji": "🌑", "activity_type": "思考期", "event_label": "", "is_today": false, "marketing": {"theme": "新しい始まりへの希望", "cta_intensity": "低", "budget_pct": 8, "channels": "コンテンツSEO / PR / ストーリー性SNS", "copy_direction": "「新しい自分へ」「今月の誓い」「変化のとき」", "content_type": "インスピレーション型", "emotion": "期待・希望・リセット", "family_tree_oki": "「新月のヨガ体験」「今月の祈りと身体のリセット」", "color": "#4a6fa5"}}, {"date": "2026-08-12", "weekday": "Wed", "day_in_cycle": 29, "kyureki_day": 30, "angle": 360.0, "phase_key": "new_moon", "phase_name": "新月・祈願", "emoji": "🌑", "activity_type": "思考期", "event_label": "", "is_today": false, "marketing": {"theme": "新しい始まりへの希望", "cta_intensity": "低", "budget_pct": 8, "channels": "コンテンツSEO / PR / ストーリー性SNS", "copy_direction": "「新しい自分へ」「今月の誓い」「変化のとき」", "content_type": "インスピレーション型", "emotion": "期待・希望・リセット", "family_tree_oki": "「新月のヨガ体験」「今月の祈りと身体のリセット」", "color": "#4a6fa5"}}, {"date": "2026-08-13", "weekday": "Thu", "day_in_cycle": 1, "kyureki_day": 2, "angle": 12.0, "phase_key": "new_moon", "phase_name": "新月・祈願", "emoji": "🌑", "activity_type": "思考期", "event_label": "旧暦一日", "is_today": false, "marketing": {"theme": "新しい始まりへの希望", "cta_intensity": "低", "budget_pct": 8, "channels": "コンテンツSEO / PR / ストーリー性SNS", "copy_direction": "「新しい自分へ」「今月の誓い」「変化のとき」", "content_type": "インスピレーション型", "emotion": "期待・希望・リセット", "family_tree_oki": "「新月のヨガ体験」「今月の祈りと身体のリセット」", "color": "#4a6fa5"}}, {"date": "2026-08-14", "weekday": "Fri", "day_in_cycle": 2, "kyureki_day": 3, "angle": 24.0, "phase_key": "waxing_crescent", "phase_name": "三日月・芽吹き", "emoji": "🌒", "activity_type": "活動期", "event_label": "", "is_today": false, "marketing": {"theme": "エネルギー上昇・行動開始", "cta_intensity": "中", "budget_pct": 22, "channels": "SNS動画広告 / インフルエンサー / ディスカバリー", "copy_direction": "「始めよう」「チャレンジ」「一歩踏み出す」", "content_type": "動機付け型・ストーリー型", "emotion": "期待感・行動意欲・好奇心", "family_tree_oki": "「今月も通いたくなるヨガ体験」新規入会プロモ開始", "color": "#5ba85d"}}, {"date": "2026-08-15", "weekday": "Sat", "day_in_cycle": 3, "kyureki_day": 4, "angle": 36.0, "phase_key": "waxing_crescent", "phase_name": "三日月・芽吹き", "emoji": "🌒", "activity_type": "活動期", "event_label": "", "is_today": false, "marketing": {"theme": "エネルギー上昇・行動開始", "cta_intensity": "中", "budget_pct": 22, "channels": "SNS動画広告 / インフルエンサー / ディスカバリー", "copy_direction": "「始めよう」「チャレンジ」「一歩踏み出す」", "content_type": "動機付け型・ストーリー型", "emotion": "期待感・行動意欲・好奇心", "family_tree_oki": "「今月も通いたくなるヨガ体験」新規入会プロモ開始", "color": "#5ba85d"}}, {"date": "2026-08-16", "weekday": "Sun", "day_in_cycle": 4, "kyureki_day": 5, "angle": 48.0, "phase_key": "waxing_crescent", "phase_name": "三日月・芽吹き", "emoji": "🌒", "activity_type": "活動期", "event_label": "", "is_today": false, "marketing": {"theme": "エネルギー上昇・行動開始", "cta_intensity": "中", "budget_pct": 22, "channels": "SNS動画広告 / インフルエンサー / ディスカバリー", "copy_direction": "「始めよう」「チャレンジ」「一歩踏み出す」", "content_type": "動機付け型・ストーリー型", "emotion": "期待感・行動意欲・好奇心", "family_tree_oki": "「今月も通いたくなるヨガ体験」新規入会プロモ開始", "color": "#5ba85d"}}, {"date": "2026-08-17", "weekday": "Mon", "day_in_cycle": 5, "kyureki_day": 6, "angle": 60.0, "phase_key": "waxing_crescent", "phase_name": "三日月・芽吹き", "emoji": "🌒", "activity_type": "活動期", "event_label": "", "is_today": false, "marketing": {"theme": "エネルギー上昇・行動開始", "cta_intensity": "中", "budget_pct": 22, "channels": "SNS動画広告 / インフルエンサー / ディスカバリー", "copy_direction": "「始めよう」「チャレンジ」「一歩踏み出す」", "content_type": "動機付け型・ストーリー型", "emotion": "期待感・行動意欲・好奇心", "family_tree_oki": "「今月も通いたくなるヨガ体験」新規入会プロモ開始", "color": "#5ba85d"}}, {"date": "2026-08-18", "weekday": "Tue", "day_in_cycle": 6, "kyureki_day": 7, "angle": 72.0, "phase_key": "waxing_crescent", "phase_name": "三日月・芽吹き", "emoji": "🌒", "activity_type": "活動期", "event_label": "", "is_today": false, "marketing": {"theme": "エネルギー上昇・行動開始", "cta_intensity": "中", "budget_pct": 22, "channels": "SNS動画広告 / インフルエンサー / ディスカバリー", "copy_direction": "「始めよう」「チャレンジ」「一歩踏み出す」", "content_type": "動機付け型・ストーリー型", "emotion": "期待感・行動意欲・好奇心", "family_tree_oki": "「今月も通いたくなるヨガ体験」新規入会プロモ開始", "color": "#5ba85d"}}, {"date": "2026-08-19", "weekday": "Wed", "day_in_cycle": 7, "kyureki_day": 8, "angle": 84.0, "phase_key": "first_quarter", "phase_name": "上弦・決断", "emoji": "🌓", "activity_type": "活動期", "event_label": "", "is_today": false, "marketing": {"theme": "決断・コミットメント", "cta_intensity": "高", "budget_pct": 18, "channels": "リターゲティング / Google検索広告 / LINE", "copy_direction": "「今が決め時」「あなたの選択が未来を変える」", "content_type": "比較・CTA強化型", "emotion": "決断力・責任感・コミット意欲", "family_tree_oki": "「無料体験クラスの予約」「入会特典は今週末まで」", "color": "#3d9e6b"}}, {"date": "2026-08-20", "weekday": "Thu", "day_in_cycle": 8, "kyureki_day": 9, "angle": 96.0, "phase_key": "first_quarter", "phase_name": "上弦・決断", "emoji": "🌓", "activity_type": "活動期", "event_label": "", "is_today": false, "marketing": {"theme": "決断・コミットメント", "cta_intensity": "高", "budget_pct": 18, "channels": "リターゲティング / Google検索広告 / LINE", "copy_direction": "「今が決め時」「あなたの選択が未来を変える」", "content_type": "比較・CTA強化型", "emotion": "決断力・責任感・コミット意欲", "family_tree_oki": "「無料体験クラスの予約」「入会特典は今週末まで」", "color": "#3d9e6b"}}, {"date": "2026-08-21", "weekday": "Fri", "day_in_cycle": 9, "kyureki_day": 10, "angle": 108.0, "phase_key": "waxing_gibbous", "phase_name": "十三夜・最盛", "emoji": "🌔", "activity_type": "活動期", "event_label": "", "is_today": false, "marketing": {"theme": "活動最盛・緊迫感・限定感", "cta_intensity": "最高", "budget_pct": 30, "channels": "全チャネル最大化 / リターゲ強化 / プッシュ通知", "copy_direction": "「残り〇〇時間」「限定枠あとわずか」「今すぐ」", "content_type": "緊迫・限定・社会的証明型", "emotion": "緊張感・達成欲・FOMO", "family_tree_oki": "「満月前の最終枠！マタニティヨガ体験クラス」", "color": "#e8a020"}}, {"date": "2026-08-22", "weekday": "Sat", "day_in_cycle": 10, "kyureki_day": 11, "angle": 120.0, "phase_key": "waxing_gibbous", "phase_name": "十三夜・最盛", "emoji": "🌔", "activity_type": "活動期", "event_label": "", "is_today": false, "marketing": {"theme": "活動最盛・緊迫感・限定感", "cta_intensity": "最高", "budget_pct": 30, "channels": "全チャネル最大化 / リターゲ強化 / プッシュ通知", "copy_direction": "「残り〇〇時間」「限定枠あとわずか」「今すぐ」", "content_type": "緊迫・限定・社会的証明型", "emotion": "緊張感・達成欲・FOMO", "family_tree_oki": "「満月前の最終枠！マタニティヨガ体験クラス」", "color": "#e8a020"}}, {"date": "2026-08-23", "weekday": "Sun", "day_in_cycle": 11, "kyureki_day": 12, "angle": 132.0, "phase_key": "waxing_gibbous", "phase_name": "十三夜・最盛", "emoji": "🌔", "activity_type": "活動期", "event_label": "", "is_today": false, "marketing": {"theme": "活動最盛・緊迫感・限定感", "cta_intensity": "最高", "budget_pct": 30, "channels": "全チャネル最大化 / リターゲ強化 / プッシュ通知", "copy_direction": "「残り〇〇時間」「限定枠あとわずか」「今すぐ」", "content_type": "緊迫・限定・社会的証明型", "emotion": "緊張感・達成欲・FOMO", "family_tree_oki": "「満月前の最終枠！マタニティヨガ体験クラス」", "color": "#e8a020"}}, {"date": "2026-08-24", "weekday": "Mon", "day_in_cycle": 12, "kyureki_day": 13, "angle": 144.0, "phase_key": "waxing_gibbous", "phase_name": "十三夜・最盛", "emoji": "🌔", "activity_type": "活動期", "event_label": "", "is_today": false, "marketing": {"theme": "活動最盛・緊迫感・限定感", "cta_intensity": "最高", "budget_pct": 30, "channels": "全チャネル最大化 / リターゲ強化 / プッシュ通知", "copy_direction": "「残り〇〇時間」「限定枠あとわずか」「今すぐ」", "content_type": "緊迫・限定・社会的証明型", "emotion": "緊張感・達成欲・FOMO", "family_tree_oki": "「満月前の最終枠！マタニティヨガ体験クラス」", "color": "#e8a020"}}, {"date": "2026-08-25", "weekday": "Tue", "day_in_cycle": 13, "kyureki_day": 14, "angle": 156.0, "phase_key": "waxing_gibbous", "phase_name": "十三夜・最盛", "emoji": "🌔", "activity_type": "活動期", "event_label": "", "is_today": false, "marketing": {"theme": "活動最盛・緊迫感・限定感", "cta_intensity": "最高", "budget_pct": 30, "channels": "全チャネル最大化 / リターゲ強化 / プッシュ通知", "copy_direction": "「残り〇〇時間」「限定枠あとわずか」「今すぐ」", "content_type": "緊迫・限定・社会的証明型", "emotion": "緊張感・達成欲・FOMO", "family_tree_oki": "「満月前の最終枠！マタニティヨガ体験クラス」", "color": "#e8a020"}}, {"date": "2026-08-26", "weekday": "Wed", "day_in_cycle": 14, "kyureki_day": 15, "angle": 168.0, "phase_key": "waxing_gibbous", "phase_name": "十三夜・最盛", "emoji": "🌔", "activity_type": "活動期", "event_label": "", "is_today": false, "marketing": {"theme": "活動最盛・緊迫感・限定感", "cta_intensity": "最高", "budget_pct": 30, "channels": "全チャネル最大化 / リターゲ強化 / プッシュ通知", "copy_direction": "「残り〇〇時間」「限定枠あとわずか」「今すぐ」", "content_type": "緊迫・限定・社会的証明型", "emotion": "緊張感・達成欲・FOMO", "family_tree_oki": "「満月前の最終枠！マタニティヨガ体験クラス」", "color": "#e8a020"}}, {"date": "2026-08-27", "weekday": "Thu", "day_in_cycle": 15, "kyureki_day": 16, "angle": 180.0, "phase_key": "full_moon", "phase_name": "満月・感謝", "emoji": "🌕", "activity_type": "思考期", "event_label": "満月🌕", "is_today": false, "marketing": {"theme": "達成・感謝・コミュニティ", "cta_intensity": "低", "budget_pct": 12, "channels": "メールマーケティング / コミュニティSNS / リファラル", "copy_direction": "「ありがとう」「あなたと一緒に」「感謝を込めて」", "content_type": "感謝・コミュニティ・ロイヤリティ型", "emotion": "達成感・感謝・つながり・感情的高揚", "family_tree_oki": "「満月感謝ナイトヨガ🌕」既存会員限定イベント", "color": "#c8a45a"}}, {"date": "2026-08-28", "weekday": "Fri", "day_in_cycle": 16, "kyureki_day": 17, "angle": 192.0, "phase_key": "full_moon", "phase_name": "満月・感謝", "emoji": "🌕", "activity_type": "思考期", "event_label": "", "is_today": false, "marketing": {"theme": "達成・感謝・コミュニティ", "cta_intensity": "低", "budget_pct": 12, "channels": "メールマーケティング / コミュニティSNS / リファラル", "copy_direction": "「ありがとう」「あなたと一緒に」「感謝を込めて」", "content_type": "感謝・コミュニティ・ロイヤリティ型", "emotion": "達成感・感謝・つながり・感情的高揚", "family_tree_oki": "「満月感謝ナイトヨガ🌕」既存会員限定イベント", "color": "#c8a45a"}}, {"date": "2026-08-29", "weekday": "Sat", "day_in_cycle": 17, "kyureki_day": 18, "angle": 204.0, "phase_key": "waning_gibbous", "phase_name": "十六夜・振り返り", "emoji": "🌖", "activity_type": "停滞期", "event_label": "", "is_today": false, "marketing": {"theme": "内省・学び・証拠", "cta_intensity": "低", "budget_pct": 8, "channels": "ブログ / YouTube / ポッドキャスト / 事例研究", "copy_direction": "「知らなかった◯◯」「データが示す真実」「お客様の声」", "content_type": "教育・事例・証拠型", "emotion": "分析欲・知識欲・振り返り", "family_tree_oki": "「産前産後ヨガで変わった3つのこと」体験談ブログ", "color": "#7b8ec8"}}, {"date": "2026-08-30", "weekday": "Sun", "day_in_cycle": 18, "kyureki_day": 19, "angle": 216.0, "phase_key": "waning_gibbous", "phase_name": "十六夜・振り返り", "emoji": "🌖", "activity_type": "停滞期", "event_label": "", "is_today": false, "marketing": {"theme": "内省・学び・証拠", "cta_intensity": "低", "budget_pct": 8, "channels": "ブログ / YouTube / ポッドキャスト / 事例研究", "copy_direction": "「知らなかった◯◯」「データが示す真実」「お客様の声」", "content_type": "教育・事例・証拠型", "emotion": "分析欲・知識欲・振り返り", "family_tree_oki": "「産前産後ヨガで変わった3つのこと」体験談ブログ", "color": "#7b8ec8"}}, {"date": "2026-08-31", "weekday": "Mon", "day_in_cycle": 19, "kyureki_day": 20, "angle": 228.0, "phase_key": "waning_gibbous", "phase_name": "十六夜・振り返り", "emoji": "🌖", "activity_type": "停滞期", "event_label": "", "is_today": false, "marketing": {"theme": "内省・学び・証拠", "cta_intensity": "低", "budget_pct": 8, "channels": "ブログ / YouTube / ポッドキャスト / 事例研究", "copy_direction": "「知らなかった◯◯」「データが示す真実」「お客様の声」", "content_type": "教育・事例・証拠型", "emotion": "分析欲・知識欲・振り返り", "family_tree_oki": "「産前産後ヨガで変わった3つのこと」体験談ブログ", "color": "#7b8ec8"}}, {"date": "2026-09-01", "weekday": "Tue", "day_in_cycle": 20, "kyureki_day": 21, "angle": 240.0, "phase_key": "waning_gibbous", "phase_name": "十六夜・振り返り", "emoji": "🌖", "activity_type": "停滞期", "event_label": "", "is_today": false, "marketing": {"theme": "内省・学び・証拠", "cta_intensity": "低", "budget_pct": 8, "channels": "ブログ / YouTube / ポッドキャスト / 事例研究", "copy_direction": "「知らなかった◯◯」「データが示す真実」「お客様の声」", "content_type": "教育・事例・証拠型", "emotion": "分析欲・知識欲・振り返り", "family_tree_oki": "「産前産後ヨガで変わった3つのこと」体験談ブログ", "color": "#7b8ec8"}}, {"date": "2026-09-02", "weekday": "Wed", "day_in_cycle": 21, "kyureki_day": 22, "angle": 252.0, "phase_key": "waning_gibbous", "phase_name": "十六夜・振り返り", "emoji": "🌖", "activity_type": "停滞期", "event_label": "", "is_today": false, "marketing": {"theme": "内省・学び・証拠", "cta_intensity": "低", "budget_pct": 8, "channels": "ブログ / YouTube / ポッドキャスト / 事例研究", "copy_direction": "「知らなかった◯◯」「データが示す真実」「お客様の声」", "content_type": "教育・事例・証拠型", "emotion": "分析欲・知識欲・振り返り", "family_tree_oki": "「産前産後ヨガで変わった3つのこと」体験談ブログ", "color": "#7b8ec8"}}, {"date": "2026-09-03", "weekday": "Thu", "day_in_cycle": 22, "kyureki_day": 23, "angle": 264.0, "phase_key": "waning_gibbous", "phase_name": "十六夜・振り返り", "emoji": "🌖", "activity_type": "停滞期", "event_label": "", "is_today": false, "marketing": {"theme": "内省・学び・証拠", "cta_intensity": "低", "budget_pct": 8, "channels": "ブログ / YouTube / ポッドキャスト / 事例研究", "copy_direction": "「知らなかった◯◯」「データが示す真実」「お客様の声」", "content_type": "教育・事例・証拠型", "emotion": "分析欲・知識欲・振り返り", "family_tree_oki": "「産前産後ヨガで変わった3つのこと」体験談ブログ", "color": "#7b8ec8"}}, {"date": "2026-09-04", "weekday": "Fri", "day_in_cycle": 23, "kyureki_day": 24, "angle": 276.0, "phase_key": "last_quarter", "phase_name": "下弦・整理", "emoji": "🌗", "activity_type": "停滞期", "event_label": "", "is_today": false, "marketing": {"theme": "手放し・整理・最後のチャンス", "cta_intensity": "中", "budget_pct": 5, "channels": "メール / LINE / リマーケティング", "copy_direction": "「今月最後の機会」「スッキリ手放して」「次のステージへ」", "content_type": "クロージング・手放し型", "emotion": "手放し・浄化・次への準備", "family_tree_oki": "「今月分のキャンセル待ちリスト受付中」", "color": "#9a6bab"}}, {"date": "2026-09-05", "weekday": "Sat", "day_in_cycle": 24, "kyureki_day": 25, "angle": 288.0, "phase_key": "last_quarter", "phase_name": "下弦・整理", "emoji": "🌗", "activity_type": "停滞期", "event_label": "", "is_today": false, "marketing": {"theme": "手放し・整理・最後のチャンス", "cta_intensity": "中", "budget_pct": 5, "channels": "メール / LINE / リマーケティング", "copy_direction": "「今月最後の機会」「スッキリ手放して」「次のステージへ」", "content_type": "クロージング・手放し型", "emotion": "手放し・浄化・次への準備", "family_tree_oki": "「今月分のキャンセル待ちリスト受付中」", "color": "#9a6bab"}}, {"date": "2026-09-06", "weekday": "Sun", "day_in_cycle": 25, "kyureki_day": 26, "angle": 300.0, "phase_key": "waning_crescent", "phase_name": "晦日・休息", "emoji": "🌘", "activity_type": "停滞期", "event_label": "", "is_today": false, "marketing": {"theme": "休息・次サイクルへの準備", "cta_intensity": "最低", "budget_pct": 5, "channels": "SEO / ブログ / ナーチャリングメール", "copy_direction": "「次の旅立ちを準備中」「来月の新プログラム告知」", "content_type": "ティーザー・期待値醸成型", "emotion": "内省・準備・疲労回復", "family_tree_oki": "「来月の新月ヨガスケジュール先行予告」", "color": "#6b7a8d"}}, {"date": "2026-09-07", "weekday": "Mon", "day_in_cycle": 26, "kyureki_day": 27, "angle": 312.0, "phase_key": "waning_crescent", "phase_name": "晦日・休息", "emoji": "🌘", "activity_type": "停滞期", "event_label": "", "is_today": false, "marketing": {"theme": "休息・次サイクルへの準備", "cta_intensity": "最低", "budget_pct": 5, "channels": "SEO / ブログ / ナーチャリングメール", "copy_direction": "「次の旅立ちを準備中」「来月の新プログラム告知」", "content_type": "ティーザー・期待値醸成型", "emotion": "内省・準備・疲労回復", "family_tree_oki": "「来月の新月ヨガスケジュール先行予告」", "color": "#6b7a8d"}}, {"date": "2026-09-08", "weekday": "Tue", "day_in_cycle": 27, "kyureki_day": 28, "angle": 324.0, "phase_key": "waning_crescent", "phase_name": "晦日・休息", "emoji": "🌘", "activity_type": "停滞期", "event_label": "", "is_today": false, "marketing": {"theme": "休息・次サイクルへの準備", "cta_intensity": "最低", "budget_pct": 5, "channels": "SEO / ブログ / ナーチャリングメール", "copy_direction": "「次の旅立ちを準備中」「来月の新プログラム告知」", "content_type": "ティーザー・期待値醸成型", "emotion": "内省・準備・疲労回復", "family_tree_oki": "「来月の新月ヨガスケジュール先行予告」", "color": "#6b7a8d"}}, {"date": "2026-09-09", "weekday": "Wed", "day_in_cycle": 28, "kyureki_day": 29, "angle": 336.0, "phase_key": "waning_crescent", "phase_name": "晦日・休息", "emoji": "🌘", "activity_type": "停滞期", "event_label": "", "is_today": false, "marketing": {"theme": "休息・次サイクルへの準備", "cta_intensity": "最低", "budget_pct": 5, "channels": "SEO / ブログ / ナーチャリングメール", "copy_direction": "「次の旅立ちを準備中」「来月の新プログラム告知」", "content_type": "ティーザー・期待値醸成型", "emotion": "内省・準備・疲労回復", "family_tree_oki": "「来月の新月ヨガスケジュール先行予告」", "color": "#6b7a8d"}}, {"date": "2026-09-10", "weekday": "Thu", "day_in_cycle": 29, "kyureki_day": 30, "angle": 348.0, "phase_key": "new_moon", "phase_name": "新月・祈願", "emoji": "🌑", "activity_type": "思考期", "event_label": "", "is_today": false, "marketing": {"theme": "新しい始まりへの希望", "cta_intensity": "低", "budget_pct": 8, "channels": "コンテンツSEO / PR / ストーリー性SNS", "copy_direction": "「新しい自分へ」「今月の誓い」「変化のとき」", "content_type": "インスピレーション型", "emotion": "期待・希望・リセット", "family_tree_oki": "「新月のヨガ体験」「今月の祈りと身体のリセット」", "color": "#4a6fa5"}}, {"date": "2026-09-11", "weekday": "Fri", "day_in_cycle": 30, "kyureki_day": 31, "angle": 360.0, "phase_key": "new_moon", "phase_name": "新月・祈願", "emoji": "🌑", "activity_type": "思考期", "event_label": "", "is_today": false, "marketing": {"theme": "新しい始まりへの希望", "cta_intensity": "低", "budget_pct": 8, "channels": "コンテンツSEO / PR / ストーリー性SNS", "copy_direction": "「新しい自分へ」「今月の誓い」「変化のとき」", "content_type": "インスピレーション型", "emotion": "期待・希望・リセット", "family_tree_oki": "「新月のヨガ体験」「今月の祈りと身体のリセット」", "color": "#4a6fa5"}}, {"date": "2026-09-12", "weekday": "Sat", "day_in_cycle": 1, "kyureki_day": 2, "angle": 12.4, "phase_key": "new_moon", "phase_name": "新月・祈願", "emoji": "🌑", "activity_type": "思考期", "event_label": "旧暦一日", "is_today": false, "marketing": {"theme": "新しい始まりへの希望", "cta_intensity": "低", "budget_pct": 8, "channels": "コンテンツSEO / PR / ストーリー性SNS", "copy_direction": "「新しい自分へ」「今月の誓い」「変化のとき」", "content_type": "インスピレーション型", "emotion": "期待・希望・リセット", "family_tree_oki": "「新月のヨガ体験」「今月の祈りと身体のリセット」", "color": "#4a6fa5"}}, {"date": "2026-09-13", "weekday": "Sun", "day_in_cycle": 2, "kyureki_day": 3, "angle": 24.8, "phase_key": "waxing_crescent", "phase_name": "三日月・芽吹き", "emoji": "🌒", "activity_type": "活動期", "event_label": "", "is_today": false, "marketing": {"theme": "エネルギー上昇・行動開始", "cta_intensity": "中", "budget_pct": 22, "channels": "SNS動画広告 / インフルエンサー / ディスカバリー", "copy_direction": "「始めよう」「チャレンジ」「一歩踏み出す」", "content_type": "動機付け型・ストーリー型", "emotion": "期待感・行動意欲・好奇心", "family_tree_oki": "「今月も通いたくなるヨガ体験」新規入会プロモ開始", "color": "#5ba85d"}}, {"date": "2026-09-14", "weekday": "Mon", "day_in_cycle": 3, "kyureki_day": 4, "angle": 37.2, "phase_key": "waxing_crescent", "phase_name": "三日月・芽吹き", "emoji": "🌒", "activity_type": "活動期", "event_label": "", "is_today": false, "marketing": {"theme": "エネルギー上昇・行動開始", "cta_intensity": "中", "budget_pct": 22, "channels": "SNS動画広告 / インフルエンサー / ディスカバリー", "copy_direction": "「始めよう」「チャレンジ」「一歩踏み出す」", "content_type": "動機付け型・ストーリー型", "emotion": "期待感・行動意欲・好奇心", "family_tree_oki": "「今月も通いたくなるヨガ体験」新規入会プロモ開始", "color": "#5ba85d"}}, {"date": "2026-09-15", "weekday": "Tue", "day_in_cycle": 4, "kyureki_day": 5, "angle": 49.7, "phase_key": "waxing_crescent", "phase_name": "三日月・芽吹き", "emoji": "🌒", "activity_type": "活動期", "event_label": "", "is_today": false, "marketing": {"theme": "エネルギー上昇・行動開始", "cta_intensity": "中", "budget_pct": 22, "channels": "SNS動画広告 / インフルエンサー / ディスカバリー", "copy_direction": "「始めよう」「チャレンジ」「一歩踏み出す」", "content_type": "動機付け型・ストーリー型", "emotion": "期待感・行動意欲・好奇心", "family_tree_oki": "「今月も通いたくなるヨガ体験」新規入会プロモ開始", "color": "#5ba85d"}}, {"date": "2026-09-16", "weekday": "Wed", "day_in_cycle": 5, "kyureki_day": 6, "angle": 62.1, "phase_key": "waxing_crescent", "phase_name": "三日月・芽吹き", "emoji": "🌒", "activity_type": "活動期", "event_label": "", "is_today": false, "marketing": {"theme": "エネルギー上昇・行動開始", "cta_intensity": "中", "budget_pct": 22, "channels": "SNS動画広告 / インフルエンサー / ディスカバリー", "copy_direction": "「始めよう」「チャレンジ」「一歩踏み出す」", "content_type": "動機付け型・ストーリー型", "emotion": "期待感・行動意欲・好奇心", "family_tree_oki": "「今月も通いたくなるヨガ体験」新規入会プロモ開始", "color": "#5ba85d"}}, {"date": "2026-09-17", "weekday": "Thu", "day_in_cycle": 6, "kyureki_day": 7, "angle": 74.5, "phase_key": "waxing_crescent", "phase_name": "三日月・芽吹き", "emoji": "🌒", "activity_type": "活動期", "event_label": "", "is_today": false, "marketing": {"theme": "エネルギー上昇・行動開始", "cta_intensity": "中", "budget_pct": 22, "channels": "SNS動画広告 / インフルエンサー / ディスカバリー", "copy_direction": "「始めよう」「チャレンジ」「一歩踏み出す」", "content_type": "動機付け型・ストーリー型", "emotion": "期待感・行動意欲・好奇心", "family_tree_oki": "「今月も通いたくなるヨガ体験」新規入会プロモ開始", "color": "#5ba85d"}}, {"date": "2026-09-18", "weekday": "Fri", "day_in_cycle": 7, "kyureki_day": 8, "angle": 86.9, "phase_key": "first_quarter", "phase_name": "上弦・決断", "emoji": "🌓", "activity_type": "活動期", "event_label": "", "is_today": false, "marketing": {"theme": "決断・コミットメント", "cta_intensity": "高", "budget_pct": 18, "channels": "リターゲティング / Google検索広告 / LINE", "copy_direction": "「今が決め時」「あなたの選択が未来を変える」", "content_type": "比較・CTA強化型", "emotion": "決断力・責任感・コミット意欲", "family_tree_oki": "「無料体験クラスの予約」「入会特典は今週末まで」", "color": "#3d9e6b"}}, {"date": "2026-09-19", "weekday": "Sat", "day_in_cycle": 8, "kyureki_day": 9, "angle": 99.3, "phase_key": "first_quarter", "phase_name": "上弦・決断", "emoji": "🌓", "activity_type": "活動期", "event_label": "", "is_today": false, "marketing": {"theme": "決断・コミットメント", "cta_intensity": "高", "budget_pct": 18, "channels": "リターゲティング / Google検索広告 / LINE", "copy_direction": "「今が決め時」「あなたの選択が未来を変える」", "content_type": "比較・CTA強化型", "emotion": "決断力・責任感・コミット意欲", "family_tree_oki": "「無料体験クラスの予約」「入会特典は今週末まで」", "color": "#3d9e6b"}}, {"date": "2026-09-20", "weekday": "Sun", "day_in_cycle": 9, "kyureki_day": 10, "angle": 111.7, "phase_key": "waxing_gibbous", "phase_name": "十三夜・最盛", "emoji": "🌔", "activity_type": "活動期", "event_label": "", "is_today": false, "marketing": {"theme": "活動最盛・緊迫感・限定感", "cta_intensity": "最高", "budget_pct": 30, "channels": "全チャネル最大化 / リターゲ強化 / プッシュ通知", "copy_direction": "「残り〇〇時間」「限定枠あとわずか」「今すぐ」", "content_type": "緊迫・限定・社会的証明型", "emotion": "緊張感・達成欲・FOMO", "family_tree_oki": "「満月前の最終枠！マタニティヨガ体験クラス」", "color": "#e8a020"}}, {"date": "2026-09-21", "weekday": "Mon", "day_in_cycle": 10, "kyureki_day": 11, "angle": 124.1, "phase_key": "waxing_gibbous", "phase_name": "十三夜・最盛", "emoji": "🌔", "activity_type": "活動期", "event_label": "", "is_today": false, "marketing": {"theme": "活動最盛・緊迫感・限定感", "cta_intensity": "最高", "budget_pct": 30, "channels": "全チャネル最大化 / リターゲ強化 / プッシュ通知", "copy_direction": "「残り〇〇時間」「限定枠あとわずか」「今すぐ」", "content_type": "緊迫・限定・社会的証明型", "emotion": "緊張感・達成欲・FOMO", "family_tree_oki": "「満月前の最終枠！マタニティヨガ体験クラス」", "color": "#e8a020"}}, {"date": "2026-09-22", "weekday": "Tue", "day_in_cycle": 11, "kyureki_day": 12, "angle": 136.6, "phase_key": "waxing_gibbous", "phase_name": "十三夜・最盛", "emoji": "🌔", "activity_type": "活動期", "event_label": "", "is_today": false, "marketing": {"theme": "活動最盛・緊迫感・限定感", "cta_intensity": "最高", "budget_pct": 30, "channels": "全チャネル最大化 / リターゲ強化 / プッシュ通知", "copy_direction": "「残り〇〇時間」「限定枠あとわずか」「今すぐ」", "content_type": "緊迫・限定・社会的証明型", "emotion": "緊張感・達成欲・FOMO", "family_tree_oki": "「満月前の最終枠！マタニティヨガ体験クラス」", "color": "#e8a020"}}, {"date": "2026-09-23", "weekday": "Wed", "day_in_cycle": 12, "kyureki_day": 13, "angle": 149.0, "phase_key": "waxing_gibbous", "phase_name": "十三夜・最盛", "emoji": "🌔", "activity_type": "活動期", "event_label": "", "is_today": false, "marketing": {"theme": "活動最盛・緊迫感・限定感", "cta_intensity": "最高", "budget_pct": 30, "channels": "全チャネル最大化 / リターゲ強化 / プッシュ通知", "copy_direction": "「残り〇〇時間」「限定枠あとわずか」「今すぐ」", "content_type": "緊迫・限定・社会的証明型", "emotion": "緊張感・達成欲・FOMO", "family_tree_oki": "「満月前の最終枠！マタニティヨガ体験クラス」", "color": "#e8a020"}}, {"date": "2026-09-24", "weekday": "Thu", "day_in_cycle": 13, "kyureki_day": 14, "angle": 161.4, "phase_key": "waxing_gibbous", "phase_name": "十三夜・最盛", "emoji": "🌔", "activity_type": "活動期", "event_label": "", "is_today": false, "marketing": {"theme": "活動最盛・緊迫感・限定感", "cta_intensity": "最高", "budget_pct": 30, "channels": "全チャネル最大化 / リターゲ強化 / プッシュ通知", "copy_direction": "「残り〇〇時間」「限定枠あとわずか」「今すぐ」", "content_type": "緊迫・限定・社会的証明型", "emotion": "緊張感・達成欲・FOMO", "family_tree_oki": "「満月前の最終枠！マタニティヨガ体験クラス」", "color": "#e8a020"}}, {"date": "2026-09-25", "weekday": "Fri", "day_in_cycle": 14, "kyureki_day": 15, "angle": 173.8, "phase_key": "full_moon", "phase_name": "満月・感謝", "emoji": "🌕", "activity_type": "思考期", "event_label": "旧暦十五日", "is_today": false, "marketing": {"theme": "達成・感謝・コミュニティ", "cta_intensity": "低", "budget_pct": 12, "channels": "メールマーケティング / コミュニティSNS / リファラル", "copy_direction": "「ありがとう」「あなたと一緒に」「感謝を込めて」", "content_type": "感謝・コミュニティ・ロイヤリティ型", "emotion": "達成感・感謝・つながり・感情的高揚", "family_tree_oki": "「満月感謝ナイトヨガ🌕」既存会員限定イベント", "color": "#c8a45a"}}, {"date": "2026-09-26", "weekday": "Sat", "day_in_cycle": 15, "kyureki_day": 16, "angle": 186.2, "phase_key": "full_moon", "phase_name": "満月・感謝", "emoji": "🌕", "activity_type": "思考期", "event_label": "満月🌕", "is_today": false, "marketing": {"theme": "達成・感謝・コミュニティ", "cta_intensity": "低", "budget_pct": 12, "channels": "メールマーケティング / コミュニティSNS / リファラル", "copy_direction": "「ありがとう」「あなたと一緒に」「感謝を込めて」", "content_type": "感謝・コミュニティ・ロイヤリティ型", "emotion": "達成感・感謝・つながり・感情的高揚", "family_tree_oki": "「満月感謝ナイトヨガ🌕」既存会員限定イベント", "color": "#c8a45a"}}, {"date": "2026-09-27", "weekday": "Sun", "day_in_cycle": 16, "kyureki_day": 17, "angle": 198.6, "phase_key": "waning_gibbous", "phase_name": "十六夜・振り返り", "emoji": "🌖", "activity_type": "停滞期", "event_label": "", "is_today": false, "marketing": {"theme": "内省・学び・証拠", "cta_intensity": "低", "budget_pct": 8, "channels": "ブログ / YouTube / ポッドキャスト / 事例研究", "copy_direction": "「知らなかった◯◯」「データが示す真実」「お客様の声」", "content_type": "教育・事例・証拠型", "emotion": "分析欲・知識欲・振り返り", "family_tree_oki": "「産前産後ヨガで変わった3つのこと」体験談ブログ", "color": "#7b8ec8"}}, {"date": "2026-09-28", "weekday": "Mon", "day_in_cycle": 17, "kyureki_day": 18, "angle": 211.0, "phase_key": "waning_gibbous", "phase_name": "十六夜・振り返り", "emoji": "🌖", "activity_type": "停滞期", "event_label": "", "is_today": false, "marketing": {"theme": "内省・学び・証拠", "cta_intensity": "低", "budget_pct": 8, "channels": "ブログ / YouTube / ポッドキャスト / 事例研究", "copy_direction": "「知らなかった◯◯」「データが示す真実」「お客様の声」", "content_type": "教育・事例・証拠型", "emotion": "分析欲・知識欲・振り返り", "family_tree_oki": "「産前産後ヨガで変わった3つのこと」体験談ブログ", "color": "#7b8ec8"}}, {"date": "2026-09-29", "weekday": "Tue", "day_in_cycle": 18, "kyureki_day": 19, "angle": 223.4, "phase_key": "waning_gibbous", "phase_name": "十六夜・振り返り", "emoji": "🌖", "activity_type": "停滞期", "event_label": "", "is_today": false, "marketing": {"theme": "内省・学び・証拠", "cta_intensity": "低", "budget_pct": 8, "channels": "ブログ / YouTube / ポッドキャスト / 事例研究", "copy_direction": "「知らなかった◯◯」「データが示す真実」「お客様の声」", "content_type": "教育・事例・証拠型", "emotion": "分析欲・知識欲・振り返り", "family_tree_oki": "「産前産後ヨガで変わった3つのこと」体験談ブログ", "color": "#7b8ec8"}}, {"date": "2026-09-30", "weekday": "Wed", "day_in_cycle": 19, "kyureki_day": 20, "angle": 235.9, "phase_key": "waning_gibbous", "phase_name": "十六夜・振り返り", "emoji": "🌖", "activity_type": "停滞期", "event_label": "", "is_today": false, "marketing": {"theme": "内省・学び・証拠", "cta_intensity": "低", "budget_pct": 8, "channels": "ブログ / YouTube / ポッドキャスト / 事例研究", "copy_direction": "「知らなかった◯◯」「データが示す真実」「お客様の声」", "content_type": "教育・事例・証拠型", "emotion": "分析欲・知識欲・振り返り", "family_tree_oki": "「産前産後ヨガで変わった3つのこと」体験談ブログ", "color": "#7b8ec8"}}], "moon_events": [{"date": "2026-06-15", "type": "new_moon", "label": "新月🌑"}, {"date": "2026-06-29", "type": "full_moon", "label": "満月🌕"}, {"date": "2026-07-14", "type": "new_moon", "label": "新月🌑"}, {"date": "2026-07-29", "type": "full_moon", "label": "満月🌕"}, {"date": "2026-08-12", "type": "new_moon", "label": "新月🌑"}, {"date": "2026-08-28", "type": "full_moon", "label": "満月🌕"}, {"date": "2026-09-11", "type": "new_moon", "label": "新月🌑"}, {"date": "2026-09-26", "type": "full_moon", "label": "満月🌕"}], "marketing": {"新月・祈願": {"theme": "新しい始まりへの希望", "copy_direction": "「新しい自分へ」「今月の誓い」「変化のとき」", "target": "上流ファネル・ブランド認知", "channels": "コンテンツSEO / PR / ストーリー性SNS", "budget_pct": 8, "cta_intensity": "低", "content_type": "インスピレーション型", "emotion": "期待・希望・リセット", "market_insight": "取引量少なめ・方向感模索中", "family_tree_oki": "「新月のヨガ体験」「今月の祈りと身体のリセット」", "color": "#4a6fa5"}, "三日月・芽吹き": {"theme": "エネルギー上昇・行動開始", "copy_direction": "「始めよう」「チャレンジ」「一歩踏み出す」", "target": "新規顧客・ウォームリード", "channels": "SNS動画広告 / インフルエンサー / ディスカバリー", "budget_pct": 22, "cta_intensity": "中", "content_type": "動機付け型・ストーリー型", "emotion": "期待感・行動意欲・好奇心", "market_insight": "買い方向へのモメンタム形成中（Data: +Day2-4でピーク）", "family_tree_oki": "「今月も通いたくなるヨガ体験」新規入会プロモ開始", "color": "#5ba85d"}, "上弦・決断": {"theme": "決断・コミットメント", "copy_direction": "「今が決め時」「あなたの選択が未来を変える」", "target": "検討中顧客・比較中ユーザー", "channels": "リターゲティング / Google検索広告 / LINE", "budget_pct": 18, "cta_intensity": "高", "content_type": "比較・CTA強化型", "emotion": "決断力・責任感・コミット意欲", "market_insight": "ボラティリティ高め・方向確認局面", "family_tree_oki": "「無料体験クラスの予約」「入会特典は今週末まで」", "color": "#3d9e6b"}, "十三夜・最盛": {"theme": "活動最盛・緊迫感・限定感", "copy_direction": "「残り〇〇時間」「限定枠あとわずか」「今すぐ」", "target": "ホットリード・カート放棄者・既存顧客アップセル", "channels": "全チャネル最大化 / リターゲ強化 / プッシュ通知", "budget_pct": 30, "cta_intensity": "最高", "content_type": "緊迫・限定・社会的証明型", "emotion": "緊張感・達成欲・FOMO", "market_insight": "市場最もアクティブ・Nikkei225で3-4x通常比のリターン", "family_tree_oki": "「満月前の最終枠！マタニティヨガ体験クラス」", "color": "#e8a020"}, "満月・感謝": {"theme": "達成・感謝・コミュニティ", "copy_direction": "「ありがとう」「あなたと一緒に」「感謝を込めて」", "target": "既存顧客・ロイヤル層・紹介プログラム", "channels": "メールマーケティング / コミュニティSNS / リファラル", "budget_pct": 12, "cta_intensity": "低", "content_type": "感謝・コミュニティ・ロイヤリティ型", "emotion": "達成感・感謝・つながり・感情的高揚", "market_insight": "感情的ピーク・反転リスク↑・USDJPY p=0.124(最強シグナル)", "family_tree_oki": "「満月感謝ナイトヨガ🌕」既存会員限定イベント", "color": "#c8a45a"}, "十六夜・振り返り": {"theme": "内省・学び・証拠", "copy_direction": "「知らなかった◯◯」「データが示す真実」「お客様の声」", "target": "リサーチ中顧客・検討段階初期", "channels": "ブログ / YouTube / ポッドキャスト / 事例研究", "budget_pct": 8, "cta_intensity": "低", "content_type": "教育・事例・証拠型", "emotion": "分析欲・知識欲・振り返り", "market_insight": "市場は利食い・ポジション整理・ボラ低下", "family_tree_oki": "「産前産後ヨガで変わった3つのこと」体験談ブログ", "color": "#7b8ec8"}, "下弦・整理": {"theme": "手放し・整理・最後のチャンス", "copy_direction": "「今月最後の機会」「スッキリ手放して」「次のステージへ」", "target": "ウィンバック・離脱防止・決断できない層", "channels": "メール / LINE / リマーケティング", "budget_pct": 5, "cta_intensity": "中", "content_type": "クロージング・手放し型", "emotion": "手放し・浄化・次への準備", "market_insight": "売り方向・ポジション解消・方向感なし", "family_tree_oki": "「今月分のキャンセル待ちリスト受付中」", "color": "#9a6bab"}, "晦日・休息": {"theme": "休息・次サイクルへの準備", "copy_direction": "「次の旅立ちを準備中」「来月の新プログラム告知」", "target": "ブランドロイヤル・将来見込み客", "channels": "SEO / ブログ / ナーチャリングメール", "budget_pct": 5, "cta_intensity": "最低", "content_type": "ティーザー・期待値醸成型", "emotion": "内省・準備・疲労回復", "market_insight": "取引量最低・方向感喪失・積み立て勢のみ", "family_tree_oki": "「来月の新月ヨガスケジュール先行予告」", "color": "#6b7a8d"}}, "activity_summary": {"活動期": {"icon": "⚡", "color": "#5ba85d", "description": "行動・決断・実行のエネルギーが高まる", "avg_budget_pct": 70, "phases": ["三日月・芽吹き", "上弦・決断", "十三夜・最盛"], "market_data": "Nikkei225で通常比3-4x、BTC Day+4でピーク+1.5%", "ad_strategy": "積極的なCTA・限定オファー・新商品ローンチに最適"}, "思考期": {"icon": "🌟", "color": "#c8a45a", "description": "内省・直感・集合意識がピークになる転換点", "avg_budget_pct": 20, "phases": ["新月・祈願", "満月・感謝"], "market_data": "USDJPY満月時p=0.124（最強シグナル）・転換点になりやすい", "ad_strategy": "ブランドストーリー・コミュニティ・感謝キャンペーンに最適"}, "停滞期": {"icon": "🔵", "color": "#4a6fa5", "description": "振り返り・整理・次のサイクルへの準備", "avg_budget_pct": 18, "phases": ["十六夜・振り返り", "下弦・整理", "晦日・休息"], "market_data": "出来高低下・方向感喪失・ポジション整理優位", "ad_strategy": "教育コンテンツ・事例紹介・SEO蓄積に集中"}}, "mechanism": {"title": "感情が知らずに動かされるメカニズム", "steps": [{"step": 1, "icon": "🌙", "title": "月の引力", "desc": "月は地球に対して潮汐力を発生させる。大潮（新月・満月）時に最大化。"}, {"step": 2, "icon": "💧", "title": "体液への微細影響", "desc": "人体の約60%は水分。神経液・リンパ液・脳脊髄液が微細に変動する可能性。"}, {"step": 3, "icon": "🧠", "title": "神経系・ホルモン系", "desc": "扁桃体（感情）・海馬（記憶）への影響。セロトニン・メラトニンの分泌リズム変化。"}, {"step": 4, "icon": "😊", "title": "感情・認知の変化", "desc": "リスク許容度・衝動買い傾向・社交性・集中力が無意識に変化。"}, {"step": 5, "icon": "📈", "title": "集合的行動パターン", "desc": "数百万人が同期して意思決定 → 市場・SNS・消費行動に統計的パターンが出現。"}, {"step": 6, "icon": "💡", "title": "マーケティングへの応用", "desc": "このパターンを先読みしてメッセージ・タイミングを最適化 → ROI向上。"}], "evidence": ["USDJPY 満月翌日 p=0.124（準有意・最強シグナル）", "Nikkei225 月相日の平均リターン 通常比3-4倍", "BTC 月相後Day+4でピーク（+1.24〜1.58%）", "米国学術研究: 満月時のER受診件数・交通事故増加", "沖縄旧暦信仰: 1000年の集合知が旧暦一日・十五日の行動規範を形成"]}, "today": "2026-06-17", "today_data": {"date": "2026-06-17", "weekday": "Wed", "day_in_cycle": 2, "kyureki_day": 3, "angle": 24.8, "phase_key": "waxing_crescent", "phase_name": "三日月・芽吹き", "emoji": "🌒", "activity_type": "活動期", "event_label": "", "is_today": true, "marketing": {"theme": "エネルギー上昇・行動開始", "cta_intensity": "中", "budget_pct": 22, "channels": "SNS動画広告 / インフルエンサー / ディスカバリー", "copy_direction": "「始めよう」「チャレンジ」「一歩踏み出す」", "content_type": "動機付け型・ストーリー型", "emotion": "期待感・行動意欲・好奇心", "family_tree_oki": "「今月も通いたくなるヨガ体験」新規入会プロモ開始", "color": "#5ba85d"}}};
+
+// ── Utilities ──
+function showTab(name) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  event.target.classList.add('active');
+  if (name === 'calendar') renderCalendar();
+  if (name === 'phases') renderPhaseWheel();
+  if (name === 'mechanism') renderWaveChart();
+  if (name === 'budget') renderBudgetCharts();
+}
+
+function getActivityColor(type) {
+  return type === '活動期' ? '#5ba85d' : type === '思考期' ? '#c8a45a' : '#4a6fa5';
+}
+
+function getBudgetColor(pct) {
+  if (pct >= 25) return '#e8a020';
+  if (pct >= 15) return '#5ba85d';
+  if (pct >= 10) return '#4a6fa5';
+  return '#444';
+}
+
+// ── Init Today Panel ──
+function initToday() {
+  const t = DATA.today_data;
+  if (!t) return;
+  
+  const mkt = t.marketing;
+  const color = getActivityColor(t.activity_type);
+  
+  document.getElementById('today-emoji').textContent = t.emoji;
+  document.getElementById('today-big-emoji').textContent = t.emoji;
+  document.getElementById('today-phase').textContent = t.phase_name;
+  document.getElementById('today-lunar').textContent = `旧暦${t.kyureki_day}日 | ${t.activity_type}`;
+  document.getElementById('today-title').textContent = t.phase_name + '期';
+  document.getElementById('today-panel').style.borderColor = color;
+  
+  const meta = `${DATA.today} | 旧暦${t.kyureki_day}日目（${t.activity_type}）`;
+  document.getElementById('today-meta').textContent = meta;
+  
+  const grid = document.getElementById('today-action-grid');
+  grid.innerHTML = `
+    <div class="today-action">
+      <div class="label">💡 感情状態</div>
+      <div class="value" style="color:${color}">${mkt.emotion}</div>
+    </div>
+    <div class="today-action">
+      <div class="label">📣 広告テーマ</div>
+      <div class="value">${mkt.theme}</div>
+    </div>
+    <div class="today-action">
+      <div class="label">✍️ コピー方向</div>
+      <div class="value">${mkt.copy_direction}</div>
+    </div>
+    <div class="today-action">
+      <div class="label">📺 推奨チャネル</div>
+      <div class="value">${mkt.channels}</div>
+    </div>
+    <div class="today-action">
+      <div class="label">🌺 Family Tree Oki</div>
+      <div class="value" style="color:var(--gold)">${mkt.family_tree_oki}</div>
+    </div>
+    <div class="today-action">
+      <div class="label">💰 予算強度</div>
+      <div class="value">月間の${mkt.budget_pct}%｜CTA強度: ${mkt.cta_intensity}</div>
+    </div>
+  `;
+  
+  // Upcoming events
+  const upcomingEl = document.getElementById('upcoming-events');
+  const today = DATA.today;
+  const upcoming = DATA.moon_events.filter(e => e.date >= today).slice(0, 6);
+  upcomingEl.innerHTML = upcoming.map(e => {
+    const daysUntil = Math.round((new Date(e.date) - new Date(today)) / 86400000);
+    const isNew = e.type === 'new_moon';
+    return `<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);">
+      <div>
+        <span style="font-size:1.2rem;">${isNew ? '🌑' : '🌕'}</span>
+        <span style="margin-left:8px;font-size:0.85rem;">${e.label}</span>
+        <div style="font-size:0.75rem;color:var(--text2);margin-top:2px;">${e.date}</div>
+      </div>
+      <div style="text-align:right;">
+        <div style="color:${isNew ? '#4a6fa5' : '#c8a45a'};font-weight:700;">
+          ${daysUntil === 0 ? '今日!' : daysUntil + '日後'}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  
+  // Month distribution chart
+  const calJune = DATA.calendar.filter(d => d.date.startsWith('2026-06'));
+  const actCount = calJune.filter(d => d.activity_type === '活動期').length;
+  const thinkCount = calJune.filter(d => d.activity_type === '思考期').length;
+  const stagCount = calJune.filter(d => d.activity_type === '停滞期').length;
+  
+  new Chart(document.getElementById('monthDistChart'), {
+    type: 'doughnut',
+    data: {
+      labels: ['活動期', '思考期', '停滞期'],
+      datasets: [{
+        data: [actCount, thinkCount, stagCount],
+        backgroundColor: ['#5ba85d', '#c8a45a', '#4a6fa5'],
+        borderWidth: 0
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { labels: { color: '#8a9ab8', font: { size: 11 } } }
+      }
+    }
+  });
+  
+  // Countdown to next event
+  const nextEvent = upcoming[0];
+  const daysTo = nextEvent ? Math.round((new Date(nextEvent.date) - new Date(today)) / 86400000) : 0;
+  const countdownEl = document.getElementById('countdown-panel');
+  if (nextEvent) {
+    countdownEl.innerHTML = `
+      <div style="font-size:3rem;margin-bottom:10px;">${nextEvent.type === 'new_moon' ? '🌑' : '🌕'}</div>
+      <div style="font-size:3rem;font-weight:900;color:var(--gold);">${daysTo}</div>
+      <div style="font-size:0.9rem;color:var(--text2);">日後</div>
+      <div style="font-size:1rem;color:var(--text);margin:10px 0;">${nextEvent.label}</div>
+      <div style="font-size:0.75rem;color:var(--text2);">${nextEvent.date}</div>
+      <div style="margin-top:12px;padding:10px;background:var(--card2);border-radius:8px;font-size:0.78rem;color:var(--text2);">
+        ${nextEvent.type === 'new_moon' 
+          ? '🌑 新月前：活動期のピーク！<br>ラストスパートの広告を今すぐ打て'
+          : '🌕 満月前：感謝・コミュニティ訴求に切り替えを<br>ロイヤル顧客へのアプローチ最適タイミング'}
+      </div>
+    `;
+  }
+}
+
+// ── Activity Type Cards ──
+function initActivityCards() {
+  const acts = DATA.activity_summary;
+  for (const [key, val] of Object.entries(acts)) {
+    let id = key === '活動期' ? 'act-active' : key === '思考期' ? 'act-think' : 'act-stagnant';
+    const el = document.getElementById(id);
+    if (!el) continue;
+    el.querySelector('.activity-desc').textContent = val.description;
+    el.querySelector('.activity-phases').textContent = 'フェーズ: ' + val.phases.join(' / ');
+    el.querySelector('.evidence-tag').textContent = '📊 ' + val.market_data;
+  }
+}
+
+// ── Phase Wheel ──
+function renderPhaseWheel() {
+  const canvas = document.getElementById('phaseWheel');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const cx = W/2, cy = H/2, R = 155;
+  ctx.clearRect(0, 0, W, H);
+  
+  const phases = [
+    { name: '新月
+祈願', start: -20, end: 20, color: '#1a2640', type: '思考期', emoji: '🌑' },
+    { name: '三日月
+芽吹き', start: 20, end: 75, color: '#1a3a1c', type: '活動期', emoji: '🌒' },
+    { name: '上弦
+決断', start: 75, end: 100, color: '#1f5223', type: '活動期', emoji: '🌓' },
+    { name: '十三夜
+最盛', start: 100, end: 170, color: '#2d5e2e', type: '活動期', emoji: '🌔' },
+    { name: '満月
+感謝', start: 170, end: 195, color: '#3a2d10', type: '思考期', emoji: '🌕' },
+    { name: '十六夜
+振り返り', start: 195, end: 265, color: '#1a2040', type: '停滞期', emoji: '🌖' },
+    { name: '下弦
+整理', start: 265, end: 290, color: '#1e1840', type: '停滞期', emoji: '🌗' },
+    { name: '晦日
+休息', start: 290, end: 340, color: '#1a1e2e', type: '停滞期', emoji: '🌘' },
+  ];
+  
+  const colorMap = { '活動期': '#5ba85d', '思考期': '#c8a45a', '停滞期': '#4a6fa5' };
+  
+  phases.forEach(p => {
+    const s = (p.start - 90) * Math.PI / 180;
+    const e = (p.end - 90) * Math.PI / 180;
+    // Outer fill
+    ctx.beginPath(); ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, R, s, e);
+    ctx.closePath();
+    ctx.fillStyle = p.color;
+    ctx.fill();
+    // Outer border
+    ctx.beginPath(); ctx.arc(cx, cy, R, s, e);
+    ctx.lineTo(cx, cy); ctx.closePath();
+    ctx.strokeStyle = colorMap[p.type] + '66';
+    ctx.lineWidth = 2; ctx.stroke();
+    // Outer ring
+    ctx.beginPath();
+    ctx.arc(cx, cy, R, s, e);
+    ctx.strokeStyle = colorMap[p.type];
+    ctx.lineWidth = 5; ctx.stroke();
+    
+    // Label
+    const mid = (p.start + p.end) / 2 - 90;
+    const lr = R * 0.65;
+    const lx = cx + lr * Math.cos(mid * Math.PI / 180);
+    const ly = cy + lr * Math.sin(mid * Math.PI / 180);
+    ctx.save();
+    ctx.translate(lx, ly);
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    const lines = p.name.split('
+');
+    ctx.font = 'bold 10px sans-serif';
+    ctx.fillStyle = '#ddd';
+    lines.forEach((line, i) => {
+      ctx.fillText(line, 0, (i - lines.length/2 + 0.5) * 13);
+    });
+    ctx.restore();
+    
+    // Emoji on outer
+    const er = R * 0.88;
+    const ex = cx + er * Math.cos(mid * Math.PI / 180);
+    const ey = cy + er * Math.sin(mid * Math.PI / 180);
+    ctx.font = '14px serif';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(p.emoji, ex, ey);
+  });
+  
+  // Inner circle - moon
+  ctx.beginPath(); ctx.arc(cx, cy, 40, 0, 2*Math.PI);
+  ctx.fillStyle = '#0a1220'; ctx.fill();
+  ctx.strokeStyle = '#c8a45a44'; ctx.lineWidth = 1; ctx.stroke();
+  
+  // Today's angle indicator
+  const todayData = DATA.today_data;
+  if (todayData) {
+    const angle = (todayData.angle - 90) * Math.PI / 180;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(cx + (R+15) * Math.cos(angle), cy + (R+15) * Math.sin(angle));
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 3;
+    ctx.stroke();
+    // Dot
+    ctx.beginPath();
+    ctx.arc(cx + R * Math.cos(angle), cy + R * Math.sin(angle), 5, 0, 2*Math.PI);
+    ctx.fillStyle = '#ffffff'; ctx.fill();
+    
+    // Center label
+    ctx.font = 'bold 11px sans-serif';
+    ctx.fillStyle = '#c8a45a'; ctx.textAlign = 'center';
+    ctx.fillText('今日', cx, cy - 8);
+    ctx.fillStyle = '#888';
+    ctx.font = '9px sans-serif';
+    ctx.fillText(todayData.emoji, cx, cy + 8);
+  }
+}
+
+// ── Phase Cards ──
+function initPhaseCards() {
+  const phases = [
+    { name: '新月・祈願', emoji: '🌑' },
+    { name: '三日月・芽吹き', emoji: '🌒' },
+    { name: '上弦・決断', emoji: '🌓' },
+    { name: '十三夜・最盛', emoji: '🌔' },
+    { name: '満月・感謝', emoji: '🌕' },
+    { name: '十六夜・振り返り', emoji: '🌖' },
+    { name: '下弦・整理', emoji: '🌗' },
+    { name: '晦日・休息', emoji: '🌘' },
+  ];
+  
+  const actTypes = {
+    '新月・祈願': '思考期', '三日月・芽吹き': '活動期', '上弦・決断': '活動期',
+    '十三夜・最盛': '活動期', '満月・感謝': '思考期',
+    '十六夜・振り返り': '停滞期', '下弦・整理': '停滞期', '晦日・休息': '停滞期'
+  };
+  
+  const grid = document.getElementById('phase-cards-grid');
+  grid.innerHTML = phases.map(p => {
+    const mkt = DATA.marketing[p.name] || {};
+    const actType = actTypes[p.name];
+    const color = getActivityColor(actType);
+    const budgPct = mkt.budget_pct || 0;
+    const badgeClass = actType === '活動期' ? 'badge-active' : actType === '思考期' ? 'badge-think' : 'badge-stagnant';
+    
+    return `<div class="phase-card" style="border-left-color:${color}">
+      <div class="phase-header">
+        <div class="phase-emoji-lg">${p.emoji}</div>
+        <div>
+          <div class="phase-title" style="color:${color}">${p.name}</div>
+          <span class="phase-type-badge ${badgeClass}">${actType}</span>
+        </div>
+      </div>
+      <div class="phase-row">
+        <span class="label">感情状態</span>
+        <span class="value">${mkt.emotion || '-'}</span>
+      </div>
+      <div class="phase-row">
+        <span class="label">広告テーマ</span>
+        <span class="value" style="max-width:200px;text-align:right;">${mkt.theme || '-'}</span>
+      </div>
+      <div class="phase-row">
+        <span class="label">コピー方向</span>
+        <span class="value" style="max-width:200px;text-align:right;font-size:0.75rem;">${mkt.copy_direction || '-'}</span>
+      </div>
+      <div class="phase-row">
+        <span class="label">FTO施策</span>
+        <span class="value" style="max-width:200px;text-align:right;font-size:0.75rem;color:var(--gold);">${mkt.family_tree_oki || '-'}</span>
+      </div>
+      <div style="margin-top:10px;">
+        <div style="display:flex;justify-content:space-between;font-size:0.72rem;margin-bottom:4px;">
+          <span style="color:var(--text2)">予算強度</span>
+          <span style="color:${getBudgetColor(budgPct)}">${budgPct}%</span>
+        </div>
+        <div class="intensity-bar">
+          <div class="intensity-fill" style="width:${budgPct*3.3}%;background:${getBudgetColor(budgPct)}"></div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── Calendar ──
+function renderCalendar() {
+  const monthSelect = document.getElementById('cal-month').value;
+  const [year, month] = monthSelect.split('-').map(Number);
+  
+  const firstDay = new Date(year, month - 1, 1);
+  const lastDay = new Date(year, month, 0);
+  
+  // Clear old day cells (keep header)
+  const grid = document.getElementById('cal-grid');
+  const headers = grid.querySelectorAll('.cal-header');
+  grid.innerHTML = '';
+  headers.forEach(h => grid.appendChild(h.cloneNode(true)));
+  
+  // Fill empty cells before first day
+  let startDow = firstDay.getDay(); // 0=Sun
+  for (let i = 0; i < startDow; i++) {
+    const empty = document.createElement('div');
+    empty.className = 'cal-day other-month';
+    grid.appendChild(empty);
+  }
+  
+  // Calendar data map
+  const calMap = {};
+  DATA.calendar.forEach(d => { calMap[d.date] = d; });
+  
+  for (let d = 1; d <= lastDay.getDate(); d++) {
+    const dateStr = `${year}-${String(month).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const calData = calMap[dateStr];
+    
+    const cell = document.createElement('div');
+    cell.className = 'cal-day' + (dateStr === DATA.today ? ' today' : '');
+    
+    if (calData) {
+      const color = getActivityColor(calData.activity_type);
+      cell.style.borderLeft = `3px solid ${color}`;
+      cell.style.background = color + '12';
+      
+      cell.innerHTML = `
+        <div class="cal-date" style="color:${color}">${d}</div>
+        <div class="cal-kyureki">旧暦${calData.kyureki_day}日</div>
+        <div class="cal-emoji">${calData.emoji}</div>
+        ${calData.event_label ? `<div class="cal-event" style="background:${color}22;color:${color}">${calData.event_label}</div>` : ''}
+        <div class="cal-budget">${calData.marketing.budget_pct}%</div>
+      `;
+      
+      // Tooltip
+      cell.addEventListener('mouseenter', (e) => {
+        const tt = document.getElementById('cal-tooltip');
+        document.getElementById('tt-title').textContent = `${calData.emoji} ${dateStr} | ${calData.phase_name}`;
+        document.getElementById('tt-emotion').textContent = calData.marketing.emotion;
+        document.getElementById('tt-theme').textContent = calData.marketing.theme;
+        document.getElementById('tt-channels').textContent = calData.marketing.channels;
+        document.getElementById('tt-budget').textContent = `月予算の${calData.marketing.budget_pct}% | CTA: ${calData.marketing.cta_intensity}`;
+        document.getElementById('tt-fto').textContent = calData.marketing.family_tree_oki;
+        tt.style.display = 'block';
+        tt.style.left = Math.min(e.clientX + 10, window.innerWidth - 300) + 'px';
+        tt.style.top = Math.min(e.clientY - 10, window.innerHeight - 250) + 'px';
+      });
+      cell.addEventListener('mouseleave', () => {
+        document.getElementById('cal-tooltip').style.display = 'none';
+      });
+    } else {
+      cell.innerHTML = `<div class="cal-date">${d}</div>`;
+    }
+    
+    grid.appendChild(cell);
+  }
+  
+  // Moon events for this month
+  const monthEvents = DATA.moon_events.filter(e => e.date.startsWith(monthSelect));
+  const evList = document.getElementById('month-events-list');
+  if (monthEvents.length === 0) {
+    evList.innerHTML = '<p style="color:var(--text2);font-size:0.85rem;">このデータ範囲外です</p>';
+  } else {
+    evList.innerHTML = monthEvents.map(e => {
+      const cd = calMap[e.date];
+      if (!cd) return '';
+      return `<div style="display:flex;justify-content:space-between;padding:12px;background:var(--card2);border-radius:8px;margin-bottom:8px;">
+        <div>
+          <span style="font-size:1.5rem;">${e.label}</span>
+          <span style="margin-left:12px;font-weight:700;">${e.date}</span>
+          <span style="margin-left:8px;font-size:0.8rem;color:var(--text2);">旧暦${cd.kyureki_day}日</span>
+        </div>
+        <div style="text-align:right;font-size:0.8rem;">
+          <div style="color:var(--gold)">${cd.marketing.theme}</div>
+          <div style="color:var(--text2);margin-top:4px;">${cd.marketing.family_tree_oki}</div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+}
+
+// ── Strategy Rows ──
+function initStrategyRows() {
+  const phases = ['新月・祈願','三日月・芽吹き','上弦・決断','十三夜・最盛',
+                   '満月・感謝','十六夜・振り返り','下弦・整理','晦日・休息'];
+  const emojis = ['🌑','🌒','🌓','🌔','🌕','🌖','🌗','🌘'];
+  const actTypes = ['思考期','活動期','活動期','活動期','思考期','停滞期','停滞期','停滞期'];
+  
+  const container = document.getElementById('strategy-rows');
+  container.innerHTML = phases.map((p, i) => {
+    const mkt = DATA.marketing[p] || {};
+    const color = getActivityColor(actTypes[i]);
+    const badgeClass = actTypes[i] === '活動期' ? 'badge-active' : actTypes[i] === '思考期' ? 'badge-think' : 'badge-stagnant';
+    
+    return `<div class="strategy-row">
+      <div class="strategy-phase" style="color:${color}">
+        <span>${emojis[i]}</span>
+        <div>
+          <div>${p}</div>
+          <span class="phase-type-badge ${badgeClass}" style="margin-top:4px;">${actTypes[i]}</span>
+        </div>
+      </div>
+      <div class="strategy-cell">
+        <strong>テーマ</strong>${mkt.theme || ''}
+        <div style="margin-top:6px;font-size:0.72rem;color:var(--gold)">${mkt.copy_direction || ''}</div>
+      </div>
+      <div class="strategy-cell">
+        <strong>ターゲット</strong>${mkt.target || ''}
+        <div style="margin-top:6px;">${mkt.channels || ''}</div>
+      </div>
+      <div class="strategy-cell" style="color:var(--gold)">
+        <strong style="color:var(--text2)">Family Tree Oki</strong>
+        ${mkt.family_tree_oki || ''}
+      </div>
+      <div>
+        <div class="budget-badge" style="color:${getBudgetColor(mkt.budget_pct || 0)};border:1px solid ${getBudgetColor(mkt.budget_pct || 0)}44">
+          ${mkt.budget_pct || 0}%
+        </div>
+        <div style="font-size:0.7rem;text-align:center;margin-top:6px;color:var(--text2)">CTA:<br>${mkt.cta_intensity || '-'}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── Mechanism Flow ──
+function initMechanism() {
+  const flow = document.getElementById('mech-flow');
+  const steps = DATA.mechanism.steps;
+  flow.innerHTML = '';
+  steps.forEach((s, i) => {
+    const div = document.createElement('div');
+    div.className = 'mech-step';
+    div.innerHTML = `<div class="mech-icon">${s.icon}</div><div class="mech-title">${s.title}</div><div class="mech-desc">${s.desc}</div>`;
+    flow.appendChild(div);
+    if (i < steps.length - 1) {
+      const arrow = document.createElement('div');
+      arrow.className = 'mech-arrow';
+      arrow.textContent = '→';
+      flow.appendChild(arrow);
+    }
+  });
+  
+  // Evidence table
+  const tbl = document.getElementById('evidence-table');
+  const evData = [
+    ['USDJPY', '満月翌日', 'p = 0.124', '準有意・最強シグナル・円安方向'],
+    ['Nikkei225', '新月・満月', '通常比 3-4倍', '月相日の平均リターンが著しく高い'],
+    ['BTC', '月相後Day+4', '+1.24〜1.58%', '遅延共鳴パターン（心理伝播に時間差）'],
+    ['SP500', '新月後', '正のドリフト', '上昇モメンタム形成の起点'],
+    ['集合研究', '満月', 'ER受診増加', '感情的興奮・衝動行動の増加'],
+    ['沖縄旧暦', '一日・十五日', '1000年の実践', '集合的行動規範として文化に刻印'],
+  ];
+  evData.forEach(row => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = row.map((c,i) => `<td style="${i===2?'color:var(--gold);font-weight:700':''}">${c}</td>`).join('');
+    tbl.appendChild(tr);
+  });
+}
+
+function renderWaveChart() {
+  const ctx = document.getElementById('waveChart');
+  if (!ctx) return;
+  if (ctx._chart) ctx._chart.destroy();
+  
+  const labels = [];
+  const actionData = [];
+  const reflectData = [];
+  for (let i = 0; i <= 30; i++) {
+    labels.push(i === 0 ? '新月' : i === 15 ? '満月' : i === 30 ? '新月' : i);
+    // Action energy peaks at day 10 (waxing gibbous)
+    actionData.push(50 + 45 * Math.sin(i * Math.PI / 15 - Math.PI/4));
+    // Reflection energy peaks at new moon and full moon
+    reflectData.push(60 + 40 * Math.cos(i * Math.PI / 15));
+  }
+  
+  ctx._chart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        { label: '行動エネルギー', data: actionData, borderColor: '#5ba85d', backgroundColor: '#5ba85d22', fill: true, tension: 0.4 },
+        { label: '内省エネルギー', data: reflectData, borderColor: '#c8a45a', backgroundColor: '#c8a45a22', fill: true, tension: 0.4 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      scales: {
+        x: { ticks: { color: '#555', maxTicksLimit: 8 }, grid: { color: '#1a2030' } },
+        y: { ticks: { color: '#555' }, grid: { color: '#1a2030' }, min: 0, max: 100 }
+      },
+      plugins: { legend: { labels: { color: '#8a9ab8' } } }
+    }
+  });
+}
+
+// ── Budget Charts ──
+function renderBudgetCharts() {
+  // Budget by phase
+  const phases = ['新月
+祈願','三日月
+芽吹き','上弦
+決断','十三夜
+最盛','満月
+感謝','十六夜
+振返り','下弦
+整理','晦日
+休息'];
+  const phasesFlat = ['新月・祈願','三日月・芽吹き','上弦・決断','十三夜・最盛','満月・感謝','十六夜・振り返り','下弦・整理','晦日・休息'];
+  const budgets = phasesFlat.map(p => DATA.marketing[p]?.budget_pct || 0);
+  const colors = phasesFlat.map((p, i) => {
+    const acts = ['新月・祈願','三日月・芽吹き','上弦・決断','十三夜・最盛','満月・感謝','十六夜・振り返り','下弦・整理','晦日・休息'];
+    const types = ['思考期','活動期','活動期','活動期','思考期','停滞期','停滞期','停滞期'];
+    return getActivityColor(types[i]);
+  });
+  
+  new Chart(document.getElementById('budgetChart'), {
+    type: 'bar',
+    data: {
+      labels: phases,
+      datasets: [{ label: '予算比率 (%)', data: budgets, backgroundColor: colors, borderRadius: 6 }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      scales: {
+        x: { ticks: { color: '#666', font: { size: 9 } }, grid: { display: false } },
+        y: { ticks: { color: '#666' }, grid: { color: '#1a2030' }, max: 35 }
+      },
+      plugins: { legend: { display: false } }
+    }
+  });
+  
+  // Timeline chart (90 days budget)
+  const cal90 = DATA.calendar.filter(d => d.date >= DATA.today).slice(0, 90);
+  const tlLabels = cal90.filter((_, i) => i % 5 === 0).map(d => d.date.slice(5));
+  const tlData = cal90.map(d => d.marketing.budget_pct);
+  const tlColors = cal90.map(d => getActivityColor(d.activity_type));
+  
+  new Chart(document.getElementById('timelineChart'), {
+    type: 'bar',
+    data: {
+      labels: cal90.map(d => d.date.slice(5)),
+      datasets: [{ label: '日次予算強度', data: tlData, backgroundColor: tlColors, borderRadius: 2 }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      scales: {
+        x: {
+          ticks: { color: '#555', maxTicksLimit: 12, font: { size: 8 } },
+          grid: { display: false }
+        },
+        y: { ticks: { color: '#666' }, grid: { color: '#1a2030' }, max: 35 }
+      },
+      plugins: { legend: { display: false } }
+    }
+  });
+  
+  // Budget strategy cards
+  const bGrid = document.getElementById('budget-strategy-grid');
+  const strats = [
+    { type: '活動期', icon: '⚡', color: '#5ba85d', budget: '70%', desc: '広告費の70%をここに集中投下。新規獲得・リターゲ・プッシュ通知を最大化。CTA強度を上げ、限定感・緊急感を演出。', phases: '三日月〜十三夜（旧暦2〜13日）' },
+    { type: '思考期', icon: '🌟', color: '#c8a45a', budget: '20%', desc: '既存顧客との絆を深める。ロイヤリティ施策・コミュニティ活動・感謝コンテンツに使う。新規向け広告より紹介プログラムを。', phases: '新月（旧暦1日）・満月（旧暦15日）' },
+    { type: '停滞期', icon: '🔵', color: '#4a6fa5', budget: '10-18%', desc: 'SEO・ブログ・YouTube・SNS有機投稿など長期資産への投資。直接CPA最適化ではなく次の活動期の仕込みに使う。', phases: '十六夜〜晦日（旧暦16〜29日）' },
+  ];
+  bGrid.innerHTML = strats.map(s => `
+    <div style="background:var(--card2);border-radius:12px;padding:20px;border-top:4px solid ${s.color};">
+      <div style="font-size:1.8rem;margin-bottom:8px;">${s.icon}</div>
+      <div style="font-size:1rem;font-weight:700;color:${s.color};margin-bottom:4px;">${s.type}</div>
+      <div style="font-size:2rem;font-weight:900;color:${s.color};margin-bottom:8px;">${s.budget}</div>
+      <div style="font-size:0.75rem;color:var(--text2);line-height:1.5;margin-bottom:10px;">${s.desc}</div>
+      <div style="font-size:0.7rem;color:var(--text2);border-top:1px solid var(--border);padding-top:8px;">📅 ${s.phases}</div>
+    </div>
+  `).join('');
+}
+
+// ── Init ──
+window.addEventListener('DOMContentLoaded', () => {
+  initToday();
+  initActivityCards();
+  initPhaseCards();
+  initStrategyRows();
+  initMechanism();
+});
+</script>
+</body>
+</html>
