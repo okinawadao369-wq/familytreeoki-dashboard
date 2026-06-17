@@ -1249,110 +1249,114 @@ function initActivityCards(){
 function renderPhaseWheel(){
   var cv=document.getElementById('phaseWheel');if(!cv)return;
   var dpr=window.devicePixelRatio||1;
-  var SIZE=380;
+  var SIZE=400;
   cv.width=SIZE*dpr; cv.height=SIZE*dpr;
   cv.style.width=SIZE+'px'; cv.style.height=SIZE+'px';
   var ctx=cv.getContext('2d');
   ctx.scale(dpr,dpr);
-  var W=SIZE,H=SIZE,cx=W/2,cy=H/2,R=168,innerR=46;
+  var cx=SIZE/2, cy=SIZE/2, R=175, iR=50;
 
-  // Deep background glow
-  var bgGrad=ctx.createRadialGradient(cx,cy,0,cx,cy,R*1.1);
-  bgGrad.addColorStop(0,'#0e1f38');
-  bgGrad.addColorStop(1,'#030810');
-  ctx.fillStyle=bgGrad; ctx.fillRect(0,0,W,H);
+  // Background
+  ctx.fillStyle='#060f1e'; ctx.fillRect(0,0,SIZE,SIZE);
 
-  // Outer decorative ring
-  ctx.beginPath(); ctx.arc(cx,cy,R+14,0,2*Math.PI);
-  ctx.strokeStyle='rgba(200,164,76,0.18)'; ctx.lineWidth=1; ctx.stroke();
-  ctx.beginPath(); ctx.arc(cx,cy,R+20,0,2*Math.PI);
-  ctx.strokeStyle='rgba(200,164,76,0.07)'; ctx.lineWidth=1; ctx.stroke();
+  // Outer glow ring
+  var ring=ctx.createRadialGradient(cx,cy,R-2,cx,cy,R+18);
+  ring.addColorStop(0,'rgba(200,164,76,0.4)');
+  ring.addColorStop(1,'rgba(200,164,76,0)');
+  ctx.beginPath(); ctx.arc(cx,cy,R+18,0,2*Math.PI);
+  ctx.fillStyle=ring; ctx.fill();
 
   var PH=[
-    {n:'新月\n祈願',   s:-22,e:22,  fill:'#0a2255', border:'#6a8fd8', t:'思考期', em:'🌑'},
-    {n:'三日月\n芽吹き',s:22, e:75, fill:'#0d3a18', border:'#4caf6a', t:'活動期', em:'🌒'},
-    {n:'上弦\n決断',   s:75, e:102, fill:'#0f4a20', border:'#56d46e', t:'活動期', em:'🌓'},
-    {n:'十三夜\n最盛', s:102,e:168, fill:'#1a5e22', border:'#5ddb72', t:'活動期', em:'🌔'},
-    {n:'満月\n感謝',   s:168,e:192, fill:'#3d2a05', border:'#f0b930', t:'思考期', em:'🌕'},
-    {n:'十六夜\n振返り',s:192,e:258,fill:'#0d1e48', border:'#5577cc', t:'停滞期', em:'🌖'},
-    {n:'下弦\n整理',   s:258,e:285, fill:'#0c1840', border:'#4466bb', t:'停滞期', em:'🌗'},
-    {n:'晦日\n休息',   s:285,e:338, fill:'#080f28', border:'#3355aa', t:'停滞期', em:'🌘'}
+    {n:'新月',  sub:'祈願',    s:-22, e:22,  fill:'#1a3a8f', glow:'#4488ff', border:'#6699ff', t:'思考期', em:'🌑'},
+    {n:'三日月',sub:'芽吹き',  s:22,  e:75,  fill:'#155a20', glow:'#33cc55', border:'#44ee66', t:'活動期', em:'🌒'},
+    {n:'上弦',  sub:'決断',    s:75,  e:102, fill:'#0d6e28', glow:'#44ee66', border:'#55ff77', t:'活動期', em:'🌓'},
+    {n:'十三夜',sub:'最盛',    s:102, e:168, fill:'#1a7a30', glow:'#44dd55', border:'#55ee66', t:'活動期', em:'🌔'},
+    {n:'満月',  sub:'感謝',    s:168, e:192, fill:'#6b4500', glow:'#ffcc00', border:'#ffdd33', t:'思考期', em:'🌕'},
+    {n:'十六夜',sub:'振り返り',s:192, e:258, fill:'#102060', glow:'#4466dd', border:'#5577ee', t:'停滞期', em:'🌖'},
+    {n:'下弦',  sub:'整理',    s:258, e:285, fill:'#0c1a55', glow:'#3355cc', border:'#4466dd', t:'停滞期', em:'🌗'},
+    {n:'晦日',  sub:'休息',    s:285, e:338, fill:'#0e183a', glow:'#334488', border:'#4455aa', t:'停滞期', em:'🌘'}
   ];
 
-  // Sector glow/gradient fills
-  PH.forEach(function(p,idx){
+  // Draw sectors
+  PH.forEach(function(p){
     var s=(p.s-90)*Math.PI/180, e=(p.e-90)*Math.PI/180;
     var mid=((p.s+p.e)/2-90)*Math.PI/180;
-    var gx=cx+(R*0.5)*Math.cos(mid), gy=cy+(R*0.5)*Math.sin(mid);
+    var mx=cx+R*0.55*Math.cos(mid), my=cy+R*0.55*Math.sin(mid);
 
-    // Main sector fill with radial gradient for depth
-    var rg=ctx.createRadialGradient(cx,cy,innerR,gx,gy,R*0.8);
-    rg.addColorStop(0, p.fill+'cc');
+    // Sector radial gradient (dark center → vivid edge)
+    var rg=ctx.createRadialGradient(cx,cy,iR+10,mx,my,R*0.9);
+    rg.addColorStop(0, p.fill+'99');
+    rg.addColorStop(0.6, p.fill+'cc');
     rg.addColorStop(1, p.fill+'ff');
     ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,R,s,e); ctx.closePath();
     ctx.fillStyle=rg; ctx.fill();
 
-    // Border arc (outer edge, thick colored)
+    // Colored outer arc (thick, vivid)
     ctx.beginPath(); ctx.arc(cx,cy,R,s,e);
-    ctx.strokeStyle=p.border; ctx.lineWidth=5; ctx.stroke();
+    ctx.strokeStyle=p.border; ctx.lineWidth=8; ctx.stroke();
 
     // Inner separator lines
-    ctx.beginPath(); ctx.moveTo(cx,cy);
-    ctx.lineTo(cx+R*Math.cos(s), cy+R*Math.sin(s));
-    ctx.strokeStyle='rgba(0,0,0,0.5)'; ctx.lineWidth=1.5; ctx.stroke();
+    [s,e].forEach(function(ang){
+      ctx.beginPath(); ctx.moveTo(cx+iR*Math.cos(ang),cy+iR*Math.sin(ang));
+      ctx.lineTo(cx+R*Math.cos(ang),cy+R*Math.sin(ang));
+      ctx.strokeStyle='rgba(0,0,0,0.6)'; ctx.lineWidth=1.5; ctx.stroke();
+    });
   });
 
-  // Labels
+  // Labels on top
   PH.forEach(function(p){
     var mid=((p.s+p.e)/2-90)*Math.PI/180;
+    var span=p.e-p.s;
+
+    // Text position
     var lr=R*0.60, lx=cx+lr*Math.cos(mid), ly=cy+lr*Math.sin(mid);
-    var er=R*0.86, ex=cx+er*Math.cos(mid), ey=cy+er*Math.sin(mid);
-
-    // Emoji
-    ctx.font='16px serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
-    ctx.fillText(p.em, ex, ey);
-
-    // Text (phase name + keyword)
     ctx.save(); ctx.translate(lx,ly); ctx.textAlign='center'; ctx.textBaseline='middle';
-    var lines=p.n.split('\n');
-    // Shadow for readability
-    ctx.shadowColor='rgba(0,0,0,0.9)'; ctx.shadowBlur=6;
-    ctx.font='bold 11.5px "Segoe UI",sans-serif';
+
+    // Glow effect for text
+    ctx.shadowColor=p.glow; ctx.shadowBlur=12;
+    ctx.font='bold 12.5px "Segoe UI",sans-serif';
     ctx.fillStyle='#ffffff';
-    ctx.fillText(lines[0],0,-7);
-    ctx.font='10px "Segoe UI",sans-serif';
+    ctx.fillText(p.n, 0, span < 35 ? 0 : -8);
+    ctx.shadowBlur=6;
+    ctx.font='bold 10px "Segoe UI",sans-serif';
     ctx.fillStyle=p.border;
-    ctx.fillText(lines[1]||'',0,7);
+    if(span >= 35) ctx.fillText(p.sub, 0, 8);
     ctx.shadowBlur=0;
     ctx.restore();
+
+    // Emoji on outer ring
+    var er=R*0.85, ex=cx+er*Math.cos(mid), ey=cy+er*Math.sin(mid);
+    ctx.font='15px serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(p.em, ex, ey);
   });
 
-  // Center circle
-  var cg=ctx.createRadialGradient(cx,cy,0,cx,cy,innerR);
-  cg.addColorStop(0,'#162540'); cg.addColorStop(1,'#080f20');
-  ctx.beginPath(); ctx.arc(cx,cy,innerR,0,2*Math.PI);
+  // Center circle with gradient
+  var cg=ctx.createRadialGradient(cx,cy,0,cx,cy,iR);
+  cg.addColorStop(0,'#1a2f50'); cg.addColorStop(1,'#050d1a');
+  ctx.beginPath(); ctx.arc(cx,cy,iR,0,2*Math.PI);
   ctx.fillStyle=cg; ctx.fill();
-  ctx.strokeStyle='rgba(200,164,76,0.5)'; ctx.lineWidth=1.5; ctx.stroke();
+  ctx.strokeStyle='rgba(200,164,76,0.7)'; ctx.lineWidth=2; ctx.stroke();
 
   // Today pointer
   var td=DATA.mkt_today_data;
   if(td){
     var an=(td.angle-90)*Math.PI/180;
-    // Pointer line with glow
+    // Glow line
     ctx.save();
-    ctx.shadowColor='rgba(255,255,255,0.8)'; ctx.shadowBlur=8;
+    ctx.shadowColor='rgba(255,255,255,1)'; ctx.shadowBlur=15;
     ctx.beginPath(); ctx.moveTo(cx,cy);
-    ctx.lineTo(cx+(R+10)*Math.cos(an), cy+(R+10)*Math.sin(an));
-    ctx.strokeStyle='rgba(255,255,255,0.95)'; ctx.lineWidth=2.5; ctx.stroke();
-    // Tip dot
-    ctx.beginPath(); ctx.arc(cx+R*Math.cos(an),cy+R*Math.sin(an),5,0,2*Math.PI);
+    ctx.lineTo(cx+(R+8)*Math.cos(an), cy+(R+8)*Math.sin(an));
+    ctx.strokeStyle='rgba(255,255,255,0.95)'; ctx.lineWidth=3; ctx.stroke();
+    ctx.beginPath(); ctx.arc(cx+(R)*Math.cos(an),cy+(R)*Math.sin(an),6,0,2*Math.PI);
     ctx.fillStyle='#ffffff'; ctx.fill();
     ctx.restore();
-    // Center label
-    ctx.font='bold 11px "Segoe UI",sans-serif'; ctx.fillStyle='#c8a45a';
-    ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('今日',cx,cy-8);
+    // Center text
+    ctx.shadowColor='rgba(200,164,76,0.8)'; ctx.shadowBlur=8;
+    ctx.font='bold 12px "Segoe UI",sans-serif'; ctx.fillStyle='#f0c850';
+    ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('今日',cx,cy-9);
+    ctx.shadowBlur=0;
     ctx.font='14px serif'; ctx.fillStyle='#aabbcc';
-    ctx.fillText(td.emoji,cx,cy+9);
+    ctx.fillText(td.emoji||'🌒',cx,cy+10);
   }
 }
 
