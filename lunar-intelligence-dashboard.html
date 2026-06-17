@@ -196,9 +196,8 @@
   .insight-box strong { color: var(--gold); }
 
   .sel-year { background: var(--card2); border: 1px solid var(--border); color: var(--text); padding: 6px 12px; border-radius: 6px; margin-right: 8px; }
-
 /* ═══ MARKETING OS ═══ */
-.today-panel{background:linear-gradient(135deg,#0d1828 0%,#141e30 100%);border:2px solid var(--gold);border-radius:18px;padding:26px;margin-bottom:20px;}
+.today-panel{background:linear-gradient(135deg,#0d1828,#141e30);border:2px solid var(--gold);border-radius:18px;padding:26px;margin-bottom:20px;}
 .today-top{display:flex;align-items:center;gap:18px;margin-bottom:18px;}
 .today-emoji-lg{font-size:3.2rem;}
 .today-action-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
@@ -233,6 +232,13 @@
     <button class="nav-btn" data-name="window" onclick="showSection('window')">📈 月相ウィンドウ</button>
     <button class="nav-btn" data-name="calendar" onclick="showSection('calendar')">📅 月相カレンダー</button>
     <button class="nav-btn" data-name="business" onclick="showSection('business')">💼 ビジネス戦略</button>
+    <span style="color:#2a3a50;padding:0 8px;">│</span>
+    <button class="nav-btn" data-name="today"     onclick="showSection('today')">🌒 今日の状態</button>
+    <button class="nav-btn" data-name="phases"    onclick="showSection('phases')">⚡ 感情フェーズ</button>
+    <button class="nav-btn" data-name="mktcal"    onclick="showSection('mktcal')">🗓️ 広告カレンダー</button>
+    <button class="nav-btn" data-name="strategy"  onclick="showSection('strategy')">📋 広告戦略</button>
+    <button class="nav-btn" data-name="mechanism" onclick="showSection('mechanism')">🧠 感情メカニズム</button>
+    <button class="nav-btn" data-name="budget"    onclick="showSection('budget')">💰 予算最適化</button>
   </div>
 </div>
 
@@ -881,6 +887,7 @@ window.onload = function() {
 
 <!-- ===== 今日の状態 ===== -->
 <div id="sec-today" class="section">
+<div class="main">
   <div class="today-panel" id="today-panel">
     <div class="today-top">
       <div class="today-emoji-lg" id="today-big-emoji">🌒</div>
@@ -898,22 +905,38 @@ window.onload = function() {
     <div class="card"><div class="card-title">💡 次の転換点まで</div><div id="countdown-panel" style="text-align:center;padding:14px;"></div></div>
   </div>
 </div>
+</div>
 
 <!-- ===== 感情フェーズ ===== -->
 <div id="sec-phases" class="section">
+<div class="main">
   <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-bottom:22px;">
-    <div class="act-type-card" style="border-top-color:#5ba85d;" id="act-active"><div style="font-size:1.7rem;">⚡</div><div style="font-size:0.95rem;font-weight:700;color:#5ba85d;margin:5px 0;">活動期</div><div class="act-desc"></div><div class="act-phases" style="font-size:0.73rem;color:var(--text2);margin-bottom:7px;"></div><div class="act-evidence" style="background:rgba(200,164,90,.1);border:1px solid rgba(200,164,90,.2);border-radius:5px;padding:5px 9px;font-size:0.7rem;color:var(--gold);"></div></div>
-    <div class="act-type-card" style="border-top-color:#c8a45a;" id="act-think"><div style="font-size:1.7rem;">🌟</div><div style="font-size:0.95rem;font-weight:700;color:#c8a45a;margin:5px 0;">思考期</div><div class="act-desc"></div><div class="act-phases" style="font-size:0.73rem;color:var(--text2);margin-bottom:7px;"></div><div class="act-evidence" style="background:rgba(200,164,90,.1);border:1px solid rgba(200,164,90,.2);border-radius:5px;padding:5px 9px;font-size:0.7rem;color:var(--gold);"></div></div>
-    <div class="act-type-card" style="border-top-color:#4a6fa5;" id="act-stagnant"><div style="font-size:1.7rem;">🔵</div><div style="font-size:0.95rem;font-weight:700;color:#4a6fa5;margin:5px 0;">停滞期</div><div class="act-desc"></div><div class="act-phases" style="font-size:0.73rem;color:var(--text2);margin-bottom:7px;"></div><div class="act-evidence" style="background:rgba(200,164,90,.1);border:1px solid rgba(200,164,90,.2);border-radius:5px;padding:5px 9px;font-size:0.7rem;color:var(--gold);"></div></div>
+    <div class="act-type-card" style="border-top-color:#5ba85d;" id="act-active">
+      <div style="font-size:1.7rem;">⚡</div><div style="font-size:0.95rem;font-weight:700;color:#5ba85d;margin:5px 0;">活動期</div>
+      <div class="act-desc"></div><div class="act-phases" style="font-size:0.73rem;color:var(--text2);margin-bottom:7px;"></div>
+      <div class="act-evidence" style="background:rgba(200,164,90,.1);border:1px solid rgba(200,164,90,.2);border-radius:5px;padding:5px 9px;font-size:0.7rem;color:var(--gold);"></div>
+    </div>
+    <div class="act-type-card" style="border-top-color:#c8a45a;" id="act-think">
+      <div style="font-size:1.7rem;">🌟</div><div style="font-size:0.95rem;font-weight:700;color:#c8a45a;margin:5px 0;">思考期</div>
+      <div class="act-desc"></div><div class="act-phases" style="font-size:0.73rem;color:var(--text2);margin-bottom:7px;"></div>
+      <div class="act-evidence" style="background:rgba(200,164,90,.1);border:1px solid rgba(200,164,90,.2);border-radius:5px;padding:5px 9px;font-size:0.7rem;color:var(--gold);"></div>
+    </div>
+    <div class="act-type-card" style="border-top-color:#4a6fa5;" id="act-stagnant">
+      <div style="font-size:1.7rem;">🔵</div><div style="font-size:0.95rem;font-weight:700;color:#4a6fa5;margin:5px 0;">停滞期</div>
+      <div class="act-desc"></div><div class="act-phases" style="font-size:0.73rem;color:var(--text2);margin-bottom:7px;"></div>
+      <div class="act-evidence" style="background:rgba(200,164,90,.1);border:1px solid rgba(200,164,90,.2);border-radius:5px;padding:5px 9px;font-size:0.7rem;color:var(--gold);"></div>
+    </div>
   </div>
   <div style="display:flex;justify-content:center;margin-bottom:22px;">
     <canvas id="phaseWheel" width="400" height="400"></canvas>
   </div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;" id="phase-cards-grid"></div>
 </div>
+</div>
 
 <!-- ===== 広告カレンダー ===== -->
 <div id="sec-mktcal" class="section">
+<div class="main">
   <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
     <select id="cal-month" onchange="renderMktCalendar()" style="background:var(--card2);color:var(--text);border:1px solid var(--border);padding:7px 12px;border-radius:7px;font-size:0.82rem;">
       <option value="2026-06">2026年6月</option><option value="2026-07">2026年7月</option>
@@ -934,9 +957,11 @@ window.onload = function() {
   </div>
   <div class="card"><div class="card-title">📌 今月の月相イベントと広告推奨</div><div id="month-events-list"></div></div>
 </div>
+</div>
 
 <!-- ===== 広告戦略 ===== -->
 <div id="sec-strategy" class="section">
+<div class="main">
   <div class="card">
     <div class="card-title">📋 8フェーズ 広告戦略マトリクス — Family Tree Oki</div>
     <div style="display:grid;grid-template-columns:140px 1fr 1fr 1fr 62px;gap:8px;padding:7px 12px;font-size:0.7rem;color:var(--text2);font-weight:600;">
@@ -945,27 +970,34 @@ window.onload = function() {
     <div id="strategy-rows"></div>
   </div>
 </div>
+</div>
 
 <!-- ===== 感情メカニズム ===== -->
 <div id="sec-mechanism" class="section">
+<div class="main">
   <div class="card"><div class="card-title">🧠 感情が知らずに動かされるメカニズム</div>
     <div id="mech-flow" style="display:flex;align-items:stretch;overflow-x:auto;padding:8px 0;gap:0;"></div>
   </div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px;">
     <div class="card"><div class="card-title">📊 統計的証拠（10年市場データ）</div>
       <table style="width:100%;border-collapse:collapse;font-size:0.79rem;" id="evidence-table">
-        <tr><th style="background:var(--bg);padding:8px 12px;text-align:left;color:var(--gold);">指標</th><th style="background:var(--bg);padding:8px 12px;color:var(--gold);">月相</th><th style="background:var(--bg);padding:8px 12px;color:var(--gold);">統計値</th><th style="background:var(--bg);padding:8px 12px;color:var(--gold);">解釈</th></tr>
+        <tr><th style="background:var(--bg);padding:8px 12px;text-align:left;color:var(--gold);">指標</th>
+            <th style="background:var(--bg);padding:8px 12px;color:var(--gold);">月相</th>
+            <th style="background:var(--bg);padding:8px 12px;color:var(--gold);">統計値</th>
+            <th style="background:var(--bg);padding:8px 12px;color:var(--gold);">解釈</th></tr>
       </table>
     </div>
     <div class="card"><div class="card-title">🌊 集合意識エネルギー波形（29.5日）</div>
       <div style="position:relative;height:200px;"><canvas id="waveChart"></canvas></div>
-      <div style="font-size:0.73rem;color:var(--text2);margin-top:7px;line-height:1.5;">月相サイクルで「行動エネルギー」「内省エネルギー」が波動。広告はこの波に<strong style="color:var(--gold)">乗る</strong>ことでROI最大化。</div>
+      <div style="font-size:0.73rem;color:var(--text2);margin-top:7px;line-height:1.5;">月相で「行動エネルギー」「内省エネルギー」が波動。広告はこの波に<strong style="color:var(--gold)">乗る</strong>ことでROI最大化。</div>
     </div>
   </div>
+</div>
 </div>
 
 <!-- ===== 予算最適化 ===== -->
 <div id="sec-budget" class="section">
+<div class="main">
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px;">
     <div class="card"><div class="card-title">💰 月相別 推奨予算配分</div><div style="position:relative;height:270px;"><canvas id="budgetChart"></canvas></div></div>
     <div class="card"><div class="card-title">📈 90日間 予算最適化タイムライン</div><div style="position:relative;height:270px;"><canvas id="timelineChart"></canvas></div></div>
@@ -974,10 +1006,9 @@ window.onload = function() {
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;" id="budget-strategy-grid"></div>
   </div>
 </div>
-
+</div>
 
 <script>
-// ════ MARKETING OS MODULE ════════════════════════════════════════
 function _ac(t){return t==='活動期'?'#5ba85d':t==='思考期'?'#c8a45a':'#4a6fa5';}
 function _bc(p){return p>=25?'#e8a020':p>=15?'#5ba85d':p>=8?'#4a6fa5':'#444';}
 
@@ -988,178 +1019,253 @@ function initTodayTab(){
   document.getElementById('today-title').textContent=t.phase_name+'期';
   document.getElementById('today-meta').textContent=DATA.mkt_today+' | 旧暦'+t.kyureki_day+'日目';
   const badge=document.getElementById('today-type-badge');
-  badge.textContent=t.activity_type;badge.style.cssText=`background:${col}22;color:${col};border:1px solid ${col}44;`;
+  badge.textContent=t.activity_type;badge.style.cssText='background:'+col+'22;color:'+col+';border:1px solid '+col+'44;';
   document.getElementById('today-panel').style.borderColor=col;
-  document.getElementById('today-action-grid').innerHTML=`
-    <div class="tday-cell"><div class="tday-lbl">💡 感情状態</div><div class="tday-val" style="color:${col}">${mkt.emotion}</div></div>
-    <div class="tday-cell"><div class="tday-lbl">📣 広告テーマ</div><div class="tday-val">${mkt.theme}</div></div>
-    <div class="tday-cell"><div class="tday-lbl">✍️ コピー方向</div><div class="tday-val">${mkt.copy_direction}</div></div>
-    <div class="tday-cell"><div class="tday-lbl">📺 推奨チャネル</div><div class="tday-val">${mkt.channels}</div></div>
-    <div class="tday-cell"><div class="tday-lbl">🌺 Family Tree Oki</div><div class="tday-val" style="color:var(--gold)">${mkt.family_tree_oki}</div></div>
-    <div class="tday-cell"><div class="tday-lbl">💰 予算強度</div><div class="tday-val">月間の${mkt.budget_pct}% | CTA:${mkt.cta_intensity}</div></div>`;
+  document.getElementById('today-action-grid').innerHTML=
+    '<div class="tday-cell"><div class="tday-lbl">💡 感情状態</div><div class="tday-val" style="color:'+col+'">'+mkt.emotion+'</div></div>'+
+    '<div class="tday-cell"><div class="tday-lbl">📣 広告テーマ</div><div class="tday-val">'+mkt.theme+'</div></div>'+
+    '<div class="tday-cell"><div class="tday-lbl">✍️ コピー方向</div><div class="tday-val">'+mkt.copy_direction+'</div></div>'+
+    '<div class="tday-cell"><div class="tday-lbl">📺 推奨チャネル</div><div class="tday-val">'+mkt.channels+'</div></div>'+
+    '<div class="tday-cell"><div class="tday-lbl">🌺 Family Tree Oki</div><div class="tday-val" style="color:var(--gold)">'+mkt.family_tree_oki+'</div></div>'+
+    '<div class="tday-cell"><div class="tday-lbl">💰 予算強度</div><div class="tday-val">月間の'+mkt.budget_pct+'% | CTA:'+mkt.cta_intensity+'</div></div>';
   const today=DATA.mkt_today;
-  const up=DATA.mkt_moon_events.filter(e=>e.date>=today).slice(0,5);
-  document.getElementById('upcoming-events').innerHTML=up.map(e=>{
-    const d=Math.round((new Date(e.date)-new Date(today))/86400000);
-    return`<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);">
-      <div><span style="font-size:1rem;">${e.type==='new_moon'?'🌑':'🌕'}</span>
-        <span style="margin-left:7px;font-size:0.8rem;">${e.label}</span>
-        <div style="font-size:0.68rem;color:var(--text2);">${e.date}</div></div>
-      <div style="color:${e.type==='new_moon'?'#4a6fa5':'#c8a45a'};font-weight:700;">${d===0?'今日!':d+'日後'}</div></div>`;
+  const up=DATA.mkt_moon_events.filter(function(e){return e.date>=today;}).slice(0,5);
+  document.getElementById('upcoming-events').innerHTML=up.map(function(e){
+    var d=Math.round((new Date(e.date)-new Date(today))/86400000);
+    return '<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);">'+
+      '<div><span style="font-size:1rem;">'+(e.type==='new_moon'?'🌑':'🌕')+'</span>'+
+      '<span style="margin-left:7px;font-size:0.8rem;">'+e.label+'</span>'+
+      '<div style="font-size:0.68rem;color:var(--text2);">'+e.date+'</div></div>'+
+      '<div style="color:'+(e.type==='new_moon'?'#4a6fa5':'#c8a45a')+';font-weight:700;">'+(d===0?'今日!':d+'日後')+'</div></div>';
   }).join('');
-  const june=DATA.mkt_calendar.filter(d=>d.date.startsWith('2026-06'));
-  const dist=[june.filter(d=>d.activity_type==='活動期').length,june.filter(d=>d.activity_type==='思考期').length,june.filter(d=>d.activity_type==='停滞期').length];
+  var june=DATA.mkt_calendar.filter(function(d){return d.date.startsWith('2026-06');});
+  var dist=[june.filter(function(d){return d.activity_type==='活動期';}).length,
+            june.filter(function(d){return d.activity_type==='思考期';}).length,
+            june.filter(function(d){return d.activity_type==='停滞期';}).length];
   if(window._mdC)window._mdC.destroy();
-  window._mdC=new Chart(document.getElementById('monthDistChart'),{type:'doughnut',data:{labels:['活動期','思考期','停滞期'],datasets:[{data:dist,backgroundColor:['#5ba85d','#c8a45a','#4a6fa5'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#8a9ab8',font:{size:11}}}}}});
-  const nxt=up[0];const dt=nxt?Math.round((new Date(nxt.date)-new Date(today))/86400000):0;
-  document.getElementById('countdown-panel').innerHTML=nxt?`<div style="font-size:2.6rem;margin-bottom:5px;">${nxt.type==='new_moon'?'🌑':'🌕'}</div>
-    <div style="font-size:2.8rem;font-weight:900;color:var(--gold);">${dt}</div>
-    <div style="font-size:0.82rem;color:var(--text2);">日後</div>
-    <div style="font-size:0.9rem;color:var(--text);margin:6px 0;">${nxt.label}</div>
-    <div style="font-size:0.68rem;color:var(--text2);">${nxt.date}</div>
-    <div style="margin-top:9px;padding:8px;background:var(--card2);border-radius:7px;font-size:0.7rem;color:var(--text2);">
-    ${nxt.type==='new_moon'?'🌑 活動期ラストスパート！<br>積極的な広告を今打て':'🌕 感謝・コミュニティ訴求へ<br>ロイヤル顧客アプローチ最適期'}</div>`:'予定なし';
+  window._mdC=new Chart(document.getElementById('monthDistChart'),{type:'doughnut',
+    data:{labels:['活動期','思考期','停滞期'],datasets:[{data:dist,backgroundColor:['#5ba85d','#c8a45a','#4a6fa5'],borderWidth:0}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#8a9ab8',font:{size:11}}}}}});
+  var nxt=up[0];var dt=nxt?Math.round((new Date(nxt.date)-new Date(today))/86400000):0;
+  document.getElementById('countdown-panel').innerHTML=nxt?
+    '<div style="font-size:2.6rem;margin-bottom:5px;">'+(nxt.type==='new_moon'?'🌑':'🌕')+'</div>'+
+    '<div style="font-size:2.8rem;font-weight:900;color:var(--gold);">'+dt+'</div>'+
+    '<div style="font-size:0.82rem;color:var(--text2);">日後</div>'+
+    '<div style="font-size:0.9rem;color:var(--text);margin:6px 0;">'+nxt.label+'</div>'+
+    '<div style="font-size:0.68rem;color:var(--text2);">'+nxt.date+'</div>'+
+    '<div style="margin-top:9px;padding:8px;background:var(--card2);border-radius:7px;font-size:0.7rem;color:var(--text2);">'+
+    (nxt.type==='new_moon'?'🌑 活動期ラストスパート！<br>積極的な広告を今打て':'🌕 感謝・コミュニティ訴求へ<br>ロイヤル顧客アプローチ最適期')+'</div>'
+    :'予定なし';
 }
 
 function initActivityCards(){
-  const m={'活動期':'act-active','思考期':'act-think','停滞期':'act-stagnant'};
-  for(const[k,v]of Object.entries(DATA.mkt_activity_summary)){
-    const el=document.getElementById(m[k]);if(!el)continue;
-    el.querySelector('.act-desc').textContent=v.description;
-    el.querySelector('.act-phases').textContent='フェーズ: '+v.phases.join(' / ');
-    el.querySelector('.act-evidence').textContent='📊 '+v.market_data;
-  }
+  var m={'活動期':'act-active','思考期':'act-think','停滞期':'act-stagnant'};
+  Object.entries(DATA.mkt_activity_summary).forEach(function(kv){
+    var el=document.getElementById(m[kv[0]]);if(!el)return;
+    el.querySelector('.act-desc').textContent=kv[1].description;
+    el.querySelector('.act-phases').textContent='フェーズ: '+kv[1].phases.join(' / ');
+    el.querySelector('.act-evidence').textContent='📊 '+kv[1].market_data;
+  });
 }
 
 function renderPhaseWheel(){
-  const cv=document.getElementById('phaseWheel');if(!cv)return;
-  const ctx=cv.getContext('2d'),W=cv.width,H=cv.height,cx=W/2,cy=H/2,R=165;
+  var cv=document.getElementById('phaseWheel');if(!cv)return;
+  var ctx=cv.getContext('2d'),W=cv.width,H=cv.height,cx=W/2,cy=H/2,R=165;
   ctx.clearRect(0,0,W,H);
-  const PH=[{n:'新月\n祈願',s:-20,e:20,c:'#1a2640',t:'思考期',em:'🌑'},{n:'三日月\n芽吹き',s:20,e:75,c:'#1a3a1c',t:'活動期',em:'🌒'},{n:'上弦\n決断',s:75,e:100,c:'#1f5223',t:'活動期',em:'🌓'},{n:'十三夜\n最盛',s:100,e:170,c:'#2d5e2e',t:'活動期',em:'🌔'},{n:'満月\n感謝',s:170,e:195,c:'#3a2d10',t:'思考期',em:'🌕'},{n:'十六夜\n振返り',s:195,e:265,c:'#1a2040',t:'停滞期',em:'🌖'},{n:'下弦\n整理',s:265,e:290,c:'#1e1840',t:'停滞期',em:'🌗'},{n:'晦日\n休息',s:290,e:340,c:'#1a1e2e',t:'停滞期',em:'🌘'}];
-  const CM={'活動期':'#5ba85d','思考期':'#c8a45a','停滞期':'#4a6fa5'};
-  PH.forEach(p=>{const s=(p.s-90)*Math.PI/180,e=(p.e-90)*Math.PI/180;
+  var PH=[{n:'新月\n祈願',s:-20,e:20,c:'#1a2640',t:'思考期',em:'🌑'},
+          {n:'三日月\n芽吹き',s:20,e:75,c:'#1a3a1c',t:'活動期',em:'🌒'},
+          {n:'上弦\n決断',s:75,e:100,c:'#1f5223',t:'活動期',em:'🌓'},
+          {n:'十三夜\n最盛',s:100,e:170,c:'#2d5e2e',t:'活動期',em:'🌔'},
+          {n:'満月\n感謝',s:170,e:195,c:'#3a2d10',t:'思考期',em:'🌕'},
+          {n:'十六夜\n振返り',s:195,e:265,c:'#1a2040',t:'停滞期',em:'🌖'},
+          {n:'下弦\n整理',s:265,e:290,c:'#1e1840',t:'停滞期',em:'🌗'},
+          {n:'晦日\n休息',s:290,e:340,c:'#1a1e2e',t:'停滞期',em:'🌘'}];
+  var CM={'活動期':'#5ba85d','思考期':'#c8a45a','停滞期':'#4a6fa5'};
+  PH.forEach(function(p){
+    var s=(p.s-90)*Math.PI/180,e=(p.e-90)*Math.PI/180;
     ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,R,s,e);ctx.closePath();ctx.fillStyle=p.c;ctx.fill();
     ctx.beginPath();ctx.arc(cx,cy,R,s,e);ctx.strokeStyle=CM[p.t];ctx.lineWidth=5;ctx.stroke();
-    const mid=(p.s+p.e)/2-90,lr=R*.63,lx=cx+lr*Math.cos(mid*Math.PI/180),ly=cy+lr*Math.sin(mid*Math.PI/180);
+    var mid=(p.s+p.e)/2-90,lr=R*.63,lx=cx+lr*Math.cos(mid*Math.PI/180),ly=cy+lr*Math.sin(mid*Math.PI/180);
     ctx.save();ctx.translate(lx,ly);ctx.textAlign='center';ctx.textBaseline='middle';ctx.font='bold 10px sans-serif';ctx.fillStyle='#ccc';
-    p.n.split('\n').forEach((l,i,a)=>ctx.fillText(l,0,(i-a.length/2+.5)*13));ctx.restore();
-    const er=R*.86,ex=cx+er*Math.cos(mid*Math.PI/180),ey=cy+er*Math.sin(mid*Math.PI/180);
+    p.n.split('\n').forEach(function(l,i,a){ctx.fillText(l,0,(i-a.length/2+.5)*13);});ctx.restore();
+    var er=R*.86,ex=cx+er*Math.cos(mid*Math.PI/180),ey=cy+er*Math.sin(mid*Math.PI/180);
     ctx.font='13px serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(p.em,ex,ey);
   });
-  ctx.beginPath();ctx.arc(cx,cy,40,0,2*Math.PI);ctx.fillStyle='#0a1220';ctx.fill();ctx.strokeStyle='#c8a45a44';ctx.lineWidth=1;ctx.stroke();
-  const td=DATA.mkt_today_data;
-  if(td){const an=(td.angle-90)*Math.PI/180;
-    ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+(R+12)*Math.cos(an),cy+(R+12)*Math.sin(an));ctx.strokeStyle='#fff';ctx.lineWidth=3;ctx.stroke();
+  ctx.beginPath();ctx.arc(cx,cy,40,0,2*Math.PI);ctx.fillStyle='#0a1220';ctx.fill();
+  ctx.strokeStyle='#c8a45a44';ctx.lineWidth=1;ctx.stroke();
+  var td=DATA.mkt_today_data;
+  if(td){var an=(td.angle-90)*Math.PI/180;
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+(R+12)*Math.cos(an),cy+(R+12)*Math.sin(an));
+    ctx.strokeStyle='#fff';ctx.lineWidth=3;ctx.stroke();
     ctx.beginPath();ctx.arc(cx+R*Math.cos(an),cy+R*Math.sin(an),5,0,2*Math.PI);ctx.fillStyle='#fff';ctx.fill();
     ctx.font='bold 11px sans-serif';ctx.fillStyle='#c8a45a';ctx.textAlign='center';ctx.fillText('今日',cx,cy-8);
     ctx.font='13px serif';ctx.fillStyle='#888';ctx.fillText(td.emoji,cx,cy+8);}
 }
 
 function initPhaseCards(){
-  const D=[{n:'新月・祈願',e:'🌑',a:'思考期'},{n:'三日月・芽吹き',e:'🌒',a:'活動期'},{n:'上弦・決断',e:'🌓',a:'活動期'},{n:'十三夜・最盛',e:'🌔',a:'活動期'},{n:'満月・感謝',e:'🌕',a:'思考期'},{n:'十六夜・振り返り',e:'🌖',a:'停滞期'},{n:'下弦・整理',e:'🌗',a:'停滞期'},{n:'晦日・休息',e:'🌘',a:'停滞期'}];
-  document.getElementById('phase-cards-grid').innerHTML=D.map(p=>{
-    const mkt=DATA.mkt_marketing[p.n]||{},col=_ac(p.a),bp=mkt.budget_pct||0;
-    return`<div style="background:var(--card2);border-radius:11px;padding:14px;border-left:4px solid ${col};">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:9px;"><span style="font-size:1.6rem;">${p.e}</span>
-        <div><div style="font-size:0.9rem;font-weight:700;color:${col};">${p.n}</div>
-          <span style="display:inline-block;padding:1px 6px;border-radius:8px;font-size:0.65rem;font-weight:600;background:${col}22;color:${col};margin-top:2px;">${p.a}</span></div></div>
-      <div style="font-size:0.74rem;color:var(--text2);margin:2px 0;">感情: <span style="color:var(--text)">${mkt.emotion||'-'}</span></div>
-      <div style="font-size:0.74rem;color:var(--text2);margin:2px 0;">テーマ: <span style="color:var(--text)">${mkt.theme||'-'}</span></div>
-      <div style="font-size:0.68rem;color:var(--gold);margin:4px 0;">${mkt.family_tree_oki||''}</div>
-      <div style="margin-top:6px;"><div style="display:flex;justify-content:space-between;font-size:0.67rem;margin-bottom:2px;"><span style="color:var(--text2)">予算</span><span style="color:${_bc(bp)}">${bp}%</span></div>
-        <div style="height:4px;background:var(--bg);border-radius:2px;overflow:hidden;"><div style="height:100%;width:${bp*3.3}%;background:${_bc(bp)};border-radius:2px;"></div></div></div></div>`;
+  var D=[{n:'新月・祈願',e:'🌑',a:'思考期'},{n:'三日月・芽吹き',e:'🌒',a:'活動期'},
+         {n:'上弦・決断',e:'🌓',a:'活動期'},{n:'十三夜・最盛',e:'🌔',a:'活動期'},
+         {n:'満月・感謝',e:'🌕',a:'思考期'},{n:'十六夜・振り返り',e:'🌖',a:'停滞期'},
+         {n:'下弦・整理',e:'🌗',a:'停滞期'},{n:'晦日・休息',e:'🌘',a:'停滞期'}];
+  document.getElementById('phase-cards-grid').innerHTML=D.map(function(p){
+    var mkt=DATA.mkt_marketing[p.n]||{},col=_ac(p.a),bp=mkt.budget_pct||0;
+    return '<div style="background:var(--card2);border-radius:11px;padding:14px;border-left:4px solid '+col+';">'+
+      '<div style="display:flex;align-items:center;gap:8px;margin-bottom:9px;">'+
+      '<span style="font-size:1.6rem;">'+p.e+'</span>'+
+      '<div><div style="font-size:0.9rem;font-weight:700;color:'+col+';">'+p.n+'</div>'+
+      '<span style="display:inline-block;padding:1px 6px;border-radius:8px;font-size:0.65rem;font-weight:600;background:'+col+'22;color:'+col+';margin-top:2px;">'+p.a+'</span></div></div>'+
+      '<div style="font-size:0.74rem;color:var(--text2);margin:2px 0;">感情: <span style="color:var(--text)">'+(mkt.emotion||'-')+'</span></div>'+
+      '<div style="font-size:0.74rem;color:var(--text2);margin:2px 0;">テーマ: <span style="color:var(--text)">'+(mkt.theme||'-')+'</span></div>'+
+      '<div style="font-size:0.68rem;color:var(--gold);margin:4px 0;">'+(mkt.family_tree_oki||'')+'</div>'+
+      '<div style="margin-top:6px;"><div style="display:flex;justify-content:space-between;font-size:0.67rem;margin-bottom:2px;">'+
+      '<span style="color:var(--text2)">予算</span><span style="color:'+_bc(bp)+'">'+bp+'%</span></div>'+
+      '<div style="height:4px;background:var(--bg);border-radius:2px;overflow:hidden;">'+
+      '<div style="height:100%;width:'+(bp*3.3)+'%;background:'+_bc(bp)+';border-radius:2px;"></div></div></div></div>';
   }).join('');
 }
 
 function renderMktCalendar(){
-  const sel=document.getElementById('cal-month').value;
-  const[yr,mo]=sel.split('-').map(Number);
-  const first=new Date(yr,mo-1,1),last=new Date(yr,mo,0);
-  const grid=document.getElementById('mkt-cal-grid');
-  const hdrs=Array.from(grid.querySelectorAll('div')).slice(0,7).map(h=>h.cloneNode(true));
-  grid.innerHTML='';hdrs.forEach(h=>grid.appendChild(h));
-  const cm={};DATA.mkt_calendar.forEach(d=>{cm[d.date]=d;});
-  for(let i=0;i<first.getDay();i++){const e=document.createElement('div');e.style.minHeight='68px';grid.appendChild(e);}
-  for(let d=1;d<=last.getDate();d++){
-    const ds=`${yr}-${String(mo).padStart(2,'0')}-${String(d).padStart(2,'0')}`;const cd=cm[ds];
-    const cell=document.createElement('div');
-    cell.style.cssText='border-radius:6px;padding:5px 4px;cursor:pointer;min-height:68px;position:relative;transition:all .15s;'+(ds===DATA.mkt_today?'border:1px solid var(--gold);box-shadow:0 0 6px rgba(200,164,90,.3);':'border:1px solid transparent;');
-    if(cd){const col=_ac(cd.activity_type);
+  var sel=document.getElementById('cal-month').value;
+  var yr=parseInt(sel.split('-')[0]),mo=parseInt(sel.split('-')[1]);
+  var first=new Date(yr,mo-1,1),last=new Date(yr,mo,0);
+  var grid=document.getElementById('mkt-cal-grid');
+  var hdrs=[];grid.querySelectorAll('div').forEach(function(d,i){if(i<7)hdrs.push(d.cloneNode(true));});
+  grid.innerHTML='';hdrs.forEach(function(h){grid.appendChild(h);});
+  var cm={};DATA.mkt_calendar.forEach(function(d){cm[d.date]=d;});
+  for(var i=0;i<first.getDay();i++){var e=document.createElement('div');e.style.minHeight='68px';grid.appendChild(e);}
+  for(var d=1;d<=last.getDate();d++){
+    var ds=yr+'-'+String(mo).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+    var cd=cm[ds];var cell=document.createElement('div');
+    cell.style.cssText='border-radius:6px;padding:5px 4px;cursor:pointer;min-height:68px;position:relative;transition:all .15s;'+
+      (ds===DATA.mkt_today?'border:1px solid var(--gold);box-shadow:0 0 6px rgba(200,164,90,.3);':'border:1px solid transparent;');
+    if(cd){var col=_ac(cd.activity_type);
       cell.style.borderLeft='3px solid '+col;cell.style.background=col+'0e';
-      cell.innerHTML=`<div style="font-size:0.76rem;font-weight:700;color:${col};">${d}</div>
-        <div style="font-size:0.58rem;color:var(--text2);">旧暦${cd.kyureki_day}日</div>
-        <div style="font-size:0.9rem;text-align:center;margin:2px 0;">${cd.emoji}</div>
-        ${cd.event_label?`<div style="font-size:0.55rem;padding:1px 2px;border-radius:2px;background:${col}22;color:${col};font-weight:600;">${cd.event_label}</div>`:''}
-        <div style="position:absolute;bottom:3px;right:2px;font-size:0.52rem;color:var(--text2);">${cd.marketing.budget_pct}%</div>`;
-      cell.onmouseenter=e=>{let t=document.getElementById('mct');
-        if(!t){t=document.createElement('div');t.id='mct';t.style.cssText='position:fixed;background:var(--card);border:1px solid var(--border);border-radius:9px;padding:12px;width:240px;z-index:999;box-shadow:0 8px 20px rgba(0,0,0,.5);font-size:0.74rem;pointer-events:none;';document.body.appendChild(t);}
-        t.innerHTML=`<div style="color:var(--gold);font-weight:700;margin-bottom:6px;">${cd.emoji} ${ds} | ${cd.phase_name}</div>
-          <div style="color:var(--text2);margin:2px 0;">感情: <span style="color:var(--text)">${cd.marketing.emotion}</span></div>
-          <div style="color:var(--text2);margin:2px 0;">テーマ: <span style="color:var(--text)">${cd.marketing.theme}</span></div>
-          <div style="color:var(--gold);margin-top:5px;">${cd.marketing.family_tree_oki}</div>`;
-        t.style.display='block';t.style.left=Math.min(e.clientX+10,window.innerWidth-250)+'px';t.style.top=Math.min(e.clientY-10,window.innerHeight-180)+'px';};
-      cell.onmouseleave=()=>{const t=document.getElementById('mct');if(t)t.style.display='none';};
-    }else{cell.innerHTML=`<div style="font-size:0.76rem;font-weight:700;">${d}</div>`;}
+      cell.innerHTML='<div style="font-size:0.76rem;font-weight:700;color:'+col+';">'+d+'</div>'+
+        '<div style="font-size:0.58rem;color:var(--text2);">旧暦'+cd.kyureki_day+'日</div>'+
+        '<div style="font-size:0.9rem;text-align:center;margin:2px 0;">'+cd.emoji+'</div>'+
+        (cd.event_label?'<div style="font-size:0.55rem;padding:1px 2px;border-radius:2px;background:'+col+'22;color:'+col+';font-weight:600;">'+cd.event_label+'</div>':'')+
+        '<div style="position:absolute;bottom:3px;right:2px;font-size:0.52rem;color:var(--text2);">'+cd.marketing.budget_pct+'%</div>';
+      (function(cd2,col2){
+        cell.onmouseenter=function(ev){
+          var t=document.getElementById('mct');
+          if(!t){t=document.createElement('div');t.id='mct';
+            t.style.cssText='position:fixed;background:var(--card);border:1px solid var(--border);border-radius:9px;padding:12px;width:240px;z-index:999;box-shadow:0 8px 20px rgba(0,0,0,.5);font-size:0.74rem;pointer-events:none;';
+            document.body.appendChild(t);}
+          t.innerHTML='<div style="color:var(--gold);font-weight:700;margin-bottom:6px;">'+cd2.emoji+' '+ds+' | '+cd2.phase_name+'</div>'+
+            '<div style="color:var(--text2);margin:2px 0;">感情: <span style="color:var(--text)">'+cd2.marketing.emotion+'</span></div>'+
+            '<div style="color:var(--text2);margin:2px 0;">テーマ: <span style="color:var(--text)">'+cd2.marketing.theme+'</span></div>'+
+            '<div style="color:var(--gold);margin-top:5px;">'+cd2.marketing.family_tree_oki+'</div>';
+          t.style.display='block';
+          t.style.left=Math.min(ev.clientX+10,window.innerWidth-250)+'px';
+          t.style.top=Math.min(ev.clientY-10,window.innerHeight-180)+'px';};
+        cell.onmouseleave=function(){var t=document.getElementById('mct');if(t)t.style.display='none';};
+      })(cd,col);
+    }else{cell.innerHTML='<div style="font-size:0.76rem;font-weight:700;">'+d+'</div>';}
     grid.appendChild(cell);
   }
-  const evts=DATA.mkt_moon_events.filter(e=>e.date.startsWith(sel));
-  document.getElementById('month-events-list').innerHTML=evts.length===0?'<p style="color:var(--text2);font-size:0.8rem;">このデータ範囲外</p>':evts.map(e=>{const cd=cm[e.date];if(!cd)return'';
-    return`<div style="display:flex;justify-content:space-between;padding:8px;background:var(--card2);border-radius:7px;margin-bottom:6px;">
-      <div><span style="font-size:1.1rem;">${e.label}</span><span style="margin-left:8px;font-weight:700;">${e.date}</span><span style="margin-left:5px;font-size:0.74rem;color:var(--text2);">旧暦${cd.kyureki_day}日</span></div>
-      <div style="text-align:right;font-size:0.74rem;"><div style="color:var(--gold)">${cd.marketing.theme}</div><div style="color:var(--text2);margin-top:2px;">${cd.marketing.family_tree_oki}</div></div></div>`;}).join('');
+  var evts=DATA.mkt_moon_events.filter(function(e){return e.date.startsWith(sel);});
+  document.getElementById('month-events-list').innerHTML=evts.length===0?
+    '<p style="color:var(--text2);font-size:0.8rem;">このデータ範囲外</p>':
+    evts.map(function(e){var cd=cm[e.date];if(!cd)return'';
+      return '<div style="display:flex;justify-content:space-between;padding:8px;background:var(--card2);border-radius:7px;margin-bottom:6px;">'+
+        '<div><span style="font-size:1.1rem;">'+e.label+'</span>'+
+        '<span style="margin-left:8px;font-weight:700;">'+e.date+'</span>'+
+        '<span style="margin-left:5px;font-size:0.74rem;color:var(--text2);">旧暦'+cd.kyureki_day+'日</span></div>'+
+        '<div style="text-align:right;font-size:0.74rem;">'+
+        '<div style="color:var(--gold)">'+cd.marketing.theme+'</div>'+
+        '<div style="color:var(--text2);margin-top:2px;">'+cd.marketing.family_tree_oki+'</div></div></div>';
+    }).join('');
 }
 
 function initStrategyRows(){
-  const D=[{n:'新月・祈願',e:'🌑',a:'思考期'},{n:'三日月・芽吹き',e:'🌒',a:'活動期'},{n:'上弦・決断',e:'🌓',a:'活動期'},{n:'十三夜・最盛',e:'🌔',a:'活動期'},{n:'満月・感謝',e:'🌕',a:'思考期'},{n:'十六夜・振り返り',e:'🌖',a:'停滞期'},{n:'下弦・整理',e:'🌗',a:'停滞期'},{n:'晦日・休息',e:'🌘',a:'停滞期'}];
-  document.getElementById('strategy-rows').innerHTML=D.map(p=>{
-    const mkt=DATA.mkt_marketing[p.n]||{},col=_ac(p.a),bp=mkt.budget_pct||0;
-    return`<div style="display:grid;grid-template-columns:140px 1fr 1fr 1fr 62px;gap:8px;padding:10px 12px;border-radius:8px;margin-bottom:5px;background:var(--card2);">
-      <div style="display:flex;align-items:center;gap:7px;font-weight:700;color:${col};font-size:0.83rem;">
-        <span>${p.e}</span><div><div>${p.n}</div><span style="display:inline-block;padding:1px 5px;border-radius:6px;font-size:0.6rem;background:${col}22;color:${col};margin-top:2px;">${p.a}</span></div></div>
-      <div style="font-size:0.72rem;color:var(--text2);line-height:1.4;"><strong style="color:var(--text);display:block;margin-bottom:2px;">${mkt.theme||''}</strong>${mkt.copy_direction||''}</div>
-      <div style="font-size:0.72rem;color:var(--text2);line-height:1.4;"><strong style="color:var(--text);display:block;margin-bottom:2px;">${mkt.target||''}</strong>${mkt.channels||''}</div>
-      <div style="font-size:0.72rem;color:var(--gold);line-height:1.4;">${mkt.family_tree_oki||''}</div>
-      <div style="text-align:center;"><div style="border:1px solid ${_bc(bp)}44;border-radius:16px;padding:2px 6px;font-size:0.76rem;font-weight:700;color:${_bc(bp)};">${bp}%</div>
-        <div style="font-size:0.6rem;color:var(--text2);margin-top:3px;">CTA:${mkt.cta_intensity||'-'}</div></div></div>`;}).join('');
+  var D=[{n:'新月・祈願',e:'🌑',a:'思考期'},{n:'三日月・芽吹き',e:'🌒',a:'活動期'},
+         {n:'上弦・決断',e:'🌓',a:'活動期'},{n:'十三夜・最盛',e:'🌔',a:'活動期'},
+         {n:'満月・感謝',e:'🌕',a:'思考期'},{n:'十六夜・振り返り',e:'🌖',a:'停滞期'},
+         {n:'下弦・整理',e:'🌗',a:'停滞期'},{n:'晦日・休息',e:'🌘',a:'停滞期'}];
+  document.getElementById('strategy-rows').innerHTML=D.map(function(p){
+    var mkt=DATA.mkt_marketing[p.n]||{},col=_ac(p.a),bp=mkt.budget_pct||0;
+    return '<div style="display:grid;grid-template-columns:140px 1fr 1fr 1fr 62px;gap:8px;padding:10px 12px;border-radius:8px;margin-bottom:5px;background:var(--card2);">'+
+      '<div style="display:flex;align-items:center;gap:7px;font-weight:700;color:'+col+';font-size:0.83rem;">'+
+      '<span>'+p.e+'</span><div><div>'+p.n+'</div>'+
+      '<span style="display:inline-block;padding:1px 5px;border-radius:6px;font-size:0.6rem;background:'+col+'22;color:'+col+';margin-top:2px;">'+p.a+'</span></div></div>'+
+      '<div style="font-size:0.72rem;color:var(--text2);line-height:1.4;"><strong style="color:var(--text);display:block;margin-bottom:2px;">'+(mkt.theme||'')+'</strong>'+(mkt.copy_direction||'')+'</div>'+
+      '<div style="font-size:0.72rem;color:var(--text2);line-height:1.4;"><strong style="color:var(--text);display:block;margin-bottom:2px;">'+(mkt.target||'')+'</strong>'+(mkt.channels||'')+'</div>'+
+      '<div style="font-size:0.72rem;color:var(--gold);line-height:1.4;">'+(mkt.family_tree_oki||'')+'</div>'+
+      '<div style="text-align:center;"><div style="border:1px solid '+_bc(bp)+'44;border-radius:16px;padding:2px 6px;font-size:0.76rem;font-weight:700;color:'+_bc(bp)+';">'+bp+'%</div>'+
+      '<div style="font-size:0.6rem;color:var(--text2);margin-top:3px;">CTA:'+(mkt.cta_intensity||'-')+'</div></div></div>';
+  }).join('');
 }
 
 function initMechanism(){
-  const steps=DATA.mkt_mechanism.steps;
-  document.getElementById('mech-flow').innerHTML=steps.map((s,i)=>`
-    <div style="background:var(--card2);border-radius:9px;padding:15px;min-width:140px;flex:1;text-align:center;">
-      <div style="font-size:1.8rem;margin-bottom:7px;">${s.icon}</div>
-      <div style="font-size:0.8rem;color:var(--gold);font-weight:700;margin-bottom:5px;">${s.title}</div>
-      <div style="font-size:0.67rem;color:var(--text2);line-height:1.5;">${s.desc}</div></div>
-    ${i<steps.length-1?'<div style="display:flex;align-items:center;padding:0 4px;color:var(--gold);font-size:1.2rem;flex-shrink:0;">→</div>':''}`).join('');
-  const tbl=document.getElementById('evidence-table');
-  [['USDJPY','満月翌日','p=0.124','準有意・最強'],['Nikkei225','新月・満月','通常比3-4倍','月相日リターン著増'],
-   ['BTC','月相後Day+4','+1.24〜1.58%','遅延共鳴パターン'],['SP500','新月後','正のドリフト','上昇モメンタム起点'],
-   ['集合行動','満月','感情的高揚↑','ER受診・衝動行動増'],['沖縄旧暦','一日・十五日','1000年の実践','集合行動規範として定着']
-  ].forEach(row=>{const tr=document.createElement('tr');tr.innerHTML=row.map((c,i)=>`<td style="padding:8px 12px;border-bottom:1px solid var(--border);${i===2?'color:var(--gold);font-weight:700':''}">${c}</td>`).join('');tbl.appendChild(tr);});
+  var steps=DATA.mkt_mechanism.steps;
+  document.getElementById('mech-flow').innerHTML=steps.map(function(s,i){
+    return '<div style="background:var(--card2);border-radius:9px;padding:15px;min-width:140px;flex:1;text-align:center;">'+
+      '<div style="font-size:1.8rem;margin-bottom:7px;">'+s.icon+'</div>'+
+      '<div style="font-size:0.8rem;color:var(--gold);font-weight:700;margin-bottom:5px;">'+s.title+'</div>'+
+      '<div style="font-size:0.67rem;color:var(--text2);line-height:1.5;">'+s.desc+'</div></div>'+
+      (i<steps.length-1?'<div style="display:flex;align-items:center;padding:0 4px;color:var(--gold);font-size:1.2rem;flex-shrink:0;">→</div>':'');
+  }).join('');
+  var tbl=document.getElementById('evidence-table');
+  [['USDJPY','満月翌日','p=0.124','準有意・最強'],
+   ['Nikkei225','新月・満月','通常比3-4倍','月相日リターン著増'],
+   ['BTC','月相後Day+4','+1.24〜1.58%','遅延共鳴パターン'],
+   ['SP500','新月後','正のドリフト','上昇モメンタム起点'],
+   ['集合行動','満月','感情的高揚↑','ER受診・衝動行動増'],
+   ['沖縄旧暦','一日・十五日','1000年の実践','集合行動規範として定着']
+  ].forEach(function(row){
+    var tr=document.createElement('tr');
+    tr.innerHTML=row.map(function(c,i){return '<td style="padding:8px 12px;border-bottom:1px solid var(--border);'+(i===2?'color:var(--gold);font-weight:700':'')+'">' +c+'</td>';}).join('');
+    tbl.appendChild(tr);
+  });
   if(window._wC)window._wC.destroy();
-  const wc=document.getElementById('waveChart');if(!wc)return;
-  const lb=[],ad=[],rd=[];
-  for(let i=0;i<=30;i++){lb.push(i===0?'新月':i===15?'満月':i===30?'新月':i);ad.push(50+45*Math.sin(i*Math.PI/15-Math.PI/4));rd.push(60+40*Math.cos(i*Math.PI/15));}
-  window._wC=new Chart(wc,{type:'line',data:{labels:lb,datasets:[{label:'行動エネルギー',data:ad,borderColor:'#5ba85d',backgroundColor:'#5ba85d22',fill:true,tension:0.4},{label:'内省エネルギー',data:rd,borderColor:'#c8a45a',backgroundColor:'#c8a45a22',fill:true,tension:0.4}]},options:{responsive:true,maintainAspectRatio:false,scales:{x:{ticks:{color:'#555',maxTicksLimit:8},grid:{color:'#1a2030'}},y:{ticks:{color:'#555'},grid:{color:'#1a2030'},min:0,max:100}},plugins:{legend:{labels:{color:'#8a9ab8'}}}}});
+  var wc=document.getElementById('waveChart');if(!wc)return;
+  var lb=[],ad=[],rd=[];
+  for(var i=0;i<=30;i++){
+    lb.push(i===0?'新月':i===15?'満月':i===30?'新月':String(i));
+    ad.push(50+45*Math.sin(i*Math.PI/15-Math.PI/4));
+    rd.push(60+40*Math.cos(i*Math.PI/15));
+  }
+  window._wC=new Chart(wc,{type:'line',data:{labels:lb,datasets:[
+    {label:'行動エネルギー',data:ad,borderColor:'#5ba85d',backgroundColor:'#5ba85d22',fill:true,tension:0.4},
+    {label:'内省エネルギー',data:rd,borderColor:'#c8a45a',backgroundColor:'#c8a45a22',fill:true,tension:0.4}
+  ]},options:{responsive:true,maintainAspectRatio:false,
+    scales:{x:{ticks:{color:'#555',maxTicksLimit:8},grid:{color:'#1a2030'}},y:{ticks:{color:'#555'},grid:{color:'#1a2030'},min:0,max:100}},
+    plugins:{legend:{labels:{color:'#8a9ab8'}}}}});
 }
 
 function initBudgetCharts(){
-  const PH=['新月・祈願','三日月・芽吹き','上弦・決断','十三夜・最盛','満月・感謝','十六夜・振り返り','下弦・整理','晦日・休息'];
-  const AT=['思考期','活動期','活動期','活動期','思考期','停滞期','停滞期','停滞期'];
-  const bd=PH.map(p=>DATA.mkt_marketing[p]?.budget_pct||0);
-  const bc=AT.map(a=>_ac(a));
+  var PH=['新月・祈願','三日月・芽吹き','上弦・決断','十三夜・最盛','満月・感謝','十六夜・振り返り','下弦・整理','晦日・休息'];
+  var AT=['思考期','活動期','活動期','活動期','思考期','停滞期','停滞期','停滞期'];
+  var bd=PH.map(function(p){return DATA.mkt_marketing[p]?DATA.mkt_marketing[p].budget_pct:0;});
+  var bc=AT.map(function(a){return _ac(a);});
   if(window._bC)window._bC.destroy();
-  window._bC=new Chart(document.getElementById('budgetChart'),{type:'bar',data:{labels:PH.map(p=>p.replace('・','\n')),datasets:[{label:'予算比率(%)',data:bd,backgroundColor:bc,borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,scales:{x:{ticks:{color:'#666',font:{size:8}},grid:{display:false}},y:{ticks:{color:'#666'},grid:{color:'#1a2030'},max:35}},plugins:{legend:{display:false}}}});
-  const c90=DATA.mkt_calendar.filter(d=>d.date>=DATA.mkt_today).slice(0,90);
+  window._bC=new Chart(document.getElementById('budgetChart'),{type:'bar',
+    data:{labels:PH.map(function(p){return p.replace('・','\n');}),datasets:[{label:'予算比率(%)',data:bd,backgroundColor:bc,borderRadius:4}]},
+    options:{responsive:true,maintainAspectRatio:false,
+      scales:{x:{ticks:{color:'#666',font:{size:8}},grid:{display:false}},y:{ticks:{color:'#666'},grid:{color:'#1a2030'},max:35}},
+      plugins:{legend:{display:false}}}});
+  var c90=DATA.mkt_calendar.filter(function(d){return d.date>=DATA.mkt_today;}).slice(0,90);
   if(window._tC)window._tC.destroy();
-  window._tC=new Chart(document.getElementById('timelineChart'),{type:'bar',data:{labels:c90.map(d=>d.date.slice(5)),datasets:[{label:'日次予算強度',data:c90.map(d=>d.marketing.budget_pct),backgroundColor:c90.map(d=>_ac(d.activity_type)),borderRadius:2}]},options:{responsive:true,maintainAspectRatio:false,scales:{x:{ticks:{color:'#555',maxTicksLimit:12,font:{size:7}},grid:{display:false}},y:{ticks:{color:'#666'},grid:{color:'#1a2030'},max:35}},plugins:{legend:{display:false}}}});
+  window._tC=new Chart(document.getElementById('timelineChart'),{type:'bar',
+    data:{labels:c90.map(function(d){return d.date.slice(5);}),
+          datasets:[{label:'日次予算強度',data:c90.map(function(d){return d.marketing.budget_pct;}),
+                     backgroundColor:c90.map(function(d){return _ac(d.activity_type);}),borderRadius:2}]},
+    options:{responsive:true,maintainAspectRatio:false,
+      scales:{x:{ticks:{color:'#555',maxTicksLimit:12,font:{size:7}},grid:{display:false}},y:{ticks:{color:'#666'},grid:{color:'#1a2030'},max:35}},
+      plugins:{legend:{display:false}}}});
   document.getElementById('budget-strategy-grid').innerHTML=[
     {t:'活動期',i:'⚡',c:'#5ba85d',p:'70%',d:'広告費の70%を集中投下。新規獲得・リターゲ・プッシュ通知を最大化。CTA強度を上げ限定感・緊急感を演出。',ph:'三日月〜十三夜（旧暦2〜13日）'},
-    {t:'思考期',i:'🌟',c:'#c8a45a',p:'20%',d:'既存顧客との絆を深める。ロイヤリティ施策・コミュニティ・感謝コンテンツへ。紹介プログラムにも最適。',ph:'新月（旧暦1日）・満月（旧暦15日）'},
+    {t:'思考期',i:'🌟',c:'#c8a45a',p:'20%',d:'既存顧客との絆を深める。ロイヤリティ・コミュニティ・感謝コンテンツへ。紹介プログラムにも最適。',ph:'新月（旧暦1日）・満月（旧暦15日）'},
     {t:'停滞期',i:'🔵',c:'#4a6fa5',p:'10-18%',d:'SEO・ブログ・YouTube等の長期資産投資。次の活動期の仕込みに集中。',ph:'十六夜〜晦日（旧暦16〜29日）'},
-  ].map(s=>`<div style="background:var(--card2);border-radius:10px;padding:16px;border-top:4px solid ${s.c};"><div style="font-size:1.5rem;margin-bottom:5px;">${s.i}</div><div style="font-size:0.92rem;font-weight:700;color:${s.c};margin-bottom:3px;">${s.t}</div><div style="font-size:1.8rem;font-weight:900;color:${s.c};margin-bottom:6px;">${s.p}</div><div style="font-size:0.72rem;color:var(--text2);line-height:1.5;margin-bottom:8px;">${s.d}</div><div style="font-size:0.67rem;color:var(--text2);border-top:1px solid var(--border);padding-top:6px;">📅 ${s.ph}</div></div>`).join('');
+  ].map(function(s){
+    return '<div style="background:var(--card2);border-radius:10px;padding:16px;border-top:4px solid '+s.c+';">'+
+      '<div style="font-size:1.5rem;margin-bottom:5px;">'+s.i+'</div>'+
+      '<div style="font-size:0.92rem;font-weight:700;color:'+s.c+';margin-bottom:3px;">'+s.t+'</div>'+
+      '<div style="font-size:1.8rem;font-weight:900;color:'+s.c+';margin-bottom:6px;">'+s.p+'</div>'+
+      '<div style="font-size:0.72rem;color:var(--text2);line-height:1.5;margin-bottom:8px;">'+s.d+'</div>'+
+      '<div style="font-size:0.67rem;color:var(--text2);border-top:1px solid var(--border);padding-top:6px;">📅 '+s.ph+'</div></div>';
+  }).join('');
 }
 </script>
-
 </body>
 </html>
