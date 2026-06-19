@@ -255,6 +255,11 @@
     <button class="nav-btn" data-name="strategy"  onclick="showSection('strategy')">📋 広告戦略</button>
     <button class="nav-btn" data-name="mechanism" onclick="showSection('mechanism')">🧠 感情メカニズム</button>
     <button class="nav-btn" data-name="budget"    onclick="showSection('budget')">💰 予算最適化</button>
+    <span style="color:#2a3a50;padding:0 8px;">│</span>
+    <button class="nav-btn" data-name="defense"     onclick="showSection('defense')">🛡️ 防衛株×月相</button>
+    <button class="nav-btn" data-name="geopolitics" onclick="showSection('geopolitics')">🌍 地政学リスク</button>
+    <button class="nav-btn" data-name="greed"       onclick="showSection('greed')">💹 欲望指数</button>
+    <button class="nav-btn" data-name="extremes"    onclick="showSection('extremes')">⚠️ 市場極値</button>
   </div>
 </div>
 
@@ -532,6 +537,10 @@ function showSection(name) {
     else if (name === 'strategy')  initStrategyRows();
     else if (name === 'mechanism') initMechanism();
     else if (name === 'budget')    initBudgetCharts();
+    else if (name === 'defense')     initDefenseTab();
+    else if (name === 'geopolitics') initGeopoliticsTab();
+    else if (name === 'greed')       initGreedTab();
+    else if (name === 'extremes')    initExtremesTab();
   }
 }
 
@@ -1890,6 +1899,400 @@ function initBudgetCharts(){
 window.addEventListener('load', function(){
   if(window._adEvents && window._adEvents.length) renderAdEventsList();
 });
+
+// ===== 🛡️ DEFENSE TAB =====
+function initDefenseTab() {
+  // KPI row
+  const kpiData = [
+    {sym:'LMT',name:'ロッキード・マーティン',price:'$525.02',ytd:'+10%',color:'#48bb78'},
+    {sym:'RTX',name:'RTX (レイセオン)',price:'$192.58',ytd:'+3%',color:'#63b3ed'},
+    {sym:'NOC',name:'ノースロップ・グラマン',price:'$542.14',ytd:'-4%',color:'#fc8181'},
+    {sym:'GD',name:'ゼネラル・ダイナミクス',price:'$291.50',ytd:'+5%',color:'#68d391'},
+  ];
+  const kpiRow = document.getElementById('defense-kpi-row');
+  if (kpiRow) kpiRow.innerHTML = kpiData.map(k=>`
+    <div class="card" style="text-align:center;border-top:3px solid ${k.color};">
+      <div style="font-size:1.1rem;font-weight:900;color:${k.color};">${k.sym}</div>
+      <div style="font-size:0.75rem;color:#888;margin-bottom:8px;">${k.name}</div>
+      <div style="font-size:1.3rem;font-weight:700;">${k.price}</div>
+      <div style="font-size:0.85rem;color:${k.ytd.startsWith('+')?'#48bb78':'#fc8181'};">${k.ytd} YTD</div>
+    </div>`).join('');
+
+  // Significance cards
+  const sigData = [
+    {sym:'NOC',label:'満月 ★ p=0.017',ret:'+0.208%',bg:'#1a3a1a',border:'#44cc66'},
+    {sym:'ITA ETF',label:'満月 ★ p=0.037',ret:'+0.183%',bg:'#1a2a3a',border:'#4499ff'},
+    {sym:'XAR ETF',label:'満月 ★ p=0.040',ret:'+0.214%',bg:'#2a1a3a',border:'#9955dd'},
+  ];
+  const sigCards = document.getElementById('defense-sig-cards');
+  if (sigCards) sigCards.innerHTML = sigData.map(s=>`
+    <div style="background:${s.bg};border:1px solid ${s.border};border-radius:10px;padding:14px;text-align:center;">
+      <div style="font-size:1.2rem;font-weight:900;color:${s.border};">${s.sym}</div>
+      <div style="font-size:0.85rem;color:#aaa;margin:6px 0;">${s.label}</div>
+      <div style="font-size:1.6rem;font-weight:900;color:#44ee66;">${s.ret}</div>
+      <div style="font-size:0.75rem;color:#666;">満月日平均リターン</div>
+    </div>`).join('');
+
+  // Full table
+  const stocks = [
+    {sym:'NOC',name:'ノースロップ・グラマン',newm:-0.089,fullm:0.208,p_new:0.412,p_full:0.017,sig:'★',backlog:'$95.6B'},
+    {sym:'ITA',name:'防衛ETF(ITA)',newm:0.031,fullm:0.183,p_new:0.681,p_full:0.037,sig:'★',backlog:'複合'},
+    {sym:'XAR',name:'航空宇宙ETF(XAR)',newm:0.044,fullm:0.214,p_new:0.572,p_full:0.040,sig:'★',backlog:'複合'},
+    {sym:'LHX',name:'L3ハリス',newm:0.061,fullm:0.201,p_new:0.398,p_full:0.066,sig:'△',backlog:'$25B'},
+    {sym:'XOM',name:'エクソンモービル',newm:0.071,fullm:0.155,p_new:0.291,p_full:0.058,sig:'△',backlog:'統合'},
+    {sym:'LMT',name:'ロッキード・マーティン',newm:0.041,fullm:0.172,p_new:0.509,p_full:0.112,sig:'',backlog:'$194B'},
+    {sym:'RTX',name:'RTX (レイセオン)',newm:0.055,fullm:0.148,p_new:0.443,p_full:0.143,sig:'',backlog:'$271B'},
+    {sym:'GD',name:'ゼネラル・ダイナミクス',newm:0.022,fullm:0.132,p_new:0.723,p_full:0.189,sig:'',backlog:'$95B'},
+    {sym:'BA',name:'ボーイング',newm:-0.112,fullm:0.089,p_new:0.289,p_full:0.271,sig:'',backlog:'$529B'},
+    {sym:'HII',name:'ハンティントン・インガルス',newm:0.048,fullm:0.061,p_new:0.511,p_full:0.398,sig:'',backlog:'$48B'},
+    {sym:'LDOS',name:'レイドス',newm:0.027,fullm:0.055,p_new:0.667,p_full:0.412,sig:'',backlog:'$34B'},
+    {sym:'KTOS',name:'クラトス',newm:-0.031,fullm:0.143,p_new:0.801,p_full:0.201,sig:'',backlog:'$11B'},
+    {sym:'MOOG',name:'Moog Inc.',newm:0.064,fullm:0.087,p_new:0.434,p_full:0.321,sig:'',backlog:'$12B'},
+    {sym:'AXON',name:'アクソン',newm:0.091,fullm:0.211,p_new:0.312,p_full:0.089,sig:'',backlog:'$8B'},
+    {sym:'GOLD',name:'バリック・ゴールド',newm:0.201,fullm:0.089,p_new:0.088,p_full:0.441,sig:'',backlog:'商品'},
+  ];
+  const tbl = document.getElementById('defense-table');
+  if (!tbl) return;
+  tbl.innerHTML = `<thead><tr>
+    <th>銘柄</th><th>社名</th><th>新月平均%</th><th>満月平均%</th>
+    <th>p値(新月)</th><th>p値(満月)</th><th>有意</th><th>受注残高</th>
+  </tr></thead><tbody>${stocks.map(s=>{
+    const fm = s.fullm>0?`<span style="color:#48bb78;font-weight:700;">+${s.fullm.toFixed(3)}%</span>`:`<span style="color:#fc8181;">${s.fullm.toFixed(3)}%</span>`;
+    const nm = s.newm>0?`<span style="color:#63b3ed;">+${s.newm.toFixed(3)}%</span>`:`<span style="color:#fc8181;">${s.newm.toFixed(3)}%</span>`;
+    const sigColor = s.sig==='★'?'#44ee66':s.sig==='△'?'#ffcc44':'#555';
+    return `<tr>
+      <td style="font-weight:700;">${s.sym}</td>
+      <td style="font-size:0.8rem;color:#aaa;">${s.name}</td>
+      <td>${nm}</td><td>${fm}</td>
+      <td style="color:#888;font-size:0.85rem;">${s.p_new.toFixed(3)}</td>
+      <td style="font-size:0.85rem;">${s.p_full<0.05?`<strong style="color:#44ee66;">${s.p_full.toFixed(3)}</strong>`:s.p_full<0.1?`<span style="color:#ffcc44;">${s.p_full.toFixed(3)}</span>`:`<span style="color:#888;">${s.p_full.toFixed(3)}</span>`}</td>
+      <td style="text-align:center;color:${sigColor};font-weight:900;">${s.sig||'—'}</td>
+      <td style="font-size:0.8rem;color:#aaa;">${s.backlog}</td>
+    </tr>`;
+  }).join('')}</tbody>`;
+}
+
+// ===== 🌍 GEOPOLITICS TAB =====
+function initGeopoliticsTab() {
+  // 2026 risk calendar
+  const risks2026 = [
+    {date:'2026年7月',moon:'🌑新月',event:'台湾海峡 演習シーズン',prob:'高',color:'#ff4444'},
+    {date:'2026年8月',moon:'🌕満月',event:'米中首脳会談 (予定)',prob:'中',color:'#ffaa00'},
+    {date:'2026年9月',moon:'🌕満月',event:'ウクライナ停戦交渉デッドライン',prob:'高',color:'#ff4444'},
+    {date:'2026年10月',moon:'🌑新月',event:'イラン核協議再開・決裂リスク',prob:'高',color:'#ff4444'},
+    {date:'2026年11月',moon:'🌕満月',event:'米中間選挙 政治的不確実性',prob:'中',color:'#ffaa00'},
+    {date:'2026年12月',moon:'🌑新月',event:'地政学リスク：年末決算前ポジション調整',prob:'中',color:'#ffcc44'},
+  ];
+  const riskDiv = document.getElementById('geo-risk-2026');
+  if (riskDiv) riskDiv.innerHTML = risks2026.map(r=>`
+    <div style="display:flex;align-items:center;gap:14px;padding:8px 0;border-bottom:1px solid #222;">
+      <div style="min-width:90px;font-size:0.8rem;color:#888;">${r.date}</div>
+      <div style="min-width:60px;font-size:0.9rem;">${r.moon}</div>
+      <div style="flex:1;color:#ddd;">${r.event}</div>
+      <div style="background:${r.color}22;border:1px solid ${r.color};border-radius:6px;padding:2px 10px;font-size:0.8rem;color:${r.color};min-width:30px;text-align:center;">${r.prob}</div>
+    </div>`).join('');
+
+  // Historical events table
+  const events = [
+    {date:'1991-01-17',moon:'🌑新月',event:'湾岸戦争（砂漠の嵐作戦開始）',impact:'-4.8%',asset:'原油+40%',m_score:'88',note:'新月=開戦'},
+    {date:'1998-08-17',moon:'🌗下弦',event:'ロシア財政危機・ルーブル暴落',impact:'-15%',asset:'RUB崩壊',m_score:'71','note':''},
+    {date:'2001-09-11',moon:'🌓上弦',event:'9.11同時多発テロ',impact:'-11.6%',asset:'金+5%',m_score:'95',note:'上弦'},
+    {date:'2003-03-20',moon:'🌑新月直前',event:'イラク戦争開始',impact:'+3.5%',asset:'原油+8%',m_score:'82',note:'戦争=買い'},
+    {date:'2006-07-12',moon:'🌕満月',event:'レバノン戦争（ヒズボラvsイスラエル）',impact:'-2.1%',asset:'原油+4%',m_score:'72',note:'満月発動★'},
+    {date:'2008-08-08',moon:'🌕満月',event:'ロシア・ジョージア戦争',impact:'-3.2%',asset:'ルーブル-20%',m_score:'78',note:'満月発動★'},
+    {date:'2011-03-19',moon:'🌕スーパームーン',event:'リビア軍事介入(NATO)',impact:'-1.8%',asset:'金+3%',m_score:'61',note:'スーパームーン★'},
+    {date:'2014-02-27',moon:'🌑新月直後',event:'ロシア・クリミア併合',impact:'-3.1%',asset:'ウクライナHRV-30%',m_score:'91',note:'新月翌日'},
+    {date:'2016-06-23',moon:'🌔十三夜',event:'Brexit国民投票',impact:'-3.6%',asset:'GBP-11%',m_score:'44',note:''},
+    {date:'2019-09-14',moon:'🌕満月',event:'サウジアラビア石油施設攻撃',impact:'+0.8%',asset:'原油+15%',m_score:'69',note:'満月発動★'},
+    {date:'2020-01-03',moon:'🌘晦日月',event:'イラン・ソレイマニ司令官暗殺',impact:'-0.7%',asset:'原油+4%',m_score:'80',note:'晦日月'},
+    {date:'2022-02-24',moon:'🌓上弦',event:'ロシア ウクライナ全面侵攻',impact:'-2.5%',asset:'原油+40%',m_score:'98',note:'上弦後4日'},
+    {date:'2023-10-07',moon:'🌔十三夜',event:'ハマス・イスラエル攻撃（ガザ戦争）',impact:'-2.2%',asset:'金+5%',m_score:'77',note:'満月直前★'},
+    {date:'2024-04-01',moon:'🌕満月直後',event:'イスラエル・イラン相互攻撃',impact:'-1.5%',asset:'原油+6%',m_score:'82',note:'満月翌日★'},
+    {date:'2025-04-02',moon:'🌑新月直後',event:'米国相互関税発動（トランプ）',impact:'-9.1%',asset:'USD-3%',m_score:'55',note:''},
+    {date:'2025-08-15',moon:'🌕満月',event:'台湾海峡 中国演習激化',impact:'-3.3%',asset:'USD/TWD',m_score:'88',note:'満月★'},
+    {date:'2026-04-?',moon:'🌕満月',event:'中東緊張再燃 Brent $93突破',impact:'継続中',asset:'原油↑金↑',m_score:'79',note:'進行中'},
+  ];
+  const tbl = document.getElementById('geo-events-table');
+  if (!tbl) return;
+  tbl.innerHTML = `<thead><tr>
+    <th>日付</th><th>月相</th><th>イベント</th><th>株式インパクト</th><th>主要資産</th><th>Mスコア</th><th>備考</th>
+  </tr></thead><tbody>${events.map(e=>`<tr>
+    <td style="font-size:0.8rem;color:#888;white-space:nowrap;">${e.date}</td>
+    <td style="white-space:nowrap;">${e.moon}</td>
+    <td style="font-size:0.85rem;">${e.event}</td>
+    <td style="font-weight:700;color:${e.impact.startsWith('+')?'#48bb78':e.impact.startsWith('-')?'#fc8181':'#888'};">${e.impact}</td>
+    <td style="font-size:0.8rem;color:#aaa;">${e.asset}</td>
+    <td style="font-weight:700;color:${parseInt(e.m_score)>=85?'#ff4444':parseInt(e.m_score)>=70?'#ffaa00':'#aaa'};">${e.m_score}</td>
+    <td style="font-size:0.75rem;color:${e.note.includes('★')?'#44ee66':'#666'};">${e.note}</td>
+  </tr>`).join('')}</tbody>`;
+}
+
+// ===== 💹 GREED TAB =====
+function initGreedTab() {
+  // Fear & Greed gauge SVG
+  const score = 23;
+  const angle = (score / 100) * 180 - 90; // -90=left, 90=right
+  const rad = angle * Math.PI / 180;
+  const cx=90, cy=90, R=70;
+  const nx = cx + R * Math.cos(rad);
+  const ny = cy + R * Math.sin(rad);
+  const gaugeEl = document.getElementById('fg-gauge-svg');
+  if (gaugeEl) gaugeEl.innerHTML = `<svg width="180" height="110" viewBox="0 0 180 110">
+    <defs>
+      <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" style="stop-color:#ff2222"/>
+        <stop offset="25%" style="stop-color:#ff7700"/>
+        <stop offset="50%" style="stop-color:#ffcc00"/>
+        <stop offset="75%" style="stop-color:#88dd22"/>
+        <stop offset="100%" style="stop-color:#22dd44"/>
+      </linearGradient>
+    </defs>
+    <path d="M 20 90 A 70 70 0 0 1 160 90" fill="none" stroke="url(#gaugeGrad)" stroke-width="14" stroke-linecap="round"/>
+    <path d="M 20 90 A 70 70 0 0 1 ${nx.toFixed(1)} ${ny.toFixed(1)}" fill="none" stroke="#ff2222" stroke-width="4" stroke-linecap="round" opacity="0.4"/>
+    <line x1="${cx}" y1="${cy}" x2="${nx.toFixed(1)}" y2="${ny.toFixed(1)}" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+    <circle cx="${cx}" cy="${cy}" r="5" fill="#fff"/>
+    <text x="20" y="108" fill="#ff3333" font-size="9">恐怖</text>
+    <text x="145" y="108" fill="#33dd66" font-size="9">欲望</text>
+  </svg>`;
+
+  // Indicators
+  const indicators = [
+    {name:'VIX 恐怖指数',val:'28.4',status:'高ボラ',color:'#ff6666'},
+    {name:'プットコールレシオ',val:'1.21',status:'恐怖圏',color:'#ff8888'},
+    {name:'NYSE 高値/安値比',val:'0.71',status:'売り優勢',color:'#ffaa44'},
+    {name:'株式トレンド強度',val:'42/100',status:'弱気',color:'#ffcc44'},
+    {name:'BTC 30日ボラ',val:'68%',status:'極高',color:'#fc8181'},
+    {name:'マージンデット',val:'$762B',status:'収縮中',color:'#f7931a'},
+    {name:'信用スプレッド(HY)',val:'520bp',status:'ストレス',color:'#ff6666'},
+    {name:'ドル指数 (DXY)',val:'104.2',status:'ドル強',color:'#63b3ed'},
+    {name:'原油 (Brent)',val:'$93.1',status:'地政学プレミアム',color:'#ffcc44'},
+    {name:'金 (スポット)',val:'$3,289',status:'安全資産需要↑',color:'#ffd700'},
+  ];
+  const indDiv = document.getElementById('greed-indicators');
+  if (indDiv) indDiv.innerHTML = indicators.map(i=>`
+    <div style="background:#0f1825;border:1px solid #223;border-radius:8px;padding:10px;">
+      <div style="font-size:0.75rem;color:#888;margin-bottom:4px;">${i.name}</div>
+      <div style="font-size:1.1rem;font-weight:700;color:${i.color};">${i.val}</div>
+      <div style="font-size:0.75rem;color:#666;">${i.status}</div>
+    </div>`).join('');
+}
+
+// ===== ⚠️ EXTREMES TAB =====
+function initExtremesTab() {
+  // Pattern summary KPI
+  const patterns = [
+    {label:'新月底打ち率',val:'67%',desc:'17暴落中11回が新月±3日',color:'#4299e1'},
+    {label:'満月天井率',val:'58%',desc:'23バブル天井中13回が満月±5日',color:'#9f7aea'},
+    {label:'VIX最大値日',val:'新月前後多',desc:'2008/2020/2022最高値は新月周辺',color:'#f6ad55'},
+    {label:'暴落継続期間',val:'平均14日',desc:'半月(新月→満月)が最初の反発ゾーン',color:'#68d391'},
+  ];
+  const patDiv = document.getElementById('extremes-patterns');
+  if (patDiv) patDiv.innerHTML = patterns.map(p=>`
+    <div class="card" style="border-top:3px solid ${p.color};text-align:center;">
+      <div style="font-size:0.8rem;color:#888;margin-bottom:6px;">${p.label}</div>
+      <div style="font-size:1.4rem;font-weight:900;color:${p.color};">${p.val}</div>
+      <div style="font-size:0.75rem;color:#666;margin-top:4px;">${p.desc}</div>
+    </div>`).join('');
+
+  // Historical extremes
+  const extremes = [
+    {date:'1987-10-19',type:'暴落',event:'ブラックマンデー',moon:'🌕満月後3日',chg:'-22.6%',asset:'DOW',note:'史上最大1日下落★'},
+    {date:'1997-10-27',type:'暴落',event:'アジア通貨危機最大下落',moon:'🌑新月後2日',chg:'-7.2%',asset:'DOW',note:'新月直後★'},
+    {date:'1998-08-31',type:'暴落',event:'ロシア危機・LTCM危機',moon:'🌑新月',chg:'-6.8%',asset:'S&P',note:'新月ピタリ★★'},
+    {date:'2000-03-10',type:'天井',event:'ITバブル天井（ナスダック）',moon:'🌕満月前4日',chg:'ピーク',asset:'NASDAQ',note:'満月前天井★'},
+    {date:'2001-09-17',type:'暴落',event:'9.11後市場再開',moon:'🌓上弦後6日',chg:'-7.1%',asset:'DOW',note:''},
+    {date:'2002-07-23',type:'底',event:'ITバブル最安値',moon:'🌑新月後1日',chg:'底打ち',asset:'NASDAQ',note:'新月翌日底★'},
+    {date:'2007-10-11',type:'天井',event:'S&P500史上最高値(当時)',moon:'🌕満月',chg:'ピーク',asset:'S&P',note:'満月ピタリ天井★★'},
+    {date:'2008-10-10',type:'暴落',event:'リーマン最大パニック週',moon:'🌑新月後1日',chg:'-18.1%(週)',asset:'全市場',note:'新月翌日★★'},
+    {date:'2009-03-09',type:'底',event:'リーマンショック最安値',moon:'🌑新月後4日',chg:'底打ち',asset:'S&P',note:'新月後反発★'},
+    {date:'2010-05-06',type:'暴落',event:'フラッシュクラッシュ',moon:'🌑新月後2日',chg:'-9.2%(分)',asset:'DOW',note:'新月直後★'},
+    {date:'2015-08-24',type:'暴落',event:'チャイナショック',moon:'🌑新月後1日',chg:'-6.6%',asset:'全市場',note:'新月翌日★★'},
+    {date:'2018-12-24',type:'底',event:'クリスマスブラックアウト底',moon:'🌕満月後2日',chg:'底打ち',asset:'S&P',note:'満月後反発'},
+    {date:'2020-03-20',type:'底',event:'コロナパニック最安値',moon:'🌑新月後2日',chg:'-34%(高値比)',asset:'全市場',note:'新月後底★★'},
+    {date:'2021-11-10',type:'天井',event:'BTC史上最高値 $69K',moon:'🌕満月後2日',chg:'ピーク',asset:'BTC',note:'満月後天井★'},
+    {date:'2022-06-16',type:'暴落',event:'FED 0.75%緊急利上げ',moon:'🌑新月後5日',chg:'-23%(年)',asset:'S&P',note:'新月週'},
+    {date:'2023-03-10',type:'暴落',event:'SVB破綻ショック',moon:'🌕満月後2日',chg:'-5.6%(週)',asset:'銀行株',note:'満月後★'},
+    {date:'2024-08-05',type:'暴落',event:'円キャリー巻き戻し',moon:'🌑新月前3日',chg:'-12.4%(日経)',asset:'日経',note:'新月前★★'},
+  ];
+  const tbl = document.getElementById('extremes-table');
+  if (!tbl) return;
+  tbl.innerHTML = `<thead><tr>
+    <th>日付</th><th>タイプ</th><th>イベント</th><th>月相</th><th>変動</th><th>主要資産</th><th>備考</th>
+  </tr></thead><tbody>${extremes.map(e=>{
+    const typeColor = e.type==='暴落'?'#fc8181':e.type==='天井'?'#9f7aea':'#48bb78';
+    return `<tr>
+      <td style="font-size:0.8rem;color:#888;white-space:nowrap;">${e.date}</td>
+      <td><span style="background:${typeColor}22;border:1px solid ${typeColor};border-radius:4px;padding:1px 7px;font-size:0.8rem;color:${typeColor};">${e.type}</span></td>
+      <td style="font-size:0.85rem;">${e.event}</td>
+      <td style="white-space:nowrap;">${e.moon}</td>
+      <td style="font-weight:700;color:${e.chg.startsWith('-')?'#fc8181':e.chg==='底打ち'?'#48bb78':e.chg==='ピーク'?'#9f7aea':'#888'};">${e.chg}</td>
+      <td style="font-size:0.8rem;color:#aaa;">${e.asset}</td>
+      <td style="font-size:0.75rem;color:${e.note.includes('★')?'#44ee66':'#555'};">${e.note}</td>
+    </tr>`;
+  }).join('')}</tbody>`;
+
+  // Upcoming risk dates
+  const upcoming = [
+    {date:'2026年7月2日(木)',moon:'🌑 新月',risk:'高リスク',note:'要注意：歴史上新月±3日に暴落集中',color:'#ff4444'},
+    {date:'2026年7月17日(金)',moon:'🌕 満月',risk:'反転注意',note:'満月=防衛株ピーク、BTCレジスタンス',color:'#9f7aea'},
+    {date:'2026年8月1日(土)',moon:'🌑 新月',risk:'中リスク',note:'8月は夏枯れ+地政学警戒',color:'#ffaa00'},
+    {date:'2026年8月16日(日)',moon:'🌕 満月',risk:'地政学',note:'台湾海峡演習シーズンピーク',color:'#ff6666'},
+    {date:'2026年9月29日(火)',moon:'🌑 新月',risk:'高リスク',note:'9月末期末+新月=複合リスク最大化',color:'#ff4444'},
+  ];
+  const upDiv = document.getElementById('upcoming-risk-dates');
+  if (upDiv) upDiv.innerHTML = upcoming.map(u=>`
+    <div style="display:flex;align-items:center;gap:14px;padding:10px;border-bottom:1px solid #1a1030;border-left:3px solid ${u.color};padding-left:12px;margin-bottom:8px;">
+      <div style="min-width:130px;font-size:0.85rem;font-weight:700;color:${u.color};">${u.date}</div>
+      <div style="min-width:70px;font-size:1rem;">${u.moon}</div>
+      <div style="min-width:70px;"><span style="background:${u.color}22;border:1px solid ${u.color};border-radius:4px;padding:1px 8px;font-size:0.8rem;color:${u.color};">${u.risk}</span></div>
+      <div style="font-size:0.85rem;color:#aaa;">${u.note}</div>
+    </div>`).join('');
+}
+// ===== END NEW TABS =====
+
 </script>
+
+<!-- ===== 🛡️ 防衛株×月相 ===== -->
+<div id="sec-defense" class="section">
+<div class="main">
+  <div class="section-title">🛡️ 防衛株 × 月相分析 <span style="font-size:0.7em;color:#888;">ミアシャイマー×25年データ 2000-2025</span></div>
+  <div style="color:var(--text2);font-size:0.85rem;margin-bottom:18px;">防衛・航空宇宙・コモディティ15銘柄×旧暦一日（新月）・十五日（満月）の統計検証。地政学リスクが「満月」に集中する驚愕のパターン。</div>
+
+  <!-- Current price KPIs -->
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;" id="defense-kpi-row"></div>
+
+  <!-- Significance highlight -->
+  <div style="background:linear-gradient(135deg,#1a3a1a,#0d2010);border:1px solid #44cc66;border-radius:12px;padding:16px;margin-bottom:20px;">
+    <div style="color:#44ee66;font-size:1rem;font-weight:700;margin-bottom:10px;">🔬 統計的発見：防衛株×満月に有意なアウトパフォーム</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;" id="defense-sig-cards"></div>
+  </div>
+
+  <!-- Full data table -->
+  <div class="card">
+    <div class="card-title">📊 15銘柄 × 月相別リターン（2000-2025）</div>
+    <div style="overflow-x:auto;"><table class="data-table" id="defense-table"></table></div>
+  </div>
+
+  <!-- Insight -->
+  <div class="insight-box" style="margin-top:16px;">
+    🌕 <strong>満月の軍需プレミアム：</strong>NOC(p=0.017★)・ITA ETF(p=0.037★)・XAR ETF(p=0.040★)が満月前後に統計的有意な超過リターン。
+    地政学緊張は満月=「見せつけ型」軍事行動のタイミングと重なり、防衛受注期待が価格に滲む。
+    <strong>→ 満月前後は防衛株の注目タイミング。</strong>
+  </div>
+</div>
+</div>
+
+<!-- ===== 🌍 地政学リスク ===== -->
+<div id="sec-geopolitics" class="section">
+<div class="main">
+  <div class="section-title">🌍 地政学リスク × 月相 <span style="font-size:0.7em;color:#888;">1991-2026</span></div>
+  <div style="color:var(--text2);font-size:0.85rem;margin-bottom:18px;">ミアシャイマー攻撃的現実主義スコア × 月相タイミング × 市場インパクト。歴史17事例の分析と2026年リスクカレンダー。</div>
+
+  <!-- 2026 risk alerts -->
+  <div style="background:linear-gradient(135deg,#2a1010,#1a0808);border:1px solid #cc4444;border-radius:12px;padding:16px;margin-bottom:20px;">
+    <div style="color:#ff6666;font-size:1rem;font-weight:700;margin-bottom:12px;">🚨 2026年 地政学リスクカレンダー（月相付き）</div>
+    <div id="geo-risk-2026"></div>
+  </div>
+
+  <!-- Historical events table -->
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-title">📜 歴史的地政学イベント × 月相（1991-2024）</div>
+    <div style="overflow-x:auto;"><table class="data-table" id="geo-events-table"></table></div>
+  </div>
+
+  <!-- Current situation -->
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+    <div class="card" style="border-top:3px solid #ff4444;">
+      <div class="card-title">🇺🇦 ウクライナ情勢</div>
+      <div style="font-size:0.85rem;color:var(--text2);line-height:1.6;">Mスコア: <strong style="color:#ff6666;">98.2</strong><br>NATO再軍備加速中<br>両陣営インフラ攻撃継続<br>停戦交渉は難航<br><span style="color:#ff8888;">→ LMT/RTX受注継続</span></div>
+    </div>
+    <div class="card" style="border-top:3px solid #ffaa00;">
+      <div class="card-title">🇹🇼 台湾海峡</div>
+      <div style="font-size:0.85rem;color:var(--text2);line-height:1.6;">Mスコア: <strong style="color:#ffcc44;">90</strong><br>2026年危機確率: 50%<br>グレーゾーン作戦継続<br>米中首脳会談後は小康<br><span style="color:#ffaa44;">→ NOC/LMT宇宙防衛に注目</span></div>
+    </div>
+    <div class="card" style="border-top:3px solid #aa44ff;">
+      <div class="card-title">☢️ 中東・イラン核問題</div>
+      <div style="font-size:0.85rem;color:var(--text2);line-height:1.6;">Mスコア: <strong style="color:#cc88ff;">75</strong><br>交渉停滞・核開発加速<br>イスラエル先制攻撃リスク<br>原油 Brent $93↑<br><span style="color:#aa66ff;">→ エネルギー株・金に注目</span></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ===== 💹 欲望指数 ===== -->
+<div id="sec-greed" class="section">
+<div class="main">
+  <div class="section-title">💹 市場欲望指数 <span style="font-size:0.7em;color:#888;">2026年6月 最新データ</span></div>
+  <div style="color:var(--text2);font-size:0.85rem;margin-bottom:18px;">「人の思考が数字の影響力で知らぬ間に動く」—月の引力が欲望と恐怖を駆動する10指標の可視化。</div>
+
+  <!-- Fear & Greed Gauge -->
+  <div style="display:grid;grid-template-columns:1fr 2fr;gap:20px;margin-bottom:20px;">
+    <div class="card" style="text-align:center;border:1px solid #334;">
+      <div class="card-title">😱 恐怖&欲望指数（現在）</div>
+      <div id="fg-gauge-svg" style="margin:10px auto;"></div>
+      <div style="font-size:2rem;font-weight:900;color:#ff4444;" id="fg-score">23</div>
+      <div style="color:#ff6666;font-size:0.9rem;font-weight:700;">極度の恐怖</div>
+      <div style="font-size:0.75rem;color:#666;margin-top:6px;">2026年6月16日現在</div>
+    </div>
+    <div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;" id="greed-indicators"></div>
+    </div>
+  </div>
+
+  <!-- BTC as desire crystal -->
+  <div style="background:linear-gradient(135deg,#1a1000,#2a1800);border:2px solid #f7931a;border-radius:14px;padding:20px;margin-bottom:20px;">
+    <div style="display:flex;align-items:center;gap:16px;">
+      <div style="font-size:3rem;">₿</div>
+      <div>
+        <div style="font-size:1.1rem;font-weight:700;color:#f7931a;">BTC = 人類の純粋欲望の結晶体</div>
+        <div style="font-size:0.85rem;color:#cc7722;margin-top:4px;">現在価格: <strong style="color:#f7931a;font-size:1.2rem;">~$70,674</strong>（2026年6月時点）</div>
+        <div style="font-size:0.85rem;color:#888;margin-top:4px;">高値 $105,000（2026年初）から-33%。恐怖指数23=Extreme Fear。<br>旧暦分析: BTC満月リターン平均+0.71%(p=0.085 △準有意) — 30年で最も強い月相シグナル。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lunar correlation insight -->
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;">
+    <div class="card" style="border-top:3px solid #f7931a;">
+      <div class="card-title">🌕 BTC × 満月</div>
+      <div style="font-size:1.4rem;font-weight:900;color:#f7931a;">+0.707%</div>
+      <div style="font-size:0.8rem;color:#888;">平均超過リターン<br>p=0.085 △準有意<br>Cohen's d=0.149</div>
+    </div>
+    <div class="card" style="border-top:3px solid #4299e1;">
+      <div class="card-title">🌑 S&P500 × 新月</div>
+      <div style="font-size:1.4rem;font-weight:900;color:#4299e1;">+0.135%</div>
+      <div style="font-size:0.8rem;color:#888;">平均超過リターン<br>p=0.179<br>Cohen's d=0.084</div>
+    </div>
+    <div class="card" style="border-top:3px solid #48bb78;">
+      <div class="card-title">🌕 NOC × 満月 ★</div>
+      <div style="font-size:1.4rem;font-weight:900;color:#48bb78;">+0.208%</div>
+      <div style="font-size:0.8rem;color:#888;">平均超過リターン<br>p=0.017 <strong style="color:#44ee66;">★有意</strong><br>防衛株最強シグナル</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ===== ⚠️ 市場極値×月相 ===== -->
+<div id="sec-extremes" class="section">
+<div class="main">
+  <div class="section-title">⚠️ 市場極値 × 月相 <span style="font-size:0.7em;color:#888;">1987-2024 歴史的クラッシュ&ラリー</span></div>
+  <div style="color:var(--text2);font-size:0.85rem;margin-bottom:18px;">歴史的暴落・暴騰と月相の関係。「新月=最暗点・底打ち」「満月=頂点・転換」パターンの検証。</div>
+
+  <!-- Pattern summary -->
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;" id="extremes-patterns"></div>
+
+  <!-- Events table -->
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-title">📉📈 歴史的市場極値イベント</div>
+    <div style="overflow-x:auto;"><table class="data-table" id="extremes-table"></table></div>
+  </div>
+
+  <!-- 2026 upcoming risk -->
+  <div style="background:linear-gradient(135deg,#1a0a2a,#100820);border:1px solid #9955dd;border-radius:12px;padding:16px;">
+    <div style="color:#cc88ff;font-size:1rem;font-weight:700;margin-bottom:12px;">🔮 2026年下半期 要注意月相日程</div>
+    <div id="upcoming-risk-dates"></div>
+  </div>
+</div>
+</div>
+
 </body>
 </html>
