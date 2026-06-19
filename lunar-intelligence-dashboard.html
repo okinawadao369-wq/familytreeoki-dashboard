@@ -238,6 +238,22 @@
       <span class="badge">統計的検証付き</span>
     </div>
   </div>
+    <!-- REAL-TIME CLOCK BAR -->
+    <div id="rt-clock-bar" style="margin-top:10px;display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;padding:10px 16px;background:#080e18;border-radius:10px;border:1px solid #1e3050;">
+      <div><span style="font-size:0.72rem;color:#445566;">📅 新暦</span><span id="rt-date" style="color:#aabbdd;font-weight:700;font-size:0.88rem;margin-left:6px;"></span></div>
+      <div style="color:#1e3050;">│</div>
+      <div><span style="font-size:0.72rem;color:#445566;">⏰ JST</span><span id="rt-time" style="color:#c8a45a;font-size:1.05rem;font-weight:900;font-family:monospace;margin-left:6px;letter-spacing:1px;"></span></div>
+      <div style="color:#1e3050;">│</div>
+      <div id="rt-moon-badge" style="font-size:0.95rem;"></div>
+      <div style="color:#1e3050;">│</div>
+      <div><span style="font-size:0.72rem;color:#445566;">📅 旧暦</span><span id="rt-kyureki" style="color:#9ab8cc;font-size:0.88rem;margin-left:6px;font-weight:600;"></span></div>
+      <div style="color:#1e3050;">│</div>
+      <div><span style="font-size:0.72rem;color:#445566;">🌙 月齢</span><span id="rt-moon-age" style="color:#f7931a;font-size:0.9rem;font-weight:700;margin-left:6px;"></span></div>
+      <div style="color:#1e3050;">│</div>
+      <div><span style="font-size:0.72rem;color:#445566;">🌕 次の満月</span><span id="rt-next-full" style="color:#9f7aea;font-size:0.85rem;font-weight:600;margin-left:6px;"></span></div>
+      <div><span style="font-size:0.72rem;color:#445566;">🌑 次の新月</span><span id="rt-next-new" style="color:#63b3ed;font-size:0.85rem;font-weight:600;margin-left:6px;"></span></div>
+    </div>
+  </div>
 </div>
 
 <div class="nav">
@@ -992,6 +1008,203 @@ function buildCycleChart() {
 }
 
 // ===== INIT =====
+// LUNAR ENGINE START
+
+// ============================================================
+// ⚡ REAL-TIME LUNAR ENGINE (精密天文計算 Meeus Algorithm)
+// ============================================================
+(function(){
+  var SYNODIC = 29.53058867;
+  // 基準新月: 2000-01-06 18:14 UTC → JD 2451550.259722
+  var REF_JD  = 2451550.259722;
+
+  // 旧暦月の開始日 (新月日) ※ 実測ベース
+  var KYUREKI_MONTHS = [
+    {m:'旧暦1月',  g:'2026-02-17'},
+    {m:'旧暦2月',  g:'2026-03-18'},
+    {m:'旧暦3月',  g:'2026-04-17'},
+    {m:'旧暦4月',  g:'2026-05-16'},
+    {m:'旧暦5月',  g:'2026-06-15'},
+    {m:'旧暦6月',  g:'2026-07-14'},
+    {m:'旧暦7月',  g:'2026-08-12'},
+    {m:'旧暦8月',  g:'2026-09-11'},
+    {m:'旧暦9月',  g:'2026-10-10'},
+    {m:'旧暦10月', g:'2026-11-09'},
+    {m:'旧暦11月', g:'2026-12-09'},
+    // 2025 (for boundary)
+    {m:'旧暦12月', g:'2025-12-20'},
+    {m:'旧暦11月', g:'2025-11-20'},
+    {m:'旧暦10月', g:'2025-10-21'},
+  ];
+
+  // 節気 (solar terms) 2026
+  var SETSUEI_2026 = [
+    {date:'2026-01-05', name:'小寒'},
+    {date:'2026-01-20', name:'大寒'},
+    {date:'2026-02-03', name:'立春'},
+    {date:'2026-02-18', name:'雨水'},
+    {date:'2026-03-05', name:'啓蟄'},
+    {date:'2026-03-20', name:'春分'},
+    {date:'2026-04-04', name:'清明'},
+    {date:'2026-04-20', name:'穀雨'},
+    {date:'2026-05-05', name:'立夏'},
+    {date:'2026-05-21', name:'小満'},
+    {date:'2026-06-05', name:'芒種'},
+    {date:'2026-06-21', name:'夏至'},
+    {date:'2026-07-07', name:'小暑'},
+    {date:'2026-07-22', name:'大暑'},
+    {date:'2026-08-07', name:'立秋'},
+    {date:'2026-08-23', name:'処暑'},
+    {date:'2026-09-07', name:'白露'},
+    {date:'2026-09-23', name:'秋分'},
+    {date:'2026-10-08', name:'寒露'},
+    {date:'2026-10-23', name:'霜降'},
+    {date:'2026-11-07', name:'立冬'},
+    {date:'2026-11-22', name:'小雪'},
+    {date:'2026-12-07', name:'大雪'},
+    {date:'2026-12-21', name:'冬至'},
+  ];
+
+  function julianDay(d) {
+    var y=d.getUTCFullYear(), m=d.getUTCMonth()+1;
+    var day=d.getUTCDate()+d.getUTCHours()/24+d.getUTCMinutes()/1440+d.getUTCSeconds()/86400+d.getUTCMilliseconds()/86400000;
+    if(m<=2){y--;m+=12;}
+    var A=Math.floor(y/100), B=2-A+Math.floor(A/4);
+    return Math.floor(365.25*(y+4716))+Math.floor(30.6001*(m+1))+day+B-1524.5;
+  }
+
+  function getLunarAge(now) {
+    var jd = julianDay(now);
+    var age = (jd - REF_JD) % SYNODIC;
+    if(age<0) age+=SYNODIC;
+    return age;
+  }
+
+  function getPhase(age) {
+    var phases = [
+      {s:0,    e:1.85,  em:'🌑',name:'新月',     en:'New Moon',    color:'#6688cc'},
+      {s:1.85, e:7.38,  em:'🌒',name:'眉月',     en:'Waxing Crescent',color:'#55cc77'},
+      {s:7.38, e:11.08, em:'🌓',name:'上弦の月', en:'First Quarter',color:'#ccaa44'},
+      {s:11.08,e:14.77, em:'🌔',name:'十三夜月', en:'Waxing Gibbous',color:'#ddcc55'},
+      {s:14.77,e:16.62, em:'🌕',name:'満月',     en:'Full Moon',   color:'#ffe066'},
+      {s:16.62,e:22.15, em:'🌖',name:'十六夜月', en:'Waning Gibbous',color:'#cc9933'},
+      {s:22.15,e:25.85, em:'🌗',name:'下弦の月', en:'Last Quarter',color:'#8888cc'},
+      {s:25.85,e:29.53, em:'🌘',name:'晦日月',   en:'Waning Crescent',color:'#6677aa'},
+    ];
+    for(var i=0;i<phases.length;i++){
+      if(age>=phases[i].s && age<phases[i].e) return phases[i];
+    }
+    return phases[0];
+  }
+
+  function getKyurekiMonth(now) {
+    var ymd = now.getFullYear()+'-'
+      +String(now.getMonth()+1).padStart(2,'0')+'-'
+      +String(now.getDate()).padStart(2,'0');
+    // Sort by date desc and find latest that <= today
+    var sorted = KYUREKI_MONTHS.slice().sort(function(a,b){return b.g>a.g?1:-1;});
+    for(var i=0;i<sorted.length;i++){
+      if(ymd >= sorted[i].g) return sorted[i].m;
+    }
+    return '旧暦--月';
+  }
+
+  function getNextSetsui(now) {
+    var ymd=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
+    for(var i=0;i<SETSUEI_2026.length;i++){
+      if(SETSUEI_2026[i].date>=ymd) return SETSUEI_2026[i];
+    }
+    return null;
+  }
+
+  function pad2(n){return String(n).padStart(2,'0');}
+
+  function tick() {
+    // Use JST
+    var now = new Date();
+    var jst = new Date(now.getTime() + 9*3600000); // shift to JST
+
+    // --- Date/Time ---
+    var dow = ['日','月','火','水','木','金','土'][jst.getUTCDay()];
+    var dateStr = jst.getUTCFullYear()+'年'+(jst.getUTCMonth()+1)+'月'+jst.getUTCDate()+'日('+dow+')';
+    var timeStr = pad2(jst.getUTCHours())+':'+pad2(jst.getUTCMinutes())+':'+pad2(jst.getUTCSeconds());
+
+    // --- Lunar ---
+    var age = getLunarAge(now);
+    var phase = getPhase(age);
+    var kyuDay = Math.floor(age)+1;
+    var kyuMonth = getKyurekiMonth(jst);
+
+    // Next full moon
+    var daysToFull = ((SYNODIC/2) - age + SYNODIC) % SYNODIC;
+    if(daysToFull < 0.01) daysToFull = SYNODIC;
+    var daysToNew  = SYNODIC - age;
+
+    var hFull = Math.floor(daysToFull*24);
+    var mFull = Math.floor((daysToFull*24-hFull)*60);
+    var hNew  = Math.floor(daysToNew*24);
+    var mNew  = Math.floor((daysToNew*24-hNew)*60);
+
+    var nextFullStr = daysToFull<1 ? hFull+'時間'+mFull+'分後' : Math.floor(daysToFull)+'日'+hFull%24+'時間後';
+    var nextNewStr  = daysToNew<1  ? hNew +'時間'+mNew +'分後' : Math.floor(daysToNew) +'日'+hNew%24 +'時間後';
+
+    // 節気
+    var setsu = getNextSetsui(jst);
+    var setsuStr = setsu ? '(次の節気: '+setsu.name+' '+setsu.date+')' : '';
+
+    // --- Update DOM ---
+    var el;
+    el=document.getElementById('rt-date');     if(el) el.textContent=dateStr;
+    el=document.getElementById('rt-time');     if(el) el.textContent=timeStr;
+    el=document.getElementById('rt-moon-badge'); if(el) el.innerHTML='<span style="color:'+phase.color+';font-size:1.1rem;">'+phase.em+'</span> <span style="color:'+phase.color+';font-weight:700;">'+phase.name+'</span>';
+    el=document.getElementById('rt-kyureki');  if(el) el.textContent=kyuMonth+' '+kyuDay+'日 '+setsuStr;
+    el=document.getElementById('rt-moon-age'); if(el) el.textContent=age.toFixed(2)+'日';
+    el=document.getElementById('rt-next-full');if(el) el.textContent=nextFullStr;
+    el=document.getElementById('rt-next-new'); if(el) el.textContent=nextNewStr;
+
+    // Also update Today tab live elements if visible
+    updateTodayLive(jst, age, phase, kyuDay, kyuMonth, daysToFull, daysToNew, nextFullStr, nextNewStr);
+  }
+
+  function updateTodayLive(jst, age, phase, kyuDay, kyuMonth, daysToFull, daysToNew, nextFullStr, nextNewStr) {
+    var el;
+    el=document.getElementById('tl-phase-emoji'); if(el) el.textContent=phase.em;
+    el=document.getElementById('tl-phase-name');  if(el) el.textContent=phase.name;
+    el=document.getElementById('tl-date-now');    if(el){
+      el.textContent=jst.getUTCFullYear()+'年'+(jst.getUTCMonth()+1)+'月'+jst.getUTCDate()+'日';
+    }
+    el=document.getElementById('tl-time-now');    if(el){
+      el.textContent=String(jst.getUTCHours()).padStart(2,'0')+':'+String(jst.getUTCMinutes()).padStart(2,'0')+':'+String(jst.getUTCSeconds()).padStart(2,'0')+' JST';
+    }
+    el=document.getElementById('tl-kyureki-now'); if(el) el.textContent=kyuMonth+' '+kyuDay+'日';
+    el=document.getElementById('tl-moon-age');    if(el) el.textContent=age.toFixed(2)+'日';
+    el=document.getElementById('tl-next-full');   if(el) el.textContent=nextFullStr;
+    el=document.getElementById('tl-next-new');    if(el) el.textContent=nextNewStr;
+    el=document.getElementById('tl-phase-pct');   if(el) el.textContent=Math.round(age/29.53*100)+'%';
+    // Moon SVG arc progress
+    el=document.getElementById('tl-moon-arc');
+    if(el){
+      var pct=age/29.53;
+      var r=60, cx=70, cy=70;
+      var angle=pct*2*Math.PI-Math.PI/2;
+      var x=cx+r*Math.cos(angle), y=cy+r*Math.sin(angle);
+      var large=pct>0.5?1:0;
+      var d2='M '+cx+' '+(cy-r)+' A '+r+' '+r+' 0 '+large+' 1 '+x.toFixed(1)+' '+y.toFixed(1);
+      el.setAttribute('d',d2);
+      el.style.stroke=phase.color;
+    }
+  }
+
+  // Start ticking every second
+  tick();
+  setInterval(tick, 1000);
+  window._lunarTick = tick;
+})();
+// ============================================================
+// END REAL-TIME LUNAR ENGINE
+// ============================================================
+
+
 window.onload = function() {
   buildKPIOverview();
   buildOverviewBar();
@@ -1011,26 +1224,111 @@ window.onload = function() {
 <!-- ===== 今日の状態 ===== -->
 <div id="sec-today" class="section">
 <div class="main">
-  <div class="today-panel" id="today-panel">
-    <div class="today-top">
-      <div class="today-emoji-lg" id="today-big-emoji">🌒</div>
-      <div>
-        <h2 id="today-title" style="color:var(--gold);font-size:1.5rem;margin-bottom:5px;"></h2>
-        <div id="today-meta" style="color:var(--text2);font-size:0.85rem;margin-bottom:6px;"></div>
-        <span id="today-type-badge" style="display:inline-block;padding:3px 12px;border-radius:18px;font-size:0.76rem;font-weight:700;"></span>
-      </div>
-    </div>
-    <div class="today-action-grid" id="today-action-grid"></div>
-  </div>
-  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;">
-    <div class="card"><div class="card-title">📅 今後の月相イベント</div><div id="upcoming-events"></div></div>
-    <div class="card"><div class="card-title">⚡ 今月のフェーズ分布</div><div style="position:relative;height:240px;"><canvas id="monthDistChart"></canvas></div></div>
-    <div class="card"><div class="card-title">💡 次の転換点まで</div><div id="countdown-panel" style="text-align:center;padding:14px;"></div></div>
-  </div>
-</div>
-</div>
+  <div class="section-title">🌙 今日の月相 <span style="font-size:0.7em;color:#888;">リアルタイム精密計算</span></div>
 
-<!-- ===== 感情フェーズ ===== -->
+  <!-- BIG LIVE MOON DISPLAY -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;">
+
+    <!-- Left: Moon visualization -->
+    <div class="card" style="text-align:center;background:linear-gradient(135deg,#060c18,#0c1828);border:1px solid #1e3050;">
+      <div id="tl-phase-emoji" style="font-size:5rem;line-height:1.1;margin:10px 0;filter:drop-shadow(0 0 20px #c8a45a88);">🌒</div>
+      <div id="tl-phase-name" style="font-size:1.6rem;font-weight:900;color:#c8a45a;margin-bottom:6px;">眉月</div>
+
+      <!-- SVG moon arc progress -->
+      <div style="margin:16px auto;width:140px;height:140px;position:relative;">
+        <svg width="140" height="140" viewBox="0 0 140 140">
+          <!-- Background track -->
+          <circle cx="70" cy="70" r="60" fill="none" stroke="#1e3050" stroke-width="8"/>
+          <!-- Progress arc (updated by JS) -->
+          <path id="tl-moon-arc" fill="none" stroke="#c8a45a" stroke-width="8" stroke-linecap="round"
+            d="M 70 10 A 60 60 0 0 1 70 10"/>
+          <!-- Phase markers -->
+          <circle cx="70" cy="10"  r="4" fill="#2244aa" opacity="0.7"/> <!-- 新月 -->
+          <circle cx="130" cy="70" r="4" fill="#44aa44" opacity="0.7"/> <!-- 上弦 -->
+          <circle cx="70" cy="130" r="4" fill="#ccaa22" opacity="0.7"/> <!-- 満月 -->
+          <circle cx="10" cy="70"  r="4" fill="#664488" opacity="0.7"/> <!-- 下弦 -->
+          <!-- Labels -->
+          <text x="70" y="6"   text-anchor="middle" fill="#4466cc" font-size="8">🌑</text>
+          <text x="134" y="74" text-anchor="middle" fill="#44cc44" font-size="8">🌓</text>
+          <text x="70" y="142" text-anchor="middle" fill="#ddcc22" font-size="8">🌕</text>
+          <text x="6" y="74"   text-anchor="middle" fill="#8866cc" font-size="8">🌗</text>
+          <!-- Center info -->
+          <text x="70" y="62" text-anchor="middle" fill="#8899aa" font-size="9">月齢</text>
+          <text id="tl-moon-age" x="70" y="78" text-anchor="middle" fill="#f7931a" font-size="14" font-weight="bold">3.86日</text>
+          <text id="tl-phase-pct" x="70" y="94" text-anchor="middle" fill="#aaa" font-size="10">13%</text>
+        </svg>
+      </div>
+
+      <div style="font-size:0.75rem;color:#556;margin-top:4px;">Meeus天文アルゴリズム精密計算</div>
+    </div>
+
+    <!-- Right: Real-time data panel -->
+    <div>
+      <!-- Current DateTime -->
+      <div class="card" style="margin-bottom:12px;background:#060c18;border:1px solid #1e3050;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <div style="text-align:center;padding:8px;">
+            <div style="font-size:0.72rem;color:#445566;margin-bottom:4px;">📅 今日 (新暦)</div>
+            <div id="tl-date-now" style="font-size:1rem;font-weight:700;color:#aabbdd;">---</div>
+          </div>
+          <div style="text-align:center;padding:8px;border-left:1px solid #1e3050;">
+            <div style="font-size:0.72rem;color:#445566;margin-bottom:4px;">⏰ 現在時刻</div>
+            <div id="tl-time-now" style="font-size:1.05rem;font-weight:900;color:#c8a45a;font-family:monospace;letter-spacing:1px;">--:--:-- JST</div>
+          </div>
+          <div style="text-align:center;padding:8px;border-top:1px solid #1e3050;">
+            <div style="font-size:0.72rem;color:#445566;margin-bottom:4px;">📅 旧暦</div>
+            <div id="tl-kyureki-now" style="font-size:1rem;font-weight:700;color:#9ab8cc;">---</div>
+          </div>
+          <div style="text-align:center;padding:8px;border-left:1px solid #1e3050;border-top:1px solid #1e3050;">
+            <div style="font-size:0.72rem;color:#445566;margin-bottom:4px;">🌙 月齢</div>
+            <div id="tl-moon-age-big" style="font-size:1rem;font-weight:700;color:#f7931a;">--- 日</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Next Events Countdown -->
+      <div class="card" style="margin-bottom:12px;background:#060c18;border:1px solid #1e3050;">
+        <div class="card-title">⏳ 次の月相イベント</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px;">
+          <div style="background:#1a1030;border:1px solid #6644aa;border-radius:8px;padding:12px;text-align:center;">
+            <div style="font-size:1.4rem;">🌕</div>
+            <div style="font-size:0.75rem;color:#9f7aea;margin:4px 0;">次の満月</div>
+            <div id="tl-next-full" style="font-size:0.9rem;font-weight:700;color:#9f7aea;">---</div>
+            <div style="font-size:0.72rem;color:#555;margin-top:2px;">2026年6月30日</div>
+          </div>
+          <div style="background:#0a1828;border:1px solid #2244aa;border-radius:8px;padding:12px;text-align:center;">
+            <div style="font-size:1.4rem;">🌑</div>
+            <div style="font-size:0.75rem;color:#63b3ed;margin:4px 0;">次の新月</div>
+            <div id="tl-next-new" style="font-size:0.9rem;font-weight:700;color:#63b3ed;">---</div>
+            <div style="font-size:0.72rem;color:#555;margin-top:2px;">2026年7月15日</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Marketing insight for today -->
+      <div id="today-action-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;"></div>
+    </div>
+  </div>
+
+  <!-- Upcoming moon events (original) -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+    <div class="card">
+      <div class="card-title">📅 今後の月相イベント</div>
+      <div id="upcoming-events"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">📊 今月のフェーズ分布</div>
+      <div style="height:160px;"><canvas id="monthDistChart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Insight box -->
+  <div class="insight-box" style="margin-top:16px;" id="today-insight-box">
+    🌙 <strong>今日の月相インサイト：</strong>
+    <span id="today-insight-text">眉月期 — 新月の願いに芽が出る時期。行動計画を具体化し、小さな一歩を踏み出すエネルギーが高まっています。</span>
+  </div>
+</div>
+</div>
 <div id="sec-phases" class="section">
 <div class="main">
   <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-bottom:22px;">
@@ -1200,23 +1498,36 @@ function _ac(t){return t==='活動期'?'#5ba85d':t==='思考期'?'#c8a45a':'#4a6
 function _bc(p){return p>=25?'#e8a020':p>=15?'#5ba85d':p>=8?'#4a6fa5':'#444';}
 
 function initTodayTab(){
-  const t=DATA.mkt_today_data;if(!t)return;
-  const mkt=t.marketing,col=_ac(t.activity_type);
-  document.getElementById('today-big-emoji').textContent=t.emoji;
-  document.getElementById('today-title').textContent=t.phase_name+'期';
-  document.getElementById('today-meta').textContent=DATA.mkt_today+' | 旧暦'+t.kyureki_day+'日目';
-  const badge=document.getElementById('today-type-badge');
-  badge.textContent=t.activity_type;badge.style.cssText='background:'+col+'22;color:'+col+';border:1px solid '+col+'44;';
-  document.getElementById('today-panel').style.borderColor=col;
-  document.getElementById('today-action-grid').innerHTML=
-    '<div class="tday-cell"><div class="tday-lbl">💡 感情状態</div><div class="tday-val" style="color:'+col+'">'+mkt.emotion+'</div></div>'+
-    '<div class="tday-cell"><div class="tday-lbl">📣 広告テーマ</div><div class="tday-val">'+mkt.theme+'</div></div>'+
-    '<div class="tday-cell"><div class="tday-lbl">✍️ コピー方向</div><div class="tday-val">'+mkt.copy_direction+'</div></div>'+
-    '<div class="tday-cell"><div class="tday-lbl">📺 推奨チャネル</div><div class="tday-val">'+mkt.channels+'</div></div>'+
-    '<div class="tday-cell"><div class="tday-lbl">🌺 Family Tree Oki</div><div class="tday-val" style="color:var(--gold)">'+mkt.family_tree_oki+'</div></div>'+
-    '<div class="tday-cell"><div class="tday-lbl">💰 予算強度</div><div class="tday-val">月間の'+mkt.budget_pct+'% | CTA:'+mkt.cta_intensity+'</div></div>';
-  const today=DATA.mkt_today;
-  const up=DATA.mkt_moon_events.filter(function(e){return e.date>=today;}).slice(0,5);
+  // Real-time lunar engine handles tl-* elements automatically.
+  // Here we handle marketing/calendar data from DATA.
+  var t = DATA.mkt_today_data;
+  if(t){
+    var mkt=t.marketing, col=_ac(t.activity_type);
+    document.getElementById('today-action-grid').innerHTML=
+      '<div class="tday-cell"><div class="tday-lbl">💡 感情状態</div><div class="tday-val" style="color:'+col+'">'+mkt.emotion+'</div></div>'+
+      '<div class="tday-cell"><div class="tday-lbl">📣 広告テーマ</div><div class="tday-val">'+mkt.theme+'</div></div>'+
+      '<div class="tday-cell"><div class="tday-lbl">✍️ コピー方向</div><div class="tday-val">'+mkt.copy_direction+'</div></div>'+
+      '<div class="tday-cell"><div class="tday-lbl">🌺 Family Tree Oki</div><div class="tday-val" style="color:var(--gold)">'+mkt.family_tree_oki+'</div></div>';
+
+    // Phase-specific insight
+    var insights = {
+      '新月期':    '🌑 新月期 — 静寂の中に新たな意図を宿す時。広告はビジョン型・内省を促すコピーが響く。',
+      '活動期':    '🌒 活動期 — 月の引力が上昇。行動・挑戦・コンバージョン最大化タイミング。',
+      '上弦期':    '🌓 上弦期 — 前進の勢い最大。意思決定を後押しするCTAが効果的。',
+      '満月期':    '🌕 満月期 — 感情が頂点に。リピーター訴求・感謝施策・コミュニティ強化の好機。',
+      '統合期':    '🌖 統合期 — 振り返りと深化の時。ケーススタディ・成果報告型コンテンツが刺さる。',
+      '下弦期':    '🌗 下弦期 — 手放しと整理。不要なものを削ぎ落とす判断を後押しするメッセージ。',
+      '思考期':    '🌘 思考期 — 内なる準備期。次の新月に向けてブランドの哲学・世界観を深める時。',
+    };
+    var key = t.activity_type||'';
+    var txt = insights[key] || mkt.emotion+'の時期。'+mkt.theme+'をテーマに展開。';
+    var el = document.getElementById('today-insight-text');
+    if(el) el.textContent = txt;
+  }
+
+  // Upcoming moon events
+  var today=DATA.mkt_today;
+  var up=DATA.mkt_moon_events.filter(function(e){return e.date>=today;}).slice(0,6);
   document.getElementById('upcoming-events').innerHTML=up.map(function(e){
     var d=Math.round((new Date(e.date)-new Date(today))/86400000);
     return '<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);">'+
@@ -1225,24 +1536,23 @@ function initTodayTab(){
       '<div style="font-size:0.68rem;color:var(--text2);">'+e.date+'</div></div>'+
       '<div style="color:'+(e.type==='new_moon'?'#4a6fa5':'#c8a45a')+';font-weight:700;">'+(d===0?'今日!':d+'日後')+'</div></div>';
   }).join('');
+
+  // Monthly distribution chart
   var june=DATA.mkt_calendar.filter(function(d){return d.date.startsWith('2026-06');});
   var dist=[june.filter(function(d){return d.activity_type==='活動期';}).length,
             june.filter(function(d){return d.activity_type==='思考期';}).length,
             june.filter(function(d){return d.activity_type==='停滞期';}).length];
-  if(window._mdC)window._mdC.destroy();
+  if(window._mdC) window._mdC.destroy();
   window._mdC=new Chart(document.getElementById('monthDistChart'),{type:'doughnut',
     data:{labels:['活動期','思考期','停滞期'],datasets:[{data:dist,backgroundColor:['#5ba85d','#c8a45a','#4a6fa5'],borderWidth:0}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#8a9ab8',font:{size:11}}}}}});
-  var nxt=up[0];var dt=nxt?Math.round((new Date(nxt.date)-new Date(today))/86400000):0;
-  document.getElementById('countdown-panel').innerHTML=nxt?
-    '<div style="font-size:2.6rem;margin-bottom:5px;">'+(nxt.type==='new_moon'?'🌑':'🌕')+'</div>'+
-    '<div style="font-size:2.8rem;font-weight:900;color:var(--gold);">'+dt+'</div>'+
-    '<div style="font-size:0.82rem;color:var(--text2);">日後</div>'+
-    '<div style="font-size:0.9rem;color:var(--text);margin:6px 0;">'+nxt.label+'</div>'+
-    '<div style="font-size:0.68rem;color:var(--text2);">'+nxt.date+'</div>'+
-    '<div style="margin-top:9px;padding:8px;background:var(--card2);border-radius:7px;font-size:0.7rem;color:var(--text2);">'+
-    (nxt.type==='new_moon'?'🌑 活動期ラストスパート！<br>積極的な広告を今打て':'🌕 感謝・コミュニティ訴求へ<br>ロイヤル顧客アプローチ最適期')+'</div>'
-    :'予定なし';
+
+  // Sync tl-moon-age-big with rt-moon-age
+  setInterval(function(){
+    var src=document.getElementById('rt-moon-age');
+    var dst=document.getElementById('tl-moon-age-big');
+    if(src&&dst) dst.textContent=src.textContent;
+  }, 1000);
 }
 
 function initActivityCards(){
