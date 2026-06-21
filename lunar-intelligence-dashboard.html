@@ -1205,31 +1205,32 @@ function buildCycleChart() {
   ];
 
   // 節気 (solar terms) 2026
+  // 節気データ (精密時刻付き - 国立天文台データ)
   var SETSUEI_2026 = [
-    {date:'2026-01-05', name:'小寒'},
-    {date:'2026-01-20', name:'大寒'},
-    {date:'2026-02-03', name:'立春'},
-    {date:'2026-02-18', name:'雨水'},
-    {date:'2026-03-05', name:'啓蟄'},
-    {date:'2026-03-20', name:'春分'},
-    {date:'2026-04-04', name:'清明'},
-    {date:'2026-04-20', name:'穀雨'},
-    {date:'2026-05-05', name:'立夏'},
-    {date:'2026-05-21', name:'小満'},
-    {date:'2026-06-05', name:'芒種'},
-    {date:'2026-06-21', name:'夏至'},
-    {date:'2026-07-07', name:'小暑'},
-    {date:'2026-07-22', name:'大暑'},
-    {date:'2026-08-07', name:'立秋'},
-    {date:'2026-08-23', name:'処暑'},
-    {date:'2026-09-07', name:'白露'},
-    {date:'2026-09-23', name:'秋分'},
-    {date:'2026-10-08', name:'寒露'},
-    {date:'2026-10-23', name:'霜降'},
-    {date:'2026-11-07', name:'立冬'},
-    {date:'2026-11-22', name:'小雪'},
-    {date:'2026-12-07', name:'大雪'},
-    {date:'2026-12-21', name:'冬至'},
+    {date:'2026-01-05', name:'小寒',    time:''},
+    {date:'2026-01-20', name:'大寒',    time:''},
+    {date:'2026-02-03', name:'立春',    time:''},
+    {date:'2026-02-18', name:'雨水',    time:''},
+    {date:'2026-03-05', name:'啓蟄',    time:''},
+    {date:'2026-03-20', name:'春分',    time:'23:46', em:'🌸'},
+    {date:'2026-04-04', name:'清明',    time:''},
+    {date:'2026-04-20', name:'穀雨',    time:''},
+    {date:'2026-05-05', name:'立夏',    time:''},
+    {date:'2026-05-21', name:'小満',    time:''},
+    {date:'2026-06-05', name:'芒種',    time:''},
+    {date:'2026-06-21', name:'夏至',    time:'17:24', em:'☀️'},
+    {date:'2026-07-07', name:'小暑',    time:''},
+    {date:'2026-07-22', name:'大暑',    time:''},
+    {date:'2026-08-07', name:'立秋',    time:''},
+    {date:'2026-08-23', name:'処暑',    time:''},
+    {date:'2026-09-07', name:'白露',    time:''},
+    {date:'2026-09-23', name:'秋分',    time:'09:05', em:'🍂'},
+    {date:'2026-10-08', name:'寒露',    time:''},
+    {date:'2026-10-23', name:'霜降',    time:''},
+    {date:'2026-11-07', name:'立冬',    time:''},
+    {date:'2026-11-22', name:'小雪',    time:''},
+    {date:'2026-12-07', name:'大雪',    time:''},
+    {date:'2026-12-22', name:'冬至',    time:'05:50', em:'❄️'},
   ];
 
   function julianDay(d) {
@@ -1315,14 +1316,16 @@ function buildCycleChart() {
     var nextFullStr = daysToFull<1 ? hFull+'時間'+mFull+'分後' : Math.floor(daysToFull)+'日'+hFull%24+'時間後';
     var nextNewStr  = daysToNew<1  ? hNew +'時間'+mNew +'分後' : Math.floor(daysToNew) +'日'+hNew%24 +'時間後';
 
-    // 節気 with days remaining
+    // 節気 with days remaining + exact time
     var setsu = getNextSetsui(jst);
     var setsuStr = '';
     if(setsu) {
       var setsuDate = new Date(setsu.date + 'T00:00:00+09:00');
       var daysToSetsu = Math.ceil((setsuDate - now) / 86400000);
-      var urgTag = daysToSetsu <= 3 ? ' 🔥'+daysToSetsu+'日後！' : ' ('+daysToSetsu+'日後)';
-      setsuStr = setsu.name + urgTag;
+      var timeStr2 = setsu.time ? ' '+setsu.time+' JST' : '';
+      var emStr = setsu.em ? setsu.em+' ' : '';
+      var urgTag = daysToSetsu <= 3 ? ' 🔥'+daysToSetsu+'日後！' : daysToSetsu===0 ? ' 今日！' : ' ('+daysToSetsu+'日後)';
+      setsuStr = emStr + setsu.name + timeStr2 + urgTag;
     }
 
     // --- Update DOM ---
@@ -1354,6 +1357,31 @@ function buildCycleChart() {
     el=document.getElementById('tl-next-full');   if(el) el.textContent=nextFullStr;
     el=document.getElementById('tl-next-new');    if(el) el.textContent=nextNewStr;
     el=document.getElementById('tl-phase-pct');   if(el) el.textContent=Math.round(age/29.53*100)+'%';
+    // Solstice countdown
+    var solstices = [
+      {date:'2026-06-21T17:24:00+09:00', name:'☀️ 夏至', detail:'旧暦5月7日 × 🌒眉月（月齢6.09日）。次の満月 6月30日 09:39 JST（8.7日後）。陽のピーク×上昇月 = 最強の仕掛けタイミング。', icon:'☀️', color:'#ffcc00', bg:'linear-gradient(90deg,#1a1800,#2a2200)'},
+      {date:'2026-12-22T05:50:00+09:00', name:'❄️ 冬至', detail:'旧暦11月13日 × 🌔十三夜月（月齢12.42日）。次の満月 12月24日 14:03 JST（クリスマスイブ満月！2.3日後）。', icon:'❄️', color:'#4488cc', bg:'linear-gradient(90deg,#080e1a,#0a1428)'},
+    ];
+    var nowMs = now.getTime();
+    var nextSol = null;
+    for(var si=0;si<solstices.length;si++){
+      var sd = new Date(solstices[si].date);
+      if(sd > nowMs){ nextSol = solstices[si]; nextSol._ms = sd - nowMs; break; }
+    }
+    if(nextSol){
+      var ms = nextSol._ms;
+      var dd = Math.floor(ms/86400000);
+      var hh = Math.floor((ms%86400000)/3600000);
+      var mm = Math.floor((ms%3600000)/60000);
+      var ss = Math.floor((ms%60000)/1000);
+      var cdStr = dd+'日 '+String(hh).padStart(2,'0')+':'+String(mm).padStart(2,'0')+':'+String(ss).padStart(2,'0');
+      var box = document.getElementById('solstice-alert-box');
+      if(box){ box.style.background = nextSol.bg; box.style.borderColor = nextSol.color; }
+      el=document.getElementById('sol-icon');   if(el) el.textContent=nextSol.icon;
+      el=document.getElementById('sol-title');  if(el){ el.style.color=nextSol.color; el.textContent=nextSol.name+' — '+new Date(nextSol.date).toLocaleString('ja-JP',{month:'long',day:'numeric',hour:'2-digit',minute:'2-digit',timeZone:'Asia/Tokyo'})+' JST'; }
+      el=document.getElementById('sol-detail'); if(el){ el.style.color=nextSol.color+'bb'; el.textContent=nextSol.detail; }
+      el=document.getElementById('sol-countdown'); if(el){ el.innerHTML='<span style="color:'+nextSol.color+';font-weight:900;">⏳ あと '+cdStr+'</span>'; }
+    }
     // Moon SVG arc progress
     el=document.getElementById('tl-moon-arc');
     if(el){
@@ -1495,12 +1523,13 @@ window.onload = function() {
     </div>
   </div>
 
-  <!-- Solstice alert -->
-  <div style="background:linear-gradient(90deg,#1a1800,#2a2200);border:1px solid #ffcc00;border-radius:10px;padding:12px 16px;margin-top:16px;display:flex;align-items:center;gap:12px;">
-    <div style="font-size:1.8rem;">☀️</div>
-    <div>
-      <div style="color:#ffdd44;font-weight:700;font-size:0.95rem;">夏至まであと2日！ — 6月21日 17:24 JST</div>
-      <div style="color:#cc9900;font-size:0.82rem;">旧暦5月7日 × 🌒眉月（月齢6.09日）。次の満月（6月30日）まで8.7日。陽のピーク×上昇月 = 2026年最強の仕掛けタイミング。</div>
+  <!-- Solstice/Solstice live alert -->
+  <div id="solstice-alert-box" style="background:linear-gradient(90deg,#1a1800,#2a2200);border:1px solid #ffcc00;border-radius:10px;padding:12px 16px;margin-top:16px;display:flex;align-items:center;gap:12px;">
+    <div style="font-size:1.8rem;" id="sol-icon">☀️</div>
+    <div style="flex:1;">
+      <div style="color:#ffdd44;font-weight:700;font-size:0.95rem;" id="sol-title">☀️ 夏至 — 2026年6月21日 17:24 JST</div>
+      <div style="color:#cc9900;font-size:0.82rem;" id="sol-detail">旧暦5月7日 × 🌒眉月（月齢6.09日）。次の満月（6月30日）まで8.7日。陽のピーク×上昇月 = 2026年最強の仕掛けタイミング。</div>
+      <div style="margin-top:6px;font-family:monospace;font-size:0.88rem;" id="sol-countdown"></div>
     </div>
   </div>
 
