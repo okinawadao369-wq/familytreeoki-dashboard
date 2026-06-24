@@ -948,7 +948,7 @@ function initCharts(){
 function renderMuniRank(){
   const el = document.getElementById('muni-rank-list');
   if(!el) return;  // element removed in current layout
-  const sorted = MUNI_DATA.sort((a,b)=>b.score-a.score).slice(0,10);
+  const sorted = [...MUNI_DATA].sort((a,b)=>b.score-a.score).slice(0,10);
   el.innerHTML = sorted.map((d,i)=>`
     <div class="rank-item">
       <div class="rank-num ${i<3?'top3':''}">${i+1}</div>
@@ -981,7 +981,8 @@ function renderBaseList(){
 // ALL_DISTRICTS replaced by MKT_ADMIN dataset
 
 function filterTable(){
-  const region = document.getElementById('f-region').value;
+  const _fr = document.getElementById('f-region'); if(!_fr) return;
+  const region = _fr.value;
   const search = document.getElementById('f-search').value.toLowerCase();
   const jdg = document.getElementById('f-jdg').value;
   const bizF = document.getElementById('f-biz-filter').value;
@@ -1066,6 +1067,7 @@ function showDistrictDetail(d){
 // ===================== BUSINESS MATRIX =====================
 function renderBizMatrix(){
   const table = document.getElementById('biz-matrix');
+  if(!table) return;
   const types = Object.entries(BIZ_MATRIX.types);
   const targets = Object.entries(BIZ_MATRIX.targets);
   const colors = v=>v>=90?'background:#92400e33;color:#f59e0b':v>=75?'background:#1e3a8a33;color:#60a5fa':v>=60?'background:#14532d33;color:#34d399':'background:#1a2236;color:#94a3b8';
@@ -1079,7 +1081,8 @@ function calcBizScore(){
   const btype = document.getElementById('biz-type').value;
   const ttype = document.getElementById('target-type').value;
   const bizData = BIZ_MATRIX.types[btype];
-  const targetScore = bizData[ttype];
+  if(!bizData){ return; }
+  const targetScore = bizData[ttype] || 0;
   const areaScores = MUNI_DATA.map(d=>{
     let base = d.score;
     if(ttype==='military') base = base*0.4 + (d.traffic>30000?30:10) + (d.name.includes('北谷')||d.name.includes('嘉手納')||d.name.includes('宜野湾')||d.name.includes('浦添')?30:0);
@@ -1108,6 +1111,7 @@ function calcBizScore(){
 // ===================== CALENDAR =====================
 function renderCalendar(){
   const el = document.getElementById('cal-grid');
+  if(!el) return;
   el.innerHTML = CEREMONY_DATA.map(d=>`
     <div class="cal-month">
       <h4>${d.name} <span style="font-size:9px;padding:1px 5px;border-radius:3px;background:${d.impact==='最高'?'#92400e':d.impact==='高'?'#1e3a8a':d.impact==='中'?'#14532d':'#374151'};color:#fff">${d.impact}</span></h4>
@@ -2537,7 +2541,7 @@ function initTab11(){
 
   // GDP×効率チャート
   if(document.getElementById('gdp-eff-chart') && !document.getElementById('gdp-eff-chart')._chart){
-    const top10 = GDP_MUNI_FULL.sort((a,b)=>b.gdp-a.gdp).slice(0,10);
+    const top10 = [...GDP_MUNI_FULL].sort((a,b)=>b.gdp-a.gdp).slice(0,10);
     const c = new Chart('gdp-eff-chart',{type:'bar',data:{
       labels:top10.map(d=>d.name),
       datasets:[
@@ -3848,19 +3852,20 @@ function initTab1Dynamic() {
 
   let topScore = 0, topMuni = '';
   let scoreSum = 0;
+  let scoredCount = 0;
   GDP41.forEach(r => {
     const s = calcAxisScore(r.name);
     if(s > topScore){ topScore = s; topMuni = r.name; }
-    scoreSum += s;
+    if(s > 0){ scoreSum += s; scoredCount++; }
   });
-  const avgScore = (scoreSum / totalMunis).toFixed(1);
-  const gdpT = (totalGDP / 10000).toFixed(0); // 億円
+  const avgScore = scoredCount > 0 ? (scoreSum / scoredCount).toFixed(1) : '0.0';
+  const gdpT = (totalGDP/100>=10000) ? (totalGDP/1000000).toFixed(2)+'兆' : Math.round(totalGDP/100).toLocaleString()+'億'; // 百万円→兆/億
 
   const kpiRow = document.getElementById('t1-kpi-row');
   if(kpiRow) kpiRow.innerHTML = `
     <div class="kpi gold"><div class="val">${totalMunis}</div><div class="lbl">🏙️ 対象市町村</div></div>
     <div class="kpi blue"><div class="val">${(totalPop/10000).toFixed(0)}万</div><div class="lbl">👥 総人口</div></div>
-    <div class="kpi green"><div class="val">${gdpT}億</div><div class="lbl">💴 県内総GDP</div></div>
+    <div class="kpi green"><div class="val">${gdpT}</div><div class="lbl">💴 県内総GDP(市町村計)</div></div>
     <div class="kpi purple"><div class="val">${topScore}</div><div class="lbl">🏆 最高AXIS ${topMuni}</div></div>
     <div class="kpi gold"><div class="val">${avgScore}</div><div class="lbl">📊 平均AXISスコア</div></div>
     <div class="kpi red"><div class="val">~2.6万</div><div class="lbl">🪖 SOFA世帯数</div></div>`;
