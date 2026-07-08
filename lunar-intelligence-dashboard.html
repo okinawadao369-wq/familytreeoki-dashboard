@@ -1424,7 +1424,7 @@ function buildCycleChart() {
       {date:'2026-06-21T17:24:00+09:00', name:'☀️ 夏至', detail:'旧暦5月7日 × 🌒眉月（月齢6.09日）。次の満月 6月30日 09:39 JST（8.7日後）。陽のピーク×上昇月 = 最強の仕掛けタイミング。', icon:'☀️', color:'#ffcc00', bg:'linear-gradient(90deg,#1a1800,#2a2200)'},
       {date:'2026-12-22T05:50:00+09:00', name:'❄️ 冬至', detail:'旧暦11月13日 × 🌔十三夜月（月齢12.42日）。次の満月 12月24日 14:03 JST（クリスマスイブ満月！2.3日後）。', icon:'❄️', color:'#4488cc', bg:'linear-gradient(90deg,#080e1a,#0a1428)'},
     ];
-    var nowMs = now.getTime();
+    var nowMs = new Date().getTime();
     var nextSol = null;
     for(var si=0;si<solstices.length;si++){
       var sd = new Date(solstices[si].date);
