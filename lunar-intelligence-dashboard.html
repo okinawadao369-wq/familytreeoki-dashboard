@@ -982,6 +982,17 @@ function buildBTCPrice() {
 
 // BTC KPI
 function buildBTCKPI() {
+  if(!DATA.results || !DATA.results.BTC){ 
+    // Fallback: use stats_30y BTC data
+    var btcStats = DATA.stats_30y && DATA.stats_30y.analysis ? DATA.stats_30y.analysis.btc : null;
+    var c = document.getElementById('kpi-btc');
+    if(c && btcStats){
+      c.innerHTML = '<div class="kpi-card"><div class="kpi-label">🌑 新月日 平均リターン</div><div class="kpi-value nm">'+btcStats.day1_mean.toFixed(3)+'%</div><div class="kpi-sub">30年データ</div></div>'+
+        '<div class="kpi-card"><div class="kpi-label">🌕 満月日 平均リターン</div><div class="kpi-value fm">'+btcStats.day15_mean.toFixed(3)+'%</div><div class="kpi-sub">p='+btcStats.day15_p.toFixed(4)+'</div></div>'+
+        '<div class="kpi-card"><div class="kpi-label">📊 全日 平均リターン</div><div class="kpi-value">'+btcStats.all_mean.toFixed(3)+'%</div><div class="kpi-sub">1995-2025</div></div>';
+    }
+    return; 
+  }
   const r = DATA.results.BTC;
   const c = document.getElementById('kpi-btc');
   const items = [
@@ -997,6 +1008,7 @@ function buildBTCKPI() {
 
 // BTC Volatility
 function buildBTCVol() {
+  if(!DATA.results || !DATA.results.BTC){ console.warn("buildBTCVol: no DATA.results"); return; }
   const r = DATA.results.BTC;
   new Chart(document.getElementById('chart-btc-vol'), {
     type: 'bar',
@@ -1175,6 +1187,59 @@ function buildCycleChart() {
 }
 
 // ===== INIT =====
+
+
+  // ======= DATA.results compatibility patch =======
+  if(typeof DATA !== 'undefined' && !DATA.results && DATA.stats_30y && DATA.stats_30y.analysis){
+    DATA.results = {};
+    var a = DATA.stats_30y.analysis;
+    Object.keys(a).forEach(function(k){
+      var d = a[k];
+      DATA.results[k.toUpperCase()] = {
+        new_moon_mean: d.day1_mean, new_moon_n: Math.round(d.trading_days/30),
+        full_moon_mean: d.day15_mean, full_moon_n: Math.round(d.trading_days/30),
+        normal_mean: d.all_mean, new_moon_p: d.day1_p, full_moon_p: d.day15_p,
+        cohen_d_new: d.day1_cohen_d, cohen_d_full: d.day15_cohen_d
+      };
+    });
+    console.log('[FIX] DATA.results synthesized from stats_30y:', Object.keys(DATA.results));
+  }
+  // ====================================================
+
+// ============================================================
+// 🔧 DYNAMIC DATE FIX — mkt_today を今日の実際の日付に上書き
+// ============================================================
+(function patchTodayData(){
+  try {
+    var now = new Date();
+    var jst = new Date(now.getTime() + 9*3600000);
+    var ymd = jst.getUTCFullYear()+'-'
+      +String(jst.getUTCMonth()+1).padStart(2,'0')+'-'
+      +String(jst.getUTCDate()).padStart(2,'0');
+
+    DATA.mkt_today = ymd;
+
+    // Look up today's calendar entry
+    var todayEntry = null;
+    if(DATA.mkt_calendar){
+      todayEntry = DATA.mkt_calendar.find(function(d){ return d.date === ymd; });
+    }
+    if(todayEntry){
+      todayEntry.is_today = true;
+      DATA.mkt_today_data = todayEntry;
+      console.log('[FIX] mkt_today updated to', ymd, '| phase:', todayEntry.phase_name);
+    } else {
+      // fallback: synthesize from lunar engine
+      console.warn('[FIX] today not in calendar, using fallback for', ymd);
+      // Keep existing mkt_today_data but fix the date
+      if(DATA.mkt_today_data) DATA.mkt_today_data.date = ymd;
+    }
+  } catch(e){ console.error('[FIX] patchTodayData error:', e); }
+})();
+// ============================================================
+// END DYNAMIC DATE FIX
+// ============================================================
+
 // LUNAR ENGINE START
 
 // ============================================================
@@ -1709,61 +1774,88 @@ function _ac(t){return t==='活動期'?'#5ba85d':t==='思考期'?'#c8a45a':'#4a6
 function _bc(p){return p>=25?'#e8a020':p>=15?'#5ba85d':p>=8?'#4a6fa5':'#444';}
 
 function initTodayTab(){
-  // Real-time lunar engine handles tl-* elements automatically.
-  // Here we handle marketing/calendar data from DATA.
+  // === 動的今日データ取得 ===
+  var today = DATA.mkt_today; // already patched to real today by patchTodayData()
   var t = DATA.mkt_today_data;
-  if(t){
-    var mkt=t.marketing, col=_ac(t.activity_type);
-    document.getElementById('today-action-grid').innerHTML=
-      '<div class="tday-cell"><div class="tday-lbl">💡 感情状態</div><div class="tday-val" style="color:'+col+'">'+mkt.emotion+'</div></div>'+
-      '<div class="tday-cell"><div class="tday-lbl">📣 広告テーマ</div><div class="tday-val">'+mkt.theme+'</div></div>'+
-      '<div class="tday-cell"><div class="tday-lbl">✍️ コピー方向</div><div class="tday-val">'+mkt.copy_direction+'</div></div>'+
-      '<div class="tday-cell"><div class="tday-lbl">🌺 Family Tree Oki</div><div class="tday-val" style="color:var(--gold)">'+mkt.family_tree_oki+'</div></div>';
 
-    // Phase-specific insight
+  // === マーケティンググリッド ===
+  var grid = document.getElementById('today-action-grid');
+  if(grid && t && t.marketing){
+    var mkt=t.marketing, col=_ac(t.activity_type||'');
+    grid.innerHTML=
+      '<div class="tday-cell"><div class="tday-lbl">💡 感情状態</div><div class="tday-val" style="color:'+col+'">'+(mkt.emotion||'—')+'</div></div>'+
+      '<div class="tday-cell"><div class="tday-lbl">📣 広告テーマ</div><div class="tday-val">'+(mkt.theme||'—')+'</div></div>'+
+      '<div class="tday-cell"><div class="tday-lbl">✍️ コピー方向</div><div class="tday-val">'+(mkt.copy_direction||'—')+'</div></div>'+
+      '<div class="tday-cell"><div class="tday-lbl">🌺 Family Tree Oki</div><div class="tday-val" style="color:var(--gold)">'+(mkt.family_tree_oki||'—')+'</div></div>';
+  } else if(grid){
+    // Fallback: show data from lunar engine
+    grid.innerHTML='<div class="tday-cell" style="grid-column:1/-1;color:#666;text-align:center;">本日のカレンダーデータ読み込み中…</div>';
+  }
+
+  // === フェーズ別インサイト ===
+  if(t){
     var insights = {
-      '新月期':    '🌑 新月期 — 静寂の中に新たな意図を宿す時。広告はビジョン型・内省を促すコピーが響く。',
-      '活動期':    '🌒 活動期 — 月の引力が上昇。行動・挑戦・コンバージョン最大化タイミング。',
-      '上弦期':    '🌓 上弦期 — 前進の勢い最大。意思決定を後押しするCTAが効果的。',
-      '満月期':    '🌕 満月期 — 感情が頂点に。リピーター訴求・感謝施策・コミュニティ強化の好機。',
-      '統合期':    '🌖 統合期 — 振り返りと深化の時。ケーススタディ・成果報告型コンテンツが刺さる。',
-      '下弦期':    '🌗 下弦期 — 手放しと整理。不要なものを削ぎ落とす判断を後押しするメッセージ。',
-      '思考期':    '🌘 思考期 — 内なる準備期。次の新月に向けてブランドの哲学・世界観を深める時。',
+      '新月期':  '🌑 新月期 — 静寂の中に新たな意図を宿す時。広告はビジョン型・内省を促すコピーが響く。',
+      '活動期':  '🌒 活動期 — 月の引力が上昇。行動・挑戦・コンバージョン最大化タイミング。',
+      '上弦期':  '🌓 上弦期 — 前進の勢い最大。意思決定を後押しするCTAが効果的。',
+      '満月期':  '🌕 満月期 — 感情が頂点に。リピーター訴求・感謝施策・コミュニティ強化の好機。',
+      '統合期':  '🌖 統合期 — 振り返りと深化の時。ケーススタディ・成果報告型コンテンツが刺さる。',
+      '下弦期':  '🌗 下弦期 — 手放しと整理。不要なものを削ぎ落とす判断を後押しするメッセージ。',
+      '停滞期':  '🌗 停滞期 — 整理・手放し・次への準備。クロージングと丁寧なフォローアップの時。',
+      '思考期':  '🌘 思考期 — 内なる準備期。次の新月に向けてブランドの哲学・世界観を深める時。',
     };
     var key = t.activity_type||'';
-    var txt = insights[key] || mkt.emotion+'の時期。'+mkt.theme+'をテーマに展開。';
+    var txt = insights[key] || (t.marketing ? t.marketing.emotion+'の時期。' : '月相に合わせた最適なマーケティング期間。');
     var el = document.getElementById('today-insight-text');
     if(el) el.textContent = txt;
   }
 
-  // Upcoming moon events
-  var today=DATA.mkt_today;
-  var up=DATA.mkt_moon_events.filter(function(e){return e.date>=today;}).slice(0,6);
-  document.getElementById('upcoming-events').innerHTML=up.map(function(e){
-    var d=Math.round((new Date(e.date)-new Date(today))/86400000);
-    return '<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);">'+
-      '<div><span style="font-size:1rem;">'+(e.type==='new_moon'?'🌑':'🌕')+'</span>'+
-      '<span style="margin-left:7px;font-size:0.8rem;">'+e.label+'</span>'+
-      '<div style="font-size:0.68rem;color:var(--text2);">'+e.date+'</div></div>'+
-      '<div style="color:'+(e.type==='new_moon'?'#4a6fa5':'#c8a45a')+';font-weight:700;">'+(d===0?'今日!':d+'日後')+'</div></div>';
-  }).join('');
+  // === 今後の月相イベント（実日付ベース） ===
+  var upcomingEl = document.getElementById('upcoming-events');
+  if(upcomingEl && DATA.mkt_moon_events){
+    var up=DATA.mkt_moon_events.filter(function(e){return e.date>=today;}).slice(0,6);
+    if(up.length===0){
+      // Fallback: show computed next events from lunar engine
+      upcomingEl.innerHTML='<div style="color:#666;font-size:0.85rem;padding:8px;">次の新月: 2026-07-15 | 次の満月: 2026-07-30 (推定)</div>';
+    } else {
+      upcomingEl.innerHTML=up.map(function(e){
+        var d=Math.round((new Date(e.date)-new Date(today))/86400000);
+        return '<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);">'+
+          '<div><span style="font-size:1rem;">'+(e.type==='new_moon'?'🌑':'🌕')+'</span>'+
+          '<span style="margin-left:7px;font-size:0.8rem;">'+e.label+'</span>'+
+          '<div style="font-size:0.68rem;color:var(--text2);">'+e.date+'</div></div>'+
+          '<div style="color:'+(e.type==='new_moon'?'#4a6fa5':'#c8a45a')+';font-weight:700;">'+(d===0?'今日!':d+'日後')+'</div></div>';
+      }).join('');
+    }
+  }
 
-  // Monthly distribution chart
-  var june=DATA.mkt_calendar.filter(function(d){return d.date.startsWith('2026-06');});
-  var dist=[june.filter(function(d){return d.activity_type==='活動期';}).length,
-            june.filter(function(d){return d.activity_type==='思考期';}).length,
-            june.filter(function(d){return d.activity_type==='停滞期';}).length];
-  if(window._mdC) window._mdC.destroy();
-  window._mdC=new Chart(document.getElementById('monthDistChart'),{type:'doughnut',
-    data:{labels:['活動期','思考期','停滞期'],datasets:[{data:dist,backgroundColor:['#5ba85d','#c8a45a','#4a6fa5'],borderWidth:0}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#8a9ab8',font:{size:11}}}}}});
+  // === 今月フェーズ分布（動的月） ===
+  var jst2 = new Date(new Date().getTime()+9*3600000);
+  var ym = jst2.getUTCFullYear()+'-'+String(jst2.getUTCMonth()+1).padStart(2,'0');
+  var thisMonth = DATA.mkt_calendar ? DATA.mkt_calendar.filter(function(d){return d.date.startsWith(ym);}) : [];
+  var dist=[
+    thisMonth.filter(function(d){return d.activity_type==='活動期';}).length,
+    thisMonth.filter(function(d){return d.activity_type==='思考期';}).length,
+    thisMonth.filter(function(d){return d.activity_type==='停滞期';}).length
+  ];
+  var chartEl = document.getElementById('monthDistChart');
+  if(chartEl){
+    if(window._mdC) window._mdC.destroy();
+    window._mdC=new Chart(chartEl,{type:'doughnut',
+      data:{labels:['活動期','思考期','停滞期'],datasets:[{data:dist,backgroundColor:['#5ba85d','#c8a45a','#4a6fa5'],borderWidth:0}]},
+      options:{responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{labels:{color:'#8a9ab8',font:{size:11}}},
+          title:{display:true,text:ym+'月 フェーズ分布',color:'#7a8aaa',font:{size:10}}}}});
+  }
 
-  // Sync tl-moon-age-big with rt-moon-age
-  setInterval(function(){
-    var src=document.getElementById('rt-moon-age');
-    var dst=document.getElementById('tl-moon-age-big');
-    if(src&&dst) dst.textContent=src.textContent;
-  }, 1000);
+  // === tl-moon-age-big 同期 ===
+  if(!window._todayAgeSync){
+    window._todayAgeSync = setInterval(function(){
+      var src=document.getElementById('rt-moon-age');
+      var dst=document.getElementById('tl-moon-age-big');
+      if(src&&dst) dst.textContent=src.textContent;
+    }, 1000);
+  }
 }
 
 function initActivityCards(){
