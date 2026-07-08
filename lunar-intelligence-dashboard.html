@@ -208,20 +208,7 @@
 .act-desc{font-size:0.8rem;color:var(--text2);line-height:1.5;margin-bottom:7px;}
 </style>
 
-<script>
-// 30年データで統計タブを更新
-(function(){
-  var d30 = DATA.stats_30y;
-  if(!d30) return;
-  // Override existing chart data with 30y analysis
-  window._30y = d30;
-  document.addEventListener('DOMContentLoaded', function(){
-    // update period badge if exists
-    var p = document.querySelector('[data-period="30y"]');
-    if(p){ var b=p.querySelector('.period-badge'); if(b) b.textContent='30年分析'; }
-  });
-})();
-</script>
+<!-- 30y patch moved to main script -->
 
 </head>
 <body>
@@ -985,9 +972,9 @@ function buildBTCKPI() {
   if(!DATA.results || !DATA.results.BTC){ 
     // Fallback: use stats_30y BTC data
     var btcStats = DATA.stats_30y && DATA.stats_30y.analysis ? DATA.stats_30y.analysis.btc : null;
-    var c = document.getElementById('kpi-btc');
-    if(c && btcStats){
-      c.innerHTML = '<div class="kpi-card"><div class="kpi-label">🌑 新月日 平均リターン</div><div class="kpi-value nm">'+btcStats.day1_mean.toFixed(3)+'%</div><div class="kpi-sub">30年データ</div></div>'+
+    var btcKpiEl = document.getElementById('kpi-btc');
+    if(btcKpiEl && btcStats){
+      btcKpiEl.innerHTML = '<div class="kpi-card"><div class="kpi-label">🌑 新月日 平均リターン</div><div class="kpi-value nm">'+btcStats.day1_mean.toFixed(3)+'%</div><div class="kpi-sub">30年データ</div></div>'+
         '<div class="kpi-card"><div class="kpi-label">🌕 満月日 平均リターン</div><div class="kpi-value fm">'+btcStats.day15_mean.toFixed(3)+'%</div><div class="kpi-sub">p='+btcStats.day15_p.toFixed(4)+'</div></div>'+
         '<div class="kpi-card"><div class="kpi-label">📊 全日 平均リターン</div><div class="kpi-value">'+btcStats.all_mean.toFixed(3)+'%</div><div class="kpi-sub">1995-2025</div></div>';
     }
@@ -1190,7 +1177,17 @@ function buildCycleChart() {
 
 
   // ======= DATA.results compatibility patch =======
-  if(typeof DATA !== 'undefined' && !DATA.results && DATA.stats_30y && DATA.stats_30y.analysis){
+  if(typeof DATA !== 'undefined' && DATA.stats_30y && DATA.stats_30y.analysis){
+    // Always sync stats_30y BTC data into results for consistency
+    if(!DATA.results) DATA.results = {};
+    var a30 = DATA.stats_30y.analysis;
+    // Add 30y BTC specifically to ensure correct values
+    if(a30.btc){ DATA.results['BTC_30Y'] = { new_moon_mean: a30.btc.day1_mean, full_moon_mean: a30.btc.day15_mean, full_moon_p: a30.btc.day15_p, new_moon_p: a30.btc.day1_p, all_mean: a30.btc.all_mean }; }
+    // sync other instruments too
+    ['nikkei','sp500','dji','nasdaq','usdjpy','eurjpy','eurusd','gold'].forEach(function(k){ if(a30[k]) DATA.results[k.toUpperCase()+'_30Y']={new_moon_mean:a30[k].day1_mean,full_moon_mean:a30[k].day15_mean,all_mean:a30[k].all_mean}; });
+    console.log('[DATA] 30y stats patched into DATA.results');
+  }
+  if(false && typeof DATA !== 'undefined' && !DATA.results && DATA.stats_30y && DATA.stats_30y.analysis){
     DATA.results = {};
     var a = DATA.stats_30y.analysis;
     Object.keys(a).forEach(function(k){
