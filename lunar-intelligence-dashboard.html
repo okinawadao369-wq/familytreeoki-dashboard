@@ -2640,7 +2640,7 @@ function initGeopoliticsTab() {
 // ===== 💹 GREED TAB =====
 function initGreedTab() {
   // Fear & Greed gauge SVG
-  const score = 23;
+  const score = 38;
   const angle = (score / 100) * 180 - 90; // -90=left, 90=right
   const rad = angle * Math.PI / 180;
   const cx=90, cy=90, R=70;
@@ -2667,16 +2667,16 @@ function initGreedTab() {
 
   // Indicators
   const indicators = [
-    {name:'VIX 恐怖指数',val:'28.4',status:'高ボラ',color:'#ff6666'},
-    {name:'プットコールレシオ',val:'1.21',status:'恐怖圏',color:'#ff8888'},
-    {name:'NYSE 高値/安値比',val:'0.71',status:'売り優勢',color:'#ffaa44'},
-    {name:'株式トレンド強度',val:'42/100',status:'弱気',color:'#ffcc44'},
-    {name:'BTC 30日ボラ',val:'68%',status:'極高',color:'#fc8181'},
-    {name:'マージンデット',val:'$762B',status:'収縮中',color:'#f7931a'},
-    {name:'信用スプレッド(HY)',val:'520bp',status:'ストレス',color:'#ff6666'},
-    {name:'ドル指数 (DXY)',val:'104.2',status:'ドル強',color:'#63b3ed'},
-    {name:'原油 (Brent)',val:'$93.1',status:'地政学プレミアム',color:'#ffcc44'},
-    {name:'金 (スポット)',val:'$3,289',status:'安全資産需要↑',color:'#ffd700'},
+    {name:'VIX 恐怖指数',val:'15.4',status:'低ボラ・楽観圏',color:'#68d391'},
+    {name:'プットコールレシオ',val:'0.86',status:'中立〜強気',color:'#63b3ed'},
+    {name:'NYSE 高値/安値比',val:'0.72',status:'やや売り優勢',color:'#ffaa44'},
+    {name:'株式トレンド強度',val:'58/100',status:'改善中',color:'#f6ad55'},
+    {name:'BTC 30日ボラ',val:'~48%',status:'低下中',color:'#f6ad55'},
+    {name:'マージンデット',val:'$1.28T',status:'過去最高水準！',color:'#ff8800'},
+    {name:'信用スプレッド(HY)',val:'267bp',status:'タイト・リスクオン',color:'#68d391'},
+    {name:'ドル指数 (DXY)',val:'101.2',status:'ドル弱含み',color:'#63b3ed'},
+    {name:'原油 (Brent)',val:'$76.0',status:'地政学懸念残る',color:'#ffcc44'},
+    {name:'金 (スポット)',val:'$4,074',status:'安全資産需要継続',color:'#ffd700'},
   ];
   const indDiv = document.getElementById('greed-indicators');
   if (indDiv) indDiv.innerHTML = indicators.map(i=>`
@@ -2831,7 +2831,7 @@ function initExtremesTab() {
 <!-- ===== 💹 欲望指数 ===== -->
 <div id="sec-greed" class="section">
 <div class="main">
-  <div class="section-title">💹 市場欲望指数 <span style="font-size:0.7em;color:#888;">2026年6月 最新データ</span></div>
+  <div class="section-title">💹 市場欲望指数 <span style="font-size:0.7em;color:#888;">2026年7月11日 最新データ</span></div>
   <div style="color:var(--text2);font-size:0.85rem;margin-bottom:18px;">「人の思考が数字の影響力で知らぬ間に動く」—月の引力が欲望と恐怖を駆動する10指標の可視化。</div>
 
   <!-- Fear & Greed Gauge -->
@@ -2839,9 +2839,9 @@ function initExtremesTab() {
     <div class="card" style="text-align:center;border:1px solid #334;">
       <div class="card-title">😱 恐怖&欲望指数（現在）</div>
       <div id="fg-gauge-svg" style="margin:10px auto;"></div>
-      <div style="font-size:2rem;font-weight:900;color:#ff4444;" id="fg-score">23</div>
-      <div style="color:#ff6666;font-size:0.9rem;font-weight:700;">極度の恐怖</div>
-      <div style="font-size:0.75rem;color:#666;margin-top:6px;">2026年6月16日現在</div>
+      <div style="font-size:2rem;font-weight:900;color:#ff8800;" id="fg-score">38</div>
+      <div style="color:#ffaa44;font-size:0.9rem;font-weight:700;">恐怖</div>
+      <div style="font-size:0.75rem;color:#666;margin-top:6px;">2026年7月11日現在</div>
     </div>
     <div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;" id="greed-indicators"></div>
@@ -2854,8 +2854,8 @@ function initExtremesTab() {
       <div style="font-size:3rem;">₿</div>
       <div>
         <div style="font-size:1.1rem;font-weight:700;color:#f7931a;">BTC = 人類の純粋欲望の結晶体</div>
-        <div style="font-size:0.85rem;color:#cc7722;margin-top:4px;">現在価格: <strong style="color:#f7931a;font-size:1.2rem;">~$70,674</strong>（2026年6月時点）</div>
-        <div style="font-size:0.85rem;color:#888;margin-top:4px;">高値 $105,000（2026年初）から-33%。恐怖指数23=Extreme Fear。<br>旧暦分析: BTC満月リターン平均+0.71%(p=0.085 △準有意) — 30年で最も強い月相シグナル。</div>
+        <div style="font-size:0.85rem;color:#cc7722;margin-top:4px;">現在価格: <strong style="color:#f7931a;font-size:1.2rem;">~$63,500</strong>（2026年7月11日時点）</div>
+        <div style="font-size:0.85rem;color:#888;margin-top:4px;">高値 $126,198（2025年10月）から-50%。恐怖指数30=Fear（回復中）。<br>旧暦分析: BTC満月リターン平均+0.71%(p=0.085 △準有意) — 30年で最も強い月相シグナル。</div>
       </div>
     </div>
   </div>
