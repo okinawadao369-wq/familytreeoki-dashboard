@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Family Tree Oki — A Place Where Families Bloom</title>
+<style>
+  :root {
+    --warm-bark: #7B5C44;
+    --warm-bark-2: #A87B5A;
+    --blush-rose: #E8A0BC;
+    --leaf-green: #8FAF3A;
+    --sky-blue: #7DB8E0;
+    --peach-glow: #F0A870;
+    --linen-cream: #FDF9F6;
+    --petal-white: #FFF0F5;
+    --mint-dew: #F2FAEC;
+    --morning-sky: #EDF5FF;
+    --border-soft: #EDD8C8;
+    --text-body: #5A4035;
+    --tag-text: #C97FA0;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--linen-cream);
+    font-family: Arial, Helvetica, sans-serif;
+    color: var(--text-body);
+    line-height: 1.7;
+  }
+  h1, h2, h3 { font-family: Georgia, 'Times New Roman', serif; margin: 0 0 12px; }
+  .hero {
+    background: none;
+    padding: 56px 24px 48px;
+    text-align: center;
+  }
+  .wordmark {
+    font-family: Georgia, serif;
+    font-size: 22px;
+    letter-spacing: 0.08em;
+    color: var(--warm-bark);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 28px;
+  }
+  .wordmark .leaf { color: var(--leaf-green); font-size: 20px; }
+  .section-label {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    color: var(--tag-text);
+    text-transform: uppercase;
+    font-family: Arial, sans-serif;
+    margin-bottom: 10px;
+  }
+  .hero h1 {
+    font-size: 34px;
+    color: var(--warm-bark);
+    max-width: 640px;
+    margin: 0 auto 14px;
+  }
+  .hero .sub {
+    font-size: 17px;
+    color: var(--warm-bark-2);
+    max-width: 520px;
+    margin: 0 auto 20px;
+  }
+  .pill-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 18px;
+  }
+  .pill {
+    border: 1px solid #E8C8B8;
+    border-radius: 20px;
+    padding: 5px 16px;
+    font-size: 12px;
+    color: var(--warm-bark-2);
+    background: white;
+  }
+  .container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 48px 24px;
+  }
+  .card {
+    background: #FFFFFF;
+    border: 1px solid var(--border-soft);
+    border-radius: 12px;
+    padding: 28px 30px;
+    margin-bottom: 24px;
+  }
+  .card.rose   { background: var(--petal-white); }
+  .card.green  { background: var(--mint-dew); }
+  .card.blue   { background: var(--morning-sky); }
+  .founder-row {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+  }
+  .founder-photo {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--warm-bark);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Georgia, serif;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+  h2 { font-size: 22px; color: var(--warm-bark-2); }
+  h3 { font-size: 17px; color: var(--warm-bark); }
+  p { margin: 0 0 14px; font-size: 14.5px; }
+  .steps {
+    counter-reset: step;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+  .steps li {
+    counter-increment: step;
+    position: relative;
+    padding-left: 42px;
+    margin-bottom: 18px;
+    font-size: 14.5px;
+  }
+  .steps li::before {
+    content: counter(step);
+    position: absolute;
+    left: 0;
+    top: -2px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--peach-glow);
+    color: white;
+    font-family: Georgia, serif;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .service-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  .service-item {
+    background: white;
+    border: 1px solid var(--border-soft);
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 13.5px;
+    color: var(--text-body);
+  }
+  .service-item b { color: var(--warm-bark); display: block; margin-bottom: 4px; font-size: 14px; }
+  .signature {
+    font-family: Georgia, serif;
+    font-style: italic;
+    color: var(--warm-bark);
+    margin-top: 6px;
+  }
+  .cta {
+    text-align: center;
+    background: var(--warm-bark);
+    color: white;
+    border-radius: 12px;
+    padding: 40px 24px;
+  }
+  .cta h2 { color: white; }
+  .cta p { color: #F0E4DA; }
+  .btn {
+    display: inline-block;
+    background: white;
+    color: var(--warm-bark);
+    font-family: Georgia, serif;
+    font-weight: bold;
+    padding: 12px 30px;
+    border-radius: 24px;
+    text-decoration: none;
+    margin-top: 12px;
+  }
+  .placeholder-note {
+    font-size: 12px;
+    color: var(--tag-text);
+    background: var(--petal-white);
+    border: 1px dashed var(--blush-rose);
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin-top: 10px;
+  }
+  footer {
+    text-align: center;
+    padding: 32px 24px 48px;
+    font-size: 12.5px;
+    color: var(--warm-bark-2);
+  }
+  .divider {
+    height: 1px;
+    background: var(--border-soft);
+    margin: 8px 0 20px;
+  }
+</style>
+</head>
+<body>
+
+  <div class="hero">
+    <img src="fto-logo.png" alt="Family Tree Oki" style="background:transparent;width:120px;height:120px;display:block;margin:0 auto 20px;">
+    <h1>A Place Where Families Bloom</h1>
+    <div class="sub">You're far from home, but never alone.</div>
+    <div class="pill-row">
+      <span class="pill">English Speaking Staff Available</span>
+      <span class="pill">All-Female Team</span>
+      <span class="pill">Near Base · Okinawa, Japan</span>
+      <span class="pill">Kids Welcome</span>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <div class="card rose">
+      <div class="section-label">A Note From Our Founder</div>
+      <div class="founder-row">
+        <img class="founder-photo" src="koya-founder.jpg" alt="Koya Miyagi, Founder" style="object-fit:cover;">
+        <div>
+          <h2>Hi, I'm Koya.</h2>
+          <p>I grew up here in Okinawa, and I've spent my whole life around this island's relationship with the U.S. military community. My wife is a registered nurse, and together we started Family Tree Oki because we kept hearing the same thing from military families here: "We love it here, but when it comes to something as personal as pregnancy and family care, we don't always know who to trust."</p>
+          <p>That's the gap we wanted to fill. Family Tree Oki is a small, women-run studio built specifically for you — bilingual, familiar with military life, and focused on making sure you never have to figure this out alone.</p>
+          <div class="signature">— Koya Miyagi, Founder, Family Tree Oki</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-label">What To Expect</div>
+      <h2>Booking with us is simple</h2>
+      <ol class="steps">
+        <li><b>Message or book online</b> — everything is available in English, no confusing phone calls required.</li>
+        <li><b>We confirm your appointment</b> and send you simple, step-by-step directions from your gate.</li>
+        <li><b>You come in and meet our team</b> — we walk you through everything in plain English before we start anything.</li>
+        <li><b>You leave with your photos or video</b>, and a clear answer to any questions you had.</li>
+      </ol>
+    </div>
+
+    <div class="card green">
+      <div class="section-label">Our Services</div>
+      <h2>Care for every stage</h2>
+      <div class="service-grid">
+        <div class="service-item"><b>Prenatal Support</b>Guidance and care throughout your pregnancy.</div>
+        <div class="service-item"><b>3D / 4D Ultrasound</b>Best between weeks 25–32. A bonding experience, not a medical exam.</div>
+        <div class="service-item"><b>Postnatal Care</b>Support for you after baby arrives.</div>
+        <div class="service-item"><b>Family Wellness</b>Sessions where kids are always welcome.</div>
+        <div class="service-item"><b>Mommy & Me</b>Time built around you and your little one.</div>
+        <div class="service-item"><b>Home Visits</b>We can come to you when you need us to.</div>
+      </div>
+    </div>
+
+    <div class="card blue">
+      <div class="section-label">Your Privacy</div>
+      <h2>What happens here, stays with you</h2>
+      <p>We never share your photos, videos, or personal information without your permission — full stop. Your session is between you and our team, unless you choose to share it yourself.</p>
+    </div>
+
+    <div class="card rose">
+      <div class="section-label">Honest Pricing</div>
+      <h2>Why isn't this covered by TRICARE?</h2>
+      <p>TRICARE covers medically necessary ultrasounds, but not elective sessions like gender reveal or keepsake imaging — that's actually part of why Family Tree Oki exists. We believe you deserve to know exactly what you're paying for before you walk in the door, with no surprise fees. We accept cash and all major credit cards, so you can book and pay however is easiest for your family.</p>
+    </div>
+
+    <div class="card">
+      <div class="section-label">Getting Here</div>
+      <h2>First time off base? We've got you.</h2>
+      <p>We're located a short drive off base. Once you book, we'll send you simple directions from your gate, and we're always happy to walk you through it if this is your first time coming out this way.</p>
+      <p style="margin-bottom:4px;"><b>Family Tree Oki</b><br>
+      2-9-16 Yamauchi, 1F<br>
+      Okinawa City, Okinawa 904-0034, Japan</p>
+      <a class="btn" style="background:var(--warm-bark);color:white;padding:9px 22px;font-size:13px;margin-top:8px;" href="https://www.google.com/maps/search/?api=1&query=%E6%B2%96%E7%B8%84%E7%9C%8C%E6%B2%96%E7%B8%84%E5%B8%82%E5%B1%B1%E5%86%852-9-16" target="_blank" rel="noopener">Open in Google Maps →</a>
+    </div>
+
+    <div class="cta">
+      <div class="section-labe                                                                                                
