@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>koya統合インテリジェンス・ダッシュボード</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.js" integrity="sha384-iU8HYtnGQ8Cy4zl7gbNMOhsDTTKX02BTXptVP/vqAWIaTfM7isw76iyZCsjL2eVi" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/gridjs@5.0.2/dist/gridjs.umd.js" integrity="sha384-/XXDzxe4FsGiAe50i/u9pY/Vy/uX654MHB1xoc1BJNnH1WXHhqHga9g3q5tF4gj7" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gridjs@5.0.2/dist/theme/mermaid.min.css" integrity="sha384-jZvDSsmGB9oGGT/4l9bHXGoAv1OxvG/cFmSo0dZaSqmBgvQTKDBFAMftlXTmMbNW" crossorigin="anonymous">
+<style>
+  :root { color-scheme: light; }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    margin: 0; background: #f4f5f7; color: #1b1f24;
+    font-family: -apple-system, "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;
+  }
+  header {
+    background: #fff; border-bottom: 1px solid #e5e7eb; padding: 16px 24px;
+    position: sticky; top: 0; z-index: 20;
+  }
+  header h1 { font-size: 18px; margin: 0 0 3px; }
+  header .sub { font-size: 11px; color: #6b7280; }
+  nav {
+    display: flex; gap: 4px; padding: 8px 10px 0; background: #fff;
+    border-bottom: 1px solid #e5e7eb; overflow-x: auto; -webkit-overflow-scrolling: touch;
+    position: sticky; top: 62px; z-index: 19;
+  }
+  nav button {
+    border: none; background: transparent; padding: 9px 12px; font-size: 12.5px;
+    cursor: pointer; border-radius: 8px 8px 0 0; color: #6b7280; font-weight: 600;
+    white-space: nowrap; flex: 0 0 auto;
+  }
+  nav button.active { color: #1b1f24; background: #f4f5f7; }
+  main { padding: 18px 16px 40px; max-width: 1180px; margin: 0 auto; }
+  .tab { display: none; }
+  .tab.active { display: block; }
+  .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
+  .grid.g3 { grid-template-columns: repeat(3, 1fr); }
+  .grid.g2 { grid-template-columns: repeat(2, 1fr); }
+  .card {
+    background: #fff; border-radius: 10px; padding: 13px 15px;
+    border: 1px solid #e5e7eb;
+  }
+  .card .label { font-size: 11.5px; color: #6b7280; margin-bottom: 5px; }
+  .card .value { font-size: 19px; font-weight: 700; }
+  .card .note { font-size: 10.5px; color: #9ca3af; margin-top: 4px; }
+  .panel { background: #fff; border-radius: 10px; padding: 16px; border: 1px solid #e5e7eb; margin-bottom: 14px; }
+  .panel h2 { font-size: 14.5px; margin: 0 0 12px; }
+  .panel h3 { font-size: 13px; margin: 14px 0 8px; color: #374151; }
+  .chart-wrap { position: relative; height: 260px; }
+  .chart-wrap.tall { height: 320px; }
+  table.simple { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  table.simple th, table.simple td { text-align: left; padding: 7px 7px; border-bottom: 1px solid #f0f1f3; vertical-align: top; }
+  table.simple th { color: #6b7280; font-weight: 600; font-size: 11.5px; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 10.5px; font-weight: 700; white-space: nowrap; }
+  .badge.stable { background: #dcfce7; color: #15803d; }
+  .badge.watch { background: #fef3c7; color: #b45309; }
+  .pending-box { background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 11px 13px; font-size: 12.5px; margin-bottom: 14px; }
+  .source-note { font-size: 10.5px; color: #9ca3af; margin-top: 10px; }
+  .scenario { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .scenario .name { width: 150px; font-size: 12px; }
+  .bar-bg { flex: 1; background: #eef0f2; border-radius: 6px; height: 13px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 6px; }
+  .scenario .pct { width: 40px; text-align: right; font-size: 12px; font-weight: 600; }
+
+  /* 3-color business-impact badge system */
+  .impact { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 12px; font-size: 11.5px; font-weight: 700; white-space: nowrap; }
+  .impact.pos { background: #dcfce7; color: #15803d; }
+  .impact.neu { background: #fef9c3; color: #92650b; }
+  .impact.neg { background: #fee2e2; color: #b91c1c; }
+  .impact-dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+  .impact.pos .impact-dot { background: #22c55e; }
+  .impact.neu .impact-dot { background: #eab308; }
+  .impact.neg .impact-dot { background: #ef4444; }
+  .legend-bar { display: flex; gap: 14px; flex-wrap: wrap; padding: 10px 14px; background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; margin-bottom: 14px; font-size: 12.5px; }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+  .verdict-box { border-radius: 10px; padding: 14px 16px; font-size: 13px; margin-top: 12px; border: 1px solid; }
+  .verdict-box.mixed { background: #fffbeb; border-color: #fde68a; }
+  .verdict-box.pos { background: #f0fdf4; border-color: #bbf7d0; }
+  .pro-con { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .pro-con .col { border-radius: 8px; padding: 12px; font-size: 12.5px; }
+  .pro-con .col.pro { background: #eff6ff; border: 1px solid #bfdbfe; }
+  .pro-con .col.con { background: #fff7ed; border: 1px solid #fed7aa; }
+  .pro-con .col h4 { margin: 0 0 8px; font-size: 12.5px; }
+  .pro-con ul { margin: 0; padding-left: 18px; }
+  .pro-con li { margin-bottom: 8px; }
+
+  @media (max-width: 720px) {
+    header { padding: 12px 14px; }
+    header h1 { font-size: 15px; }
+    nav { top: 54px; }
+    main { padding: 12px 10px 30px; }
+    .grid, .grid.g3, .grid.g2 { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .pro-con { grid-template-columns: 1fr; }
+    .card { padding: 10px 11px; }
+    .card .value { font-size: 15.5px; }
+    .panel { padding: 12px; }
+    .panel h2 { font-size: 13.5px; }
+    table.simple { font-size: 11.5px; }
+    table.simple th, table.simple td { padding: 5px 4px; }
+    .chart-wrap { height: 210px; }
+    .chart-wrap.tall { height: 280px; }
+    .scenario .name { width: 110px; font-size: 11px; }
+  }
+  @media (max-width: 420px) {
+    .grid, .grid.g3, .grid.g2 { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🏝️ koya統合インテリジェンス・ダッシュボード</h1>
+  <div class="sub">骨太方針2026 × 日米経済監視 × Family Tree Oki 事業影響分析　—　最終更新: 2026年7月13日</div>
+</header>
+
+<nav id="tabNav"></nav>
+
+<main>
+
+  <div class="tab active" id="tab-summary">
+    <div class="legend-bar">
+      <b style="font-size:12.5px;">🎯 このダッシュボードの3色ルール（当社ビジネスへの影響度）:</b>
+      <span class="legend-item"><span class="impact pos"><span class="impact-dot"></span>プラス影響(追い風)</span></span>
+      <span class="legend-item"><span class="impact neu"><span class="impact-dot"></span>中立・要注意</span></span>
+      <span class="legend-item"><span class="impact neg"><span class="impact-dot"></span>マイナス影響(リスク)</span></span>
+    </div>
+    <div class="pending-box">
+      <b>⏳ 骨太方針2026 進捗（2026/7/13時点）:</b> 6月30日に原案提示、自民党政調会が7月7日に大筋了承。食料品の消費税減税案は「ペンディング」で結論持ち越し。閣議決定は当初の7月中想定から「7月中旬以降」にずれ込む見通し。
+    </div>
+    <div class="grid">
+      <div class="card"><div class="label">危機確率(日米統合)</div><div class="value">31.0%</div><div class="note">🟡 CAUTION（リスクスコア8/24）</div></div>
+      <div class="card"><div class="label">USD/JPY（最新）</div><div class="value">162.01円</div><div class="note">約40年ぶりの円安水準に接近</div></div>
+      <div class="card"><div class="label">一般会計PB(令和8年度)</div><div class="value" style="color:#15803d;">+1.34兆円</div><div class="note">1998年度以来28年ぶりの黒字</div></div>
+      <div class="card"><div class="label">投資構想累計(〜2040年度)</div><div class="value">370兆円超</div><div class="note">17戦略分野・62重要技術／官民試算</div></div>
+    </div>
+    <div class="panel">
+      <h2>3つの核心的な問い（詳細は各タブへ）</h2>
+      <table class="simple">
+        <tr><th style="width:40%;">問い</th><th>現時点の結論</th><th style="width:120px;">当社への含意</th></tr>
+        <tr>
+          <td><b>①骨太方針2026は日本経済を本当に伸ばせるか？</b></td>
+          <td>期待と懸念が拮抗。370兆円の内訳や実効性は不透明で、民間投資目標(230兆円=GDP比20.9%)はバブル期のピークを超える水準。「経済効果を検証」タブ参照。</td>
+          <td><span class="impact neu"><span class="impact-dot"></span>中立</span></td>
+        </tr>
+        <tr>
+          <td><b>②沖縄県に経済の恩恵はあるか？</b></td>
+          <td>限定的だが上向き。沖縄振興予算は10年ぶり増額(2,647億円)も県要望を下回る。基地跡地再開発「GW2050」が最大の恩恵チャネル。「沖縄経済効果」タブ参照。</td>
+          <td><span class="impact pos"><span class="impact-dot"></span>プラス</span></td>
+        </tr>
+        <tr>
+          <td><b>③Family Tree Okiビジネスへの影響は？</b></td>
+          <td>現状(円安・防衛予算拡大)は追い風が継続中。円高急転換や国内インフレはリスク要因。「koyaビジネス影響度」タブで全項目を3色評価。</td>
+          <td><span class="impact pos"><span class="impact-dot"></span>総合プラス</span></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="tab" id="tab-monitor">
+    <div class="grid">
+      <div class="card"><div class="label">危機確率</div><div class="value">31.0%</div></div>
+      <div class="card"><div class="label">USD/JPY</div><div class="value">162.008</div></div>
+      <div class="card"><div class="label">日米金利差</div><div class="value">1.919%</div></div>
+      <div class="card"><div class="label">キャリー圧力</div><div class="value">75.9%</div></div>
+      <div class="card"><div class="label">VIX</div><div class="value">16.27</div></div>
+      <div class="card"><div class="label">米10年金利</div><div class="value">4.569%</div></div>
+      <div class="card"><div class="label">日本JGB 10年</div><div class="value">2.65%</div></div>
+      <div class="card"><div class="label">円安構造スコア</div><div class="value">36.2</div></div>
+    </div>
+    <div class="panel">
+      <h2>為替シナリオ確率（今後3〜18ヶ月）</h2>
+      <div id="scenarios"></div>
+      <div class="source-note">出典: japan-us-economic-monitorスキル（FRED API + Yahoo Finance、2026/7/13実行）</div>
+    </div>
+    <div class="panel">
+      <h2>危機確率の内訳（4カテゴリ）</h2>
+      <div class="chart-wrap"><canvas id="crisisChart"></canvas></div>
+    </div>
+    <div class="panel">
+      <h2>主要マーケット指標</h2>
+      <table class="simple" id="marketTable"><thead><tr><th>指標</th><th>値</th></tr></thead><tbody></tbody></table>
+      <a href="https://docs.google.com/spreadsheets/d/1QAWGtXeulrMbsgA8Ybgwg1G_bgpUiJpmEi5xIqOdJhI/edit" target="_blank" style="font-size:12.5px; color:#2563eb;">📊 Google Sheets 履歴ログを開く</a>
+    </div>
+  </div>
+
+  <div class="tab" id="tab-overview">
+    <div class="panel">
+      <h2>財政運営方針の転換ポイント</h2>
+      <table class="simple">
+        <tr><th>旧方針</th><th>→</th><th>骨太方針2026の新方針</th></tr>
+        <tr><td>単年度PB黒字化を機械的目標に</td><td>→</td><td>国・地方の債務残高対GDP比の安定的低下を中核目標に</td></tr>
+        <tr><td>PBが主要指標</td><td>→</td><td>PBは債務残高対GDP比と整合する複数年の確認指標に格下げ</td></tr>
+        <tr><td>通常歳出内でシーリング管理</td><td>→</td><td>「強く豊かな日本」投資枠を新設・シーリングなし</td></tr>
+        <tr><td>補正予算で機動的対応</td><td>→</td><td>恒常施策は当初予算計上、補正依存から脱却</td></tr>
+      </table>
+      <div class="source-note">出典: 内閣府 骨太方針2026原案（2026/6/30）第3章</div>
+    </div>
+    <div class="panel">
+      <h2>17戦略分野・投資規模</h2>
+      <div class="grid g3">
+        <div class="card"><div class="label">累計投資額(官民合計)</div><div class="value">370兆円超</div></div>
+        <div class="card"><div class="label">2040年度 民間設備投資</div><div class="value">年230兆円</div></div>
+        <div class="card"><div class="label">2040年度 想定名目GDP</div><div class="value">1,100兆円近辺</div></div>
+      </div>
+      <div id="fieldsGrid"></div>
+      <div class="source-note">※370兆円等は政府の支出確約額ではなく複数の前提を置いた内閣府試算値。出典: 内閣府「日本成長戦略の下での中長期的な経済・財政の姿に関する試算」(2026年6月)</div>
+    </div>
+  </div>
+
+  <div class="tab" id="tab-fiscal">
+    <div class="grid">
+      <div class="card"><div class="label">国債費(令和8年度)</div><div class="value">31.3兆円</div><div class="note">前年比+10.8%、想定金利3.0%(29年ぶり)</div></div>
+      <div class="card"><div class="label">国債残高見込み</div><div class="value">1,145兆円</div><div class="note">2026年度末時点</div></div>
+      <div class="card"><div class="label">JGB10年利回り</div><div class="value">2.77%</div><div class="note">7/9に2.8%超え(1997年5月以来)</div></div>
+      <div class="card"><div class="label">債務残高対GDP比</div><div class="value">約206%</div><div class="note">OECD加盟国中最高水準(2024年)</div></div>
+    </div>
+    <div class="panel">
+      <h2>債務残高対GDP比の推移・見通し</h2>
+      <div class="chart-wrap"><canvas id="debtChart"></canvas></div>
+      <div class="source-note">出典: OECD Economic Outlook Vol.2026 Issue1／IMF World Economic Outlook（算出基準により機関間で差異あり）</div>
+    </div>
+    <div class="panel">
+      <h2>基礎的財政収支（PB）の推移</h2>
+      <div class="chart-wrap"><canvas id="pbChart"></canvas></div>
+      <div class="source-note">出典: 財務省資料／第一生命経済研究所レポート</div>
+    </div>
+  </div>
+
+  <div class="tab" id="tab-ministries">
+    <div class="panel">
+      <h2>主要省庁別 概算要求・予算（令和8年度）</h2>
+      <div class="chart-wrap"><canvas id="ministryChart"></canvas></div>
+      <div id="ministryGrid" style="margin-top:12px;"></div>
+      <div class="source-note">注記: 令和8年度は骨太方針2026策定前の既存予算年度。新投資枠等の本格反映は令和9年度（2027年度、「責任ある積極財政元年」）予算から。</div>
+    </div>
+  </div>
+
+  <div class="tab" id="tab-foreign">
+    <div class="panel">
+      <h2>格付機関の評価</h2>
+      <table class="simple">
+        <tr><th>機関</th><th>格付け</th><th>アウトルック</th><th>コメント</th></tr>
+        <tr><td>S&amp;P Global Ratings</td><td>A+/A-1</td><td><span class="badge stable">安定的</span></td><td>2026年定期評価で据え置き</td></tr>
+        <tr><td>Moody's</td><td>A1</td><td><span class="badge stable">安定的</span></td><td>財政目標未達・改革停滞が続けば将来的な格下げの可能性を警告</td></tr>
+        <tr><td>Fitch Ratings</td><td>A</td><td><span class="badge watch">要警戒</span></td><td>債務持続可能性は「不安定」。消費減税など拡張的政策の回避が格付け維持の鍵</td></tr>
+      </table>
+    </div>
+    <div class="panel">
+      <h2>米国政府（財務省為替報告書）の評価</h2>
+      <table class="simple">
+        <tr><td style="width:200px;"><b>監視リスト</b></td><td>日本は継続的に掲載中。ただし為替操作国認定はなし。</td></tr>
+        <tr><td><b>米国側の関心の背景</b></td><td>日米政策金利差、金融緩和的環境、貿易不均衡</td></tr>
+      </table>
+    </div>
+    <div class="panel">
+      <h2>IMF・OECDの評価</h2>
+      <table class="simple">
+        <tr><th>機関</th><th>項目</th><th>内容</th></tr>
+        <tr><td>IMF</td><td>2026年4条協議</td><td>2026年に財政赤字が拡大する見通し。利払い費は2025→2031年で倍増予測。2035年以降に債務残高対GDP比が再上昇の分析</td></tr>
+        <tr><td>OECD</td><td>成長率見通し</td><td>実質GDP成長率 2026年0.6%→2027年0.8%とやや鈍化</td></tr>
+        <tr><td>OECD</td><td>財政スタンス</td><td>2025年▲1.0%→2026年▲1.6%へ悪化見通し</td></tr>
+      </table>
+    </div>
+    <div class="panel">
+      <h2>海外メディア・市場の論調</h2>
+      <table class="simple">
+        <tr><td style="width:160px;"><b>CNBC</b></td><td>高市首相の予算関連発言が債券市場に「レッドフラッグ」（2026年6月）</td></tr>
+        <tr><td><b>Bloomberg</b></td><td>歳出拡大観測で超長期国債利回りが再上昇（2026年6月）</td></tr>
+        <tr><td><b>市場全般</b></td><td>10年国債利回り2026年7月9日に2.8%超え（1997年5月以来）。円は対ドルで約40年ぶり水準に接近</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="tab" id="tab-verify">
+    <div class="pending-box" style="background:#eff6ff; border-color:#bfdbfe;">
+      <b>❓ 問い①：骨太方針2026は本当に日本経済を伸ばすことができるか？</b> 政府試算・専門家の期待論と、経済メディア・エコノミストの懸念論の両方を並べて検証します。
+    </div>
+    <div class="panel">
+      <h2>成長期待の根拠 vs 実現へのハードル</h2>
+      <div class="pro-con">
+        <div class="col pro">
+          <h4>📈 成長を後押しする要素</h4>
+          <ul>
+            <li>官民合わせて370兆円超の投資計画。フィジカルAI分野だけで10.5兆円の投資により144.4兆円の経済波及効果を試算（内閣府ロードマップ案）。</li>
+            <li>「強く豊かな日本」投資枠はシーリング(上限)なし・複数年度計画が前提で、機動的な予算配分が可能。</li>
+            <li>財政目標を「単年度PB黒字化」から「債務残高対GDP比の安定的低下」に転換し、名目成長を通じた債務の相対的軽減（薄める戦略）を志向。</li>
+            <li>実質賃金の年1%超上昇をノルムとして定着させる目標を明記し、需要面のてこ入れも意識。</li>
+          </ul>
+        </div>
+        <div class="col con">
+          <h4>⚠️ 実現を疑問視する声</h4>
+          <ul>
+            <li>日刊工業新聞は社説で「370兆円投資に期待も実現に懸念」と指摘。官民の内訳や実効性の検証手段が不明確。</li>
+            <li>2040年度想定の民間設備投資年230兆円はGDP比20.9%に相当し、バブル期(1990-91年)のピーク約20%を上回る水準。高齢化・資本ストック成熟国での前例なし。</li>
+            <li>アゴラ等の論考は「前提条件が甘すぎる」「62技術に広く薄く投資する戦略は失敗した『クールジャパン』の二の舞」と批判。</li>
+            <li>日経は社説で「持続的な財政の姿が見えぬ」と指摘。少子高齢化による供給制約下で需要喚起しても供給が追いつかない懸念も。</li>
+            <li>Fitchは消費減税など更なる拡張的政策が実施されれば格付け維持が困難になり得ると警告。</li>
+          </ul>
+        </div>
+      </div>
+      <div class="verdict-box mixed">
+        <b>総合評価:</b> 期待と懸念が拮抗しており、「本当に伸びるか」は複数の前提条件（民間投資の誘発力、歳出の効率的検証、供給制約の解消）が実現するか次第。政府自身も370兆円を「支出確約額ではなく試算」と位置付けている点に留意が必要です。<br><br>
+        <b>当社への含意:</b> <span class="impact neu"><span class="impact-dot"></span>中立</span> — 17戦略分野(半導体・防衛・AI等)への370兆円構想はマタニティ・ウェルネス業種を直接対象としておらず、当社への直接効果は見込めません。ただし成長戦略が奏功すれば沖縄駐留米軍関連の設備投資や地域経済全体への波及が間接的な追い風になり得ます。
+      </div>
+      <div class="source-note">出典: 日刊工業新聞社説／アゴラ／日本経済新聞社説／note.com(香川友志)／第一生命経済研究所(星野卓也)レポート／内閣府試算資料（2026年6-7月）</div>
+    </div>
+  </div>
+
+  <div class="tab" id="tab-okinawa-econ">
+    <div class="pending-box" style="background:#eff6ff; border-color:#bfdbfe;">
+      <b>❓ 問い②：沖縄県には経済の恩恵があるのか？</b> 骨太方針2026・令和8年度予算における沖縄関連施策を検証します。
+    </div>
+    <div class="panel">
+      <h2>沖縄関連の主要施策</h2>
+      <table class="simple">
+        <tr><th>項目</th><th>内容</th><th style="width:110px;">評価</th></tr>
+        <tr>
+          <td><b>沖縄振興予算(令和8年度)</b></td>
+          <td>2,647億円を政府案に計上。前年度比+5億円、10年ぶりの増額。ただし県が求める3,000億円台は5年連続で下回る。</td>
+          <td><span class="impact neu"><span class="impact-dot"></span>中立</span></td>
+        </tr>
+        <tr>
+          <td><b>骨太方針2026原案における沖縄の位置づけ</b></td>
+          <td>「沖縄振興は国家戦略として」継続する方針が原案に明記。基地返還後を見据えた「GW2050プロジェクト」の早期実現が盛り込まれる。</td>
+          <td><span class="impact pos"><span class="impact-dot"></span>プラス</span></td>
+        </tr>
+        <tr>
+          <td><b>基地跡地再開発(GW2050)</b></td>
+          <td>普天間基地(宜野湾市)・那覇港湾施設(那覇市)等の返還予定地を一体開発し経済効果を最大化する構想。跡地先行取得事業に51億円(2025年度補正予算と合わせ70億円超)。</td>
+          <td><span class="impact pos"><span class="impact-dot"></span>プラス</span></td>
+        </tr>
+        <tr>
+          <td><b>17戦略分野(370兆円構想)の沖縄への直接配分</b></td>
+          <td>半導体・AI・防衛・エネルギー等が中心で、全国レベルの成長戦略。沖縄向けの特別枠は明記されておらず直接的な資金配分は限定的。</td>
+          <td><span class="impact neu"><span class="impact-dot"></span>中立</span></td>
+        </tr>
+        <tr>
+          <td><b>防衛予算拡大と沖縄駐留</b></td>
+          <td>防衛省概算要求8.85兆円(過去最大)。骨太方針2026は5年以内の防衛力変革を掲げ、沖縄への米軍・自衛隊関連投資は当面継続基調。</td>
+          <td><span class="impact pos"><span class="impact-dot"></span>プラス</span></td>
+        </tr>
+      </table>
+      <div class="verdict-box mixed">
+        <b>総合評価:</b> 恩恵は「限定的だが上向き」。振興予算自体の増額幅は小さく県要望に届いていない一方、骨太方針2026は沖縄振興を明確に「国家戦略」と位置付け、基地跡地再開発(GW2050)という中長期の大型経済効果チャネルを持つ点がポジティブです。370兆円の成長戦略投資そのものは沖縄への直接配分が薄く、恩恵は主に基地返還・跡地利用と防衛関連予算を通じた間接的な形で及ぶと考えられます。<br><br>
+        <b>当社(Family Tree Oki)への含意:</b> <span class="impact pos"><span class="impact-dot"></span>プラス</span> — 米軍基地周辺の駐留安定・跡地再開発による地域経済の底上げは、ターゲット顧客層(米軍軍属・軍人家庭)の維持・拡大に資する追い風と評価できます。
+      </div>
+      <div class="source-note">出典: 日本経済新聞「沖縄振興予算2647億円」／琉球新報「沖縄振興は『国家戦略として』」（GW2050明記）／内閣府 沖縄政策（沖縄振興予算・決算）／防衛省令和8年度概算要求（2026年）</div>
+    </div>
+  </div>
+
+  <div class="tab" id="tab-koya-impact">
+    <div class="legend-bar">
+      <span class="legend-item"><span class="impact pos"><span class="impact-dot"></span>プラス影響(追い風)</span></span>
+      <span class="legend-item"><span class="impact neu"><span class="impact-dot"></span>中立・要注意</span></span>
+      <span class="legend-item"><span class="impact neg"><span class="impact-dot"></span>マイナス影響(リスク)</span></span>
+    </div>
+    <div class="pending-box" style="background:#eff6ff; border-color:#bfdbfe;">
+      <b>❓ 問い③：合同会社koya（屋号：Family Tree Oki）ビジネスへの影響は？</b> 骨太方針2026・為替動向・沖縄関連施策のすべての要因を、当社ビジネスへの影響度で3色評価します。
+    </div>
+    <div class="grid g3">
+      <div class="card"><div class="label">プラス要因</div><div class="value" style="color:#15803d;">5件</div></div>
+      <div class="card"><div class="label">中立・要注意要因</div><div class="value" style="color:#92650b;">4件</div></div>
+      <div class="card"><div class="label">マイナス要因</div><div class="value" style="color:#b91c1c;">2件</div></div>
+    </div>
+    <div class="panel">
+      <h2>影響要因マトリクス（全11項目）</h2>
+      <table class="simple">
+        <tr><th style="width:26%;">要因</th><th>現状・分析</th><th style="width:150px;">影響度</th></tr>
+        <tr>
+          <td><b>USD/JPY(現状162円台)</b></td>
+          <td>約40年ぶりの円安水準。米ドル建て収入(米軍給与)を円建てコスト(家賃・機材・人件費)で運営する当社モデルにとって現状は追い風。</td>
+          <td><span class="impact pos"><span class="impact-dot"></span>プラス</span></td>
+        </tr>
+        <tr>
+          <td><b>為替シナリオ:BASE(69.6%)</b></td>
+          <td>USD/JPY 154〜167で推移(3〜6ヶ月)。現行の価格設定・粗利構造をそのまま継続可能。</td>
+          <td><span class="impact pos"><span class="impact-dot"></span>プラス</span></td>
+        </tr>
+        <tr>
+          <td><b>為替シナリオ:BULL_YEN(17.9%)</b></td>
+          <td>Fed利下げ加速でUSD/JPY 137〜152へ急落するリスク(1〜3ヶ月)。ドル収入の円換算額が目減りし粗利率が圧迫される可能性。</td>
+          <td><span class="impact neg"><span class="impact-dot"></span>マイナス</span></td>
+        </tr>
+        <tr>
+          <td><b>為替シナリオ:BEAR_YEN(12.5%)</b></td>
+          <td>USD/JPY 172〜197まで超円安進行のリスク(6〜18ヶ月)。短期的採算性は向上するが、輸入インフレで家賃・機材コスト上昇リスクも増大。</td>
+          <td><span class="impact neu"><span class="impact-dot"></span>中立</span></td>
+        </tr>
+        <tr>
+          <td><b>防衛省予算8.85兆円(過去最大)</b></td>
+          <td>骨太方針2026は5年以内の防衛力変革を掲げる。沖縄の米軍プレゼンス・関連人口は当面安定〜増加基調が見込まれ、ターゲット顧客基盤に追い風。</td>
+          <td><span class="impact pos"><span class="impact-dot"></span>プラス</span></td>
+        </tr>
+        <tr>
+          <td><b>基地跡地再開発(GW2050)</b></td>
+          <td>普天間・那覇港湾施設等の跡地一体開発構想。実現には長期を要するが、地域経済の底上げを通じ中長期的にプラス。</td>
+          <td><span class="impact pos"><span class="impact-dot"></span>プラス</span></td>
+        </tr>
+        <tr>
+          <td><b>沖縄振興予算(小幅増額、県要望未達)</b></td>
+          <td>2,647億円で10年ぶり増額だが県要望を下回る。地域経済への即効性は限定的。</td>
+          <td><span class="impact neu"><span class="impact-dot"></span>中立</span></td>
+        </tr>
+        <tr>
+          <td><b>米財務省 為替監視リスト継続</b></td>
+          <td>日本は継続的に監視リスト入り。ただし為替操作国認定はなし。急激な円高是正介入の可能性は現時点で低いとみられるが、金利差縮小による自然な円高圧力には留意。</td>
+          <td><span class="impact neu"><span class="impact-dot"></span>中立</span></td>
+        </tr>
+        <tr>
+          <td><b>国内金利上昇・インフレ(JGB2.8%台)</b></td>
+          <td>1997年以来の高水準。住宅ローン・賃料や設備投資コストの上昇圧力になり得るため、スタジオ賃料改定・新規出店タイミングの判断に影響。</td>
+          <td><span class="impact neg"><span class="impact-dot"></span>マイナス</span></td>
+        </tr>
+        <tr>
+          <td><b>370兆円投資構想(17戦略分野)</b></td>
+          <td>半導体・防衛・エネルギー等が中心でマタニティ・ウェルネス業種への直接支援は想定されていない。</td>
+          <td><span class="impact neu"><span class="impact-dot"></span>中立</span></td>
+        </tr>
+        <tr>
+          <td><b>制度の空白地帯モデル(TRICARE)の強み</b></td>
+          <td>TRICARE給付対象外の性別判定・記念撮影需要を捉えた独自モデル。政策変動(骨太方針の内容変更等)に左右されにくい構造的な強み。</td>
+          <td><span class="impact pos"><span class="impact-dot"></span>プラス</span></td>
+        </tr>
+      </table>
+      <div class="verdict-box pos">
+        <b>総合評価:</b> 現時点でプラス要因(5件)が中立・マイナス要因(6件)を上回り、当社ビジネスにとって全体として追い風の環境です。最大のリスクは為替の円高急転換(確率17.9%)と国内金利上昇によるコスト圧迫であり、この2点は定期的なモニタリングが必要です。骨太方針2026自体による直接支援はありませんが、防衛予算拡大・基地跡地再開発という間接チャネルを通じて中長期的にもプラスに働く可能性が高いと評価します。
+      </div>
+      <div class="source-note">出典: 本ダッシュボード内の各タブ（日米経済監視・骨太方針2026・沖縄経済効果分析）／koya-founder-contextスキル（事業構造・制度の空白地帯分析）</div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+const tabs = [
+  { id: 'summary', label: '総合サマリー' },
+  { id: 'monitor', label: '日米経済監視' },
+  { id: 'overview', label: '骨太方針概要' },
+  { id: 'fiscal', label: '財政指標・PB' },
+  { id: 'ministries', label: '省庁別予算' },
+  { id: 'foreign', label: '海外評価' },
+  { id: 'verify', label: '経済効果を検証' },
+  { id: 'okinawa-econ', label: '沖縄経済効果' },
+  { id: 'koya-impact', label: 'koyaビジネス影響度' },
+];
+document.getElementById('tabNav').innerHTML = tabs.map((t,i) =>
+  `<button data-tab="${t.id}" class="${i===0?'active':''}">${t.label}</button>`).join('');
+document.querySelectorAll('nav button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+  });
+});
+
+// --- 日米経済監視タブ ---
+const MON = {
+  scenarios: [
+    { name: "BASE: 現状維持", prob: 69.6, range: "154〜167", color: "#2563eb" },
+    { name: "BULL_YEN: 円高転換", prob: 17.9, range: "137〜152", color: "#15803d" },
+    { name: "BEAR_YEN: 超円安", prob: 12.5, range: "172〜197", color: "#b91c1c" }
+  ],
+  crisisComponents: { "信用市場": 12.5, "流動性危機": 10.7, "雇用悪化": 54.7, "日米統合リスク": 65.1 },
+  market: {
+    "USD/JPY": "162.008", "VIX": "16.27", "米10年金利": "4.569%", "米2年金利": "3.695%",
+    "日本10年国債(JGB)": "2.65%", "日銀政策金利": "0.30%", "S&P500": "7575.39", "日経平均": "67242.7",
+    "金(Gold)": "$4082.8", "WTI原油": "$72.83", "米CPI(指数)": "333.98"
+  }
+};
+document.getElementById('scenarios').innerHTML = MON.scenarios.map(s => `
+  <div class="scenario">
+    <div class="name">${s.name}</div>
+    <div class="bar-bg"><div class="bar-fill" style="width:${s.prob}%; background:${s.color};"></div></div>
+    <div class="pct">${s.prob}%</div>
+  </div>
+  <div style="font-size:10.5px; color:#9ca3af; margin:-4px 0 8px 158px;">USD/JPY ${s.range}</div>
+`).join('');
+document.querySelector('#marketTable tbody').innerHTML =
+  Object.entries(MON.market).map(([k,v]) => `<tr><td>${k}</td><td>${v}</td></tr>`).join('');
+
+new Chart(document.getElementById('crisisChart'), {
+  type: 'bar',
+  data: {
+    labels: Object.keys(MON.crisisComponents),
+    datasets: [{ data: Object.values(MON.crisisComponents), backgroundColor: ['#2563eb', '#0891b2', '#d97706', '#b91c1c'] }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: { y: { beginAtZero: true, max: 100, ticks: { callback: v => v + '%' } } }
+  }
+});
+
+// --- 17戦略分野グリッド ---
+new gridjs.Grid({
+  columns: ["No", "戦略分野", "代表技術例（抜粋）"],
+  data: [
+    [1,"AI・半導体","フィジカルAI、半導体、バーティカルAI、データプラットフォーム、クラウド・データセンター"],
+    [2,"デジタル・サイバーセキュリティ","政府・地方AX/DX基盤、先進的サイバーセキュリティ"],
+    [3,"情報通信","オール光ネットワーク(APN)、海底ケーブル、次世代ワイヤレス(5G/6G)"],
+    [4,"量子","量子コンピューティング、量子通信・ネットワーク、量子センシング"],
+    [5,"防衛産業","小型無人航空機、艦艇、デュアルユース技術"],
+    [6,"航空・宇宙","次期単通路機、無人航空機、空飛ぶクルマ、ロケット、人工衛星、月面探査"],
+    [7,"海洋","海洋ドローン、海洋状況把握(MDA)、海底開発技術"],
+    [8,"造船","次世代船舶、船舶修繕、LNG運搬船"],
+    [9,"マテリアル(重要鉱物・部素材)","永久磁石、グリーン鉄、革新的金属部素材、レアアース"],
+    [10,"合成生物学・バイオ","バイオものづくり、バイオ医薬品・再生医療"],
+    [11,"創薬・先端医療","ファーストインクラス医薬品、感染症対応、先端医療"],
+    [12,"資源・エネルギー安全保障・GX","ペロブスカイト太陽電池、水素、次世代地熱、洋上風力、次世代革新炉"],
+    [13,"フュージョンエネルギー","核融合関連技術"],
+    [14,"防災・国土強靱化","防災技術全般、国土強靱化インフラ"],
+    [15,"港湾ロジスティクス","港湾荷役機械、サイバーポート、次世代型倉庫"],
+    [16,"フードテック","植物工場、陸上養殖、食品機械、新規食品"],
+    [17,"コンテンツ","ゲーム、アニメ、マンガ、音楽、実写"],
+  ],
+  search: true, sort: true, pagination: { limit: 8 },
+}).render(document.getElementById('fieldsGrid'));
+
+// --- 財政チャート ---
+new Chart(document.getElementById('debtChart'), {
+  type: 'line',
+  data: {
+    labels: ['2020','2024','2025(見込)','2027(見通し)'],
+    datasets: [
+      { label: 'OECD試算(総債務対GDP比)', data: [258.4, 205, null, 189], borderColor:'#2563eb', backgroundColor:'rgba(37,99,235,0.1)', spanGaps:true, tension:0.3 },
+      { label: 'IMF試算(参考値)', data: [258.4, 206.5, 229.6, null], borderColor:'#b91c1c', backgroundColor:'rgba(185,28,28,0.08)', spanGaps:true, tension:0.3 },
+    ]
+  },
+  options: { responsive:true, maintainAspectRatio:false, plugins:{ legend:{ position:'bottom' } }, scales:{ y:{ title:{ display:true, text:'対GDP比(%)' } } } }
+});
+
+new Chart(document.getElementById('pbChart'), {
+  type: 'bar',
+  data: {
+    labels: ['2025年度(令和7年度)', '2026年度(令和8年度)'],
+    datasets: [{ label: '一般会計PB(兆円)', data: [-0.7816, 1.3429], backgroundColor: ['#b91c1c', '#15803d'] }]
+  },
+  options: { responsive:true, maintainAspectRatio:false, plugins:{ legend:{ display:false } }, scales:{ y:{ title:{ display:true, text:'兆円' } } } }
+});
+
+new Chart(document.getElementById('ministryChart'), {
+  type: 'bar',
+  data: {
+    labels: ['防衛省', '財務省(所管一般会計)', '経済産業省(総額)', '経産省(GX特会)', '経産省(一般会計)'],
+    datasets: [{ label: '概算要求額(兆円)', data: [8.8454, 34.1204, 2.0444, 0.7671, 0.4285], backgroundColor: '#0891b2' }]
+  },
+  options: { indexAxis: 'y', responsive:true, maintainAspectRatio:false, plugins:{ legend:{ display:false } }, scales:{ x:{ title:{ display:true, text:'兆円' } } } }
+});
+
+new gridjs.Grid({
+  columns: ["省庁", "区分", "金額", "備考"],
+  data: [
+    ["財務省(所管一般会計)","令和8年度概算要求","34兆1,204億円","うち国債費32兆3,865億円、前年比+4兆1,686億円"],
+    ["経済産業省(総額)","令和8年度概算要求","2兆444億円","前年度比 約2割増"],
+    ["防衛省","令和8年度概算要求","8兆8,454億円","過去最大、前年比+約1.7%"],
+    ["一般会計総額(政府全体)","令和8年度当初予算","122兆3,092億円","2年連続で過去最大更新"],
+  ],
+  search: false, sort: true,
+}).render(document.getElementById('ministryGrid'));
+</script>
+</body>
+</html>
