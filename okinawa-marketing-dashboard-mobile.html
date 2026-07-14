@@ -920,7 +920,7 @@ const MUNI_DATA = [
   {name:"恩納村",region:"北部",score:68.6,grade:"A",pop:11213,gdp:48799,income:2369,growth:20.4,traffic:19353,roads:"国道58号",topDistricts:"恩納,山田,仲泊"},
   {name:"うるま市",region:"中部",score:66.1,grade:"A",pop:120839,gdp:271230,income:1737,growth:-6.4,traffic:28895,roads:"国道329,330号",topDistricts:"具志川,石川,与那城"},
   {name:"嘉手納町",region:"中部",score:64.8,grade:"B",pop:13500,gdp:39336,income:3284,growth:3.0,traffic:28676,roads:"国道58号",topDistricts:"嘉手納,屋良,水釜"},
-  {name:"読谷村",region:"中部",score:63.2,grade:"B",pop:41524,gdp:96500,income:2099,growth:-0.2,traffic:28676,roads:"国道58号読谷道路",topDistricts:"喜名,比謝,座喜味"},
+  {name:"読谷村",region:"中部",score:63.2,grade:"B",pop:41480,gdp:96500,income:2099,growth:-0.2,traffic:28676,roads:"国道58号読谷道路",topDistricts:"喜名,比謝,座喜味"},
   {name:"豊見城市",region:"南部",score:59.4,grade:"B",pop:67044,gdp:165902,income:2277,growth:6.8,traffic:0,roads:"国道332号",topDistricts:"豊崎,高安,翁長"},
   {name:"南風原町",region:"南部",score:59.1,grade:"B",pop:38843,gdp:165902,income:2322,growth:0.6,traffic:11400,roads:"国道506号・高速IC",topDistricts:"兼城,宮平,本部"},
   {name:"宮古島市",region:"離島",score:55.7,grade:"B",pop:52903,gdp:178543,income:2230,growth:-2.7,traffic:12000,roads:"国道390号",topDistricts:"平良,伊良部,下地"},
@@ -1307,6 +1307,28 @@ const MUNI_AXIS = {
   "石垣市":      {community:76,economy:60,psychology:68,road:52,military:18,history:80,growth:62,biz:65},
   "金武町":      {community:72,economy:55,psychology:60,road:65,military:85,history:68,growth:55,biz:65},
   "うるま市（具志川）":{community:74,economy:60,psychology:60,road:68,military:62,history:62,growth:58,biz:65},
+  // ── 追加21市町村（北部・離島・その他）──
+  "与那原町":{community:72,economy:55,psychology:65,road:65,military:25,history:65,growth:30,biz:52},
+  "八重瀬町":{community:74,economy:50,psychology:63,road:58,military:20,history:62,growth:25,biz:48},
+  "宜野座村":{community:78,economy:42,psychology:62,road:48,military:35,history:65,growth:22,biz:40},
+  "今帰仁村":{community:82,economy:45,psychology:65,road:45,military:10,history:88,growth:30,biz:44},
+  "本部町":{community:80,economy:48,psychology:64,road:48,military:12,history:82,growth:32,biz:45},
+  "大宜味村":{community:85,economy:38,psychology:65,road:38,military:8,history:80,growth:15,biz:36},
+  "国頭村":{community:84,economy:36,psychology:64,road:36,military:5,history:75,growth:12,biz:34},
+  "東村":{community:86,economy:32,psychology:63,road:30,military:5,history:70,growth:10,biz:30},
+  "伊江村":{community:88,economy:38,psychology:65,road:25,military:15,history:78,growth:18,biz:35},
+  "渡嘉敷村":{community:88,economy:40,psychology:66,road:20,military:5,history:72,growth:20,biz:32},
+  "座間味村":{community:86,economy:42,psychology:66,road:18,military:5,history:70,growth:22,biz:33},
+  "粟国村":{community:92,economy:30,psychology:68,road:15,military:3,history:72,growth:10,biz:28},
+  "渡名喜村":{community:92,economy:28,psychology:68,road:12,military:3,history:75,growth:8,biz:26},
+  "南大東村":{community:88,economy:38,psychology:66,road:18,military:5,history:68,growth:15,biz:30},
+  "北大東村":{community:90,economy:35,psychology:66,road:15,military:3,history:66,growth:12,biz:28},
+  "伊平屋村":{community:90,economy:32,psychology:67,road:14,military:3,history:78,growth:10,biz:28},
+  "伊是名村":{community:90,economy:32,psychology:67,road:14,military:3,history:76,growth:10,biz:28},
+  "久米島町":{community:82,economy:44,psychology:65,road:22,military:5,history:75,growth:22,biz:38},
+  "多良間村":{community:90,economy:30,psychology:67,road:12,military:3,history:72,growth:8,biz:26},
+  "竹富町":{community:82,economy:46,psychology:65,road:20,military:5,history:78,growth:24,biz:38},
+  "与那国町":{community:86,economy:40,psychology:65,road:16,military:8,history:76,growth:18,biz:32},
 };
 
 const TARGET_BONUS = {
@@ -2168,23 +2190,23 @@ const ROAD_PREF = [
 // ─── GDP詳細データ ───────────────────────────────────
 const GDP_MUNI_FULL = [
   {name:"那覇市",pop:314009,gdp:1393876,income:2605,labor:508,growth:5.6,primary:1.2,secondary:8.5,tertiary:90.3},
-  {name:"浦添市",pop:115897,gdp:413558,income:2402,labor:442,growth:3.6,primary:0.8,secondary:12.3,tertiary:86.9},
+  {name:"浦添市",pop:119020,gdp:413558,income:2402,labor:442,growth:3.6,primary:0.8,secondary:12.3,tertiary:86.9},
   {name:"沖縄市",pop:142408,gdp:336400,income:2021,labor:390,growth:2.1,primary:0.9,secondary:11.2,tertiary:87.9},
-  {name:"うるま市",pop:126152,gdp:271230,income:1737,labor:318,growth:-6.4,primary:2.8,secondary:15.6,tertiary:81.6},
+  {name:"うるま市",pop:120839,gdp:271230,income:1737,labor:318,growth:-6.4,primary:2.8,secondary:15.6,tertiary:81.6},
   {name:"宜野湾市",pop:100177,gdp:220904,income:2144,labor:380,growth:9.6,primary:0.5,secondary:8.9,tertiary:90.6},
-  {name:"名護市",pop:64166,gdp:123769,income:2030,labor:348,growth:11.7,primary:3.2,secondary:14.8,tertiary:82.0},
+  {name:"名護市",pop:62389,gdp:123769,income:2030,labor:348,growth:11.7,primary:3.2,secondary:14.8,tertiary:82.0},
   {name:"石垣市",pop:47618,gdp:166567,income:2089,labor:352,growth:-6.3,primary:4.5,secondary:10.2,tertiary:85.3},
-  {name:"豊見城市",pop:64998,gdp:165902,income:2277,labor:398,growth:6.8,primary:1.1,secondary:16.2,tertiary:82.7},
+  {name:"豊見城市",pop:67044,gdp:165902,income:2277,labor:398,growth:6.8,primary:1.1,secondary:16.2,tertiary:82.7},
   {name:"宮古島市",pop:52903,gdp:178543,income:2230,labor:385,growth:-2.7,primary:5.8,secondary:11.5,tertiary:82.7},
-  {name:"糸満市",pop:61438,gdp:96536,income:2010,labor:342,growth:1.8,primary:3.5,secondary:22.8,tertiary:73.7},
+  {name:"糸満市",pop:61245,gdp:96536,income:2010,labor:342,growth:1.8,primary:3.5,secondary:22.8,tertiary:73.7},
   {name:"南城市",pop:44994,gdp:88375,income:2043,labor:345,growth:0.3,primary:4.2,secondary:14.8,tertiary:81.0},
-  {name:"西原町",pop:35280,gdp:124000,income:2171,labor:368,growth:-0.3,primary:1.2,secondary:12.5,tertiary:86.3},
+  {name:"西原町",pop:35609,gdp:124000,income:2171,labor:368,growth:-0.3,primary:1.2,secondary:12.5,tertiary:86.3},
   {name:"北谷町",pop:28322,gdp:87431,income:2719,labor:485,growth:3.0,primary:0.2,secondary:5.8,tertiary:94.0},
-  {name:"南風原町",pop:40675,gdp:165902,income:2322,labor:402,growth:0.6,primary:1.8,secondary:28.5,tertiary:69.7},
+  {name:"南風原町",pop:38843,gdp:165902,income:2322,labor:402,growth:0.6,primary:1.8,secondary:28.5,tertiary:69.7},
   {name:"北中城村",pop:18143,gdp:43836,income:2373,labor:415,growth:1.0,primary:0.9,secondary:12.1,tertiary:87.0},
-  {name:"嘉手納町",pop:13292,gdp:39336,income:3284,labor:580,growth:3.0,primary:0.3,secondary:8.2,tertiary:91.5},
+  {name:"嘉手納町",pop:13500,gdp:39336,income:3284,labor:580,growth:3.0,primary:0.3,secondary:8.2,tertiary:91.5},
   {name:"恩納村",pop:11213,gdp:48799,income:2369,labor:412,growth:20.4,primary:1.8,secondary:6.5,tertiary:91.7},
-  {name:"読谷村",pop:41524,gdp:96500,income:2099,labor:355,growth:-0.2,primary:2.5,secondary:15.8,tertiary:81.7},
+  {name:"読谷村",pop:41480,gdp:96500,income:2099,labor:355,growth:-0.2,primary:2.5,secondary:15.8,tertiary:81.7},
 ];
 
 // ─── 行政区推計GDP ──────────────────────────────────
@@ -4545,9 +4567,6 @@ function toggleCheck(stateKey, id, biz, area) {
 }
 
 
-
-// === 初期表示 ===
-document.addEventListener('DOMContentLoaded',function(){showTab('t1');});
 </script>
 
 <!-- TAB 10: エリア診断ツール -->
