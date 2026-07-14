@@ -989,9 +989,11 @@ function filterTable(){
   const sort = document.getElementById('f-sort').value;
   // MKT_ADMIN columns: [rank,city,dist,type,pop,tax,cs,ms,lf,mf,tf,pf,df,ff,biz,jdg,risk]
   const CI={rank:0,city:1,dist:2,type:3,pop:4,tax:5,cs:6,ms:7,lf:8,mf:9,tf:10,pf:11,df:12,ff:13,biz:14,jdg:15,risk:16};
+  // 動的判定: csスコアベース (GO≥80 / COND≥70 / NO<70)
+  const getJdg = r => r[CI.cs]>=80?'GO':r[CI.cs]>=70?'COND':'NO';
   let data = typeof MKT_ADMIN !== 'undefined' ? [...MKT_ADMIN] : [];
   if(region) data = data.filter(d=>d[CI.city]===region);
-  if(jdg) data = data.filter(d=>d[CI.jdg]===jdg);
+  if(jdg) data = data.filter(d=>getJdg(d)===jdg);
   if(bizF) data = data.filter(d=>d[CI.biz]&&d[CI.biz].includes(bizF));
   if(search) data = data.filter(d=>(d[CI.city]+d[CI.dist]).toLowerCase().includes(search));
   const sortKey = {ms:CI.ms,mf:CI.mf,ff:CI.ff,lf:CI.lf,tax:CI.tax,pop:CI.pop}[sort]||CI.ms;
@@ -1015,7 +1017,7 @@ function filterTable(){
       <td style="color:var(--green);font-size:10px">${d[CI.ff]}</td>
       <td style="color:var(--purple);font-size:10px">${d[CI.tf]}</td>
       <td style="font-size:9px;color:var(--text2)">${d[CI.biz]}</td>
-      <td><span style="font-size:9px;padding:2px 5px;border-radius:3px;background:${jdgColor[d[CI.jdg]]}33;color:${jdgColor[d[CI.jdg]]};font-weight:700">${jdgLabel[d[CI.jdg]]||d[CI.jdg]}</span></td>
+      <td><span style="font-size:9px;padding:2px 5px;border-radius:3px;background:${jdgColor[getJdg(d)]}33;color:${jdgColor[getJdg(d)]};font-weight:700">${jdgLabel[getJdg(d)]}</span></td>
     </tr>`).join('');
   document.getElementById('t7-count').textContent = `表示: ${display.length}/${data.length}件`;
 }
