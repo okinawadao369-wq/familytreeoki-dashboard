@@ -796,6 +796,30 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP','Hiragino
       <table class="matrix-table" id="biz-matrix"></table>
     </div>
   </div>
+  <div class="panel" style="margin-top:14px">
+    <h3>🏅 行政区ビジネスポテンシャル TOP20</h3>
+    <div class="sec-sub" style="margin-bottom:8px">総合スコア・GDP・交通量・雇用・取引・立地の6軸で評価した出店最重要行政区。</div>
+    <div style="overflow-x:auto">
+      <table id="top50-table" style="width:100%;border-collapse:collapse;font-size:11px">
+        <thead>
+          <tr style="background:var(--card-bg2);color:var(--gold)">
+            <th style="padding:6px 8px;text-align:center">順位</th>
+            <th style="padding:6px 8px;text-align:left">市町村</th>
+            <th style="padding:6px 8px;text-align:left">行政区</th>
+            <th style="padding:6px 8px;text-align:center">総合</th>
+            <th style="padding:6px 8px;text-align:center">タイプ</th>
+            <th style="padding:6px 8px;text-align:right">GDP(百万円)</th>
+            <th style="padding:6px 8px;text-align:right">交通量</th>
+            <th style="padding:6px 8px;text-align:center">幹線道路</th>
+            <th style="padding:6px 8px;text-align:center">雇用</th>
+            <th style="padding:6px 8px;text-align:center">取引</th>
+            <th style="padding:6px 8px;text-align:center">立地</th>
+          </tr>
+        </thead>
+        <tbody id="top50-tbody"></tbody>
+      </table>
+    </div>
+  </div>
 </div>
 
 <!-- TAB 9: 行事カレンダー -->
@@ -1111,6 +1135,30 @@ function calcBizScore(){
 }
 
 // ===================== CALENDAR =====================
+// === TOP20 行政区ランキングテーブル ===
+function renderTop20Table(){
+  const tbody = document.getElementById('top50-tbody');
+  if(!tbody) return;
+  const scoreColor = s => s>=90?'#f59e0b':s>=80?'#10b981':s>=70?'#3b82f6':'#6b7280';
+  tbody.innerHTML = TOP50.map((r,i)=>{
+    const bg = i%2===0?'rgba(255,255,255,0.03)':'transparent';
+    return `<tr style="background:${bg};border-bottom:1px solid rgba(255,255,255,0.06)">
+      <td style="padding:5px 8px;text-align:center;color:${scoreColor(r.score)};font-weight:700">${r.rank}</td>
+      <td style="padding:5px 8px;color:#94a3b8">${r.city}</td>
+      <td style="padding:5px 8px;font-weight:600">${r.dist}</td>
+      <td style="padding:5px 8px;text-align:center"><span style="background:${scoreColor(r.score)}22;color:${scoreColor(r.score)};font-weight:700;padding:2px 6px;border-radius:4px">${r.score}</span></td>
+      <td style="padding:5px 8px;text-align:center;font-size:10px;color:#94a3b8">${r.type}</td>
+      <td style="padding:5px 8px;text-align:right;color:#60a5fa">${(r.gdp||0).toLocaleString()}</td>
+      <td style="padding:5px 8px;text-align:right;color:#94a3b8">${r.traffic?(r.traffic).toLocaleString():'-'}</td>
+      <td style="padding:5px 8px;text-align:center;font-size:10px;color:#94a3b8">${r.road||'-'}</td>
+      <td style="padding:5px 8px;text-align:center"><span style="color:${scoreColor(r.emp||0)}">${r.emp||'-'}</span></td>
+      <td style="padding:5px 8px;text-align:center"><span style="color:${scoreColor(r.trsc||0)}">${r.trsc||'-'}</span></td>
+      <td style="padding:5px 8px;text-align:center"><span style="color:${scoreColor(r.land||0)}">${r.land||'-'}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+
 function renderCalendar(){
   const el = document.getElementById('cal-grid');
   if(!el) return;
@@ -1157,6 +1205,7 @@ window.addEventListener('load',()=>{
   renderBizMatrix();
   renderCalendar();
   calcBizScore();
+  renderTop20Table();
   setTimeout(initTab1Dynamic, 150);
 });
 
@@ -3572,6 +3621,7 @@ const YM_AREA_DATA = {
   "嘉手納町":  {conformity:50,baseDiff:2,gdp:39336,  capture_ext:0.22},
   "北谷町":    {conformity:45,baseDiff:2,gdp:87431,  capture_ext:0.35},
   "北中城村":  {conformity:68,baseDiff:3,gdp:43836,  capture_ext:0.20},
+  "中城村":    {conformity:65,baseDiff:2,gdp:44994,  capture_ext:0.20},
   "西原町":    {conformity:60,baseDiff:3,gdp:124000, capture_ext:0.22},
   "与那原町":  {conformity:62,baseDiff:3,gdp:42000,  capture_ext:0.20},
   "南風原町":  {conformity:55,baseDiff:3,gdp:165902,  capture_ext:0.25},
