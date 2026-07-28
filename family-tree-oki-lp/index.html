@@ -272,6 +272,15 @@
   .sticky-cta .btn{width:100%;text-align:center;}
   @media(max-width:720px){.sticky-cta{display:flex;} body{padding-bottom:66px;}}
 </style>
+<script>
+  function trackReserve(loc){
+    try{
+      var ns = 'familytreeoki';
+      fetch('https://api.counterapi.dev/v1/'+ns+'/reserve_total/up', {mode:'no-cors', keepalive:true});
+      fetch('https://api.counterapi.dev/v1/'+ns+'/reserve_'+loc+'/up', {mode:'no-cors', keepalive:true});
+    }catch(e){}
+  }
+</script>
 </head>
 <body class="notranslate" translate="no">
 
@@ -283,7 +292,7 @@
       <a href="#gallery" class="hide-mobile">Gallery</a>
       <a href="#services" class="hide-mobile">Services</a>
       <a href="#visit" class="hide-mobile">Visit Us</a>
-      <a class="btn btn-solid-bark" href="https://familytree-oki.stores.jp/reserve/familytree_oki/1516927#pageContent" target="_blank" rel="noopener">Book Now</a>
+      <a class="btn btn-solid-bark" href="https://familytree-oki.stores.jp/reserve/familytree_oki/1516927#pageContent" target="_blank" rel="noopener" onclick="trackReserve('nav_header')">Book Now</a>
     </div>
   </div>
 </header>
@@ -297,7 +306,7 @@
     <h1>Meet Your Baby's Face Before They're Even Born</h1>
     <p class="sub">4D ultrasound sessions designed for military families in Okinawa. English-speaking, all-female team, and a warm space that feels like home — even when home is far away.</p>
     <div class="hero-btns">
-      <a class="btn btn-primary" href="https://familytree-oki.stores.jp/reserve/familytree_oki/1516927#pageContent" target="_blank" rel="noopener">Book Your Session</a>
+      <a class="btn btn-primary" href="https://familytree-oki.stores.jp/reserve/familytree_oki/1516927#pageContent" target="_blank" rel="noopener" onclick="trackReserve('hero')">Book Your Session</a>
       <a class="btn btn-outline" href="#experience">See What to Expect</a>
     </div>
   </div>
@@ -316,7 +325,7 @@
       <div class="section-label">4D Ultrasound</div>
       <h2>The Best Window Into Your Baby's World: Weeks 25–32</h2>
       <p class="lead">This is when your baby's face and expressions are easiest to see — tiny yawns, stretches, and sleepy smiles. It's the perfect moment to capture a memory your family will treasure forever, wherever life takes you next.</p>
-      <a class="btn btn-solid-bark" href="https://familytree-oki.stores.jp/reserve/familytree_oki/1516927#pageContent" target="_blank" rel="noopener">Reserve Weeks 25–32</a>
+      <a class="btn btn-solid-bark" href="https://familytree-oki.stores.jp/reserve/familytree_oki/1516927#pageContent" target="_blank" rel="noopener" onclick="trackReserve('section_4d')">Reserve Weeks 25–32</a>
       <p class="tip-note">💧 Tip: We recommend drinking extra water starting 3 days before your appointment — this can help improve ultrasound image clarity.</p>
     </div>
     <div>
@@ -391,7 +400,7 @@
       <div class="section-label">Guests Welcome</div>
       <h2>Bring the Whole Family — Kids Included</h2>
       <p class="lead">Bring your family, friends, and children along! Enjoy this special time getting to know your baby together with the people you love most. Our all-female team keeps the whole visit relaxed, warm, and welcoming — a place where kids never want to leave.</p>
-      <a class="btn btn-solid-bark" href="https://familytree-oki.stores.jp/reserve/familytree_oki/1516927#pageContent" target="_blank" rel="noopener">Plan Your Visit</a>
+      <a class="btn btn-solid-bark" href="https://familytree-oki.stores.jp/reserve/familytree_oki/1516927#pageContent" target="_blank" rel="noopener" onclick="trackReserve('guests_welcome')">Plan Your Visit</a>
       <p class="tip-note">💧 Tip: We recommend drinking extra water starting 3 days before your appointment — this can help improve ultrasound image clarity.</p>
     </div>
   </div>
@@ -401,7 +410,7 @@
   <div class="section-label" style="color:#F5DCC4;text-align:center;">Family Tree Oki</div>
   <h2>Your Baby Is Waiting to Say Hello</h2>
   <p>You're far from home, but never alone. Book your 4D ultrasound session today and bring home a memory that lasts a lifetime.</p>
-  <a class="btn btn-primary" href="https://familytree-oki.stores.jp/reserve/familytree_oki/1516927#pageContent" target="_blank" rel="noopener">Book Your 4D Ultrasound</a>
+  <a class="btn btn-primary" href="https://familytree-oki.stores.jp/reserve/familytree_oki/1516927#pageContent" target="_blank" rel="noopener" onclick="trackReserve('cta_banner')">Book Your 4D Ultrasound</a>
   <div class="tagline">"A Place Where Families Bloom"</div>
 </div>
 
@@ -413,13 +422,13 @@
     <a href="#experience">4D Experience</a>
     <a href="#gallery">Gallery</a>
     <a href="#services">Services</a>
-    <a href="https://familytree-oki.stores.jp/reserve/familytree_oki/1516927#pageContent" target="_blank" rel="noopener">Book Now</a>
+    <a href="https://familytree-oki.stores.jp/reserve/familytree_oki/1516927#pageContent" target="_blank" rel="noopener" onclick="trackReserve('footer')">Book Now</a>
   </div>
   <div class="copyright">Family Tree Oki · Okinawa, Japan &nbsp;·&nbsp; English Speaking Staff Available</div>
 </footer>
 
 <div class="sticky-cta">
-  <a class="btn btn-primary" href="https://familytree-oki.stores.jp/reserve/familytree_oki/1516927#pageContent" target="_blank" rel="noopener">Book Your 4D Ultrasound</a>
+  <a class="btn btn-primary" href="https://familytree-oki.stores.jp/reserve/familytree_oki/1516927#pageContent" target="_blank" rel="noopener" onclick="trackReserve('sticky_mobile')">Book Your 4D Ultrasound</a>
 </div>
 
 <script>
