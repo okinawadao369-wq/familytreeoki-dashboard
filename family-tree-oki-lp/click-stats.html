@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>予約ボタン クリック分析 | Family Tree Oki</title>
+<style>
+  :root{
+    --bark:#7B5C44; --bark-dark:#5A4035; --rose:#E8A0BC; --green:#8FAF3A;
+    --sky:#7DB8E0; --peach:#F0A870; --linen:#FDF9F6; --petal:#FFF0F5;
+    --mint:#F2FAEC; --morning:#EDF5FF; --border:#EDD8C8; --tag:#C97FA0;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--linen);color:var(--bark-dark);font-family:Arial,Helvetica,sans-serif;padding:32px 18px 60px;}
+  .wrap{max-width:880px;margin:0 auto;}
+  h1{font-family:Georgia,serif;color:var(--bark);font-size:26px;margin:0 0 4px;}
+  .sub{color:var(--tag);font-size:13px;margin-bottom:28px;}
+  .total-card{
+    background:linear-gradient(135deg, var(--bark) 0%, #8a6a4f 100%);color:#fff;
+    border-radius:18px;padding:28px 30px;margin-bottom:26px;
+    display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;
+  }
+  .total-card .num{font-size:46px;font-weight:800;font-family:Georgia,serif;}
+  .total-card .label{font-size:13px;opacity:0.85;}
+  table{width:100%;border-collapse:collapse;background:#fff;border-radius:14px;overflow:hidden;border:1px solid var(--border);}
+  th,td{padding:14px 18px;text-align:left;font-size:14px;}
+  th{background:var(--morning);color:var(--bark);font-size:12px;letter-spacing:0.04em;text-transform:uppercase;}
+  tr:not(:last-child) td{border-bottom:1px solid var(--border);}
+  .bar-bg{background:var(--petal);border-radius:8px;height:10px;width:100%;overflow:hidden;margin-top:6px;}
+  .bar-fill{background:var(--peach);height:100%;border-radius:8px;transition:width .5s ease;}
+  .count{font-weight:700;color:var(--bark);}
+  .refresh-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px;}
+  button{background:var(--bark);color:#fff;border:none;border-radius:20px;padding:9px 20px;font-size:13px;font-weight:700;cursor:pointer;}
+  button:hover{background:var(--bark-dark);}
+  .updated{font-size:12px;color:var(--tag);}
+  .note{font-size:12px;color:var(--tag);margin-top:22px;line-height:1.7;}
+  .loading{color:var(--tag);font-size:13px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>予約ボタン クリック分析</h1>
+  <div class="sub">Family Tree Oki 4D Ultrasound LP — 「予約サイトへ飛ぶボタン」の押下回数</div>
+
+  <div class="total-card">
+    <div>
+      <div class="label">合計クリック数（全ボタン合算）</div>
+      <div class="num" id="total-num">–</div>
+    </div>
+    <div class="label" id="tracking-since">計測開始：2026年7月28日〜</div>
+  </div>
+
+  <div class="refresh-row">
+    <div class="updated" id="updated-at">読み込み中...</div>
+    <button onclick="loadStats()">🔄 更新</button>
+  </div>
+
+  <table>
+    <thead>
+      <tr><th>ボタンの場所</th><th style="width:110px;">クリック数</th><th style="width:40%;">割合</th></tr>
+    </thead>
+    <tbody id="stats-body">
+      <tr><td colspan="3" class="loading">データを取得中...</td></tr>
+    </tbody>
+  </table>
+
+  <div class="note">
+    ※ 2026年7月28日にクリック計測を導入したため、それ以前のクリックは記録されていません。<br>
+    ※ 数値は簡易カウンター（counterapi.dev）による概算値です。広告ブロッカー使用時は計測されない場合があります。<br>
+    ※ このページのURLはstaff閲覧用です。検索エンジンには登録されません。
+  </div>
+</div>
+
+<script>
+const NS = 'familytreeoki';
+const LOCATIONS = [
+  {key:'nav_header',     label:'ヘッダーナビ「Book Now」'},
+  {key:'hero',           label:'ヒーロー「Book Your Session」'},
+  {key:'section_4d',     label:'4Dエコー紹介「Reserve Weeks 25–32」'},
+  {key:'guests_welcome', label:'Guests Welcome「Plan Your Visit」'},
+  {key:'cta_banner',     label:'下部CTAバナー「Book Your 4D Ultrasound」'},
+  {key:'footer',         label:'フッター「Book Now」'},
+  {key:'sticky_mobile',  label:'スマホ固定バー「Book Your 4D Ultrasound」'},
+];
+
+async function fetchCount(name){
+  try{
+    const res = await fetch(`https://api.counterapi.dev/v1/${NS}/reserve_${name}?_=${Date.now()}`);
+    if(!res.ok) return 0;
+    const data = await res.json();
+    return data.count || 0;
+  }catch(e){ return 0; }
+}
+
+async function loadStats(){
+  document.getElementById('stats-body').innerHTML = '<tr><td colspan="3" class="loading">データを取得中...</td></tr>';
+  const results = await Promise.all(LOCATIONS.map(l => fetchCount(l.key)));
+  const total = await fetchCount('total');
+
+  document.getElementById('total-num').textContent = total.toLocaleString();
+
+  const max = Math.max(1, ...results);
+  const rows = LOCATIONS.map((l, i) => {
+    const c = results[i];
+    const pct = Math.round((c / max) * 100);
+    return `<tr>
+      <td>${l.label}</td>
+      <td class="count">${c.toLocaleString()}</td>
+      <td><div class="bar-bg"><div class="bar-fill" style="width:${pct}%"></div></div></td>
+    </tr>`;
+  }).join('');
+  document.getElementById('stats-body').innerHTML = rows || '<tr><td colspan="3">データなし</td></tr>';
+
+  const now = new Date();
+  document.getElementById('updated-at').textContent = '最終更新: ' + now.toLocaleString('ja-JP');
+}
+
+loadStats();
+</script>
+</body>
+</html>
