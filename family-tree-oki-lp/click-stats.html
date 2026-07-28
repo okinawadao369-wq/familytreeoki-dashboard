@@ -36,6 +36,13 @@
   .updated{font-size:12px;color:var(--tag);}
   .note{font-size:12px;color:var(--tag);margin-top:22px;line-height:1.7;}
   .loading{color:var(--tag);font-size:13px;}
+  .section-title{font-family:Georgia,serif;color:var(--bark);font-size:18px;margin:34px 0 4px;}
+  .section-sub{font-size:12px;color:var(--tag);margin-bottom:14px;}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  @media(max-width:680px){.grid2{grid-template-columns:1fr;}}
+  .mini-table td{padding:10px 14px;font-size:13px;}
+  .mini-table th{padding:10px 14px;}
+  .peak-badge{display:inline-block;background:var(--rose);color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:8px;margin-left:6px;vertical-align:middle;}
 </style>
 </head>
 <body>
@@ -65,9 +72,24 @@
     </tbody>
   </table>
 
+  <div class="section-title">曜日別・時間帯別（全ボタン合算、日本時間）</div>
+  <div class="section-sub">どの曜日・どの時間帯にLPが操作されているかの目安です（ボタン別との掛け合わせではなく、それぞれ単独の集計です）</div>
+  <div class="grid2">
+    <table class="mini-table">
+      <thead><tr><th>曜日</th><th style="width:90px;">クリック数</th><th style="width:35%;">割合</th></tr></thead>
+      <tbody id="day-body"><tr><td colspan="3" class="loading">読み込み中...</td></tr></tbody>
+    </table>
+    <table class="mini-table">
+      <thead><tr><th>時間帯（JST）</th><th style="width:90px;">クリック数</th><th style="width:35%;">割合</th></tr></thead>
+      <tbody id="block-body"><tr><td colspan="3" class="loading">読み込み中...</td></tr></tbody>
+    </table>
+  </div>
+
   <div class="note">
     ※ 2026年7月28日にクリック計測を導入したため、それ以前のクリックは記録されていません。<br>
     ※ 数値は簡易カウンター（counterapi.dev）による概算値です。広告ブロッカー使用時は計測されない場合があります。<br>
+    ※ 曜日・時間帯は日本時間（沖縄と同じ）で記録しています。<br>
+    ※ 無料APIのレート制限があるため、更新ボタンの連打はお控えください。<br>
     ※ このページのURLはstaff閲覧用です。検索エンジンには登録されません。
   </div>
 </div>
@@ -84,6 +106,15 @@ const LOCATIONS = [
   {key:'sticky_mobile',  label:'スマホ固定バー「Book Your 4D Ultrasound」'},
 ];
 
+const DAYS = [
+  {key:'mon', label:'月曜日'}, {key:'tue', label:'火曜日'}, {key:'wed', label:'水曜日'},
+  {key:'thu', label:'木曜日'}, {key:'fri', label:'金曜日'}, {key:'sat', label:'土曜日'}, {key:'sun', label:'日曜日'},
+];
+const BLOCKS = [
+  {key:'0', label:'深夜〜早朝 (0–4時)'}, {key:'1', label:'早朝 (4–8時)'}, {key:'2', label:'午前 (8–12時)'},
+  {key:'3', label:'午後 (12–16時)'}, {key:'4', label:'夕方 (16–20時)'}, {key:'5', label:'夜 (20–24時)'},
+];
+
 async function fetchCount(name){
   try{
     const res = await fetch(`https://api.counterapi.dev/v1/${NS}/reserve_${name}?_=${Date.now()}`);
@@ -93,24 +124,37 @@ async function fetchCount(name){
   }catch(e){ return 0; }
 }
 
-async function loadStats(){
-  document.getElementById('stats-body').innerHTML = '<tr><td colspan="3" class="loading">データを取得中...</td></tr>';
-  const results = await Promise.all(LOCATIONS.map(l => fetchCount(l.key)));
-  const total = await fetchCount('total');
-
-  document.getElementById('total-num').textContent = total.toLocaleString();
-
+function renderRows(tbodyId, items, results, labelKey){
   const max = Math.max(1, ...results);
-  const rows = LOCATIONS.map((l, i) => {
+  const peakIdx = results.indexOf(max);
+  const rows = items.map((it, i) => {
     const c = results[i];
     const pct = Math.round((c / max) * 100);
+    const isPeak = c > 0 && i === peakIdx;
     return `<tr>
-      <td>${l.label}</td>
+      <td>${it.label}${isPeak ? '<span class="peak-badge">最多</span>' : ''}</td>
       <td class="count">${c.toLocaleString()}</td>
       <td><div class="bar-bg"><div class="bar-fill" style="width:${pct}%"></div></div></td>
     </tr>`;
   }).join('');
-  document.getElementById('stats-body').innerHTML = rows || '<tr><td colspan="3">データなし</td></tr>';
+  document.getElementById(tbodyId).innerHTML = rows || '<tr><td colspan="3">データなし</td></tr>';
+}
+
+async function loadStats(){
+  document.getElementById('stats-body').innerHTML = '<tr><td colspan="3" class="loading">データを取得中...</td></tr>';
+  document.getElementById('day-body').innerHTML = '<tr><td colspan="3" class="loading">読み込み中...</td></tr>';
+  document.getElementById('block-body').innerHTML = '<tr><td colspan="3" class="loading">読み込み中...</td></tr>';
+
+  // Fetch sequentially in small groups to stay well under the free API's rate limit.
+  const buttonResults = await Promise.all(LOCATIONS.map(l => fetchCount(l.key)));
+  const total = await fetchCount('total');
+  const dayResults = await Promise.all(DAYS.map(d => fetchCount('day_' + d.key)));
+  const blockResults = await Promise.all(BLOCKS.map(b => fetchCount('block_' + b.key)));
+
+  document.getElementById('total-num').textContent = total.toLocaleString();
+  renderRows('stats-body', LOCATIONS, buttonResults);
+  renderRows('day-body', DAYS, dayResults);
+  renderRows('block-body', BLOCKS, blockResults);
 
   const now = new Date();
   document.getElementById('updated-at').textContent = '最終更新: ' + now.toLocaleString('ja-JP');
