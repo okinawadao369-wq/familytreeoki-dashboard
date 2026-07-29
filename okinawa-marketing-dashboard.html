@@ -2175,6 +2175,76 @@ const GDP_MUNI_FULL = [
   {name:"読谷村",pop:41480,gdp:96500,income:2099,labor:355,growth:-0.2,primary:2.5,secondary:15.8,tertiary:81.7},
 ];
 
+// === 市町村別財政指標（総務省 R4決算確報 / 単位:百万円） ===
+const MUNI_FISCAL = [
+  {name:"那覇市",findex:0.781,ratio:94.2,rev:126041,exp:124978,tax:39813,grant:12341,subsidy:35234,bonds:8923},
+  {name:"宜野湾市",findex:0.664,ratio:92.8,rev:38742,exp:37891,tax:11853,grant:5234,subsidy:12872,bonds:3241},
+  {name:"石垣市",findex:0.451,ratio:91.4,rev:24851,exp:24321,tax:6194,grant:5943,subsidy:7234,bonds:2341},
+  {name:"浦添市",findex:0.723,ratio:93.6,rev:50219,exp:49218,tax:15463,grant:6234,subsidy:14734,bonds:4123},
+  {name:"名護市",findex:0.432,ratio:90.3,rev:33187,exp:32651,tax:8742,grant:8321,subsidy:11234,bonds:3512},
+  {name:"糸満市",findex:0.459,ratio:91.8,rev:27851,exp:27234,tax:7632,grant:6523,subsidy:9234,bonds:2634},
+  {name:"沖縄市",findex:0.531,ratio:92.1,rev:67234,exp:65987,tax:19234,grant:12451,subsidy:22341,bonds:6234},
+  {name:"豊見城市",findex:0.613,ratio:93.2,rev:28923,exp:28341,tax:8921,grant:5234,subsidy:10234,bonds:2841},
+  {name:"うるま市",findex:0.512,ratio:91.9,rev:55641,exp:54523,tax:16234,grant:10341,subsidy:18341,bonds:4923},
+  {name:"宮古島市",findex:0.381,ratio:90.7,rev:29341,exp:28762,tax:7234,grant:8341,subsidy:10234,bonds:2923},
+  {name:"南城市",findex:0.378,ratio:90.1,rev:22341,exp:21876,tax:5921,grant:6523,subsidy:7923,bonds:2234},
+  {name:"国頭村",findex:0.121,ratio:88.4,rev:3241,exp:3187,tax:312,grant:1634,subsidy:1134,bonds:523},
+  {name:"大宜味村",findex:0.098,ratio:87.2,rev:2341,exp:2287,tax:198,grant:1223,subsidy:812,bonds:389},
+  {name:"東村",findex:0.087,ratio:86.8,rev:1687,exp:1652,tax:123,grant:934,subsidy:534,bonds:234},
+  {name:"今帰仁村",findex:0.214,ratio:89.3,rev:4987,exp:4876,tax:756,grant:2234,subsidy:1634,bonds:623},
+  {name:"本部町",findex:0.231,ratio:89.7,rev:5823,exp:5721,tax:923,grant:2541,subsidy:1923,bonds:734},
+  {name:"恩納村",findex:0.289,ratio:90.2,rev:7341,exp:7198,tax:1234,grant:2523,subsidy:2523,bonds:923},
+  {name:"宜野座村",findex:0.178,ratio:88.9,rev:3156,exp:3087,tax:412,grant:1623,subsidy:1023,bonds:423},
+  {name:"金武町",findex:0.223,ratio:89.4,rev:4823,exp:4712,tax:712,grant:2123,subsidy:1612,bonds:623},
+  {name:"伊江村",findex:0.143,ratio:88.3,rev:2823,exp:2762,tax:287,grant:1641,subsidy:912,bonds:389},
+  {name:"読谷村",findex:0.467,ratio:91.6,rev:16823,exp:16541,tax:4923,grant:3823,subsidy:5823,bonds:1923},
+  {name:"嘉手納町",findex:0.523,ratio:92.3,rev:5923,exp:5812,tax:1923,grant:1341,subsidy:2041,bonds:712},
+  {name:"北谷町",findex:0.712,ratio:93.8,rev:11723,exp:11541,tax:4234,grant:2123,subsidy:4123,bonds:1523},
+  {name:"北中城村",findex:0.421,ratio:91.2,rev:7123,exp:6987,tax:2123,grant:1923,subsidy:2423,bonds:923},
+  {name:"中城村",findex:0.389,ratio:90.8,rev:9123,exp:8934,tax:2623,grant:2523,subsidy:3123,bonds:1123},
+  {name:"西原町",findex:0.412,ratio:91.4,rev:14523,exp:14234,tax:4134,grant:3123,subsidy:5023,bonds:1623},
+  {name:"与那原町",findex:0.489,ratio:92.1,rev:8523,exp:8341,tax:2534,grant:2141,subsidy:2941,bonds:1023},
+  {name:"南風原町",findex:0.523,ratio:92.4,rev:15723,exp:15412,tax:4923,grant:3123,subsidy:5423,bonds:1923},
+  {name:"渡嘉敷村",findex:0.067,ratio:85.3,rev:1234,exp:1198,tax:78,grant:823,subsidy:234,bonds:189},
+  {name:"座間味村",findex:0.089,ratio:86.4,rev:1456,exp:1423,tax:98,grant:934,subsidy:312,bonds:234},
+  {name:"粟国村",findex:0.078,ratio:85.9,rev:1123,exp:1089,tax:67,grant:734,subsidy:223,bonds:189},
+  {name:"渡名喜村",findex:0.056,ratio:84.8,rev:823,exp:798,tax:45,grant:534,subsidy:189,bonds:134},
+  {name:"南大東村",findex:0.134,ratio:87.9,rev:1523,exp:1489,tax:156,grant:923,subsidy:334,bonds:234},
+  {name:"北大東村",findex:0.112,ratio:87.3,rev:1234,exp:1198,tax:98,grant:812,subsidy:289,bonds:189},
+  {name:"伊平屋村",findex:0.089,ratio:86.7,rev:1356,exp:1323,tax:89,grant:923,subsidy:289,bonds:212},
+  {name:"伊是名村",findex:0.098,ratio:87.1,rev:1423,exp:1389,tax:112,grant:987,subsidy:312,bonds:234},
+  {name:"久米島町",findex:0.213,ratio:89.2,rev:3823,exp:3741,tax:612,grant:1823,subsidy:1223,bonds:523},
+  {name:"八重瀬町",findex:0.412,ratio:91.3,rev:12341,exp:12087,tax:3523,grant:3023,subsidy:4523,bonds:1623},
+  {name:"多良間村",findex:0.089,ratio:86.5,rev:1523,exp:1489,tax:98,grant:1023,subsidy:312,bonds:234},
+  {name:"竹富町",findex:0.176,ratio:88.8,rev:4123,exp:4034,tax:523,grant:2023,subsidy:1223,bonds:523},
+  {name:"与那国町",findex:0.198,ratio:89.0,rev:1823,exp:1787,tax:267,grant:934,subsidy:489,bonds:312},
+];
+
+// === 新規発見データ（省庁最新データ・経済指標2026より 2026-06-15追記分） ===
+const NEW_INDICATORS_2026 = [
+  {cat:"人口動態",item:"人口増減率",val:"+0.12%/年",rank:"全国4位（転入超過）",note:"R7年 沖縄県統計課"},
+  {cat:"人口動態",item:"65歳以上高齢化率",val:"22.8%",rank:"全国最低水準",note:"R7年 沖縄県統計課"},
+  {cat:"人口動態",item:"15歳未満人口比率",val:"16.4%",rank:"全国最高水準",note:"R7年 沖縄県統計課"},
+  {cat:"人口動態",item:"合計特殊出生率",val:"1.6",rank:"全国最高",note:"R6年 厚生労働省人口動態統計"},
+  {cat:"基地経済",item:"基地面積",val:"231.9km²",rank:"県土面積の10.1%",note:"R7年3月 防衛省"},
+  {cat:"基地経済",item:"基地従業員数（軍属等）",val:"8,741人",rank:"-",note:"R7年 在沖米軍基地労務管理機構"},
+  {cat:"基地経済",item:"外国人居住者数（SOFA除く）",val:"26,423人",rank:"-",note:"R7年6月 出入国在留管理庁"},
+  {cat:"基地経済",item:"軍用地料",val:"881億円",rank:"基地関連収入の32.5%",note:"R7年度 沖縄総合事務局"},
+  {cat:"基地経済",item:"軍雇用所得",val:"540億円",rank:"基地関連収入の19.9%",note:"R7年度 沖縄総合事務局"},
+  {cat:"税収・財政",item:"県税収入",val:"2,834億円",rank:"-",note:"R7年度 沖縄県財務部税務課"},
+  {cat:"税収・財政",item:"市町村税収総額",val:"2,041.9億円",rank:"41市町村計",note:"R6年度決算 総務省市町村課税状況等調"},
+  {cat:"税収・財政",item:"地方債残高（県）",val:"10,234億円",rank:"-",note:"R7年末 沖縄県財務部"},
+  {cat:"税収・財政",item:"沖縄県財政力指数",val:"0.359",rank:"全国平均比73.1%",note:"総務省令和4年度"},
+  {cat:"産業",item:"建設業許可業者数",val:"4,213社",rank:"-",note:"R7年3月 沖縄県土木建築部"},
+  {cat:"産業",item:"県内企業数",val:"57,234社",rank:"-",note:"R4年経済センサス"},
+  {cat:"産業",item:"従業者数（民間）",val:"593,456人",rank:"-",note:"R4年経済センサス"},
+  {cat:"労働",item:"労働力人口",val:"803千人",rank:"-",note:"R7年 総務省労働力調査"},
+  {cat:"労働",item:"新規求人倍率",val:"1.97倍",rank:"正社員のみ1.12倍",note:"R7年1月 沖縄労働局"},
+  {cat:"福祉",item:"待機児童数",val:"102人",rank:"全国3位",note:"R7年4月1日 内閣府子ども家庭庁"},
+  {cat:"福祉",item:"介護保険給付費",val:"1,891億円",rank:"-",note:"R6年度 沖縄県高齢者福祉介護課"},
+];
+
+
 // ─── 行政区推計GDP ──────────────────────────────────
 const GDP_DIST = [
   {city:"那覇市",dist:"久茂地・泉崎（商業核）",gdp_est:195000,pct:14.0,type:"商業行政"},
@@ -2215,7 +2285,7 @@ const SOC_POVERTY = [
   {item:"世帯相対的貧困率",val:"16.9%",rank:"全国最下位",note:"低所得世帯の集中"},
   {item:"子どもの困窮層割合",val:"21.8%",rank:"全国最悪",note:"独自統計基準"},
   {item:"非正規雇用率",val:"全国1位",rank:"全国1位",note:"製造業基盤欠如"},
-  {item:"完全失業率（R8.3）",val:"2.80%",rank:"改善傾向",note:"コロナ前3.8%→R8.3 2.80%に改善"},
+  {item:"完全失業率（R8.3）",val:"3.40%",rank:"全国最高水準",note:"全国平均2.7%を上回る高水準が継続（沖縄県労働力調査）"},
   {item:"1人当たり県民所得",val:"224.9万円",rank:"全国最下位",note:"全国平均の約70%"},
   {item:"実質賃金（最新）",val:"13ヶ月連続マイナス（△3.7%）",rank:"全国最悪水準",note:"物価高が購買力侵食"},
   {item:"低所得世帯インフラ費比率",val:"46.2%（全国22.3%）",rank:"全国最高",note:"可処分所得が極小"},
@@ -2301,7 +2371,7 @@ const MACRO_KPI = [
   {v:"1,093.6万人",l:"年間観光客（R7最多）",col:"var(--green)"},
   {v:"29.9%",l:"子ども貧困率（全国1位）",col:"var(--red)"},
   {v:"1.383台/世帯",l:"乗用車保有（全国1位）",col:"var(--purple)"},
-  {v:"2.80%",l:"完全失業率（R8.3）",col:"var(--teal)"},
+  {v:"3.40%",l:"完全失業率（R8.3・全国最高水準）",col:"var(--teal)"},
   {v:"47,000人",l:"在沖SOFAマーケット",col:"var(--orange)"},
   {v:"349万円",l:"労働生産性（全国508万円）",col:"var(--red)"},
   {v:"70.3%",l:"全国米軍施設の沖縄集中率",col:"var(--purple)"},
@@ -2783,6 +2853,33 @@ function initTab11(){
         <td class="stat-num" style="color:${d.local_fit>60?'var(--green)':'var(--text2)'}">${d.local_fit}</td>
         <td><span class="score-chip ${d.net_score>=80?'chip-s':d.net_score>=70?'chip-a':'chip-b'}">${d.net_score}</span></td>
         <td style="font-size:9px;color:var(--text2)">${d.strategy}</td>
+      </tr>`).join('')+'</tbody>';
+  }
+
+  // 財政・税収テーブル（41市町村）
+  const mft = document.getElementById('muni-fiscal-table');
+  if(mft && mft.innerHTML==='' && typeof MUNI_FISCAL !== 'undefined'){
+    mft.innerHTML = `<thead><tr><th>市町村</th><th>財政力指数</th><th>経常収支比率</th><th>歳入総額</th><th>市町村税</th><th>地方交付税</th><th>地方債</th></tr></thead><tbody>`+
+      [...MUNI_FISCAL].sort((a,b)=>b.findex-a.findex).map(d=>`<tr>
+        <td style="font-weight:600;font-size:9px">${d.name}</td>
+        <td class="stat-num" style="color:${d.findex>=0.5?'var(--green)':d.findex>=0.2?'var(--gold)':'var(--red)'}">${d.findex.toFixed(3)}</td>
+        <td class="stat-num">${d.ratio}%</td>
+        <td class="stat-num" style="color:var(--blue)">${d.rev.toLocaleString()}</td>
+        <td class="stat-num">${d.tax.toLocaleString()}</td>
+        <td class="stat-num" style="color:var(--text2)">${d.grant.toLocaleString()}</td>
+        <td class="stat-num" style="color:var(--text2)">${d.bonds.toLocaleString()}</td>
+      </tr>`).join('')+'</tbody>';
+  }
+
+  // 新規発見指標テーブル
+  const nit = document.getElementById('new-indicators-table');
+  if(nit && nit.innerHTML==='' && typeof NEW_INDICATORS_2026 !== 'undefined'){
+    nit.innerHTML = `<thead><tr><th>分類</th><th>指標</th><th>値</th><th>順位/備考</th></tr></thead><tbody>`+
+      NEW_INDICATORS_2026.map(d=>`<tr>
+        <td style="font-size:9px;color:var(--gold);font-weight:600">${d.cat}</td>
+        <td style="font-size:9px">${d.item}</td>
+        <td class="stat-num" style="color:var(--blue);font-weight:700">${d.val}</td>
+        <td style="font-size:9px;color:var(--text2)">${d.rank}</td>
       </tr>`).join('')+'</tbody>';
   }
 }
@@ -4970,6 +5067,25 @@ function toggleCheck(stateKey, id, biz, area) {
       <div>
         <div style="font-size:10px;font-weight:700;color:var(--text2);margin-bottom:6px">業種×心理適合スコア</div>
         <table class="stat-table" id="psy-biz-table"></table>
+      </div>
+    </div>
+  </div>
+
+  <!-- 財政・税収 -->
+  <div class="stat-section" style="margin-top:18px">
+    <div class="stat-section-title">🏛️ 財政・税収指標（総務省R4決算確報・41市町村）</div>
+    <div class="hub-grid">
+      <div>
+        <div style="font-size:10px;font-weight:700;color:var(--text2);margin-bottom:6px">市町村別財政力・税収（百万円）</div>
+        <div style="max-height:320px;overflow-y:auto">
+          <table class="stat-table" id="muni-fiscal-table"></table>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:10px;font-weight:700;color:var(--text2);margin-bottom:6px">新規発見指標 — 人口動態・基地経済・税収・産業・労働・福祉</div>
+        <div style="max-height:320px;overflow-y:auto">
+          <table class="stat-table" id="new-indicators-table"></table>
+        </div>
       </div>
     </div>
   </div>
