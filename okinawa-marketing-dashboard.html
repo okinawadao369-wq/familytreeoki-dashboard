@@ -2237,6 +2237,39 @@ const TRAFFIC_BEHAVIOR_STUDY = {
   }
 };
 
+
+// === 雇用構造・所得階級 深掘り分析（沖縄県「令和4年就業構造基本調査」より） ===
+const EMPLOYMENT_STRUCTURE_DETAIL = {
+  headline: {
+    labor_participation:"60.8%（+1.8pt・初の60%超）", labor_participation_women:"54.6%（過去最高）",
+    nonregular_rate:"39.6%（-3.5pt・全国順位は1位→6位に改善）", nonregular_women:"53.7%（-6.0pt）",
+    turnover_rate:"5.3%（全国3位）", turnover_reason_men:"「収入が少なかったため」16.0%（最多）",
+    turnover_reason_women:"「労働条件が悪かったため」15.5%（最多）",
+    extra_job_seeking:"10.2%（東京都と並び全国最高）", first_job_nonregular:"41.9%（全国28.9%より13pt高い）"
+  },
+  income_distribution: [
+    {bracket:"200〜249万円", okinawa:14.9, national:10.2, note:"沖縄で最も多い所得階級（全国は300〜399万円が最多）"},
+    {bracket:"300万円未満(計)", okinawa:60.8, national:47.6, note:"沖縄が13.2pt高い＝過半数が300万円未満"},
+    {bracket:"400万円以上(計)", okinawa:21.7, national:36.2, note:"全国より14.5pt低い"},
+    {bracket:"正規職員で300万円未満", okinawa:43.7, national:24.7, note:"正社員でも19pt高い＝正規雇用でも低賃金構造"},
+    {bracket:"非正規職員で250万円未満", okinawa:85.9, national:83.3, note:"非正規の大多数が250万円未満で沖縄・全国共通"},
+  ],
+  industry_weakness: [
+    {industry:"製造業", share:5.0, national_diff:-10.6, note:"全国比で突出して低い＝製造業基盤の欠如"},
+    {industry:"医療・福祉", share:16.9, national_diff:3.5, note:"最大産業。全国比でも高い"},
+    {industry:"宿泊業・飲食サービス業", share:8.0, national_diff:2.6, note:"観光依存構造を反映"},
+    {industry:"公務", share:6.9, national_diff:3.2, note:"民間雇用の弱さの裏返し"},
+  ]
+};
+
+// === 沖縄21世紀ビジョン基本計画「4つの固有課題」（沖縄県策定） ===
+const OKINAWA_STRUCTURAL_ISSUES = [
+  {issue:"米軍基地の存在に起因する諸課題",detail:"全国面積の0.6%の沖縄に米軍専用施設の約70.3%が集中。基地跡地利用・振興と表裏一体の経済構造",data_link:"MACRO_KPI: 全国米軍施設沖縄集中率70.3%"},
+  {issue:"離島県としての地理的不利性",detail:"本土との輸送コスト増（食品等の物価高要因）。振興開発が全国一律の制度設計になじみにくい",data_link:"物価: 消費者物価指数は上昇基調が継続"},
+  {issue:"産業基盤（特に製造業）の脆弱性",detail:"製造業の就業者割合は全国比-10.6pt。観光・サービス業への依存度が高く、所得水準の低さに直結",data_link:"就業構造: 製造業5.0%（全国15.6%）"},
+  {issue:"本土との所得・所得格差の是正",detail:"1人当たり県民所得224.9万円は全国最下位、正規職員でも300万円未満43.7%（全国24.7%）",data_link:"就業構造: 正規職員300万円未満43.7%"},
+];
+
 // === 市町村別財政指標（総務省 R4決算確報 / 単位:百万円） ===
 const MUNI_FISCAL = [
   {name:"那覇市",findex:0.781,ratio:94.2,rev:126041,exp:124978,tax:39813,grant:12341,subsidy:35234,bonds:8923},
@@ -2999,6 +3032,55 @@ function initTab11(){
         <td><span class="score-chip ${d.net_score>=80?'chip-s':d.net_score>=70?'chip-a':'chip-b'}">${d.net_score}</span></td>
         <td style="font-size:9px;color:var(--text2)">${d.strategy}</td>
       </tr>`).join('')+'</tbody>';
+  }
+
+  // 雇用構造・所得階級ヘッドラインKPI
+  const ehk = document.getElementById('emp-headline-kpi');
+  if(ehk && ehk.innerHTML==='' && typeof EMPLOYMENT_STRUCTURE_DETAIL !== 'undefined'){
+    const h = EMPLOYMENT_STRUCTURE_DETAIL.headline;
+    ehk.innerHTML = `
+      <div class="kpi gold"><div class="val">${h.labor_participation}</div><div class="lbl">有業率</div></div>
+      <div class="kpi blue"><div class="val">${h.nonregular_rate}</div><div class="lbl">非正規雇用率</div></div>
+      <div class="kpi red"><div class="val">${h.extra_job_seeking}</div><div class="lbl">追加就業希望者比率</div></div>
+      <div class="kpi purple"><div class="val">${h.first_job_nonregular}</div><div class="lbl">初職 非正規率</div></div>`;
+  }
+
+  // 所得階級分布テーブル
+  const idt = document.getElementById('income-dist-table');
+  if(idt && idt.innerHTML==='' && typeof EMPLOYMENT_STRUCTURE_DETAIL !== 'undefined'){
+    idt.innerHTML = `<thead><tr><th>所得階級</th><th>沖縄県</th><th>全国</th><th>備考</th></tr></thead><tbody>`+
+      EMPLOYMENT_STRUCTURE_DETAIL.income_distribution.map(d=>`<tr>
+        <td style="font-size:9px">${d.bracket}</td>
+        <td class="stat-num" style="color:var(--red);font-weight:700">${d.okinawa}%</td>
+        <td class="stat-num" style="color:var(--text2)">${d.national}%</td>
+        <td style="font-size:9px;color:var(--text2)">${d.note}</td>
+      </tr>`).join('')+'</tbody>';
+  }
+
+  // 産業構造の弱点テーブル
+  const iwt = document.getElementById('industry-weakness-table');
+  if(iwt && iwt.innerHTML==='' && typeof EMPLOYMENT_STRUCTURE_DETAIL !== 'undefined'){
+    iwt.innerHTML = `<thead><tr><th>産業</th><th>沖縄シェア</th><th>全国比</th><th>備考</th></tr></thead><tbody>`+
+      EMPLOYMENT_STRUCTURE_DETAIL.industry_weakness.map(d=>`<tr>
+        <td style="font-size:9px">${d.industry}</td>
+        <td class="stat-num" style="color:var(--blue);font-weight:700">${d.share}%</td>
+        <td class="stat-num" style="color:${d.national_diff<0?'var(--red)':'var(--green)'}">${d.national_diff>0?'+':''}${d.national_diff}pt</td>
+        <td style="font-size:9px;color:var(--text2)">${d.note}</td>
+      </tr>`).join('')+'</tbody>';
+  }
+
+  // 構造的課題カード
+  const sic = document.getElementById('structural-issues-cards');
+  if(sic && sic.innerHTML==='' && typeof OKINAWA_STRUCTURAL_ISSUES !== 'undefined'){
+    sic.innerHTML = OKINAWA_STRUCTURAL_ISSUES.map((d,i)=>`
+      <div style="background:var(--card2);border-radius:8px;padding:10px 12px;display:flex;gap:12px">
+        <div style="min-width:24px;text-align:center;font-size:16px;font-weight:800;color:var(--gold)">${i+1}</div>
+        <div style="flex:1">
+          <div style="font-size:11px;font-weight:700;color:var(--text)">${d.issue}</div>
+          <div style="font-size:9px;color:var(--text2);margin-top:2px">${d.detail}</div>
+          <div style="font-size:9px;color:var(--blue);margin-top:3px">📊 ${d.data_link}</div>
+        </div>
+      </div>`).join('');
   }
 
   // 沖縄総合事務局・県経済動向
@@ -5235,6 +5317,28 @@ function toggleCheck(stateKey, id, biz, area) {
         <table class="stat-table" id="psy-biz-table"></table>
       </div>
     </div>
+  </div>
+
+  <!-- 雇用構造・所得階級 深掘り分析 -->
+  <div class="stat-section" style="margin-top:18px">
+    <div class="stat-section-title">💼 雇用構造・所得階級 深掘り分析（沖縄県「令和4年就業構造基本調査」）</div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px" id="emp-headline-kpi"></div>
+    <div class="g2">
+      <div class="panel">
+        <h3>所得階級分布（沖縄 vs 全国）</h3>
+        <table class="stat-table" id="income-dist-table"></table>
+      </div>
+      <div class="panel">
+        <h3>産業構造の弱点・特徴（全国比較）</h3>
+        <table class="stat-table" id="industry-weakness-table"></table>
+      </div>
+    </div>
+  </div>
+
+  <!-- 沖縄が抱える構造的課題 -->
+  <div class="stat-section" style="margin-top:18px">
+    <div class="stat-section-title">📋 沖縄が抱える構造的課題（沖縄21世紀ビジョン基本計画「4つの固有課題」）</div>
+    <div id="structural-issues-cards" style="display:flex;flex-direction:column;gap:8px"></div>
   </div>
 
   <!-- 沖縄総合事務局・県経済動向 -->
