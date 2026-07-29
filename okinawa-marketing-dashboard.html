@@ -2220,6 +2220,41 @@ const MUNI_FISCAL = [
   {name:"与那国町",findex:0.198,ratio:89.0,rev:1823,exp:1787,tax:267,grant:934,subsidy:489,bonds:312},
 ];
 
+
+// === 沖縄総合事務局・沖縄県経済動向（R8年1-3月期最新速報 / 2026-06-30公表） ===
+const OGB_ECONOMIC_TRENDS = {
+  judgment: {
+    text: "景気は、拡大基調にある。",
+    streak: "4期連続",
+    outlook: "観光需要増加を背景に拡大基調継続を期待。中東情勢による物価高・サプライチェーン停滞に留意",
+    bsi: 5.5,
+    bsi_next: 10.1,
+    bsi_source: "沖縄総合事務局財務部 法人企業景気予測調査"
+  },
+  categories: [
+    {cat:"観光",item:"入域観光客数",val:"265.7万人",yoy:"+7.3%",note:"20期連続で前年同期を上回る"},
+    {cat:"観光",item:"うち外国客",val:"69.4万人",yoy:"+17.9%",note:"航空路線新規就航・クルーズ寄港増"},
+    {cat:"観光",item:"うち国内客",val:"196.3万人",yoy:"+4.0%",note:"臨時便・地方チャーター便運航"},
+    {cat:"観光",item:"主要ホテル客室稼働率",val:"71.9%",yoy:"+2.5pt",note:"8期連続で前年同期を上回る"},
+    {cat:"個人消費",item:"百貨店・スーパー販売額(既存店)",val:"+6.8%",yoy:"18期連続増",note:"経済産業省"},
+    {cat:"個人消費",item:"家計消費支出(名目)",val:"493,687円",yoy:"+12.9%",note:"二人以上世帯"},
+    {cat:"個人消費",item:"自動車登録台数(新車)",val:"12,421台",yoy:"△2.7%",note:"軽自動車のみ+6.7%"},
+    {cat:"建設",item:"住宅着工戸数",val:"2,742戸",yoy:"+20.2%",note:"3期連続で前年同期を上回る"},
+    {cat:"建設",item:"公共工事請負額",val:"2,278億円",yoy:"+20.6%",note:"保証件数も前年同期を上回る"},
+    {cat:"建設",item:"非居住建築物工事費",val:"700億円",yoy:"+237.5%",note:"2期連続で前年同期を上回る"},
+    {cat:"雇用",item:"完全失業率(原数値)",val:"3.1%",yoy:"+0.3pt",note:"R8年3月単月は3.4%"},
+    {cat:"雇用",item:"有効求人倍率(季調値)",val:"1.08倍",yoy:"±0pt",note:"15期連続で1倍超"},
+    {cat:"雇用",item:"正社員有効求人倍率",val:"0.76倍",yoy:"+0.03pt",note:"原数値"},
+    {cat:"雇用",item:"労働力人口",val:"80.9万人",yoy:"+1.7万人",note:"就業者数78.4万人(+1.4万人)"},
+    {cat:"物価",item:"消費者物価指数(総合)",val:"114.6",yoy:"+1.3%",note:"18期連続上昇も伸び率縮小"},
+    {cat:"物価",item:"レギュラーガソリン小売価格",val:"162.0円/L",yoy:"△24.0円",note:"4期連続で前年同期を下回る"},
+    {cat:"金融",item:"実質預金残高(県内6行庫)",val:"6兆5,505億円",yoy:"+4.2%",note:"日本銀行"},
+    {cat:"金融",item:"貸出金残高(県内6行庫)",val:"4兆6,701億円",yoy:"+2.2%",note:"日本銀行"},
+    {cat:"リスク",item:"企業倒産(負債総額)",val:"42.3億円",yoy:"+464.1%",note:"件数28件・4期連続増加で急拡大"},
+    {cat:"リスク",item:"貿易収支(沖縄地区税関)",val:"△1,290億円",yoy:"赤字拡大",note:"輸入+66.4%・輸出△8.5%"},
+  ]
+};
+
 // === 新規発見データ（省庁最新データ・経済指標2026より 2026-06-15追記分） ===
 const NEW_INDICATORS_2026 = [
   {cat:"人口動態",item:"人口増減率",val:"+0.12%/年",rank:"全国4位（転入超過）",note:"R7年 沖縄県統計課"},
@@ -2853,6 +2888,27 @@ function initTab11(){
         <td class="stat-num" style="color:${d.local_fit>60?'var(--green)':'var(--text2)'}">${d.local_fit}</td>
         <td><span class="score-chip ${d.net_score>=80?'chip-s':d.net_score>=70?'chip-a':'chip-b'}">${d.net_score}</span></td>
         <td style="font-size:9px;color:var(--text2)">${d.strategy}</td>
+      </tr>`).join('')+'</tbody>';
+  }
+
+  // 沖縄総合事務局・県経済動向
+  const ojk = document.getElementById('ogb-judgment-kpi');
+  if(ojk && ojk.innerHTML==='' && typeof OGB_ECONOMIC_TRENDS !== 'undefined'){
+    const j = OGB_ECONOMIC_TRENDS.judgment;
+    ojk.innerHTML = `
+      <div class="kpi gold"><div class="val">${j.streak}</div><div class="lbl">拡大基調 継続期間</div></div>
+      <div class="kpi blue"><div class="val">${j.bsi>0?'+':''}${j.bsi}</div><div class="lbl">景況判断BSI（沖縄総合事務局）</div></div>
+      <div class="kpi green"><div class="val">${j.bsi_next>0?'+':''}${j.bsi_next}</div><div class="lbl">次期見通しBSI</div></div>`;
+  }
+  const ott = document.getElementById('ogb-trends-table');
+  if(ott && ott.innerHTML==='' && typeof OGB_ECONOMIC_TRENDS !== 'undefined'){
+    ott.innerHTML = `<thead><tr><th>分類</th><th>指標</th><th>値</th><th>前年同期比</th><th>備考</th></tr></thead><tbody>`+
+      OGB_ECONOMIC_TRENDS.categories.map(d=>`<tr>
+        <td style="font-size:9px;color:var(--gold);font-weight:600">${d.cat}</td>
+        <td style="font-size:9px">${d.item}</td>
+        <td class="stat-num" style="color:var(--blue);font-weight:700">${d.val}</td>
+        <td class="stat-num" style="color:${d.yoy.includes('+')?'var(--green)':d.yoy.includes('△')||d.yoy.includes('赤字')?'var(--red)':'var(--text2)'}">${d.yoy}</td>
+        <td style="font-size:9px;color:var(--text2)">${d.note}</td>
       </tr>`).join('')+'</tbody>';
   }
 
@@ -5068,6 +5124,16 @@ function toggleCheck(stateKey, id, biz, area) {
         <div style="font-size:10px;font-weight:700;color:var(--text2);margin-bottom:6px">業種×心理適合スコア</div>
         <table class="stat-table" id="psy-biz-table"></table>
       </div>
+    </div>
+  </div>
+
+  <!-- 沖縄総合事務局・県経済動向 -->
+  <div class="stat-section" style="margin-top:18px">
+    <div class="stat-section-title">🏢 沖縄総合事務局・県経済動向（最新四半期速報 R8年1-3月期）</div>
+    <div class="sec-sub" style="margin-bottom:10px">内閣府沖縄総合事務局財務部「法人企業景気予測調査」・沖縄県企画部「沖縄県経済動向」より。景気判断は<span style="color:var(--gold);font-weight:700">「景気は、拡大基調にある」（4期連続）</span>。</div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px" id="ogb-judgment-kpi"></div>
+    <div style="max-height:340px;overflow-y:auto">
+      <table class="stat-table" id="ogb-trends-table"></table>
     </div>
   </div>
 
