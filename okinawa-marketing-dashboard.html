@@ -641,6 +641,28 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP','Hiragino
       <div class="chart-wrap"><canvas id="roadDistChart"></canvas></div>
     </div>
   </div>
+
+  <!-- 道路インフラ整備状況 -->
+  <div class="stat-section" style="margin-top:18px">
+    <div class="stat-section-title">🚧 道路インフラ整備状況（内閣府沖縄総合事務局 北部・南部国道事務所）</div>
+    <div id="road-infra-cards" style="display:flex;flex-direction:column;gap:8px"></div>
+  </div>
+
+  <!-- 陸上交通行動調査 -->
+  <div class="stat-section" style="margin-top:18px">
+    <div class="stat-section-title">🚗 陸上交通行動調査（沖縄振興開発金融公庫×琉球大学 2025年6月公表）</div>
+    <div class="sec-sub" style="margin-bottom:10px">那覇市の平日混雑時旅行速度は<span style="color:var(--red);font-weight:700">10.5km/h（全国平均の約1/3・全国ワーストクラス）</span>。県民1人あたり年間約55時間が渋滞で失われている。</div>
+    <div class="g2">
+      <div class="panel">
+        <h3>通勤・通学 交通手段分担率（沖縄 vs 全国）</h3>
+        <table class="stat-table" id="modal-share-table"></table>
+      </div>
+      <div>
+        <div style="font-size:10px;font-weight:700;color:var(--text2);margin-bottom:6px">自動車・免許・バス・モノレール指標</div>
+        <table class="stat-table" id="traffic-behavior-table"></table>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- TAB 6: 基地・軍属市場 -->
@@ -2175,6 +2197,46 @@ const GDP_MUNI_FULL = [
   {name:"読谷村",pop:41480,gdp:96500,income:2099,labor:355,growth:-0.2,primary:2.5,secondary:15.8,tertiary:81.7},
 ];
 
+
+// === 道路インフラ整備状況（内閣府沖縄総合事務局 北部/南部国道事務所） ===
+const ROAD_INFRA_PROJECTS = [
+  {name:"沖縄西海岸道路",section:"読谷村〜糸満市（延長約50km）",status:"開通済",progress:100,date:"2026年3月18日開通",office:"北部・南部国道事務所",impact:"中南部西海岸エリア全体の広域アクセス向上。読谷村・恩納村方面の参入タイミングとして好機"},
+  {name:"読谷道路",section:"読谷村親志〜古堅（6.0km）",status:"事業中",progress:46,date:"改良工事・橋梁下部工事実施中",office:"北部国道事務所",impact:"読谷村内アクセス改善。完成後は58号バイパスとして渋滞緩和期待"},
+  {name:"那覇空港自動車道 豊見城東道路",section:"豊見城市〜南風原町（6.2km）",status:"ほぼ完成",progress:98,date:"4車線開通済み・小段階を残し全通見込み",office:"南部国道事務所",impact:"那覇空港アクセス向上・豊見城市周辺の商業立地価値上昇"},
+  {name:"名護東道路",section:"名護市東道路区間",status:"事業中",progress:80,date:"2026年夏 暫定全線開通目標",office:"北部国道事務所",impact:"名護市アクセス改善・北部圏域の物流・観光動線強化"},
+];
+
+// === 陸上交通行動調査（沖縄振興開発金融公庫×琉球大学、2025-06-20公表） ===
+const TRAFFIC_BEHAVIOR_STUDY = {
+  congestion: {
+    naha_speed:"10.5km/h", national_avg:"30.8km/h", tokyo23:"13.9km/h", osaka:"14.0km/h", nagoya:"15.4km/h",
+    loss_hours_total:"81,446,875時間/年", loss_hours_per_person:"約55時間/年",
+    source:"内閣府沖縄総合事務局・令和3年度全国道路街路交通情勢調査"
+  },
+  modal_share: [
+    {mode:"自家用車（通勤・通学）",okinawa:66.1,national:46.9,note:"全国平均より約20pt高い"},
+    {mode:"鉄道・バス（通勤・通学）",okinawa:6.2,national:26.7,note:"全国平均の約1/4、兵庫県35.1%の1/5以下"},
+    {mode:"複数交通手段の併用",okinawa:4.5,national:10.3,note:"単一交通手段（車）依存が突出"},
+  ],
+  vehicle_ownership: {
+    growth_5y:"+0.9%/年（全国+0.2%）", growth_20y:"+42.1%（全国+9.7%）・全国1位の伸び率",
+    license_holders:"970,412人（R4年）", license_65plus_ratio:"20.8%",
+    license_10y_growth:"+7.9%（+70,980人）", license_65plus_10y_growth:"+75.7%（+86,885人）"
+  },
+  school_commute: {elementary_car:27.6, highschool_car:44.0, highschool_bus:17.2},
+  bus: {
+    routes:"9社166系統", users_r4:"約2,130万人", users_vs_s60:"△72.4%", users_vs_r1:"82%まで回復",
+    revenue_r4:"約64億円", drivers_r4:"1,641人（過去最低・前年比△23.1%）", drivers_2030_avg_age:"62.9歳見込み",
+    subscription_rate:"11%（全国最低水準）", commute_pass_10km:"約13万円/6ヶ月", commute_pass_20km:"約20万円/6ヶ月",
+    nonstep_bus_rate:"70.1%（全国8位）"
+  },
+  monorail: {
+    users_r5:"1,994万8,279人（過去最高）", subscription_rate_r4:"26.2%",
+    profit_year:"平成28年度黒字化", deficit_r5:"約1億2,600万円まで縮小",
+    parkride_r5:"745台（てだこ浦西駅・キャンセル待ち）"
+  }
+};
+
 // === 市町村別財政指標（総務省 R4決算確報 / 単位:百万円） ===
 const MUNI_FISCAL = [
   {name:"那覇市",findex:0.781,ratio:94.2,rev:126041,exp:124978,tax:39813,grant:12341,subsidy:35234,bonds:8923},
@@ -2569,6 +2631,54 @@ function initTab5(){
     datasets:[{data:[28,15,35,22],backgroundColor:['#b91c1c','#7c2d12','#1d4ed8','#166534'],borderColor:'#1a2236',borderWidth:2}]
   },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:9}}}}}});
 
+  // 道路インフラ整備状況カード
+  const ric = document.getElementById('road-infra-cards');
+  if(ric && ric.innerHTML==='' && typeof ROAD_INFRA_PROJECTS !== 'undefined'){
+    const statColor = s => s==='開通済'?'var(--green)':s==='ほぼ完成'?'var(--blue)':'var(--gold)';
+    ric.innerHTML = ROAD_INFRA_PROJECTS.map(p=>`
+      <div style="background:var(--card2);border-radius:8px;padding:10px 12px;display:flex;align-items:center;gap:12px">
+        <div style="min-width:70px;text-align:center">
+          <div style="font-size:16px;font-weight:800;color:${statColor(p.status)}">${p.progress}%</div>
+          <div style="font-size:9px;color:${statColor(p.status)}">${p.status}</div>
+        </div>
+        <div style="flex:1">
+          <div style="font-size:11px;font-weight:700;color:var(--text)">${p.name} <span style="font-size:9px;color:var(--text2);font-weight:400">— ${p.section}</span></div>
+          <div style="font-size:9px;color:var(--text2);margin-top:2px">${p.date} ｜ 所管: ${p.office}</div>
+          <div style="font-size:9px;color:var(--gold);margin-top:3px">💡 ${p.impact}</div>
+        </div>
+      </div>`).join('');
+  }
+
+  // 交通手段分担率テーブル
+  const mst = document.getElementById('modal-share-table');
+  if(mst && mst.innerHTML==='' && typeof TRAFFIC_BEHAVIOR_STUDY !== 'undefined'){
+    mst.innerHTML = `<thead><tr><th>交通手段</th><th>沖縄県</th><th>全国平均</th><th>備考</th></tr></thead><tbody>`+
+      TRAFFIC_BEHAVIOR_STUDY.modal_share.map(d=>`<tr>
+        <td style="font-size:9px">${d.mode}</td>
+        <td class="stat-num" style="color:var(--gold);font-weight:700">${d.okinawa}%</td>
+        <td class="stat-num" style="color:var(--text2)">${d.national}%</td>
+        <td style="font-size:9px;color:var(--text2)">${d.note}</td>
+      </tr>`).join('')+'</tbody>';
+  }
+
+  // 自動車・免許・バス・モノレール指標テーブル
+  const tbt = document.getElementById('traffic-behavior-table');
+  if(tbt && tbt.innerHTML==='' && typeof TRAFFIC_BEHAVIOR_STUDY !== 'undefined'){
+    const v = TRAFFIC_BEHAVIOR_STUDY;
+    const rows = [
+      ['自動車保有台数 増加率(20年)', v.vehicle_ownership.growth_20y],
+      ['運転免許保有者数(R4年)', v.vehicle_ownership.license_holders],
+      ['免許保有 65歳以上比率', v.vehicle_ownership.license_65plus_ratio],
+      ['路線バス利用者数(R4年)', v.bus.users_r4 + '（S60年比' + v.bus.users_vs_s60 + '）'],
+      ['バス運転者数(R4年)', v.bus.drivers_r4],
+      ['バス定期券利用率', v.bus.subscription_rate],
+      ['ノンステップバス導入率', v.bus.nonstep_bus_rate],
+      ['モノレール乗客数(R5年)', v.monorail.users_r5],
+      ['モノレール収支', v.monorail.deficit_r5 + '（' + v.monorail.profit_year + '）'],
+    ];
+    tbt.innerHTML = `<thead><tr><th>指標</th><th>値</th></tr></thead><tbody>`+
+      rows.map(r=>`<tr><td style="font-size:9px">${r[0]}</td><td class="stat-num" style="color:var(--blue);font-weight:700">${r[1]}</td></tr>`).join('')+'</tbody>';
+  }
 }
 
 // === t6 — lazy chart init ===
