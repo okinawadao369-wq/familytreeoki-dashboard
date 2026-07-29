@@ -3913,8 +3913,14 @@ function calcYuimaru(){
 // ══════════════════════════════════════════════════════════
 // === AXIS スコア参照 ===
 function calcAxisScore(muniName) {
+  // MUNI_DATA優先（18主要市町村）
   const m = MUNI_DATA.find(r => r.name === muniName);
-  return m ? (m.score || 0) : 0;
+  if(m) return m.score || 0;
+  // MUNI_AXIS fallback（残り23市町村 — 8次元平均）
+  const ax = MUNI_AXIS[muniName];
+  if(!ax) return 0;
+  const vals = [ax.community,ax.economy,ax.psychology,ax.road,ax.military,ax.history,ax.growth,ax.biz];
+  return Math.round(vals.reduce((s,v)=>s+v,0)/vals.length);
 }
 
 function initTab1Dynamic() {
@@ -3941,7 +3947,7 @@ function initTab1Dynamic() {
     <div class="kpi blue"><div class="val">${(totalPop/10000).toFixed(0)}万</div><div class="lbl">👥 総人口</div></div>
     <div class="kpi green"><div class="val">${gdpT}</div><div class="lbl">💴 県内総GDP(市町村計)</div></div>
     <div class="kpi purple"><div class="val">${topScore}</div><div class="lbl">🏆 最高AXIS ${topMuni}</div></div>
-    <div class="kpi gold"><div class="val">${avgScore}</div><div class="lbl">📊 平均AXISスコア</div></div>
+    <div class="kpi gold"><div class="val">${avgScore}</div><div class="lbl">📊 平均AXISスコア（全41市町村）</div></div>
     <div class="kpi red"><div class="val">~2.6万</div><div class="lbl">🪖 SOFA世帯数</div></div>`;
 
   const sofaKpi = document.getElementById('t1-sofa-kpi');
