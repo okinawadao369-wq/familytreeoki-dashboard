@@ -119,16 +119,20 @@ async function fetchCountRaw(name, timeoutMs){
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs || 9000);
   try{
-    const res = await fetch(`https://api.counterapi.dev/v1/${NS}/reserve_${name}?_=${Date.now()}`, {signal: controller.signal, cache:'no-store'});
+    // Trailing slash is required: without it, the API 301-redirects and that redirect
+    // response has no CORS header, which makes the browser block the whole request.
+    const res = await fetch(`https://api.counterapi.dev/v1/${NS}/reserve_${name}/?_=${Date.now()}`, {signal: controller.signal, cache:'no-store'});
     clearTimeout(timer);
     if(res.status === 404){
       return {count: 0, ok: true}; // counter never incremented yet = genuinely zero
     }
+    const data = await res.json().catch(() => null);
     if(!res.ok){
+      // API returns 400 + "record not found" for counters that have never been hit yet.
+      if(data && /record not found/i.test(data.message || '')) return {count: 0, ok: true};
       return {count: null, ok: false};
     }
-    const data = await res.json();
-    if(typeof data.count === 'number') return {count: data.count, ok: true};
+    if(data && typeof data.count === 'number') return {count: data.count, ok: true};
     return {count: 0, ok: true};
   }catch(e){
     clearTimeout(timer);
