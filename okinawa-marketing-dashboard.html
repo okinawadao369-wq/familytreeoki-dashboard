@@ -260,6 +260,16 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP','Hiragino
 /* Tip box */
 .insight-box{background:linear-gradient(135deg,#1e3a8a22,#164e6322);border:1px solid #3b82f633;border-radius:8px;padding:10px 12px;margin-bottom:12px;font-size:11px;line-height:1.6}
 .insight-box strong{color:var(--gold)}
+/* 検証ステータスバッジ */
+.verif-wrap{display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap;margin:4px 0 10px 0}
+.verif-badge{display:inline-flex;align-items:center;gap:4px;font-size:9px;font-weight:800;padding:2px 8px;border-radius:10px;white-space:nowrap}
+.verif-stat{background:#10b98122;color:#10b981;border:1px solid #10b98155}
+.verif-expert{background:#3b82f622;color:#60a5fa;border:1px solid #3b82f655}
+.verif-hypo{background:#ef444422;color:#f87171;border:1px solid #ef444455}
+.verif-source{font-size:9px;color:var(--text2);display:inline}
+.verif-tag{display:inline-block;font-size:8px;font-weight:800;padding:0px 5px;border-radius:4px;margin-left:5px;vertical-align:middle}
+.verif-tag-real{background:#10b98122;color:#10b981}
+.verif-tag-heur{background:#f59e0b22;color:#f59e0b}
 </style>
 </head>
 <body>
@@ -318,7 +328,7 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP','Hiragino
       <div id="t1-axis-legend"></div>
     </div>
     <div class="panel">
-      <h3>📈 GDP TOP10 市町村</h3>
+      <h3>📈 GDP TOP10 市町村 <span style="font-size:9px;font-weight:400;color:var(--text2)">（R4年度・2026年6月更新）</span></h3>
       <div style="position:relative;height:220px"><canvas id="t1-gdp-chart" role="img" aria-label="GDP上位10市町村"></canvas></div>
     </div>
   </div>
@@ -327,6 +337,9 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP','Hiragino
 <div id="t2" class="tab">
   <div class="sec-head">🏘️ コミュニティ構造分析 — ユイマール係数・地域知識ギャップ指数</div>
   <div class="sec-sub">沖縄生まれ育ちでも自地域を理解していない「知識パラドックス」を数値化。外部認知度 vs 地元活用度の乖離がエリアマーケティングの真の機会を示す。</div>
+  <span class="vb-slot" data-key="yuimaru"></span>
+  <span class="vb-slot" data-key="chiiki_gap"></span>
+  <span class="vb-slot" data-key="moai"></span>
   <div class="kpi-row">
     <div class="kpi gold"><div class="val">68.4</div><div class="lbl">平均ユイマール係数</div></div>
     <div class="kpi purple"><div class="val">42.3</div><div class="lbl">平均地域知識ギャップ</div></div>
@@ -487,6 +500,7 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP','Hiragino
 <div id="t4" class="tab">
   <div class="sec-head">💧 ザル経済循環分析</div>
   <div class="sec-sub">観光消費が地域に残らず本土・海外資本へ流出するメカニズム。どの業種が域内循環に貢献するかを可視化し、出店戦略に活用する。</div>
+  <span class="vb-slot" data-key="zaru_leakage"></span>
   <div class="kpi-row">
     <div class="kpi red"><div class="val">~30%</div><div class="lbl">宿泊費の域外流出率</div></div>
     <div class="kpi red"><div class="val">~22%</div><div class="lbl">飲食費の域外流出率</div></div>
@@ -581,7 +595,7 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP','Hiragino
       <div class="chart-wrap-lg"><canvas id="roadChart"></canvas></div>
     </div>
     <div class="panel">
-      <h3>🗺️ 主要道路別 交通量ランキング</h3>
+      <h3>🗺️ 主要道路別 交通量ランキング <span class="verif-tag verif-tag-real">📊 実データ（道路交通センサス）</span></h3>
       <div class="chart-wrap-lg"><canvas id="trafficChart2"></canvas></div>
     </div>
   </div>
@@ -612,10 +626,11 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP','Hiragino
       </div>
     </div>
     <div class="panel">
-      <h3>↔️ 交差点ポジション分析</h3>
+      <h3>↔️ 交差点ポジション分析 <span class="verif-tag verif-tag-heur">💭 経験則（一般的な商業立地原則）</span></h3>
       <div style="display:flex;flex-direction:column;gap:8px">
         <div style="background:var(--card2);border-radius:6px;padding:10px;font-size:10px">
           <h4 style="color:var(--gold);margin-bottom:6px">入り安さスコアの算出方法</h4>
+          <div style="font-size:9px;color:var(--text2);margin-bottom:6px">※ 以下の加減点は沖縄の実測データではなく、一般的な商業立地の経験則（左折入店・視認性に関する業界通念）に基づく推定値です。個別案件では現地調査での検証を推奨します。</div>
           <div style="color:var(--text2);line-height:1.8">
             <div>🟢 左折入り（進行方向左側）: +20pt — 停車・Uターン不要</div>
             <div>🟡 交差点直後: +15pt — 視認後の判断時間あり</div>
@@ -848,6 +863,10 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP','Hiragino
 <div id="t9" class="tab">
   <div class="sec-head">📅 沖縄行事・消費タイミングカレンダー</div>
   <div class="sec-sub">ユイマール・モアイ文化に根ざした沖縄固有の行事消費サイクル。このタイミングを理解し仕込みをすることで集客を劇的に向上できる。</div>
+  <div class="verif-wrap">
+    <span class="verif-tag verif-tag-real" style="margin-left:0">📊 行事の日付・内容: 史実・文化的事実</span>
+    <span class="verif-tag verif-tag-heur">💭 影響度（最高/高/中/低）・月別消費指数: 専門家推計（個店の実売データとの照合は未実施）</span>
+  </div>
   <div class="kpi-row">
     <div class="kpi gold"><div class="val">4月</div><div class="lbl">最大消費ピーク（シーミー清明祭）</div></div>
     <div class="kpi blue"><div class="val">7-8月</div><div class="lbl">旧盆（ウンケー-ウークイ）</div></div>
@@ -868,6 +887,26 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP','Hiragino
 </div>
 
 <script>
+// ===================== 独自指標 検証ステータス =====================
+// level: 'stat'=統計データに基づく / 'expert'=専門家推計 / 'hypo'=未検証の仮説モデル
+const VERIF_INFO = {
+  yuimaru: {level:'expert', label:'ユイマール係数', source:'居住年数・地元校出身・事業継承形態・モアイ/自治会参加の4項目を独自ロジックで加重合成。算出式は固定・再現可能だが、外部の社会調査での妥当性検証は未実施。',},
+  moai: {level:'hypo', label:'モアイ密度', source:'地域の相互扶助（模合）の濃さを市町村特性から著者が推定したスコア。公的な模合実態調査は存在しないため仮説モデル。'},
+  chiiki_gap: {level:'hypo', label:'地域知識ギャップ指数', source:'「外部認知度」対「地元活用度」の乖離を著者が定性評価し数値化。学術的な地域知名度調査等との照合は未実施。'},
+  zaru_leakage: {level:'expert', label:'ザル経済 域外流出率', source:'沖縄県産業連関表が示す観光消費の域外流出（漏出）という経済学的概念を参考に、業種別の域内循環率を推計。個別業種の実測値ではなく推計値。'},
+  paradox: {level:'hypo', label:'コミュニティパラドックス指数（8次元）', source:'知識欠如・コミュニティ逃避・観光地拒絶など8つの行動パラドックスを、著者の現場観察・仮説に基づき市町村別0-100点で定性→定量化。統計調査に基づく指標ではない。'},
+};
+function verifBadge(key, opts){
+  const info = VERIF_INFO[key];
+  if(!info) return '';
+  const cls = info.level==='stat'?'verif-stat':info.level==='expert'?'verif-expert':'verif-hypo';
+  const txt = info.level==='stat'?'📊 統計データに基づく':info.level==='expert'?'🔬 専門家推計':'💭 未検証の仮説モデル';
+  const compact = opts && opts.compact;
+  return `<div class="verif-wrap">
+    <span class="verif-badge ${cls}">${txt}</span>
+    ${compact?'':`<span class="verif-source">${info.source}</span>`}
+  </div>`;
+}
 // ===================== DATA =====================
 const MUNI_DATA = [
   {name:"那覇市",region:"那覇",score:86.8,grade:"S",pop:314009,gdp:1393876,income:2605,growth:5.6,traffic:50000,roads:"国道58,329,330,331,332号",topDistricts:"久茂地,おもろまち,牧志"},
@@ -1229,6 +1268,11 @@ window.addEventListener('load',()=>{
   calcBizScore();
   renderTop20Table();
   setTimeout(initTab1Dynamic, 150);
+  document.querySelectorAll('.vb-slot').forEach(el=>{
+    const key = el.dataset.key;
+    const compact = el.dataset.compact==='1';
+    el.outerHTML = verifBadge(key, {compact});
+  });
 });
 
 // ═══════════════════════════════════════════════
@@ -1560,6 +1604,41 @@ function runDiagnosis(){
   document.getElementById('verdict-icon').textContent = icon;
   document.getElementById('verdict-title').textContent = verdict;
   document.getElementById('verdict-desc').textContent = verdictDesc;
+
+  // === 判定根拠TOP3: どの指標がこの判定を最も左右したかを開示 ===
+  {
+    const axisNamesJP = {community:'コミュニティ結束',economy:'経済規模',psychology:'消費者心理',road:'交通量・道路',military:'基地・軍属市場',history:'歴史・文化資源',growth:'成長ポテンシャル',biz:'業種適合性'};
+    const contribItems = [];
+    Object.keys(weights).forEach(k=>{
+      const av = adjAxis[k]!==undefined ? adjAxis[k] : 65;
+      const pts = av * weights[k];
+      contribItems.push({label:axisNamesJP[k]||k, pts, detail:`スコア${Math.round(av)}点 × 重み${Math.round(weights[k]*100)}%（${biz}の業種特性）`});
+    });
+    if(targetBonus) contribItems.push({label:'ターゲット層適合ボーナス', pts:targetBonus*0.3, detail:`選択ターゲット層×${muni}の相性加点（実効係数×0.3）`});
+    if(budgetBonus) contribItems.push({label:'投資予算ボーナス', pts:budgetBonus, detail:`投資規模「${budget}」による加点`});
+    contribItems.push({label:'コミュニティパラドックス効果', pts:paradoxCapped*0.4, detail:`${cp.label||'コミュニティ特性'}による${paradoxCapped>=0?'加点':'減点'}（±40点を実効係数×0.4で反映）`});
+
+    const totalAbs = contribItems.reduce((s,c)=>s+Math.abs(c.pts),0) || 1;
+    const top3contrib = contribItems.slice().sort((a,b)=>Math.abs(b.pts)-Math.abs(a.pts)).slice(0,3);
+
+    document.getElementById('verdict-basis').innerHTML = `
+      <h3 style="margin-bottom:8px">🔍 この判定に最も寄与した上位3指標</h3>
+      <div style="font-size:10px;color:var(--text2);margin-bottom:10px">総合スコア${finalScore}点の内訳のうち、影響が大きかった順。スタッフが「なぜこの判定か」を即座に説明するための根拠データ。</div>
+      ${top3contrib.map((c,i)=>`
+        <div style="display:flex;align-items:center;gap:10px;background:var(--card2);border-radius:8px;padding:8px 12px;margin-bottom:6px">
+          <div style="font-size:15px;font-weight:900;color:${i===0?'#f59e0b':i===1?'#94a3b8':'#b45309'};min-width:20px">${i+1}</div>
+          <div style="flex:1">
+            <div style="font-size:11px;font-weight:700">${c.label}</div>
+            <div style="font-size:9px;color:var(--text2)">${c.detail}</div>
+          </div>
+          <div style="text-align:right;min-width:70px">
+            <div style="font-size:13px;font-weight:900;color:${c.pts>=0?'var(--green)':'var(--red)'}">${c.pts>=0?'+':''}${c.pts.toFixed(1)}点</div>
+            <div style="font-size:8px;color:var(--text2)">寄与度 ${Math.round(Math.abs(c.pts)/totalAbs*100)}%</div>
+          </div>
+        </div>`).join('')}
+      <div style="font-size:9px;color:var(--text2);margin-top:6px">※ 総合スコア = Σ(8次元スコア×業種別重み) + ターゲット/予算ボーナス + コミュニティパラドックス効果（詳細はページ下部の8次元レーダー・パラドックス分析パネルを参照）</div>
+    `;
+  }
 
   // Gauge
   const pct = finalScore / 100;
@@ -5092,6 +5171,9 @@ function toggleCheck(stateKey, id, biz, area) {
       </div>
     </div>
 
+    <!-- VERDICT BASIS: 判定根拠TOP3 -->
+    <div class="panel" id="verdict-basis" style="margin-bottom:14px;border:1px solid #d9770655"></div>
+
     <!-- COMMUNITY PARADOX PANEL -->
     <div class="paradox-panel" id="paradox-panel">
       <h3>🌀 コミュニティパラドックス影響分析</h3>
@@ -5155,6 +5237,7 @@ function toggleCheck(stateKey, id, biz, area) {
     <!-- ユイマール変数結果パネル -->
     <div class="panel" id="ym-result-diag" style="border:2px solid #d9770644;margin-bottom:14px">
       <h3>🌺 ユイマール変数 診断結果 — 地元絆係数の市場影響</h3>
+      <span class="vb-slot" data-key="yuimaru"></span>
       <div class="g2" style="gap:10px">
         <div id="ym-diag-score-panel"></div>
         <div id="ym-diag-market-panel"></div>
@@ -5170,6 +5253,7 @@ function toggleCheck(stateKey, id, biz, area) {
       </div>
       <div class="panel" id="pdx-thinking-diag">
         <h3>🌀 支配的パラドックス思考 TOP3</h3>
+        <span class="vb-slot" data-key="paradox" data-compact="1"></span>
         <div style="font-size:10px;color:var(--text2);margin-bottom:8px">このエリアで最も強く消費行動を動かすパラドックス思考。マーケティング設計の根拠として活用する。</div>
         <div id="pdx-thinking-content"></div>
       </div>
@@ -5377,6 +5461,7 @@ function toggleCheck(stateKey, id, biz, area) {
 <div id="t12" class="tab">
   <div class="sec-head">🌀 パラドックス思考行動分析 — 消費・行動の源泉を数値化</div>
   <div class="sec-sub">沖縄のコミュニティ重視社会が生む8類型のパラドックス思考。この思考が行動の源泉となり、特定の場所・タイミングで消費と行動を促す。数値化・可視化でビジネス戦略の根拠にする。</div>
+  <span class="vb-slot" data-key="paradox"></span>
 
   <div class="kpi-row" id="pdx-kpi-row"></div>
 
@@ -5446,6 +5531,11 @@ function toggleCheck(stateKey, id, biz, area) {
 <div id="t13" class="tab">
   <div class="sec-head">💰 全41市町村 × 行政区 GDP・経済データ全覧</div>
   <div class="sec-sub">沖縄県全41市町村の市内総生産・1人当たり所得・労働生産性・成長率・産業構造を完全網羅。行政区別推計GDPで出店エリア判断の根拠データとして活用する。</div>
+  <div style="display:flex;gap:14px;flex-wrap:wrap;font-size:10px;color:var(--text2);background:var(--card2);border-radius:8px;padding:8px 12px;margin-bottom:10px">
+    <div>📅 <strong style="color:var(--text)">市町村別GDP</strong>: データ年度 <strong>令和4年度（R4）</strong> ／ 最終更新 <strong>2026年6月11日</strong>（出典: 県民経済計算）</div>
+    <div>📅 <strong style="color:var(--text)">行政区別推計GDP</strong>: データ年度 <strong>令和4年度ベース推計</strong> ／ 最終更新 <strong>2026年6月14日</strong>（推計値・実測ではない）</div>
+    <div>📅 <strong style="color:var(--text)">市町村財政指標</strong>: データ年度 <strong>令和4年度決算確報</strong> ／ 最終更新 <strong>2026年7月30日</strong>（出典: 総務省）</div>
+  </div>
 
   <div class="kpi-row" id="gdp13-kpi"></div>
 
