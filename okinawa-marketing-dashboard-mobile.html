@@ -53,9 +53,9 @@ async function unlock(){
     );
     const plainBuf = await crypto.subtle.decrypt({name:'AES-GCM', iv: b64ToBuf(iv)}, key, b64ToBuf(data));
     const html = new TextDecoder().decode(plainBuf);
-    const blob = new Blob([html], {type:'text/html'});
-    const url = URL.createObjectURL(blob);
-    window.location.replace(url);
+    document.open();
+    document.write(html);
+    document.close();
   } catch(e) {
     err.textContent = '合言葉が違います。もう一度お試しください。';
     btn.disabled = false; loading.style.display = 'none';
