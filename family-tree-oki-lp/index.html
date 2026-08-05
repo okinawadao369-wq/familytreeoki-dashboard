@@ -14,6 +14,14 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Family Tree Oki | 4D Ultrasound Studio — Okinawa</title>
+<!-- Google Analytics 4 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-HMPVHTNTRF"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-HMPVHTNTRF');
+</script>
 <style>
   :root{
     --bark:#7B5C44;
@@ -273,28 +281,19 @@
   @media(max-width:720px){.sticky-cta{display:flex;} body{padding-bottom:66px;}}
 </style>
 <script>
-  function jstParts(){
-    // Returns weekday (mon..sun) and 4-hour block index (0-5) in Japan Standard Time,
-    // regardless of the visitor's own device timezone.
-    var fmt = new Intl.DateTimeFormat('en-US', {timeZone:'Asia/Tokyo', weekday:'short', hour:'2-digit', hour12:false});
-    var parts = fmt.formatToParts(new Date());
-    var map = {Mon:'mon',Tue:'tue',Wed:'wed',Thu:'thu',Fri:'fri',Sat:'sat',Sun:'sun'};
-    var wd = 'mon', hr = 0;
-    parts.forEach(function(p){
-      if(p.type === 'weekday') wd = map[p.value] || p.value.toLowerCase();
-      if(p.type === 'hour') hr = parseInt(p.value, 10);
-    });
-    if(hr === 24) hr = 0;
-    return {weekday: wd, block: Math.floor(hr/4)};
-  }
+  // Sends a GA4 event for each reservation button click. GA4 automatically records
+  // the timestamp, so day-of-week / hour breakdowns are available natively in
+  // Google Analytics (Explore > Free form, dimensions: Day of week / Hour) —
+  // no custom bucketing needed here.
   function trackReserve(loc){
     try{
-      var ns = 'familytreeoki';
-      var t = jstParts();
-      fetch('https://api.counterapi.dev/v1/'+ns+'/reserve_total/up', {mode:'no-cors', keepalive:true});
-      fetch('https://api.counterapi.dev/v1/'+ns+'/reserve_'+loc+'/up', {mode:'no-cors', keepalive:true});
-      fetch('https://api.counterapi.dev/v1/'+ns+'/reserve_day_'+t.weekday+'/up', {mode:'no-cors', keepalive:true});
-      fetch('https://api.counterapi.dev/v1/'+ns+'/reserve_block_'+t.block+'/up', {mode:'no-cors', keepalive:true});
+      if(typeof gtag === 'function'){
+        gtag('event', 'reserve_click', {
+          button_location: loc,
+          event_category: 'engagement',
+          event_label: loc
+        });
+      }
     }catch(e){}
   }
 </script>
