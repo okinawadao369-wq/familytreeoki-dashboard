@@ -12,247 +12,82 @@
     --mint:#F2FAEC; --morning:#EDF5FF; --border:#EDD8C8; --tag:#C97FA0;
   }
   *{box-sizing:border-box;}
-  body{margin:0;background:var(--linen);color:var(--bark-dark);font-family:Arial,Helvetica,sans-serif;padding:32px 18px 60px;}
-  .wrap{max-width:880px;margin:0 auto;}
+  body{margin:0;background:var(--linen);color:var(--bark-dark);font-family:Arial,Helvetica,sans-serif;padding:32px 18px 60px;line-height:1.7;}
+  .wrap{max-width:760px;margin:0 auto;}
   h1{font-family:Georgia,serif;color:var(--bark);font-size:26px;margin:0 0 4px;}
+  h2{font-family:Georgia,serif;color:var(--bark);font-size:19px;margin:0 0 10px;}
   .sub{color:var(--tag);font-size:13px;margin-bottom:28px;}
-  .total-card{
+  .notice-card{
     background:linear-gradient(135deg, var(--bark) 0%, #8a6a4f 100%);color:#fff;
-    border-radius:18px;padding:28px 30px;margin-bottom:26px;
-    display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;
+    border-radius:18px;padding:26px 28px;margin-bottom:28px;
   }
-  .total-card .num{font-size:46px;font-weight:800;font-family:Georgia,serif;}
-  .total-card .label{font-size:13px;opacity:0.85;}
-  table{width:100%;border-collapse:collapse;background:#fff;border-radius:14px;overflow:hidden;border:1px solid var(--border);}
-  th,td{padding:14px 18px;text-align:left;font-size:14px;}
-  th{background:var(--morning);color:var(--bark);font-size:12px;letter-spacing:0.04em;text-transform:uppercase;}
-  tr:not(:last-child) td{border-bottom:1px solid var(--border);}
-  .bar-bg{background:var(--petal);border-radius:8px;height:10px;width:100%;overflow:hidden;margin-top:6px;}
-  .bar-fill{background:var(--peach);height:100%;border-radius:8px;transition:width .5s ease;}
-  .count{font-weight:700;color:var(--bark);}
-  .refresh-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px;}
-  button{background:var(--bark);color:#fff;border:none;border-radius:20px;padding:9px 20px;font-size:13px;font-weight:700;cursor:pointer;}
-  button:hover{background:var(--bark-dark);}
-  .updated{font-size:12px;color:var(--tag);}
-  .note{font-size:12px;color:var(--tag);margin-top:22px;line-height:1.7;}
-  .loading{color:var(--tag);font-size:13px;}
-  .section-title{font-family:Georgia,serif;color:var(--bark);font-size:18px;margin:34px 0 4px;}
-  .section-sub{font-size:12px;color:var(--tag);margin-bottom:14px;}
-  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
-  @media(max-width:680px){.grid2{grid-template-columns:1fr;}}
-  .mini-table td{padding:10px 14px;font-size:13px;}
-  .mini-table th{padding:10px 14px;}
-  .peak-badge{display:inline-block;background:var(--rose);color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:8px;margin-left:6px;vertical-align:middle;}
+  .notice-card p{margin:0 0 14px;font-size:14px;color:#F3E4D8;}
+  .btn{
+    display:inline-block;background:#fff;color:var(--bark);font-weight:700;
+    text-decoration:none;border-radius:999px;padding:12px 26px;font-size:14px;
+  }
+  .step-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:20px 22px;margin-bottom:16px;}
+  .step-card ol, .step-card ul{margin:8px 0 0;padding-left:20px;font-size:14px;color:var(--bark-dark);}
+  .step-card li{margin-bottom:6px;}
+  code{background:var(--morning);color:var(--bark);padding:2px 6px;border-radius:5px;font-size:12.5px;}
+  .note{font-size:12px;color:var(--tag);margin-top:24px;line-height:1.8;}
 </style>
 </head>
 <body>
 <div class="wrap">
   <h1>予約ボタン クリック分析</h1>
-  <div class="sub">Family Tree Oki 4D Ultrasound LP — 「予約サイトへ飛ぶボタン」の押下回数</div>
+  <div class="sub">Family Tree Oki 4D Ultrasound LP</div>
 
-  <div class="total-card">
-    <div>
-      <div class="label">合計クリック数（全ボタン合算）</div>
-      <div class="num" id="total-num">–</div>
-    </div>
-    <div class="label" id="tracking-since">計測開始：2026年7月28日〜</div>
+  <div class="notice-card">
+    <p>
+      無料の簡易カウンター(counterapi.dev)は接続が不安定で、修正を重ねても
+      根本的に解決しなかったため、2026年8月5日より <strong>Google Analytics 4 (GA4)</strong>
+      に計測方法を切り替えました。これ以降のクリックデータはすべてGoogleの公式画面で
+      確認できます。このページ自体には、もうデータは表示されません。
+    </p>
+    <a class="btn" href="https://analytics.google.com/" target="_blank" rel="noopener">
+      Google Analyticsを開く →
+    </a>
   </div>
 
-  <div class="refresh-row">
-    <div class="updated" id="updated-at">読み込み中...</div>
-    <button onclick="loadStats()">🔄 更新</button>
+  <h2>① リアルタイムで動作確認する</h2>
+  <div class="step-card">
+    <p>GA4画面の左メニュー → <strong>レポート</strong> → <strong>リアルタイム</strong> を開きます。
+    LPで予約ボタンを押すと、数秒以内に「reserve_click」というイベントがここに表示されます。</p>
   </div>
 
-  <table>
-    <thead>
-      <tr><th>ボタンの場所</th><th style="width:110px;">クリック数</th><th style="width:40%;">割合</th></tr>
-    </thead>
-    <tbody id="stats-body">
-      <tr><td colspan="3" class="loading">データを取得中...</td></tr>
-    </tbody>
-  </table>
+  <h2>② どのボタンが押されているか確認する（初回のみ設定が必要）</h2>
+  <div class="step-card">
+    <p>ボタンの場所（ヘッダー／ヒーロー／CTAバナー等）で絞り込むには、まず1回だけ
+    「カスタム指標」の登録が必要です。</p>
+    <ol>
+      <li>GA4画面左下の <strong>管理</strong>（歯車アイコン）を開く</li>
+      <li><strong>カスタム定義</strong> → <strong>カスタムディメンションを作成</strong></li>
+      <li>ディメンション名：<code>Button Location</code>／範囲：<code>イベント</code>／
+        イベントパラメータ：<code>button_location</code> と入力して保存</li>
+    </ol>
+    <p>登録後、半日〜1日ほどでデータが反映され始めます。反映後は
+    <strong>探索</strong> → <strong>自由形式</strong> でディメンションに
+    「Button Location」を追加すると、ボタンごとのクリック数を比較できます。</p>
+  </div>
 
-  <div class="section-title">曜日別・時間帯別（全ボタン合算、日本時間）</div>
-  <div class="section-sub">どの曜日・どの時間帯にLPが操作されているかの目安です（ボタン別との掛け合わせではなく、それぞれ単独の集計です）</div>
-  <div class="grid2">
-    <table class="mini-table">
-      <thead><tr><th>曜日</th><th style="width:90px;">クリック数</th><th style="width:35%;">割合</th></tr></thead>
-      <tbody id="day-body"><tr><td colspan="3" class="loading">読み込み中...</td></tr></tbody>
-    </table>
-    <table class="mini-table">
-      <thead><tr><th>時間帯（JST）</th><th style="width:90px;">クリック数</th><th style="width:35%;">割合</th></tr></thead>
-      <tbody id="block-body"><tr><td colspan="3" class="loading">読み込み中...</td></tr></tbody>
-    </table>
+  <h2>③ 曜日・時間帯別に見る</h2>
+  <div class="step-card">
+    <p>GA4は日時を自動記録しているので、追加設定は不要です。</p>
+    <ol>
+      <li><strong>探索</strong> → <strong>自由形式</strong> を新規作成</li>
+      <li>ディメンションに <code>曜日</code> や <code>時間</code> を追加</li>
+      <li>指標に <code>イベント数</code> を追加し、フィルタでイベント名を
+        <code>reserve_click</code> に絞り込む</li>
+    </ol>
   </div>
 
   <div class="note">
-    ※ 2026年7月28日にクリック計測を導入したため、それ以前のクリックは記録されていません。<br>
-    ※ 数値は簡易カウンター（counterapi.dev）による概算値です。広告ブロッカー使用時は計測されない場合があります。<br>
-    ※ 曜日・時間帯は日本時間（沖縄と同じ）で記録しています。<br>
-    ※ 無料APIのレート制限があるため、更新ボタンの連打はお控えください。<br>
-    ※ このページのURLはstaff閲覧用です。検索エンジンには登録されません。
+    ※ このページのURLはstaff閲覧用のメモとして残していますが、実際のデータは
+    すべてGoogle Analytics側で確認してください。<br>
+    ※ Google Analyticsへのアクセス権限が必要な場合は、GA4の「管理」→「アクセス管理」から
+    スタッフのGoogleアカウントを追加できます。
   </div>
 </div>
-
-<script>
-const NS = 'familytreeoki';
-const LOCATIONS = [
-  {key:'nav_header',     label:'ヘッダーナビ「Book Now」'},
-  {key:'hero',           label:'ヒーロー「Book Your Session」'},
-  {key:'section_4d',     label:'4Dエコー紹介「Reserve Weeks 25–32」'},
-  {key:'guests_welcome', label:'Guests Welcome「Plan Your Visit」'},
-  {key:'cta_banner',     label:'下部CTAバナー「Book Your 4D Ultrasound」'},
-  {key:'footer',         label:'フッター「Book Now」'},
-  {key:'sticky_mobile',  label:'スマホ固定バー「Book Your 4D Ultrasound」'},
-];
-
-const DAYS = [
-  {key:'mon', label:'月曜日'}, {key:'tue', label:'火曜日'}, {key:'wed', label:'水曜日'},
-  {key:'thu', label:'木曜日'}, {key:'fri', label:'金曜日'}, {key:'sat', label:'土曜日'}, {key:'sun', label:'日曜日'},
-];
-const BLOCKS = [
-  {key:'0', label:'深夜〜早朝 (0–4時)'}, {key:'1', label:'早朝 (4–8時)'}, {key:'2', label:'午前 (8–12時)'},
-  {key:'3', label:'午後 (12–16時)'}, {key:'4', label:'夕方 (16–20時)'}, {key:'5', label:'夜 (20–24時)'},
-];
-
-async function fetchCountRaw(name, timeoutMs){
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), timeoutMs || 12000);
-  try{
-    // Trailing slash is required: without it, the API 301-redirects and that redirect
-    // response has no CORS header, which makes the browser block the whole request.
-    const res = await fetch(`https://api.counterapi.dev/v1/${NS}/reserve_${name}/?_=${Date.now()}`, {signal: controller.signal, cache:'no-store'});
-    clearTimeout(timer);
-    if(res.status === 404){
-      return {count: 0, ok: true}; // counter never incremented yet = genuinely zero
-    }
-    const data = await res.json().catch(() => null);
-    if(!res.ok){
-      // API returns 400 + "record not found" for counters that have never been hit yet.
-      if(data && /record not found/i.test(data.message || '')) return {count: 0, ok: true};
-      return {count: null, ok: false};
-    }
-    if(data && typeof data.count === 'number') return {count: data.count, ok: true};
-    return {count: 0, ok: true};
-  }catch(e){
-    clearTimeout(timer);
-    return {count: null, ok: false};
-  }
-}
-
-const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
-
-// The free counter API falls over when hit with many requests at once (even a handful of
-// simultaneous connections can time out). Retry up to 3 times with backoff before giving up.
-async function fetchCount(name){
-  let r;
-  for(let attempt = 0; attempt < 4; attempt++){
-    r = await fetchCountRaw(name);
-    if(r.ok) return r;
-    await sleep(600 * (attempt + 1));
-  }
-  return r;
-}
-
-// Runs jobs with a small concurrency cap instead of all at once, since this free API
-// chokes on bursts of parallel requests. onEach fires as soon as each job finishes,
-// so the page can render progressively instead of waiting for everything at once.
-async function runQueue(jobs, onEach, concurrency){
-  let cursor = 0;
-  async function worker(){
-    while(cursor < jobs.length){
-      const i = cursor++;
-      const result = await jobs[i]();
-      onEach(i, result);
-    }
-  }
-  await Promise.all(Array.from({length: Math.min(concurrency, jobs.length)}, worker));
-}
-
-function renderRows(tbodyId, items, results){
-  const validCounts = results.map(r => r.ok ? r.count : 0);
-  const max = Math.max(1, ...validCounts);
-  const peakIdx = validCounts.indexOf(max);
-  const rows = items.map((it, i) => {
-    const r = results[i];
-    if(r.pending){
-      return `<tr>
-        <td>${it.label}</td>
-        <td class="count loading">読み込み中</td>
-        <td><div class="bar-bg"></div></td>
-      </tr>`;
-    }
-    if(!r.ok){
-      return `<tr>
-        <td>${it.label}</td>
-        <td class="count" style="color:#c0392b;">取得失敗</td>
-        <td><div class="bar-bg"></div></td>
-      </tr>`;
-    }
-    const c = r.count;
-    const pct = Math.round((c / max) * 100);
-    const isPeak = c > 0 && i === peakIdx;
-    return `<tr>
-      <td>${it.label}${isPeak ? '<span class="peak-badge">最多</span>' : ''}</td>
-      <td class="count">${c.toLocaleString()}</td>
-      <td><div class="bar-bg"><div class="bar-fill" style="width:${pct}%"></div></div></td>
-    </tr>`;
-  }).join('');
-  document.getElementById(tbodyId).innerHTML = rows || '<tr><td colspan="3">データなし</td></tr>';
-}
-
-async function loadStats(){
-  document.getElementById('stats-body').innerHTML = '<tr><td colspan="3" class="loading">データを取得中...(混雑時は1分ほどかかる場合があります)</td></tr>';
-  document.getElementById('day-body').innerHTML = '<tr><td colspan="3" class="loading">読み込み中...</td></tr>';
-  document.getElementById('block-body').innerHTML = '<tr><td colspan="3" class="loading">読み込み中...</td></tr>';
-  document.getElementById('updated-at').textContent = '取得中...(少しお待ちください)';
-  document.getElementById('total-num').textContent = '…';
-
-  const buttonResults = LOCATIONS.map(() => ({count: null, ok: false, pending: true}));
-  const dayResults = DAYS.map(() => ({count: null, ok: false, pending: true}));
-  const blockResults = BLOCKS.map(() => ({count: null, ok: false, pending: true}));
-  let totalResult = {count: null, ok: false, pending: true};
-
-  // One shared queue for all ~21 lookups, throttled to 2 at a time — this API can't
-  // handle bursts, but a small trickle of requests succeeds reliably.
-  const jobs = [
-    { run: () => fetchCount('total'), onDone: (r) => { totalResult = r; renderTotal(); } },
-    ...LOCATIONS.map((l, i) => ({
-      run: () => fetchCount(l.key),
-      onDone: (r) => { buttonResults[i] = r; renderRows('stats-body', LOCATIONS, buttonResults); },
-    })),
-    ...DAYS.map((d, i) => ({
-      run: () => fetchCount('day_' + d.key),
-      onDone: (r) => { dayResults[i] = r; renderRows('day-body', DAYS, dayResults); },
-    })),
-    ...BLOCKS.map((b, i) => ({
-      run: () => fetchCount('block_' + b.key),
-      onDone: (r) => { blockResults[i] = r; renderRows('block-body', BLOCKS, blockResults); },
-    })),
-  ];
-
-  function renderTotal(){
-    if(totalResult.pending) return;
-    document.getElementById('total-num').textContent = totalResult.ok ? totalResult.count.toLocaleString() : '取得失敗';
-  }
-
-  renderRows('stats-body', LOCATIONS, buttonResults);
-  renderRows('day-body', DAYS, dayResults);
-  renderRows('block-body', BLOCKS, blockResults);
-
-  await runQueue(
-    jobs.map((j) => j.run),
-    (i, result) => jobs[i].onDone(result),
-    2
-  );
-
-  const failCount = [...buttonResults, totalResult, ...dayResults, ...blockResults].filter(r => !r.ok).length;
-  const now = new Date();
-  document.getElementById('updated-at').textContent = '最終更新: ' + now.toLocaleString('ja-JP') +
-    (failCount > 0 ? `　⚠️ ${failCount}件の取得に失敗（無料APIが混雑中の可能性。更新ボタンで再試行してください）` : '');
-}
-
-loadStats();
-</script>
 </body>
 </html>
