@@ -117,7 +117,7 @@ const BLOCKS = [
 
 async function fetchCountRaw(name, timeoutMs){
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), timeoutMs || 9000);
+  const timer = setTimeout(() => controller.abort(), timeoutMs || 12000);
   try{
     // Trailing slash is required: without it, the API 301-redirects and that redirect
     // response has no CORS header, which makes the browser block the whole request.
@@ -140,14 +140,33 @@ async function fetchCountRaw(name, timeoutMs){
   }
 }
 
-// Retries once on failure/timeout before giving up, since the free counter API is occasionally slow.
+const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
+
+// The free counter API falls over when hit with many requests at once (even a handful of
+// simultaneous connections can time out). Retry up to 3 times with backoff before giving up.
 async function fetchCount(name){
-  let r = await fetchCountRaw(name);
-  if(!r.ok){
-    await new Promise(res => setTimeout(res, 700));
+  let r;
+  for(let attempt = 0; attempt < 4; attempt++){
     r = await fetchCountRaw(name);
+    if(r.ok) return r;
+    await sleep(600 * (attempt + 1));
   }
   return r;
+}
+
+// Runs jobs with a small concurrency cap instead of all at once, since this free API
+// chokes on bursts of parallel requests. onEach fires as soon as each job finishes,
+// so the page can render progressively instead of waiting for everything at once.
+async function runQueue(jobs, onEach, concurrency){
+  let cursor = 0;
+  async function worker(){
+    while(cursor < jobs.length){
+      const i = cursor++;
+      const result = await jobs[i]();
+      onEach(i, result);
+    }
+  }
+  await Promise.all(Array.from({length: Math.min(concurrency, jobs.length)}, worker));
 }
 
 function renderRows(tbodyId, items, results){
@@ -156,6 +175,13 @@ function renderRows(tbodyId, items, results){
   const peakIdx = validCounts.indexOf(max);
   const rows = items.map((it, i) => {
     const r = results[i];
+    if(r.pending){
+      return `<tr>
+        <td>${it.label}</td>
+        <td class="count loading">読み込み中</td>
+        <td><div class="bar-bg"></div></td>
+      </tr>`;
+    }
     if(!r.ok){
       return `<tr>
         <td>${it.label}</td>
@@ -176,23 +202,49 @@ function renderRows(tbodyId, items, results){
 }
 
 async function loadStats(){
-  document.getElementById('stats-body').innerHTML = '<tr><td colspan="3" class="loading">データを取得中...(数十秒かかる場合があります)</td></tr>';
+  document.getElementById('stats-body').innerHTML = '<tr><td colspan="3" class="loading">データを取得中...(混雑時は1分ほどかかる場合があります)</td></tr>';
   document.getElementById('day-body').innerHTML = '<tr><td colspan="3" class="loading">読み込み中...</td></tr>';
   document.getElementById('block-body').innerHTML = '<tr><td colspan="3" class="loading">読み込み中...</td></tr>';
-  document.getElementById('updated-at').textContent = '取得中...';
+  document.getElementById('updated-at').textContent = '取得中...(少しお待ちください)';
+  document.getElementById('total-num').textContent = '…';
 
-  // Fire every request in parallel — the counter API is HTTP/2, so this is fast even for ~20 requests.
-  const [buttonResults, totalResult, dayResults, blockResults] = await Promise.all([
-    Promise.all(LOCATIONS.map(l => fetchCount(l.key))),
-    fetchCount('total'),
-    Promise.all(DAYS.map(d => fetchCount('day_' + d.key))),
-    Promise.all(BLOCKS.map(b => fetchCount('block_' + b.key))),
-  ]);
+  const buttonResults = LOCATIONS.map(() => ({count: null, ok: false, pending: true}));
+  const dayResults = DAYS.map(() => ({count: null, ok: false, pending: true}));
+  const blockResults = BLOCKS.map(() => ({count: null, ok: false, pending: true}));
+  let totalResult = {count: null, ok: false, pending: true};
 
-  document.getElementById('total-num').textContent = totalResult.ok ? totalResult.count.toLocaleString() : '取得失敗';
+  // One shared queue for all ~21 lookups, throttled to 2 at a time — this API can't
+  // handle bursts, but a small trickle of requests succeeds reliably.
+  const jobs = [
+    { run: () => fetchCount('total'), onDone: (r) => { totalResult = r; renderTotal(); } },
+    ...LOCATIONS.map((l, i) => ({
+      run: () => fetchCount(l.key),
+      onDone: (r) => { buttonResults[i] = r; renderRows('stats-body', LOCATIONS, buttonResults); },
+    })),
+    ...DAYS.map((d, i) => ({
+      run: () => fetchCount('day_' + d.key),
+      onDone: (r) => { dayResults[i] = r; renderRows('day-body', DAYS, dayResults); },
+    })),
+    ...BLOCKS.map((b, i) => ({
+      run: () => fetchCount('block_' + b.key),
+      onDone: (r) => { blockResults[i] = r; renderRows('block-body', BLOCKS, blockResults); },
+    })),
+  ];
+
+  function renderTotal(){
+    if(totalResult.pending) return;
+    document.getElementById('total-num').textContent = totalResult.ok ? totalResult.count.toLocaleString() : '取得失敗';
+  }
+
   renderRows('stats-body', LOCATIONS, buttonResults);
   renderRows('day-body', DAYS, dayResults);
   renderRows('block-body', BLOCKS, blockResults);
+
+  await runQueue(
+    jobs.map((j) => j.run),
+    (i, result) => jobs[i].onDone(result),
+    2
+  );
 
   const failCount = [...buttonResults, totalResult, ...dayResults, ...blockResults].filter(r => !r.ok).length;
   const now = new Date();
