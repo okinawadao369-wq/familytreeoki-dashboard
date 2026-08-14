@@ -150,6 +150,19 @@
   gtag('js', new Date());
   gtag('config', 'G-8GZ0P89463');
 </script>
+<script>
+(function(){
+  document.addEventListener('click', function(e){
+    var el = e.target.closest('a.btn, .btn');
+    if (!el || !window.gtag) return;
+    gtag('event', 'click_acupuncture_cta', {
+      event_category: 'engagement',
+      event_label: (el.textContent || '').trim().slice(0,80),
+      link_url: el.getAttribute('href') || ''
+    });
+  }, true);
+})();
+</script>
 </head>
 <body>
 
