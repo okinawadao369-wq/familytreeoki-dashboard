@@ -2612,6 +2612,9 @@ function initExtremesTab() {
 
 // ===== 👶 ECHO CALENDAR TAB (時間軸版) =====
 function initEchoTab() {
+  var inp=document.getElementById('echo-webhook-input');
+  if(inp) inp.value = echoGetWebhookUrl();
+  echoUpdateSyncStatus();
   renderEchoPrediction();
   renderEchoCalendar();
   renderEchoStats();
@@ -2816,6 +2819,36 @@ function renderEchoSlotEditor(ds) {
   el.innerHTML=h;
 }
 
+// ---- 🔗 スプレッドシートDB連携（Google Apps Script Webhook） ----
+var ECHO_WEBHOOK_KEY = 'fto_echo_webhook_url';
+var ECHO_SHEET_URL = 'https://docs.google.com/spreadsheets/d/1qC03MdKzIMoV7ceRteJA87X13R4poJ5_RKG6p5cru3Q/edit';
+function echoGetWebhookUrl(){ return localStorage.getItem(ECHO_WEBHOOK_KEY)||''; }
+function echoSetWebhookUrl(){
+  var v=document.getElementById('echo-webhook-input').value.trim();
+  localStorage.setItem(ECHO_WEBHOOK_KEY, v);
+  echoUpdateSyncStatus();
+}
+function echoDOWJ(ds){ return ['日','月','火','水','木','金','土'][new Date(ds+'T12:00:00Z').getUTCDay()]; }
+function echoUpdateSyncStatus(){
+  var st=document.getElementById('echo-sync-status'); if(!st)return;
+  var url=echoGetWebhookUrl();
+  st.innerHTML = url
+    ? '<span style="color:#68d391;">✅ 連携設定済み — 記録は自動でスプレッドシートにも送信されます</span>'
+    : '<span style="color:#777;">⚪ 未設定 — 現在はこの端末内のみに保存されます（下記URLを設定すると自動でスプレッドシートに反映）</span>';
+}
+function echoSyncToSheet(ds,t,extra){
+  var url=echoGetWebhookUrl(); if(!url) return;
+  var data=getEchoData();
+  var slot=(data[ds]&&data[ds].slots&&data[ds].slots[t])||{state:0,type:'',note:''};
+  var age=(data[ds]&&data[ds].lunarAge)||echoLunarAge(new Date(ds+'T12:00:00Z'));
+  var payload={
+    date:ds, dow:echoDOWJ(ds), time:t,
+    type:slot.type||'', state:ECHO_STATE_FULL[slot.state||0],
+    note:slot.note||'', lunarAge:age.toFixed(1), lunarLabel:echoLunarLabel(age)
+  };
+  fetch(url,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)}).catch(function(){});
+}
+
 function echoCycleSlot(ds,t) {
   var data=echoDay(ds);
   if(!data[ds].slots[t]) data[ds].slots[t]={state:0,type:'',note:''};
@@ -2824,18 +2857,21 @@ function echoCycleSlot(ds,t) {
   saveEchoData(data);
   renderEchoSlotEditor(ds);
   renderEchoCalendar(); renderEchoStats(); renderEchoPrediction();
+  echoSyncToSheet(ds,t);
 }
 function echoSetSlotType(ds,t,val) {
   var data=echoDay(ds);
   if(!data[ds].slots[t]) data[ds].slots[t]={state:0,type:'',note:''};
   data[ds].slots[t].type=val;
   saveEchoData(data);
+  echoSyncToSheet(ds,t);
 }
 function echoSetSlotNote(ds,t,val) {
   var data=echoDay(ds);
   if(!data[ds].slots[t]) data[ds].slots[t]={state:0,type:'',note:''};
   data[ds].slots[t].note=val;
   saveEchoData(data);
+  echoSyncToSheet(ds,t);
 }
 
 function echoExportCSV() {
@@ -3113,8 +3149,23 @@ function renderEchoStats() {
   <div style="color:var(--text2);font-size:0.85rem;margin-bottom:8px;">
     「朝の予約で赤ちゃんの顔が見えると、その後の予約でも見えやすい」— FTO独自の神秘的パターンを時間帯単位で記録・予測モデル化します。
   </div>
-  <div style="display:inline-block;background:#0a1420;border:1px solid #1a3050;border-radius:8px;padding:7px 14px;font-size:0.78rem;color:#7fa8cc;margin-bottom:20px;">
+  <div style="display:inline-block;background:#0a1420;border:1px solid #1a3050;border-radius:8px;padding:7px 14px;font-size:0.78rem;color:#7fa8cc;margin-bottom:14px;">
     🕐 診療時間の目安: 平日 9:30〜15:30（4Dエコー1時間ごと／2Dエコー30分ごと）— 日付をクリックすると各時間枠を記録できます
+  </div>
+
+  <!-- 🔗 スプレッドシートDB連携設定 -->
+  <div class="card" style="margin-bottom:16px;background:#0a1018;">
+    <div class="card-title" style="margin-bottom:8px;">🔗 スプレッドシートDB連携設定</div>
+    <div style="font-size:0.78rem;color:#889;margin-bottom:10px;line-height:1.6;">
+      記録した内容を専用スプレッドシート「👶 FTOエコー記録データベース」に自動送信できます。<br>
+      初回のみ、スプレッドシート側でApps Scriptのウェブアプリ公開（1回だけの設定）が必要です。発行されたURLを下に貼り付けてください。
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:8px;">
+      <input id="echo-webhook-input" type="text" placeholder="https://script.google.com/macros/s/.../exec" style="flex:1;min-width:220px;background:#050a14;color:#ccc;border:1px solid #1c2c40;border-radius:6px;padding:7px 10px;font-size:0.78rem;box-sizing:border-box;">
+      <button onclick="echoSetWebhookUrl()" style="background:#1e4a7a;color:#fff;border:none;border-radius:6px;padding:7px 14px;cursor:pointer;font-size:0.78rem;font-weight:700;">保存</button>
+      <a href="https://docs.google.com/spreadsheets/d/1qC03MdKzIMoV7ceRteJA87X13R4poJ5_RKG6p5cru3Q/edit" target="_blank" style="background:#1a2a1a;color:#8fd090;border:1px solid #2a5a2a;border-radius:6px;padding:7px 14px;font-size:0.78rem;text-decoration:none;">📊 スプレッドシートを開く</a>
+    </div>
+    <div id="echo-sync-status" style="font-size:0.76rem;"></div>
   </div>
 
   <!-- 今日の予報バナー -->
