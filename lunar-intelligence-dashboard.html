@@ -2822,7 +2822,8 @@ function renderEchoSlotEditor(ds) {
 // ---- 🔗 スプレッドシートDB連携（Google Apps Script Webhook） ----
 var ECHO_WEBHOOK_KEY = 'fto_echo_webhook_url';
 var ECHO_SHEET_URL = 'https://docs.google.com/spreadsheets/d/1qC03MdKzIMoV7ceRteJA87X13R4poJ5_RKG6p5cru3Q/edit';
-function echoGetWebhookUrl(){ return localStorage.getItem(ECHO_WEBHOOK_KEY)||''; }
+var ECHO_WEBHOOK_DEFAULT = 'https://script.google.com/macros/s/AKfycbw8waR5WsWDvWfzANxsOyfgMhh2c-BaV9mYLC2882R7DJyNLA8S9X_TiUoa69ESrvFI/exec';
+function echoGetWebhookUrl(){ return localStorage.getItem(ECHO_WEBHOOK_KEY) || ECHO_WEBHOOK_DEFAULT; }
 function echoSetWebhookUrl(){
   var v=document.getElementById('echo-webhook-input').value.trim();
   localStorage.setItem(ECHO_WEBHOOK_KEY, v);
