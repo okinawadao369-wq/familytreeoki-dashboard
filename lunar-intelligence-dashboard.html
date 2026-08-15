@@ -2303,8 +2303,8 @@ window.addEventListener('load', function(){
 function initDefenseTab() {
   // KPI row
   const kpiData = [
-    {sym:'LMT',name:'ロッキード・マーティン',price:'$525.02',ytd:'+10%',color:'#48bb78'},
-    {sym:'RTX',name:'RTX (レイセオン)',price:'$192.58',ytd:'+3%',color:'#63b3ed'},
+    {sym:'LMT',name:'ロッキード・マーティン',price:'$535.38',ytd:'+8.3%',color:'#48bb78'},
+    {sym:'RTX',name:'RTX (レイセオン)',price:'$200.85',ytd:'+8.1%',color:'#63b3ed'},
     {sym:'NOC',name:'ノースロップ・グラマン',price:'$542.14',ytd:'-4%',color:'#fc8181'},
     {sym:'GD',name:'ゼネラル・ダイナミクス',price:'$291.50',ytd:'+5%',color:'#68d391'},
   ];
@@ -2456,16 +2456,16 @@ function initGreedTab() {
 
   // Indicators
   const indicators = [
-    {name:'VIX 恐怖指数',val:'15.4',status:'低ボラ・楽観圏',color:'#68d391'},
+    {name:'VIX 恐怖指数',val:'15.6',status:'低ボラ・楽観圏',color:'#68d391'},
     {name:'プットコールレシオ',val:'0.86',status:'中立〜強気',color:'#63b3ed'},
     {name:'NYSE 高値/安値比',val:'0.72',status:'やや売り優勢',color:'#ffaa44'},
     {name:'株式トレンド強度',val:'58/100',status:'改善中',color:'#f6ad55'},
     {name:'BTC 30日ボラ',val:'~48%',status:'低下中',color:'#f6ad55'},
     {name:'マージンデット',val:'$1.28T',status:'過去最高水準！',color:'#ff8800'},
     {name:'信用スプレッド(HY)',val:'267bp',status:'タイト・リスクオン',color:'#68d391'},
-    {name:'ドル指数 (DXY)',val:'101.2',status:'ドル弱含み',color:'#63b3ed'},
+    {name:'ドル指数 (DXY)',val:'120.69',status:'ドル超強・リスクオフ',color:'#fc8181'},
     {name:'原油 (Brent)',val:'$76.0',status:'地政学懸念残る',color:'#ffcc44'},
-    {name:'金 (スポット)',val:'$4,074',status:'安全資産需要継続',color:'#ffd700'},
+    {name:'金 (スポット)',val:'$4,145',status:'安全資産・最高水準',color:'#ffd700'},
   ];
   const indDiv = document.getElementById('greed-indicators');
   if (indDiv) indDiv.innerHTML = indicators.map(i=>`
@@ -2620,7 +2620,7 @@ function initExtremesTab() {
 <!-- ===== 💹 欲望指数 ===== -->
 <div id="sec-greed" class="section">
 <div class="main">
-  <div class="section-title">💹 市場欲望指数 <span style="font-size:0.7em;color:#888;">2026年7月11日 最新データ</span></div>
+  <div class="section-title">💹 市場欲望指数 <span style="font-size:0.7em;color:#888;">2026年7月8日 最新データ（DB確認済）</span></div>
   <div style="color:var(--text2);font-size:0.85rem;margin-bottom:18px;">「人の思考が数字の影響力で知らぬ間に動く」—月の引力が欲望と恐怖を駆動する10指標の可視化。</div>
 
   <!-- Fear & Greed Gauge -->
@@ -2644,7 +2644,7 @@ function initExtremesTab() {
       <div>
         <div style="font-size:1.1rem;font-weight:700;color:#f7931a;">BTC = 人類の純粋欲望の結晶体</div>
         <div style="font-size:0.85rem;color:#cc7722;margin-top:4px;">現在価格: <strong style="color:#f7931a;font-size:1.2rem;">~$63,500</strong>（2026年7月11日時点）</div>
-        <div style="font-size:0.85rem;color:#888;margin-top:4px;">高値 $126,198（2025年10月）から-50%。恐怖指数30=Fear（回復中）。<br>旧暦分析: BTC満月リターン平均+0.71%(p=0.085 △準有意) — 30年で最も強い月相シグナル。</div>
+        <div style="font-size:0.85rem;color:#888;margin-top:4px;">高値 $126,198（2025年10月）から-50%。恐怖指数38=Fear気味（回復中）。<br>旧暦分析: BTC満月リターン平均+0.71%(p=0.085 △準有意) — 30年で最も強い月相シグナル。</div>
       </div>
     </div>
   </div>
