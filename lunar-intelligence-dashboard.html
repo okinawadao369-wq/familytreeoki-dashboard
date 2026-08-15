@@ -2610,22 +2610,30 @@ function initExtremesTab() {
     </div>`).join('');
 }
 
-// ===== 👶 ECHO CALENDAR TAB =====
+// ===== 👶 ECHO CALENDAR TAB (時間軸版) =====
 function initEchoTab() {
   renderEchoPrediction();
   renderEchoCalendar();
   renderEchoStats();
 }
 
-var ECHO_KEY = 'fto_echo_v2';
+var ECHO_KEY = 'fto_echo_v3';
 var ECHO_STATE_LABEL = ['未','🌟','⚠️','❌'];
-var ECHO_STATE_COLOR = ['#333','#ffd700','#ffaa44','#fc8181'];
+var ECHO_STATE_COLOR = ['#2a2f3a','#ffd700','#ffaa44','#fc8181'];
 var ECHO_STATE_FULL  = ['未記録','見えた✨','見えにくい','見えなかった'];
+var ECHO_TIME_SLOTS = ['09:30','10:00','10:30','11:00','11:30','12:00','12:30','13:00','13:30','14:00','14:30','15:00'];
+function echoSlotHint(t){ var m=t.split(':')[1]; return m==='30' ? '4D想定' : '2D想定'; }
 
 function getEchoData() {
   try { return JSON.parse(localStorage.getItem(ECHO_KEY)||'{}'); } catch(e){ return {}; }
 }
 function saveEchoData(d) { localStorage.setItem(ECHO_KEY, JSON.stringify(d)); }
+function echoDay(ds) {
+  var data=getEchoData();
+  if(!data[ds]) data[ds]={lunarAge:echoLunarAge(new Date(ds+'T12:00:00Z')),slots:{}};
+  if(!data[ds].slots) data[ds].slots={};
+  return data;
+}
 
 function echoLunarAge(date) {
   var knownNM = new Date('2000-01-06T18:14:00Z');
@@ -2647,6 +2655,16 @@ function echoPhaseGroup(a) {
   if(a<10)return'waxing';if(a<17)return'fullmoon';return'waning';
 }
 
+function echoNearestSlot() {
+  var now=new Date();
+  var cur=now.getHours()*60+now.getMinutes();
+  for(var i=0;i<ECHO_TIME_SLOTS.length;i++){
+    var p=ECHO_TIME_SLOTS[i].split(':'); var slotMin=parseInt(p[0])*60+parseInt(p[1]);
+    if(slotMin>=cur) return ECHO_TIME_SLOTS[i];
+  }
+  return null;
+}
+
 function renderEchoPrediction() {
   var el=document.getElementById('echo-prediction'); if(!el)return;
   var today=new Date();
@@ -2656,22 +2674,30 @@ function renderEchoPrediction() {
   var group=echoPhaseGroup(age);
   var dayNum=Math.floor(age);
   var data=getEchoData();
-  var amGood=0,amTotal=0,amContPm=0,amContTotal=0;
-  Object.values(data).forEach(function(d){
-    if(echoPhaseGroup(d.lunarAge||0)===group){
-      if(d.am>0){amTotal++;if(d.am===1)amGood++;}
-      if(d.am===1&&d.pm>0){amContTotal++;if(d.pm===1)amContPm++;}
-    }
+
+  var phaseGood=0, phaseTotal=0;
+  var slotStat={}; ECHO_TIME_SLOTS.forEach(function(t){slotStat[t]={good:0,total:0};});
+  Object.keys(data).forEach(function(ds){
+    var d=data[ds]; if(!d.slots)return;
+    var pg=echoPhaseGroup(d.lunarAge||0);
+    Object.keys(d.slots).forEach(function(t){
+      var s=d.slots[t]; if(!s||!s.state)return;
+      if(pg===group){ phaseTotal++; if(s.state===1) phaseGood++; }
+      if(slotStat[t]){ slotStat[t].total++; if(s.state===1) slotStat[t].good++; }
+    });
   });
-  var baseScore=amTotal>3?Math.round(amGood/amTotal*100):65;
-  var phaseBonus=(group==='fullmoon'||group==='newmoon')?10:0;
-  var pred=Math.min(95,baseScore+phaseBonus);
-  var todayStr=today.toISOString().slice(0,10);
-  var todayD=data[todayStr]||{};
-  var amToday=todayD.am||0;
-  var contPct=amContTotal>2?Math.round(amContPm/amContTotal*100):null;
-  var predColor=pred>=70?'#68d391':pred>=50?'#f6ad55':'#fc8181';
-  var predMsg=pred>=70?'🌟 顔が見えやすい日！':pred>=50?'⚠️ 半々の確率':'❌ 見えにくい可能性';
+  var baseScore = phaseTotal>3 ? Math.round(phaseGood/phaseTotal*100) : 65;
+
+  var nearest = echoNearestSlot();
+  var slotPred = null, slotN = 0;
+  if(nearest && slotStat[nearest] && slotStat[nearest].total>=2){
+    slotPred = Math.round(slotStat[nearest].good/slotStat[nearest].total*100);
+    slotN = slotStat[nearest].total;
+  }
+  var pred = slotPred!==null ? Math.round((baseScore+slotPred*2)/3) : Math.min(95,baseScore+((group==='fullmoon'||group==='newmoon')?10:0));
+  var predColor = pred>=70?'#68d391':pred>=50?'#f6ad55':'#fc8181';
+  var predMsg = pred>=70?'🌟 顔が見えやすい日！':pred>=50?'⚠️ 半々の確率':'❌ 見えにくい可能性';
+
   var html='<div style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:20px;">'
     +'<div style="background:linear-gradient(135deg,#0d1b2e,#1a2840);border:1px solid #2a4a7a;border-radius:12px;padding:16px;min-width:140px;text-align:center;flex:1;">'
     +'<div style="font-size:2.4rem;">'+icon+'</div>'
@@ -2679,21 +2705,16 @@ function renderEchoPrediction() {
     +'<div style="font-size:0.75rem;color:#666;">旧暦 約'+dayNum+'日目 / 月齢'+age.toFixed(1)+'</div>'
     +'</div>'
     +'<div style="background:linear-gradient(135deg,#0e1a08,#1a2e0a);border:1px solid #4a7a2a;border-radius:12px;padding:16px;flex:2;min-width:200px;">'
-    +'<div style="font-size:0.8rem;color:#a0d050;font-weight:700;margin-bottom:8px;">🔮 今日の赤ちゃん向き予報</div>'
+    +'<div style="font-size:0.8rem;color:#a0d050;font-weight:700;margin-bottom:8px;">🔮 本日の総合予報</div>'
     +'<div style="display:flex;align-items:center;gap:12px;">'
     +'<div style="font-size:2rem;font-weight:900;color:'+predColor+';">'+pred+'%</div>'
     +'<div style="font-size:0.85rem;color:#ccc;">'+predMsg+'<br><span style="font-size:0.7rem;color:#777;">'+label+'期の蓄積データより</span></div>'
-    +'</div>'
-    +(amToday>0?'<div style="margin-top:8px;padding:7px;background:#060e06;border-radius:7px;border-left:3px solid '+ECHO_STATE_COLOR[amToday]+';">'
-    +'<span style="font-size:0.75rem;color:#888;">午前結果: </span><span style="font-weight:700;color:'+ECHO_STATE_COLOR[amToday]+';">'+ECHO_STATE_FULL[amToday]+'</span>'
-    +(amToday===1&&contPct!==null?'<span style="font-size:0.7rem;color:#88cc44;margin-left:8px;">→ 午後も🌟確率 '+contPct+'%</span>':'')
-    +'</div>':'')
-    +'</div>'
-    +'<div style="background:linear-gradient(135deg,#14082e,#22103e);border:1px solid #6644aa;border-radius:12px;padding:16px;min-width:150px;flex:1;text-align:center;">'
-    +'<div style="font-size:0.8rem;color:#cc88ff;font-weight:700;margin-bottom:8px;">⚡ 朝→午後 連動率</div>'
-    +(contPct!==null
-      ?'<div style="font-size:2rem;font-weight:900;color:#cc88ff;">'+contPct+'%</div><div style="font-size:0.7rem;color:#666;margin-top:4px;">朝🌟→午後も🌟<br>('+amContTotal+'件データ)</div>'
-      :'<div style="font-size:0.9rem;color:#444;margin-top:8px;">記録蓄積中...</div><div style="font-size:0.7rem;color:#333;margin-top:4px;">3件以上で表示</div>')
+    +'</div></div>'
+    +'<div style="background:linear-gradient(135deg,#14082e,#22103e);border:1px solid #6644aa;border-radius:12px;padding:16px;min-width:170px;flex:1;text-align:center;">'
+    +'<div style="font-size:0.8rem;color:#cc88ff;font-weight:700;margin-bottom:8px;">⏰ '+(nearest?nearest+' 枠 予報':'本日診療終了')+'</div>'
+    +(slotPred!==null
+      ?'<div style="font-size:2rem;font-weight:900;color:#cc88ff;">'+slotPred+'%</div><div style="font-size:0.7rem;color:#666;margin-top:4px;">同時間帯 過去'+slotN+'件</div>'
+      :'<div style="font-size:0.9rem;color:#444;margin-top:8px;">'+(nearest?'記録蓄積中...':'—')+'</div><div style="font-size:0.7rem;color:#333;margin-top:4px;">2件以上で表示</div>')
     +'</div></div>';
   el.innerHTML=html;
 }
@@ -2725,32 +2746,31 @@ function renderEchoCalendar() {
   var h='<table style="width:100%;border-collapse:collapse;"><thead><tr>';
   DOW.forEach(function(d){h+='<th style="padding:4px 2px;font-size:0.7rem;color:#555;text-align:center;border-bottom:1px solid #1a2030;">'+d+'</th>';});
   h+='</tr></thead><tbody><tr>';
-  for(var i=0;i<startDow;i++) h+='<td style="border:1px solid #0d1420;background:#050a10;min-height:75px;"></td>';
+  for(var i=0;i<startDow;i++) h+='<td style="border:1px solid #0d1420;background:#050a10;min-height:70px;"></td>';
   for(var day=1;day<=lastDay;day++){
     var ds=yr+'-'+String(mo).padStart(2,'0')+'-'+String(day).padStart(2,'0');
     var dDate=new Date(yr,mo-1,day,12);
     var age=echoLunarAge(dDate);
     var li=echoLunarIcon(age);
-    var dd=data[ds]||{};
-    var am=dd.am||0,pm=dd.pm||0;
-    var note=dd.note||'';
+    var dd=(data[ds]&&data[ds].slots)||{};
     var isToday=ds===todayStr;
-    h+='<td style="border:1px solid #0d1828;padding:3px;vertical-align:top;background:'+(isToday?'#0d1f35':'#070c16')+';cursor:pointer;min-width:42px;" onclick="echoShowModal(\''+ds+'\')">'
-      +'<div style="display:flex;justify-content:space-between;margin-bottom:2px;">'
+    var isWeekend=(new Date(yr,mo-1,day)).getDay()%6===0;
+    var strip='<div style="display:grid;grid-template-columns:repeat(6,1fr);gap:1px;margin-top:3px;">';
+    ECHO_TIME_SLOTS.forEach(function(t){
+      var st=dd[t]?dd[t].state:0;
+      strip+='<div style="height:5px;border-radius:1px;background:'+ECHO_STATE_COLOR[st||0]+';" title="'+t+' '+ECHO_STATE_FULL[st||0]+'"></div>';
+    });
+    strip+='</div>';
+    var slotVals=Object.values(dd);
+    var goodCnt=slotVals.filter(function(s){return s.state===1;}).length;
+    var recCnt=slotVals.filter(function(s){return s.state>0;}).length;
+    h+='<td style="border:1px solid #0d1828;padding:4px;vertical-align:top;background:'+(isToday?'#0d1f35':(isWeekend?'#050a14':'#070c16'))+';cursor:pointer;min-width:44px;" onclick="echoShowModal(\''+ds+'\')">'
+      +'<div style="display:flex;justify-content:space-between;">'
       +'<span style="font-size:0.8rem;font-weight:'+(isToday?'900':'400')+';color:'+(isToday?'#90cdf4':'#666')+';">'+day+'</span>'
-      +'<span style="font-size:0.8rem;" title="月齢'+age.toFixed(1)+'">'+li+'</span>'
+      +'<span style="font-size:0.75rem;" title="月齢'+age.toFixed(1)+'">'+li+'</span>'
       +'</div>'
-      +'<div style="display:flex;flex-direction:column;gap:2px;">'
-      +'<div onclick="event.stopPropagation();echoCycle(\''+ds+'\',\'am\')" style="display:flex;align-items:center;gap:2px;cursor:pointer;">'
-      +'<span style="font-size:0.55rem;color:#444;width:14px;">AM</span>'
-      +'<span style="font-size:0.75rem;background:'+ECHO_STATE_COLOR[am]+'22;border:1px solid '+ECHO_STATE_COLOR[am]+';border-radius:3px;padding:1px 4px;color:'+ECHO_STATE_COLOR[am]+';min-width:22px;text-align:center;">'+ECHO_STATE_LABEL[am]+'</span>'
-      +'</div>'
-      +'<div onclick="event.stopPropagation();echoCycle(\''+ds+'\',\'pm\')" style="display:flex;align-items:center;gap:2px;cursor:pointer;">'
-      +'<span style="font-size:0.55rem;color:#444;width:14px;">PM</span>'
-      +'<span style="font-size:0.75rem;background:'+ECHO_STATE_COLOR[pm]+'22;border:1px solid '+ECHO_STATE_COLOR[pm]+';border-radius:3px;padding:1px 4px;color:'+ECHO_STATE_COLOR[pm]+';min-width:22px;text-align:center;">'+ECHO_STATE_LABEL[pm]+'</span>'
-      +'</div>'
-      +'</div>'
-      +(note?'<div style="font-size:0.55rem;color:#555;margin-top:2px;overflow:hidden;max-height:16px;" title="'+note+'">📝'+note.slice(0,8)+'</div>':'')
+      +strip
+      +(recCnt>0?'<div style="font-size:0.55rem;color:#556;margin-top:3px;">🌟'+goodCnt+'/'+recCnt+'</div>':'<div style="font-size:0.55rem;color:#334;margin-top:3px;">未記録</div>')
       +'</td>';
     if((startDow+day)%7===0&&day<lastDay){h+='</tr><tr>';}
   }
@@ -2761,117 +2781,178 @@ function renderEchoCalendar() {
   el.innerHTML=h;
 }
 
-function echoCycle(ds,slot) {
-  var data=getEchoData();
-  if(!data[ds]){var d=new Date(ds+'T12:00:00Z');data[ds]={am:0,pm:0,note:'',lunarAge:echoLunarAge(d)};}
-  data[ds][slot]=((data[ds][slot]||0)+1)%4;
-  if(!data[ds].lunarAge){data[ds].lunarAge=echoLunarAge(new Date(ds+'T12:00:00Z'));}
-  saveEchoData(data);
-  renderEchoCalendar();renderEchoStats();renderEchoPrediction();
-}
-
 function echoShowModal(ds) {
   var modal=document.getElementById('echo-modal'); if(!modal)return;
-  var data=getEchoData(); var d=data[ds]||{am:0,pm:0,note:''};
+  modal.dataset.date=ds;
   var dDate=new Date(ds+'T12:00:00Z');
   var age=echoLunarAge(dDate);
-  document.getElementById('echo-modal-date').textContent=ds+' '+echoLunarIcon(age)+' '+echoLunarLabel(age)+'期（月齢'+age.toFixed(1)+'）';
-  document.getElementById('echo-note-input').value=d.note||'';
-  document.getElementById('echo-am-sel').value=d.am||0;
-  document.getElementById('echo-pm-sel').value=d.pm||0;
-  modal.dataset.date=ds; modal.style.display='flex';
+  var dowJ=['日','月','火','水','木','金','土'][dDate.getUTCDay()];
+  document.getElementById('echo-modal-date').textContent=ds+'（'+dowJ+'） '+echoLunarIcon(age)+' '+echoLunarLabel(age)+'期・月齢'+age.toFixed(1);
+  renderEchoSlotEditor(ds);
+  modal.style.display='flex';
 }
 
-function echoSaveModal() {
-  var modal=document.getElementById('echo-modal');
-  var ds=modal.dataset.date;
+function renderEchoSlotEditor(ds) {
   var data=getEchoData();
-  var d=new Date(ds+'T12:00:00Z');
-  if(!data[ds])data[ds]={am:0,pm:0,note:'',lunarAge:echoLunarAge(d)};
-  data[ds].am=parseInt(document.getElementById('echo-am-sel').value);
-  data[ds].pm=parseInt(document.getElementById('echo-pm-sel').value);
-  data[ds].note=document.getElementById('echo-note-input').value;
-  data[ds].lunarAge=echoLunarAge(d);
+  var dd=(data[ds]&&data[ds].slots)||{};
+  var el=document.getElementById('echo-slot-editor'); if(!el)return;
+  var h='';
+  ECHO_TIME_SLOTS.forEach(function(t){
+    var s=dd[t]||{state:0,type:'',note:''};
+    h+='<div style="background:#080f1e;border:1px solid #1c2c40;border-radius:8px;padding:9px 10px;margin-bottom:7px;">'
+      +'<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">'
+      +'<div style="min-width:52px;font-weight:700;color:#90cdf4;font-size:0.85rem;">'+t+'</div>'
+      +'<div style="font-size:0.62rem;color:#555;min-width:50px;">'+echoSlotHint(t)+'</div>'
+      +'<button onclick="echoCycleSlot(\''+ds+'\',\''+t+'\')" style="background:'+ECHO_STATE_COLOR[s.state]+'22;border:1px solid '+ECHO_STATE_COLOR[s.state]+';color:'+ECHO_STATE_COLOR[s.state]+';border-radius:6px;padding:4px 10px;font-size:0.78rem;cursor:pointer;font-weight:700;">'+ECHO_STATE_LABEL[s.state]+' '+ECHO_STATE_FULL[s.state]+'</button>'
+      +'<select onchange="echoSetSlotType(\''+ds+'\',\''+t+'\',this.value)" style="background:#050a14;color:#889;border:1px solid #223;border-radius:5px;padding:3px 6px;font-size:0.72rem;">'
+      +'<option value=""'+(s.type===''?' selected':'')+'>種別未設定</option>'
+      +'<option value="4D"'+(s.type==='4D'?' selected':'')+'>4Dエコー</option>'
+      +'<option value="2D"'+(s.type==='2D'?' selected':'')+'>2Dエコー</option>'
+      +'</select>'
+      +'</div>'
+      +'<input type="text" value="'+(s.note||'').replace(/"/g,'&quot;')+'" placeholder="メモ（体位・スタッフ所感等）" onchange="echoSetSlotNote(\''+ds+'\',\''+t+'\',this.value)" style="width:100%;margin-top:6px;background:#050a14;color:#ccc;border:1px solid #1c2c40;border-radius:5px;padding:6px 8px;font-size:0.75rem;box-sizing:border-box;">'
+      +'</div>';
+  });
+  el.innerHTML=h;
+}
+
+function echoCycleSlot(ds,t) {
+  var data=echoDay(ds);
+  if(!data[ds].slots[t]) data[ds].slots[t]={state:0,type:'',note:''};
+  data[ds].slots[t].state=((data[ds].slots[t].state||0)+1)%4;
+  data[ds].lunarAge=echoLunarAge(new Date(ds+'T12:00:00Z'));
   saveEchoData(data);
-  modal.style.display='none';
-  renderEchoCalendar();renderEchoStats();renderEchoPrediction();
+  renderEchoSlotEditor(ds);
+  renderEchoCalendar(); renderEchoStats(); renderEchoPrediction();
+}
+function echoSetSlotType(ds,t,val) {
+  var data=echoDay(ds);
+  if(!data[ds].slots[t]) data[ds].slots[t]={state:0,type:'',note:''};
+  data[ds].slots[t].type=val;
+  saveEchoData(data);
+}
+function echoSetSlotNote(ds,t,val) {
+  var data=echoDay(ds);
+  if(!data[ds].slots[t]) data[ds].slots[t]={state:0,type:'',note:''};
+  data[ds].slots[t].note=val;
+  saveEchoData(data);
 }
 
 function echoExportCSV() {
   var data=getEchoData();
-  var csv='日付,月齢,月相,午前,午後,メモ\n';
+  var csv='﻿日付,曜日,時間,種別,月齢,月相,状態,メモ\n';
+  var DOWJ=['日','月','火','水','木','金','土'];
   Object.keys(data).sort().forEach(function(ds){
-    var d=data[ds];
+    var d=data[ds]; if(!d.slots)return;
     var age=d.lunarAge||0;
-    csv+=ds+','+age.toFixed(1)+','+echoLunarLabel(age)+','+ECHO_STATE_FULL[d.am||0]+','+ECHO_STATE_FULL[d.pm||0]+',"'+(d.note||'')+'"\n';
+    var dow=DOWJ[new Date(ds+'T12:00:00Z').getUTCDay()];
+    ECHO_TIME_SLOTS.forEach(function(t){
+      var s=d.slots[t]; if(!s||!s.state)return;
+      csv+=ds+','+dow+','+t+','+(s.type||'-')+','+age.toFixed(1)+','+echoLunarLabel(age)+','+ECHO_STATE_FULL[s.state]+',"'+(s.note||'').replace(/"/g,'""')+'"\n';
+    });
   });
-  var blob=new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8'});
+  var blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
   var a=document.createElement('a');
   a.href=URL.createObjectURL(blob);
-  a.download='FTO_echo_record_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.download='FTO_echo_timeslot_'+new Date().toISOString().slice(0,10)+'.csv';
   a.click();
 }
 
 function renderEchoStats() {
   var el=document.getElementById('echo-stats-body'); if(!el)return;
-  var data=getEchoData(); var entries=Object.entries(data);
-  if(!entries.length){
-    el.innerHTML='<div style="color:#444;text-align:center;padding:24px;font-size:0.9rem;">まだデータがありません。カレンダーのAM/PMをクリックして記録してください。</div>';
+  var data=getEchoData();
+  var allSlots=[];
+  Object.keys(data).forEach(function(ds){
+    var d=data[ds]; if(!d.slots)return;
+    Object.keys(d.slots).forEach(function(t){
+      var s=d.slots[t]; if(!s||!s.state)return;
+      allSlots.push({ds:ds,t:t,state:s.state,type:s.type,lunarAge:d.lunarAge||0});
+    });
+  });
+  if(!allSlots.length){
+    el.innerHTML='<div style="color:#444;text-align:center;padding:24px;font-size:0.9rem;">まだデータがありません。カレンダーの日付をクリックして時間帯ごとに記録してください。</div>';
     return;
   }
-  var amTotal=0,amGood=0,pmTotal=0,pmGood=0;
-  var amGoodPmGood=0,amGoodPmN=0,amBadPmBad=0,amBadPmN=0;
-  var phaseStats={
-    newmoon:{label:'🌑 新月',color:'#4299e1',am:0,amG:0,pm:0,pmG:0},
-    waxing: {label:'🌒 上弦',color:'#9f7aea',am:0,amG:0,pm:0,pmG:0},
-    fullmoon:{label:'🌕 満月',color:'#ffd700',am:0,amG:0,pm:0,pmG:0},
-    waning: {label:'🌘 下弦',color:'#f6ad55',am:0,amG:0,pm:0,pmG:0}
-  };
-  entries.forEach(function(e){
-    var d=e[1];
-    var pg=echoPhaseGroup(d.lunarAge||0);
-    var ps=phaseStats[pg];
-    if(d.am>0){amTotal++;if(d.am===1){amGood++;if(ps)ps.amG++;}if(ps)ps.am++;}
-    if(d.pm>0){pmTotal++;if(d.pm===1){pmGood++;if(ps)ps.pmG++;}if(ps)ps.pm++;}
-    if(d.am===1&&d.pm>0){amGoodPmN++;if(d.pm===1)amGoodPmGood++;}
-    if(d.am===3&&d.pm>0){amBadPmN++;if(d.pm===3)amBadPmBad++;}
-  });
-  var amRate=amTotal?Math.round(amGood/amTotal*100):0;
-  var pmRate=pmTotal?Math.round(pmGood/pmTotal*100):0;
-  var contRate=amGoodPmN?Math.round(amGoodPmGood/amGoodPmN*100):null;
-  var badCont=amBadPmN?Math.round(amBadPmBad/amBadPmN*100):null;
   function col(v){return v>=70?'#68d391':v>=50?'#f6ad55':'#fc8181';}
+
+  var slotAgg={}; ECHO_TIME_SLOTS.forEach(function(t){slotAgg[t]={good:0,total:0};});
+  allSlots.forEach(function(s){ slotAgg[s.t].total++; if(s.state===1) slotAgg[s.t].good++; });
+  var slotRows=ECHO_TIME_SLOTS.map(function(t){
+    var a=slotAgg[t]; var rate=a.total?Math.round(a.good/a.total*100):null;
+    return {t:t,rate:rate,total:a.total};
+  });
+  var bestArr=slotRows.filter(function(r){return r.rate!==null;}).sort(function(a,b){return b.rate-a.rate;});
+  var bestSlot=bestArr[0];
+
+  var phaseStats={
+    newmoon:{label:'🌑 新月',color:'#4299e1',good:0,total:0},
+    waxing: {label:'🌒 上弦',color:'#9f7aea',good:0,total:0},
+    fullmoon:{label:'🌕 満月',color:'#ffd700',good:0,total:0},
+    waning: {label:'🌘 下弦',color:'#f6ad55',good:0,total:0}
+  };
+  allSlots.forEach(function(s){
+    var pg=echoPhaseGroup(s.lunarAge||0); var ps=phaseStats[pg];
+    if(ps){ ps.total++; if(s.state===1) ps.good++; }
+  });
+
+  var byDay={};
+  allSlots.forEach(function(s){ if(!byDay[s.ds]) byDay[s.ds]=[]; byDay[s.ds].push(s); });
+  var contGoodN=0, contGoodGood=0, contBadN=0, contBadBad=0;
+  Object.values(byDay).forEach(function(list){
+    if(list.length<2) return;
+    list.sort(function(a,b){return a.t<b.t?-1:1;});
+    var first=list[0], last=list[list.length-1];
+    if(first.state===1){ contGoodN++; if(last.state===1) contGoodGood++; }
+    if(first.state===3){ contBadN++; if(last.state===3) contBadBad++; }
+  });
+  var contGoodRate = contGoodN? Math.round(contGoodGood/contGoodN*100):null;
+  var contBadRate = contBadN? Math.round(contBadBad/contBadN*100):null;
+
+  var overallGood=allSlots.filter(function(s){return s.state===1;}).length;
+  var overallRate=Math.round(overallGood/allSlots.length*100);
+
   var h='<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:18px;">'
     +'<div style="background:#0a1420;border:1px solid #1a3050;border-radius:10px;padding:12px;text-align:center;">'
-    +'<div style="font-size:0.7rem;color:#555;margin-bottom:4px;">☀️ 午前 見えた率</div>'
-    +'<div style="font-size:1.8rem;font-weight:900;color:'+col(amRate)+';">'+amRate+'%</div>'
-    +'<div style="font-size:0.65rem;color:#444;">'+amTotal+'件中'+amGood+'件</div></div>'
-    +'<div style="background:#0a1420;border:1px solid #1a3050;border-radius:10px;padding:12px;text-align:center;">'
-    +'<div style="font-size:0.7rem;color:#555;margin-bottom:4px;">🌙 午後 見えた率</div>'
-    +'<div style="font-size:1.8rem;font-weight:900;color:'+col(pmRate)+';">'+pmRate+'%</div>'
-    +'<div style="font-size:0.65rem;color:#444;">'+pmTotal+'件中'+pmGood+'件</div></div>'
-    +(contRate!==null?'<div style="background:#14082e;border:1px solid #5533aa;border-radius:10px;padding:12px;text-align:center;">'
+    +'<div style="font-size:0.7rem;color:#555;margin-bottom:4px;">📈 全体 見えた率</div>'
+    +'<div style="font-size:1.8rem;font-weight:900;color:'+col(overallRate)+';">'+overallRate+'%</div>'
+    +'<div style="font-size:0.65rem;color:#444;">'+allSlots.length+'枠中'+overallGood+'枠</div></div>'
+    +(bestSlot?'<div style="background:#0a1420;border:1px solid #1a3050;border-radius:10px;padding:12px;text-align:center;">'
+    +'<div style="font-size:0.7rem;color:#555;margin-bottom:4px;">🏆 最も見えやすい時間帯</div>'
+    +'<div style="font-size:1.5rem;font-weight:900;color:#ffd700;">'+bestSlot.t+'</div>'
+    +'<div style="font-size:0.65rem;color:#444;">見えた率'+bestSlot.rate+'%（'+bestSlot.total+'件）</div></div>':'')
+    +(contGoodRate!==null?'<div style="background:#14082e;border:1px solid #5533aa;border-radius:10px;padding:12px;text-align:center;">'
     +'<div style="font-size:0.7rem;color:#aa88cc;margin-bottom:4px;">🌟→🌟 連動率</div>'
-    +'<div style="font-size:1.8rem;font-weight:900;color:#cc88ff;">'+contRate+'%</div>'
-    +'<div style="font-size:0.65rem;color:#554;">朝✨→午後も✨</div></div>':'')
-    +(badCont!==null?'<div style="background:#1a0a0a;border:1px solid #552222;border-radius:10px;padding:12px;text-align:center;">'
+    +'<div style="font-size:1.8rem;font-weight:900;color:#cc88ff;">'+contGoodRate+'%</div>'
+    +'<div style="font-size:0.65rem;color:#554;">最初🌟→最後も🌟</div></div>':'')
+    +(contBadRate!==null?'<div style="background:#1a0a0a;border:1px solid #552222;border-radius:10px;padding:12px;text-align:center;">'
     +'<div style="font-size:0.7rem;color:#cc7777;margin-bottom:4px;">❌→❌ 連動率</div>'
-    +'<div style="font-size:1.8rem;font-weight:900;color:#fc8181;">'+badCont+'%</div>'
-    +'<div style="font-size:0.65rem;color:#554;">朝❌→午後も❌</div></div>':'')
-    +'<div style="background:#0a1420;border:1px solid #1a3050;border-radius:10px;padding:12px;text-align:center;">'
-    +'<div style="font-size:0.7rem;color:#555;margin-bottom:4px;">📅 記録日数</div>'
-    +'<div style="font-size:1.8rem;font-weight:900;color:#63b3ed;">'+entries.length+'</div>'
-    +'<div style="font-size:0.65rem;color:#444;">日</div></div>'
+    +'<div style="font-size:1.8rem;font-weight:900;color:#fc8181;">'+contBadRate+'%</div>'
+    +'<div style="font-size:0.65rem;color:#554;">最初❌→最後も❌</div></div>':'')
     +'</div>'
+
+    +'<div style="background:#080e18;border:1px solid #1a2a3a;border-radius:10px;padding:14px;margin-bottom:14px;">'
+    +'<div style="font-size:0.85rem;font-weight:700;color:#90cdf4;margin-bottom:10px;">⏰ 時間帯別 見えた率（予約枠の目安に）</div>'
+    +'<div style="display:flex;flex-direction:column;gap:6px;">'
+    +slotRows.map(function(r){
+      var pct=r.rate!==null?r.rate:0;
+      var barColor=r.rate===null?'#222':col(r.rate);
+      return '<div style="display:flex;align-items:center;gap:8px;">'
+        +'<div style="min-width:48px;font-size:0.72rem;color:#889;">'+r.t+'</div>'
+        +'<div style="flex:1;background:#0a1220;border-radius:4px;height:14px;overflow:hidden;"><div style="width:'+pct+'%;height:100%;background:'+barColor+';"></div></div>'
+        +'<div style="min-width:64px;font-size:0.7rem;color:#667;text-align:right;">'+(r.rate!==null?r.rate+'% ('+r.total+')':'記録なし')+'</div>'
+        +'</div>';
+    }).join('')
+    +'</div></div>'
+
     +'<div style="background:#080e18;border:1px solid #1a2a3a;border-radius:10px;padding:14px;">'
-    +'<div style="font-size:0.85rem;font-weight:700;color:#90cdf4;margin-bottom:10px;">🌙 月相別 赤ちゃんの顔が見えた率</div>'
+    +'<div style="font-size:0.85rem;font-weight:700;color:#90cdf4;margin-bottom:10px;">🌙 月相別 見えた率</div>'
     +'<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;">'
     +Object.values(phaseStats).map(function(ps){
-      var r=ps.am?Math.round(ps.amG/ps.am*100):null;
+      var r=ps.total?Math.round(ps.good/ps.total*100):null;
       return '<div style="text-align:center;padding:10px;border:1px solid '+ps.color+'33;border-radius:8px;">'
         +'<div style="font-size:0.9rem;margin-bottom:3px;">'+ps.label+'</div>'
         +'<div style="font-size:1.4rem;font-weight:900;color:'+ps.color+';">'+(r!==null?r+'%':'—')+'</div>'
-        +'<div style="font-size:0.65rem;color:#444;">'+ps.am+'件記録</div>'
+        +'<div style="font-size:0.65rem;color:#444;">'+ps.total+'枠記録</div>'
         +'</div>';
     }).join('')
     +'</div></div>';
@@ -3025,13 +3106,15 @@ function renderEchoStats() {
 </div>
 
 
-<!-- ===== 👶 エコーカレンダー ===== -->
+<!-- ===== 👶 エコーカレンダー（時間軸版） ===== -->
 <div id="sec-echo" class="section">
 <div class="main">
-  <div class="section-title">👶 赤ちゃんエコー記録カレンダー <span style="font-size:0.7em;color:#888;">Family Tree Oki 独自データベース × 月相分析</span></div>
-  <div style="color:var(--text2);font-size:0.85rem;margin-bottom:20px;">
-    「朝の予約で赤ちゃんの顔が見えると、その後の予約でも見えやすい」— FTO独自の神秘的パターンを月相と連動して記録・予測モデル化します。<br>
-    <span style="color:#888;font-size:0.8rem;">AM/PMをクリック → 🌟見えた / ⚠️見えにくい / ❌見えなかった を記録。データが蓄積するほど予測精度が上がります。</span>
+  <div class="section-title">👶 赤ちゃんエコー記録カレンダー <span style="font-size:0.7em;color:#888;">Family Tree Oki 独自データベース × 月相×時間帯分析</span></div>
+  <div style="color:var(--text2);font-size:0.85rem;margin-bottom:8px;">
+    「朝の予約で赤ちゃんの顔が見えると、その後の予約でも見えやすい」— FTO独自の神秘的パターンを時間帯単位で記録・予測モデル化します。
+  </div>
+  <div style="display:inline-block;background:#0a1420;border:1px solid #1a3050;border-radius:8px;padding:7px 14px;font-size:0.78rem;color:#7fa8cc;margin-bottom:20px;">
+    🕐 診療時間の目安: 平日 9:30〜15:30（4Dエコー1時間ごと／2Dエコー30分ごと）— 日付をクリックすると各時間枠を記録できます
   </div>
 
   <!-- 今日の予報バナー -->
@@ -3040,7 +3123,7 @@ function renderEchoStats() {
   <!-- カレンダー -->
   <div class="card" style="margin-bottom:16px;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
-      <div class="card-title" style="margin:0;">📅 記録カレンダー</div>
+      <div class="card-title" style="margin:0;">📅 記録カレンダー <span style="font-size:0.7rem;color:#555;font-weight:400;">（日付クリックで時間帯を記録）</span></div>
       <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
         <select id="echo-month-sel" onchange="renderEchoCalendar()" style="background:#0a0f18;color:#aaa;border:1px solid #334;border-radius:6px;padding:4px 8px;font-size:0.8rem;"></select>
         <button onclick="echoExportCSV()" style="background:#1a2a3a;color:#63b3ed;border:1px solid #2a4a6a;border-radius:6px;padding:4px 10px;cursor:pointer;font-size:0.75rem;">📥 CSV出力</button>
@@ -3052,13 +3135,13 @@ function renderEchoStats() {
 
   <!-- 統計 -->
   <div class="card" style="margin-bottom:16px;">
-    <div class="card-title">📊 パターン統計・月相相関</div>
+    <div class="card-title">📊 パターン統計・時間帯×月相相関</div>
     <div id="echo-stats-body"></div>
   </div>
 
   <!-- 科学的考察 -->
   <div style="background:linear-gradient(135deg,#080f1e,#0e1828);border:1px solid #1e3050;border-radius:12px;padding:18px;">
-    <div style="font-size:0.95rem;font-weight:700;color:#90cdf4;margin-bottom:14px;">🔬 なぜ「朝の結果」が「その日全体」を予測するのか？ — 科学的考察</div>
+    <div style="font-size:0.95rem;font-weight:700;color:#90cdf4;margin-bottom:14px;">🔬 なぜ「時間帯」が「見えやすさ」を予測するのか？ — 科学的考察</div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-bottom:14px;">
       <div style="padding:12px;background:#0a1525;border-radius:8px;border-left:3px solid #4299e1;">
         <div style="font-size:0.8rem;font-weight:700;color:#63b3ed;margin-bottom:5px;">🌙 月の潮汐力</div>
@@ -3066,58 +3149,35 @@ function renderEchoStats() {
       </div>
       <div style="padding:12px;background:#0a1525;border-radius:8px;border-left:3px solid #9f7aea;">
         <div style="font-size:0.8rem;font-weight:700;color:#b794f4;margin-bottom:5px;">⏰ 母体ホルモン日内リズム</div>
-        <div style="font-size:0.75rem;color:#777;line-height:1.5;">コルチゾールは朝6〜8時にピーク。このリズムが子宮の筋緊張・羊水圧・胎動パターンに影響し、「その日の赤ちゃんのポジション傾向」を朝の時点から決定づける。</div>
+        <div style="font-size:0.75rem;color:#777;line-height:1.5;">コルチゾールは朝6〜8時にピーク後、日中にかけて緩やかに低下。この日内変動が子宮の筋緊張・羊水圧・胎動パターンに影響し、時間帯ごとに「見えやすさ」の傾向が生まれる可能性がある。</div>
       </div>
       <div style="padding:12px;background:#0a1525;border-radius:8px;border-left:3px solid #68d391;">
-        <div style="font-size:0.8rem;font-weight:700;color:#68d391;margin-bottom:5px;">🌡️ 気圧の日内一貫性</div>
-        <div style="font-size:0.75rem;color:#777;line-height:1.5;">1日の気圧パターンは概ね一貫。低気圧の日は羊水への外圧が低下し胎動が活発化。天候が良い日は全セッションで赤ちゃんが活動的になる傾向。</div>
+        <div style="font-size:0.8rem;font-weight:700;color:#68d391;margin-bottom:5px;">🍽️ 食後の血糖値変動</div>
+        <div style="font-size:0.75rem;color:#777;line-height:1.5;">妊婦の食後血糖値上昇は胎動を活発化させることが知られる。朝食後・昼食後の時間帯（10時台・13時台等）は活動的になりやすい可能性がある。</div>
       </div>
       <div style="padding:12px;background:#0a1525;border-radius:8px;border-left:3px solid #ffd700;">
         <div style="font-size:0.8rem;font-weight:700;color:#ffd700;margin-bottom:5px;">✨ スタッフ・共鳴効果</div>
-        <div style="font-size:0.75rem;color:#777;line-height:1.5;">朝の感動体験がスタッフの心拍・声・姿勢に表れる。その落ち着いたエネルギーに後続のお客様も共鳴しリラックス。母体の緊張が解けると赤ちゃんが動きやすくなる。</div>
+        <div style="font-size:0.75rem;color:#777;line-height:1.5;">感動体験がスタッフの心拍・声・姿勢に表れる。その落ち着いたエネルギーに後続の時間枠のお客様も共鳴しリラックス。母体の緊張が解けると赤ちゃんが動きやすくなる。</div>
       </div>
     </div>
     <div style="padding:12px;background:#050d1a;border:1px solid #1a3a5a;border-radius:8px;">
       <div style="font-size:0.8rem;color:#5a8aaa;font-weight:700;margin-bottom:6px;">💡 FTO独自データの価値</div>
-      <div style="font-size:0.75rem;color:#556677;line-height:1.6;">このデータベースは世界で唯一の「4Dエコー × 月相 × 朝午後連動性」記録です。データが蓄積されると：<br>
-      ① 月相別の「見えやすい日」「見えにくい日」が統計的に予測可能になる<br>
-      ② 朝の結果から午後の予約数・売上を予測できる<br>
-      ③ 「見えやすい日」に合わせた予約誘導マーケティングが可能になる</div>
+      <div style="font-size:0.75rem;color:#556677;line-height:1.6;">このデータベースは世界で唯一の「4D/2Dエコー × 時間帯 × 月相」記録です。データが蓄積されると：<br>
+      ① 「時間帯別 見えた率」から最も見えやすい予約枠が統計的に特定できる<br>
+      ② 最初の時間枠の結果から、その日後半の予約の傾向を予測できる<br>
+      ③ 「見えやすい時間帯」に合わせた予約誘導・料金設計（プレミアム枠）が可能になる</div>
     </div>
   </div>
 </div>
 </div>
 
 <!-- Echo Modal -->
-<div id="echo-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#000000dd;z-index:9999;align-items:center;justify-content:center;">
-  <div style="background:#0d1628;border:1px solid #2a4870;border-radius:14px;padding:24px;width:90%;max-width:380px;">
-    <div id="echo-modal-date" style="font-size:1rem;font-weight:700;color:#90cdf4;margin-bottom:16px;"></div>
-    <div style="margin-bottom:12px;">
-      <label style="font-size:0.78rem;color:#777;display:block;margin-bottom:5px;">☀️ 午前セッションの結果</label>
-      <select id="echo-am-sel" style="width:100%;background:#070d1a;color:#ccc;border:1px solid #2a3a50;border-radius:6px;padding:9px;font-size:0.9rem;">
-        <option value="0">— 未記録 —</option>
-        <option value="1">🌟 見えた！（感動体験）</option>
-        <option value="2">⚠️ 見えにくい（部分的）</option>
-        <option value="3">❌ 見えなかった</option>
-      </select>
-    </div>
-    <div style="margin-bottom:12px;">
-      <label style="font-size:0.78rem;color:#777;display:block;margin-bottom:5px;">🌙 午後セッションの結果</label>
-      <select id="echo-pm-sel" style="width:100%;background:#070d1a;color:#ccc;border:1px solid #2a3a50;border-radius:6px;padding:9px;font-size:0.9rem;">
-        <option value="0">— 未記録 —</option>
-        <option value="1">🌟 見えた！（感動体験）</option>
-        <option value="2">⚠️ 見えにくい（部分的）</option>
-        <option value="3">❌ 見えなかった</option>
-      </select>
-    </div>
-    <div style="margin-bottom:18px;">
-      <label style="font-size:0.78rem;color:#777;display:block;margin-bottom:5px;">📝 メモ（任意）</label>
-      <textarea id="echo-note-input" rows="2" style="width:100%;background:#070d1a;color:#ccc;border:1px solid #2a3a50;border-radius:6px;padding:8px;font-size:0.82rem;resize:vertical;box-sizing:border-box;" placeholder="例: 満月3日前・雨天・特に活発だった 等"></textarea>
-    </div>
-    <div style="display:flex;gap:10px;">
-      <button onclick="echoSaveModal()" style="flex:1;background:#1e4a7a;color:#fff;border:none;border-radius:8px;padding:11px;cursor:pointer;font-size:0.9rem;font-weight:700;">💾 保存</button>
-      <button onclick="document.getElementById('echo-modal').style.display='none'" style="flex:1;background:#111828;color:#666;border:1px solid #223;border-radius:8px;padding:11px;cursor:pointer;font-size:0.9rem;">キャンセル</button>
-    </div>
+<div id="echo-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#000000dd;z-index:9999;align-items:center;justify-content:center;padding:16px;">
+  <div style="background:#0d1628;border:1px solid #2a4870;border-radius:14px;padding:20px;width:100%;max-width:460px;max-height:85vh;overflow-y:auto;-webkit-overflow-scrolling:touch;">
+    <div id="echo-modal-date" style="font-size:1rem;font-weight:700;color:#90cdf4;margin-bottom:4px;"></div>
+    <div style="font-size:0.72rem;color:#556;margin-bottom:14px;">時間枠をタップして 未→🌟→⚠️→❌ を切り替え。種別・メモは選択/入力後に自動保存されます。</div>
+    <div id="echo-slot-editor"></div>
+    <button onclick="document.getElementById('echo-modal').style.display='none'" style="width:100%;margin-top:8px;background:#111828;color:#889;border:1px solid #223;border-radius:8px;padding:11px;cursor:pointer;font-size:0.9rem;">閉じる</button>
   </div>
 </div>
 
