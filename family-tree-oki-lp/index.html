@@ -206,6 +206,7 @@
   .nav-links{display:flex;gap:26px;align-items:center;font-size:14px;font-weight:600;}
   .nav-links a{text-decoration:none;color:var(--bark-dark);}
   .nav-links a:hover{color:var(--bark);}
+  .nav-links a.nav-site-link{color:var(--tag);}
   .nav .btn{padding:10px 22px;font-size:13px;}
   @media(max-width:720px){
     .nav-links a.hide-mobile{display:none;}
@@ -357,6 +358,7 @@
   .hashtags{font-size:12px;color:#C9B4A3;letter-spacing:0.02em;margin-bottom:18px;}
   .foot-links{display:flex;gap:18px;justify-content:center;font-size:13px;margin-bottom:24px;flex-wrap:wrap;}
   .foot-links a{text-decoration:none;color:#EFE1D6;}
+  .foot-links a.foot-site-link{color:#F0C9A0;font-weight:700;}
   .copyright{font-size:11px;color:#8a7364;}
 
   /* FAQ */
@@ -365,6 +367,8 @@
   .faq-item:last-child{border-bottom:none;}
   .faq-item h3{font-size:17px;margin-bottom:8px;color:var(--bark);font-family:Georgia,serif;}
   .faq-item p{font-size:14.5px;color:var(--bark-dark);margin:0;}
+  .faq-more{text-align:center;margin-top:26px;}
+  .faq-more a{font-size:13px;font-weight:700;color:var(--bark);text-decoration:underline;}
 
   /* TESTIMONIAL QUOTES */
   .quote-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;margin-top:36px;}
@@ -403,6 +407,19 @@
       }
     }catch(e){}
   }
+  // Tracks clicks that send visitors to the main familytreeoki.com site
+  // (About, Team, Military Family Support, Blog, full FAQ, Gallery, Reviews).
+  function trackMainSite(loc){
+    try{
+      if(typeof gtag === 'function'){
+        gtag('event', 'click_main_site', {
+          button_location: loc,
+          event_category: 'engagement',
+          event_label: loc
+        });
+      }
+    }catch(e){}
+  }
 </script>
 </head>
 <body class="notranslate" translate="no">
@@ -417,6 +434,7 @@
       <a href="#acupuncture" class="hide-mobile">Acupuncture</a>
       <a href="#visit" class="hide-mobile">Visit Us</a>
       <a href="#faq" class="hide-mobile">FAQ</a>
+      <a href="https://familytreeoki.com/" target="_blank" rel="noopener" class="hide-mobile nav-site-link" onclick="trackMainSite('nav_header')">Full Website ↗</a>
       <a class="btn btn-solid-bark" href="https://familytree-oki.stores.jp/reserve/familytree_oki/1516927#pageContent" target="_blank" rel="noopener" onclick="trackReserve('nav_header')">Book Now</a>
     </div>
   </div>
@@ -571,6 +589,7 @@
         <p>We keep appointments unhurried and take time to explain what you're seeing on screen. Families tell us that pace, plus being able to bring their whole family into the room, is what they notice most.</p>
       </div>
     </div>
+    <div class="faq-more"><a href="https://familytreeoki.com/faq" target="_blank" rel="noopener" onclick="trackMainSite('faq_more')">See more FAQs, base-by-base info &amp; TRICARE details on our full website →</a></div>
   </div>
 </section>
 
@@ -619,6 +638,7 @@
     <a href="#services">Services</a>
     <a href="#acupuncture">Acupuncture</a>
     <a href="#faq">FAQ</a>
+    <a href="https://familytreeoki.com/" target="_blank" rel="noopener" class="foot-site-link" onclick="trackMainSite('footer')">Visit Our Full Website ↗</a>
     <a href="https://familytree-oki.stores.jp/reserve/familytree_oki/1516927#pageContent" target="_blank" rel="noopener" onclick="trackReserve('footer')">Book Now</a>
   </div>
   <div class="copyright">Family Tree Oki · Okinawa, Japan &nbsp;·&nbsp; English Speaking Staff Available</div>
