@@ -462,11 +462,11 @@
       <span style="font-size:0.7em;color:#888;">国立天文台データ × Jean Meeusアルゴリズム</span>
     </div>
 
-    <!-- SUMMER SOLSTICE HIGHLIGHT (2 days away!) -->
-    <div style="background:linear-gradient(135deg,#1a1800,#2a2400);border:2px solid #ffcc00;border-radius:14px;padding:18px;margin-bottom:16px;position:relative;overflow:hidden;">
+    <!-- SUMMER SOLSTICE HIGHLIGHT (badge auto-updates via updateSolsticeBadges()) -->
+    <div id="solstice-summer-card" style="background:linear-gradient(135deg,#1a1800,#2a2400);border:2px solid #ffcc00;border-radius:14px;padding:18px;margin-bottom:16px;position:relative;overflow:hidden;">
       <div style="position:absolute;top:-10px;right:20px;font-size:5rem;opacity:0.08;">☀️</div>
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
-        <span style="background:#ffcc0022;border:1px solid #ffcc00;border-radius:6px;padding:2px 10px;font-size:0.78rem;color:#ffcc00;font-weight:700;">⚠️ 2日後！</span>
+        <span id="solstice-summer-badge" style="background:#ffcc0022;border:1px solid #ffcc00;border-radius:6px;padding:2px 10px;font-size:0.78rem;color:#ffcc00;font-weight:700;">⚠️ 2日後！</span>
         <span style="font-size:1.1rem;font-weight:900;color:#ffdd44;">🌞 夏至 Summer Solstice 2026</span>
       </div>
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;">
@@ -502,10 +502,10 @@
     </div>
 
     <!-- WINTER SOLSTICE -->
-    <div style="background:linear-gradient(135deg,#080e1a,#0a1428);border:2px solid #4488cc;border-radius:14px;padding:18px;margin-bottom:16px;position:relative;overflow:hidden;">
+    <div id="solstice-winter-card" style="background:linear-gradient(135deg,#080e1a,#0a1428);border:2px solid #4488cc;border-radius:14px;padding:18px;margin-bottom:16px;position:relative;overflow:hidden;">
       <div style="position:absolute;top:-10px;right:20px;font-size:5rem;opacity:0.08;">❄️</div>
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
-        <span style="background:#4488cc22;border:1px solid #4488cc;border-radius:6px;padding:2px 10px;font-size:0.78rem;color:#4488cc;font-weight:700;">185日後</span>
+        <span id="solstice-winter-badge" style="background:#4488cc22;border:1px solid #4488cc;border-radius:6px;padding:2px 10px;font-size:0.78rem;color:#4488cc;font-weight:700;">185日後</span>
         <span style="font-size:1.1rem;font-weight:900;color:#88bbee;">❄️ 冬至 Winter Solstice 2026</span>
       </div>
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;">
@@ -1420,6 +1420,36 @@ function buildCycleChart() {
 
   function pad2(n){return String(n).padStart(2,'0');}
 
+  // 夏至/冬至 ハイライトカードの「X日後」バッジを現在日時ベースで動的に更新
+  // (以前は静的HTMLに固定値が書かれており、ページ作成日以降は日数がずれるバグがあった)
+  var SOLSTICE_TARGETS = [
+    {id:'solstice-summer-badge', cardId:'solstice-summer-card', at:'2026-06-21T17:24:00+09:00', color:'#ffcc00'},
+    {id:'solstice-winter-badge', cardId:'solstice-winter-card', at:'2026-12-22T05:50:00+09:00', color:'#4488cc'},
+  ];
+  function updateSolsticeBadges(now) {
+    SOLSTICE_TARGETS.forEach(function(t){
+      var el = document.getElementById(t.id);
+      if(!el) return;
+      var target = new Date(t.at);
+      var diffDays = (target - now) / 86400000;
+      var card = document.getElementById(t.cardId);
+      if(diffDays > 3) {
+        el.textContent = Math.ceil(diffDays)+'日後';
+        el.style.opacity = '1';
+      } else if(diffDays > 0) {
+        el.textContent = '🔥 '+Math.ceil(diffDays)+'日後！';
+        el.style.opacity = '1';
+      } else if(diffDays > -1) {
+        el.textContent = '🎉 本日！';
+        el.style.opacity = '1';
+      } else {
+        el.textContent = '終了（'+Math.abs(Math.floor(diffDays))+'日前）';
+        el.style.opacity = '0.55';
+        if(card) card.style.filter = 'grayscale(0.4)';
+      }
+    });
+  }
+
   function tick() {
     // Use JST
     var now = new Date();
@@ -1460,6 +1490,7 @@ function buildCycleChart() {
       var urgTag = daysToSetsu <= 3 ? ' 🔥'+daysToSetsu+'日後！' : daysToSetsu===0 ? ' 今日！' : ' ('+daysToSetsu+'日後)';
       setsuStr = emStr + setsu.name + timeStr2 + urgTag;
     }
+    updateSolsticeBadges(now);
 
     // --- Update DOM ---
     var el;
