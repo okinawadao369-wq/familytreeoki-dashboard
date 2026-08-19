@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Family Tree Oki | 4Dエコー週数チェックツール</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    background: #FDF9F6;
+    color: #5A4035;
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 0;
+    padding: 0 0 60px 0;
+  }
+  .header {
+    background: #7B5C44;
+    color: #FFFFFF;
+    padding: 28px 24px 24px 24px;
+    text-align: center;
+  }
+  .header .wordmark {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 24px;
+    letter-spacing: 0.04em;
+    margin: 0 0 4px 0;
+  }
+  .header .tagline {
+    font-size: 12px;
+    color: #F0E4DA;
+    letter-spacing: 0.06em;
+  }
+  .header .tool-title {
+    font-family: Georgia, serif;
+    font-size: 16px;
+    margin-top: 14px;
+    color: #FFE9F2;
+  }
+  .container {
+    max-width: 520px;
+    margin: 0 auto;
+    padding: 24px 20px;
+  }
+  .card {
+    background: #FFFFFF;
+    border: 1px solid #EDD8C8;
+    border-radius: 12px;
+    padding: 20px 20px;
+    margin-bottom: 18px;
+  }
+  .card h2 {
+    font-family: Georgia, serif;
+    font-size: 16px;
+    color: #7B5C44;
+    margin: 0 0 14px 0;
+    border-bottom: 1px solid #EDD8C8;
+    padding-bottom: 8px;
+  }
+  label {
+    display: block;
+    font-size: 12px;
+    color: #A87B5A;
+    margin-bottom: 4px;
+    margin-top: 12px;
+    font-weight: bold;
+  }
+  label .en {
+    font-weight: normal;
+    color: #C4A090;
+    font-size: 10.5px;
+  }
+  input[type="date"] {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #EDD8C8;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #5A4035;
+    background: #FDF9F6;
+  }
+  .hint {
+    font-size: 11px;
+    color: #C4A090;
+    margin-top: 4px;
+  }
+  .result-empty {
+    text-align: center;
+    color: #C4A090;
+    font-size: 13px;
+    padding: 20px 0;
+  }
+  .week-display {
+    text-align: center;
+    padding: 6px 0 16px 0;
+  }
+  .week-display .weeks {
+    font-family: Georgia, serif;
+    font-size: 32px;
+    color: #7B5C44;
+    font-weight: bold;
+  }
+  .week-display .label {
+    font-size: 11px;
+    color: #A87B5A;
+    letter-spacing: 0.1em;
+  }
+  .badge {
+    display: block;
+    text-align: center;
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 14px;
+  }
+  .badge .status-jp {
+    font-family: Georgia, serif;
+    font-size: 17px;
+    font-weight: bold;
+    margin-bottom: 4px;
+  }
+  .badge .status-en {
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    opacity: 0.85;
+  }
+  .badge-go { background: #F2FAEC; border: 1px solid #8FAF3A; }
+  .badge-go .status-jp { color: #5A7A22; }
+  .badge-watch { background: #FFF3E0; border: 1px solid #F0A870; }
+  .badge-watch .status-jp { color: #A9642B; }
+  .badge-hold { background: #FFF0F0; border: 1px solid #E08080; }
+  .badge-hold .status-jp { color: #B33; }
+  .badge-early { background: #EDF5FF; border: 1px solid #7DB8E0; }
+  .badge-early .status-jp { color: #3D6E93; }
+  .msg-box {
+    background: #FDF9F6;
+    border: 1px solid #EDD8C8;
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 13px;
+    line-height: 1.6;
+    margin-bottom: 10px;
+  }
+  .msg-box .en-line {
+    color: #A87B5A;
+    font-size: 11.5px;
+    margin-top: 6px;
+    font-style: italic;
+  }
+  .deadline-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px dashed #EDD8C8;
+    font-size: 12.5px;
+  }
+  .deadline-row:last-child { border-bottom: none; }
+  .deadline-row .k { color: #A87B5A; }
+  .deadline-row .v { color: #5A4035; font-weight: bold; }
+  .scale {
+    display: flex;
+    height: 10px;
+    border-radius: 5px;
+    overflow: hidden;
+    margin: 10px 0 4px 0;
+  }
+  .scale div { height: 100%; }
+  .scale-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 9.5px;
+    color: #C4A090;
+  }
+  .marker-wrap { position: relative; height: 0; }
+  .marker {
+    position: absolute;
+    top: -20px;
+    width: 2px;
+    height: 16px;
+    background: #7B5C44;
+  }
+  .marker::after {
+    content: '▲';
+    position: absolute;
+    top: 16px;
+    left: -5px;
+    font-size: 10px;
+    color: #7B5C44;
+  }
+  .footer-note {
+    font-size: 10.5px;
+    color: #C4A090;
+    text-align: center;
+    margin-top: 6px;
+    line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="wordmark">Family Tree Oki</div>
+  <div class="tagline">A Place Where Families Bloom</div>
+  <div class="tool-title">4Dエコー週数チェックツール</div>
+</div>
+
+<div class="container">
+
+  <div class="card">
+    <h2>日付を入力 / Enter Dates</h2>
+
+    <label for="lmp">最終月経開始日 <span class="en">(First day of Last Menstrual Period)</span></label>
+    <input type="date" id="lmp">
+    <div class="hint">お客様の最終月経開始日を入力してください</div>
+
+    <label for="visit">来院希望日 <span class="en">(Desired appointment date)</span></label>
+    <input type="date" id="visit">
+    <div class="hint">未入力の場合は本日の日付で計算します</div>
+  </div>
+
+  <div class="card" id="resultCard">
+    <h2>判定結果 / Result</h2>
+    <div class="result-empty" id="emptyState">最終月経開始日を入力すると、自動で判定されます</div>
+    <div id="resultContent" style="display:none;">
+
+      <div class="week-display">
+        <div class="weeks" id="weeksOut">--週--日</div>
+        <div class="label" id="weeksSubLabel">来院希望日時点の妊娠週数</div>
+      </div>
+
+      <div class="badge" id="badgeBox">
+        <div class="status-jp" id="statusJp"></div>
+        <div class="status-en" id="statusEn"></div>
+      </div>
+
+      <div class="scale">
+        <div style="flex:22; background:#EDF5FF;"></div>
+        <div style="flex:4; background:#F2FAEC;"></div>
+        <div style="flex:4; background:#8FAF3A;"></div>
+        <div style="flex:2; background:#F0A870;"></div>
+        <div style="flex:8; background:#E08080;"></div>
+      </div>
+      <div class="marker-wrap"><div class="marker" id="scaleMarker" style="left:0%;"></div></div>
+      <div class="scale-labels">
+        <span>0週</span><span>22</span><span>26</span><span>30</span><span>32</span><span>40週</span>
+      </div>
+
+      <div class="msg-box" id="msgBox"></div>
+
+      <div style="margin-top:14px;">
+        <div class="deadline-row">
+          <span class="k">4Dベストウィンドウ開始</span>
+          <span class="v" id="windowStart">--</span>
+        </div>
+        <div class="deadline-row">
+          <span class="k">推奨来院締切(余裕あり)</span>
+          <span class="v" id="windowSafeEnd">--</span>
+        </div>
+        <div class="deadline-row">
+          <span class="k">絶対的な限界目安</span>
+          <span class="v" id="windowHardEnd">--</span>
+        </div>
+      </div>
+
+      <div class="footer-note">
+        個人差(胎児の向き・体格・羊水量等)により前後します。目安としてご活用ください。<br>
+        <em>Individual variation applies (fetal position, size, amniotic fluid). Use as a general guide.</em>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+const lmpInput = document.getElementById('lmp');
+const visitInput = document.getElementById('visit');
+
+function fmtDate(d) {
+  const y = d.getFullYear();
+  const m = String(d.getMonth()+1).padStart(2,'0');
+  const day = String(d.getDate()).padStart(2,'0');
+  return `${y}/${m}/${day}`;
+}
+
+function addDays(date, days) {
+  const d = new Date(date);
+  d.setDate(d.getDate() + days);
+  return d;
+}
+
+function calc() {
+  const lmpVal = lmpInput.value;
+  const resultContent = document.getElementById('resultContent');
+  const emptyState = document.getElementById('emptyState');
+
+  if (!lmpVal) {
+    resultContent.style.display = 'none';
+    emptyState.style.display = 'block';
+    return;
+  }
+
+  const lmp = new Date(lmpVal + 'T00:00:00');
+  const visitVal = visitInput.value;
+  const visit = visitVal ? new Date(visitVal + 'T00:00:00') : new Date();
+  visit.setHours(0,0,0,0);
+
+  const diffDays = Math.round((visit - lmp) / (1000*60*60*24));
+
+  if (diffDays < 0) {
+    resultContent.style.display = 'none';
+    emptyState.style.display = 'block';
+    emptyState.textContent = '来院希望日が最終月経開始日より前になっています。日付をご確認ください。';
+    return;
+  }
+
+  emptyState.style.display = 'none';
+  resultContent.style.display = 'block';
+
+  const weeks = Math.floor(diffDays / 7);
+  const days = diffDays % 7;
+
+  document.getElementById('weeksOut').textContent = `${weeks}週${days}日`;
+
+  const badgeBox = document.getElementById('badgeBox');
+  const statusJp = document.getElementById('statusJp');
+  const statusEn = document.getElementById('statusEn');
+  const msgBox = document.getElementById('msgBox');
+
+  badgeBox.className = 'badge';
+
+  let statusJpText, statusEnText, msgJp, msgEn;
+
+  if (weeks < 22) {
+    badgeBox.classList.add('badge-early');
+    statusJpText = '早期・まだ余裕あり';
+    statusEnText = 'EARLY · PLENTY OF TIME';
+    msgJp = `まだ${weeks}週です。4Dベストウィンドウ(26〜30週)まで余裕があります。26週前後を目安に改めてご案内ください。`;
+    msgEn = `At ${weeks} weeks, you have plenty of time before the best 4D window (26–30 weeks). Suggest scheduling around 26 weeks.`;
+  } else if (weeks >= 22 && weeks < 26) {
+    badgeBox.classList.add('badge-early');
+    statusJpText = 'そろそろ予約時期';
+    statusEnText = 'APPROACHING BOOKING WINDOW';
+    msgJp = `もうすぐベストウィンドウ(26週〜)に入ります。今のうちに26〜30週の間でご予約を確定するのがおすすめです。`;
+    msgEn = `You're approaching the best window (26+ weeks). Now is a good time to lock in a date within 26–30 weeks.`;
+  } else if (weeks >= 26 && weeks <= 30) {
+    badgeBox.classList.add('badge-go');
+    statusJpText = 'ベストタイミングです';
+    statusEnText = 'GO · BEST WINDOW';
+    msgJp = `4Dエコーのベストウィンドウ(26〜30週)内です。お顔がはっきり写りやすい時期ですので、このタイミングでのご予約を強くおすすめします。`;
+    msgEn = `You're within the best 4D window (26–30 weeks). This is the ideal time for clear facial images — we strongly recommend booking now.`;
+  } else if (weeks > 30 && weeks <= 32) {
+    badgeBox.classList.add('badge-watch');
+    statusJpText = 'お早めに(終盤です)';
+    statusEnText = 'WATCH · WINDOW CLOSING';
+    msgJp = `ベストウィンドウの終盤です。まだ間に合いますが、胎児が下がり始め、お顔が写りにくくなる可能性が少しずつ高まります。できるだけ早いご来院をおすすめします。`;
+    msgEn = `You're near the end of the best window. Still possible, but the baby may begin descending, making clear facial shots harder. We recommend coming in as soon as possible.`;
+  } else {
+    badgeBox.classList.add('badge-hold');
+    statusJpText = '要注意・写りにくい時期';
+    statusEnText = 'HOLD · REDUCED CLARITY LIKELY';
+    msgJp = `${weeks}週を超えており、胎児が骨盤内に下がる・スペースが少なくなる等の理由で、お顔がはっきり写らない可能性が高くなります。撮影自体は可能ですが、ご来院前に期待値のすり合わせ(必ずしも鮮明な顔画像が撮れるとは限らない旨)をお願いします。`;
+    msgEn = `At ${weeks} weeks, clarity is often reduced as the baby descends and space decreases. Imaging is still possible, but please set expectations with the client beforehand that a clear facial image cannot be guaranteed.`;
+  }
+
+  statusJp.textContent = statusJpText;
+  statusEn.textContent = statusEnText;
+  msgBox.innerHTML = `${msgJp}<div class="en-line">${msgEn}</div>`;
+
+  // scale marker position (0-40 weeks mapped to 0-100%)
+  const pct = Math.min(Math.max((diffDays / (40*7)) * 100, 0), 100);
+  document.getElementById('scaleMarker').style.left = `calc(${pct}% - 1px)`;
+
+  // deadline dates based on LMP
+  const windowStart = addDays(lmp, 26*7);
+  const windowSafeEnd = addDays(lmp, 30*7);
+  const windowHardEnd = addDays(lmp, 32*7);
+
+  document.getElementById('windowStart').textContent = fmtDate(windowStart);
+  document.getElementById('windowSafeEnd').textContent = fmtDate(windowSafeEnd);
+  document.getElementById('windowHardEnd').textContent = fmtDate(windowHardEnd);
+}
+
+lmpInput.addEventListener('change', calc);
+visitInput.addEventListener('change', calc);
+</script>
+
+</body>
+</html>
