@@ -193,6 +193,133 @@
     margin-top: 6px;
     line-height: 1.6;
   }
+
+  /* --- 2D/4D dynamic comparison panel --- */
+  .compare-dynamic { margin-top: 16px; }
+  .compare-dynamic .compare-title {
+    font-size: 11.5px;
+    color: #A87B5A;
+    font-weight: bold;
+    letter-spacing: 0.05em;
+    margin-bottom: 8px;
+  }
+  .compare-grid { display: flex; gap: 10px; }
+  .compare-col {
+    flex: 1;
+    background: #FDF9F6;
+    border: 1px solid #EDD8C8;
+    border-radius: 8px;
+    padding: 10px 12px;
+  }
+  .compare-col .ct-label {
+    font-size: 11px;
+    font-weight: bold;
+    margin-bottom: 6px;
+  }
+  .compare-col.d2 .ct-label { color: #3D6E93; }
+  .compare-col.d4 .ct-label { color: #A9642B; }
+  .compare-col .ct-body {
+    font-size: 12px;
+    line-height: 1.6;
+    color: #5A4035;
+    margin-bottom: 6px;
+  }
+  .clarity-tag {
+    display: inline-block;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+  .clarity-best { background: #E3F2D3; color: #5A7A22; }
+  .clarity-good { background: #EDF5FF; color: #3D6E93; }
+  .clarity-fair { background: #FFF3E0; color: #A9642B; }
+  .clarity-low  { background: #FFE0E0; color: #B33; }
+  .clarity-na   { background: #EDEDED; color: #999; }
+
+  /* --- reference table card --- */
+  .ref-intro {
+    font-size: 12.5px;
+    color: #5A4035;
+    line-height: 1.6;
+    margin-bottom: 14px;
+  }
+  .ref-table-wrap { overflow-x: auto; }
+  table.ref-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+    min-width: 480px;
+  }
+  table.ref-table th {
+    background: #7B5C44;
+    color: #FFFFFF;
+    padding: 8px 6px;
+    text-align: left;
+    font-weight: normal;
+    font-size: 10.5px;
+  }
+  table.ref-table td {
+    padding: 8px 6px;
+    border-bottom: 1px solid #EDD8C8;
+    vertical-align: top;
+    line-height: 1.5;
+  }
+  table.ref-table tr.hl-row td {
+    background: #FFF3E0;
+    font-weight: bold;
+  }
+  table.ref-table .wk-col {
+    white-space: nowrap;
+    color: #7B5C44;
+    font-weight: bold;
+  }
+  table.ref-table .tag-cell { white-space: nowrap; }
+
+  details.glossary {
+    margin-top: 16px;
+    border: 1px solid #EDD8C8;
+    border-radius: 8px;
+    padding: 10px 14px;
+    background: #FDF9F6;
+  }
+  details.glossary summary {
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: bold;
+    color: #7B5C44;
+    outline: none;
+  }
+  table.glossary-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11.5px;
+    margin-top: 10px;
+  }
+  table.glossary-table td {
+    padding: 6px 4px;
+    border-bottom: 1px dashed #EDD8C8;
+    vertical-align: top;
+  }
+  table.glossary-table td.abbr {
+    color: #7B5C44;
+    font-weight: bold;
+    width: 46px;
+  }
+  table.glossary-table td.full {
+    color: #A87B5A;
+    font-size: 10.5px;
+    width: 130px;
+  }
+  .fhr-note {
+    background: #EDF5FF;
+    border: 1px solid #C9DEF0;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 11.5px;
+    line-height: 1.6;
+    color: #3D6E93;
+    margin-top: 12px;
+  }
 </style>
 </head>
 <body>
@@ -246,6 +373,21 @@
 
       <div class="msg-box" id="msgBox"></div>
 
+      <div class="compare-dynamic">
+        <div class="compare-title">この週数での見え方 / What's Visible at This Stage</div>
+        <div class="compare-grid">
+          <div class="compare-col d2">
+            <div class="ct-label">2D エコー</div>
+            <div class="ct-body" id="d2Body"></div>
+          </div>
+          <div class="compare-col d4">
+            <div class="ct-label">4D エコー</div>
+            <div class="ct-body" id="d4Body"></div>
+            <span class="clarity-tag" id="d4Clarity"></span>
+          </div>
+        </div>
+      </div>
+
       <div style="margin-top:14px;">
         <div class="deadline-row">
           <span class="k">4Dベストウィンドウ開始</span>
@@ -269,6 +411,48 @@
     </div>
   </div>
 
+  <div class="card">
+    <h2>週数別 2D/4D 早見表 / Week-by-Week Guide</h2>
+    <div class="ref-intro">
+      2Dは<strong>医学的な発育・構造チェック</strong>(生存確認・臓器スクリーニング・計測)が役割、4Dは<strong>立体的な表情・仕草</strong>を捉えてボンディング(愛着形成)を促す役割です。日付を入力すると、該当する週の行がハイライトされます。<br>
+      <span style="color:#A87B5A; font-size:11px;">2D = medical structural check. 4D = bonding via 3D facial expressions. The matching row highlights once you enter a date above.</span>
+    </div>
+    <div class="ref-table-wrap">
+      <table class="ref-table" id="refTable">
+        <thead>
+          <tr>
+            <th>週数</th>
+            <th>2Dで確認できること・役割</th>
+            <th>4Dの見え方・役割</th>
+            <th>4D鮮明度</th>
+          </tr>
+        </thead>
+        <tbody id="refTableBody"></tbody>
+      </table>
+    </div>
+
+    <div class="fhr-note">
+      <strong>心拍確認について:</strong> 2Dエコー(経腟)では妊娠5週後半〜6週前半頃から胎芽の心拍拍動が確認できます。初期は「拍動の有無」のみですが、中期以降は心拍数(正常110〜160bpm)や心臓の4つの部屋の構造まで確認する、生存・発育判定の最重要ツールです。<br>
+      <em>Heart rate can be seen via 2D transvaginal scan from ~5.5–6 weeks. Early on it's presence/absence only; later it includes rate (110–160bpm) and 4-chamber structure — the core tool for viability checks.</em>
+    </div>
+
+    <details class="glossary">
+      <summary>エコー写真の記号・略語一覧 / Ultrasound Abbreviations</summary>
+      <table class="glossary-table">
+        <tr><td class="abbr">GS</td><td class="full">Gestational Sac</td><td>胎嚢(赤ちゃんが入っている袋の直径)</td></tr>
+        <tr><td class="abbr">CRL</td><td class="full">Crown-Rump Length</td><td>頭殿長(頭頂〜お尻の長さ・予定日確定に使用)</td></tr>
+        <tr><td class="abbr">BPD</td><td class="full">Biparietal Diameter</td><td>児頭大横径(頭の最も広い左右の横幅)</td></tr>
+        <tr><td class="abbr">AC</td><td class="full">Abdominal Circumference</td><td>腹囲(お腹の周囲長・栄養状態の指標)</td></tr>
+        <tr><td class="abbr">FL</td><td class="full">Femur Length</td><td>大腿骨長(太ももの骨の長さ・骨発育の指標)</td></tr>
+        <tr><td class="abbr">EFW</td><td class="full">Estimated Fetal Weight</td><td>推定胎児体重(BPD・AC・FLから算出)</td></tr>
+        <tr><td class="abbr">GA</td><td class="full">Gestational Age</td><td>推定妊娠週数(計測値から逆算した週数・日)</td></tr>
+        <tr><td class="abbr">EDD</td><td class="full">Estimated Date of Delivery</td><td>出産予定日</td></tr>
+        <tr><td class="abbr">FHR</td><td class="full">Fetal Heart Rate</td><td>胎児心拍数(1分間あたりの心拍数)</td></tr>
+        <tr><td class="abbr">AFI</td><td class="full">Amniotic Fluid Index</td><td>羊水指数(羊水の量を測る数値)</td></tr>
+      </table>
+    </details>
+  </div>
+
 </div>
 
 <script>
@@ -288,6 +472,91 @@ function addDays(date, days) {
   return d;
 }
 
+// 妊娠週数(GA/LMP基準)ごとの 2D / 4D 見え方・役割データ
+const stages = [
+  {
+    min: 4, max: 5, label: '4〜5週',
+    d2: '子宮内に胎嚢(GS)を確認。妊娠が正しく子宮内にあるかの確定。',
+    d4: '胎芽が小さすぎるため対象外です。',
+    clarity: 'na', clarityLabel: '対象外'
+  },
+  {
+    min: 6, max: 7, label: '6〜7週',
+    d2: '卵黄嚢と胎芽、心拍の拍動を確認。生存確認の第一歩。',
+    d4: '対象外です。',
+    clarity: 'na', clarityLabel: '対象外'
+  },
+  {
+    min: 8, max: 11, label: '8〜11週',
+    d2: '頭殿長(CRL)を測定し出産予定日を確定。手足の動きも見え始める。',
+    d4: '体全体の輪郭がぼんやり見える程度で、表情まではまだ確認できません。',
+    clarity: 'low', clarityLabel: '参考程度'
+  },
+  {
+    min: 12, max: 16, label: '12〜16週',
+    d2: '骨の石灰化が進み(12〜13週)、骨格の輪郭がはっきり映ります。',
+    d4: '子宮内を泳ぐような全身の動きが観察しやすい時期です。',
+    clarity: 'good', clarityLabel: '全身動作◎'
+  },
+  {
+    min: 17, max: 19, label: '17〜19週',
+    d2: '外性器の識別が可能に。指の開閉、羊水を飲む仕草も確認できます。',
+    d4: '表情の解像度が徐々に上がり始めます。',
+    clarity: 'good', clarityLabel: '向上中'
+  },
+  {
+    min: 20, max: 28, label: '20〜28週',
+    d2: '心臓・脳・腎臓・胃など臓器の詳細スクリーニング、胎盤位置・羊水量(AFI)を評価する最重要フェーズ。',
+    d4: 'あくび・指しゃぶり・微笑むような表情まで非常に鮮明に映る、4Dのベストウィンドウです。',
+    clarity: 'best', clarityLabel: 'ベストウィンドウ'
+  },
+  {
+    min: 29, max: 32, label: '29〜32週',
+    d2: '引き続き発育(EFW)・臓器評価を実施。医学的な情報収集は継続して有効です。',
+    d4: '皮下脂肪がつき丸みは増しますが、胎児が骨盤内に下がり始め顔が隠れやすくなることがあります。',
+    clarity: 'fair', clarityLabel: '個人差あり・要注意'
+  },
+  {
+    min: 33, max: 999, label: '33週以降',
+    d2: '推定体重(EFW)や胎位確認など、分娩に向けた評価が中心になります。',
+    d4: '子宮壁や胎盤に密着し、手やへその緒が顔の前に来ることが増え、隠れやすくなります。',
+    clarity: 'low', clarityLabel: '写りにくい可能性'
+  }
+];
+
+function getStage(weeks) {
+  return stages.find(s => weeks >= s.min && weeks <= s.max) || stages[stages.length - 1];
+}
+
+function buildRefTable() {
+  const tbody = document.getElementById('refTableBody');
+  tbody.innerHTML = stages.map((s, i) => `
+    <tr data-idx="${i}">
+      <td class="wk-col">${s.label}</td>
+      <td>${s.d2}</td>
+      <td>${s.d4}</td>
+      <td class="tag-cell"><span class="clarity-tag clarity-${s.clarity}">${s.clarityLabel}</span></td>
+    </tr>
+  `).join('');
+}
+
+function renderCompare(weeks) {
+  const stage = getStage(weeks);
+  document.getElementById('d2Body').textContent = stage.d2;
+  document.getElementById('d4Body').textContent = stage.d4;
+  const clarityEl = document.getElementById('d4Clarity');
+  clarityEl.textContent = stage.clarityLabel;
+  clarityEl.className = `clarity-tag clarity-${stage.clarity}`;
+
+  // 早見表の該当行をハイライト
+  const idx = stages.indexOf(stage);
+  document.querySelectorAll('#refTableBody tr').forEach(row => {
+    row.classList.toggle('hl-row', Number(row.dataset.idx) === idx);
+  });
+}
+
+buildRefTable();
+
 function calc() {
   const lmpVal = lmpInput.value;
   const resultContent = document.getElementById('resultContent');
@@ -296,6 +565,7 @@ function calc() {
   if (!lmpVal) {
     resultContent.style.display = 'none';
     emptyState.style.display = 'block';
+    document.querySelectorAll('#refTableBody tr').forEach(row => row.classList.remove('hl-row'));
     return;
   }
 
@@ -320,6 +590,7 @@ function calc() {
   const days = diffDays % 7;
 
   document.getElementById('weeksOut').textContent = `${weeks}週${days}日`;
+  renderCompare(weeks);
 
   const badgeBox = document.getElementById('badgeBox');
   const statusJp = document.getElementById('statusJp');
