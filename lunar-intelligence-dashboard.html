@@ -2649,6 +2649,57 @@ function initEchoTab() {
   renderEchoPrediction();
   renderEchoCalendar();
   renderEchoStats();
+  echoFetchRemoteAndMerge();
+}
+
+// スプレッドシートDB（共有の正データ）を読み込み、この端末の表示に反映する。
+// スプレッドシート側へは一切書き込まない（読み取り専用）。他のスタッフ・他の端末が
+// 記録した内容も、この端末のカレンダーに表示されるようにするための片道読み込み。
+function echoFetchRemoteAndMerge() {
+  var url = echoGetWebhookUrl();
+  if (!url) return;
+  var statusEl = document.getElementById('echo-sync-status');
+  var sep = url.indexOf('?') >= 0 ? '&' : '?';
+  fetch(url + sep + 'diag=1&start=1&count=3000')
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if (!d || !d.rows) return;
+      var local = getEchoData();
+      var changed = false;
+      d.rows.forEach(function(row){
+        var ds = row.dateStr, t = row.timeStr;
+        if (!ds || !/^\d{4}-\d{2}-\d{2}$/.test(ds)) return;
+        if (ECHO_TIME_SLOTS.indexOf(t) === -1) return;
+        var cells = row.cells || [];
+        var typeText = cells[3] || '';
+        var stateText = cells[4] || '';
+        var noteText = cells[5] || '';
+        var stateIdx = ECHO_STATE_FULL.indexOf(stateText);
+        if (stateIdx < 0) stateIdx = 0;
+        if (stateIdx === 0 && !typeText && !noteText) return; // 空のプレースホルダー行は無視
+        if (!local[ds]) local[ds] = { lunarAge: echoLunarAge(new Date(ds+'T12:00:00Z')), slots:{} };
+        if (!local[ds].slots) local[ds].slots = {};
+        var existing = local[ds].slots[t];
+        if (!existing || existing.state !== stateIdx || existing.type !== typeText || existing.note !== noteText) {
+          local[ds].slots[t] = { state: stateIdx, type: typeText, note: noteText };
+          changed = true;
+        }
+      });
+      if (changed) {
+        saveEchoData(local);
+        renderEchoCalendar();
+        renderEchoStats();
+        renderEchoPrediction();
+      }
+      if (statusEl) {
+        statusEl.innerHTML = '<span style="color:#68d391;">✅ スプレッドシートの記録を読み込み済み（' + new Date().toLocaleTimeString('ja-JP') + ' 更新）</span>';
+      }
+    })
+    .catch(function(){
+      if (statusEl) {
+        statusEl.innerHTML += '<br><span style="color:#fc8181;font-size:0.72rem;">⚠️ スプレッドシートからの読み込みに失敗しました（通信環境をご確認ください）</span>';
+      }
+    });
 }
 
 var ECHO_KEY = 'fto_echo_v3';
