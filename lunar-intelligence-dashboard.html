@@ -1319,24 +1319,182 @@ function buildCycleChart() {
   // 基準新月: 2000-01-06 18:14 UTC → JD 2451550.259722
   var REF_JD  = 2451550.259722;
 
-  // 旧暦月の開始日 (新月日) ※ 実測ベース
-  var KYUREKI_MONTHS = [
-    {m:'旧暦1月',  g:'2026-02-17'},
-    {m:'旧暦2月',  g:'2026-03-18'},
-    {m:'旧暦3月',  g:'2026-04-17'},
-    {m:'旧暦4月',  g:'2026-05-16'},
-    {m:'旧暦5月',  g:'2026-06-15'},
-    {m:'旧暦6月',  g:'2026-07-14'},
-    {m:'旧暦7月',  g:'2026-08-12'},
-    {m:'旧暦8月',  g:'2026-09-11'},
-    {m:'旧暦9月',  g:'2026-10-10'},
-    {m:'旧暦10月', g:'2026-11-09'},
-    {m:'旧暦11月', g:'2026-12-09'},
-    // 2025 (for boundary)
-    {m:'旧暦12月', g:'2025-12-20'},
-    {m:'旧暦11月', g:'2025-11-20'},
-    {m:'旧暦10月', g:'2025-10-21'},
-  ];
+  // 旧暦月の開始日(朔日=新月がJSTで起きた暦日)と月番号・閏月フラグ
+  // 2026-08-23: ephem(天文暦)で新月時刻(JST変換)と中気(太陽黄経30度ごと)を実測計算し、
+  // 実物の沖縄カレンダー(2026年8月分・29日分)と完全一致することを検証済みのテーブルに置換。
+  // 生成範囲: 2020-01〜2032-12(160ヶ月分)。各要素: [朔日(旧暦一日, JST暦日), 月番号, 閏月フラグ(1=閏月)]
+  var KYUREKI_TABLE=[["2020-01-25",1,0],
+    ["2020-02-24",2,0],
+    ["2020-03-24",3,0],
+    ["2020-04-23",4,0],
+    ["2020-05-23",4,1],
+    ["2020-06-21",5,0],
+    ["2020-07-21",6,0],
+    ["2020-08-19",7,0],
+    ["2020-09-17",8,0],
+    ["2020-10-17",9,0],
+    ["2020-11-15",10,0],
+    ["2020-12-15",11,0],
+    ["2021-01-13",12,0],
+    ["2021-02-12",1,0],
+    ["2021-03-13",2,0],
+    ["2021-04-12",3,0],
+    ["2021-05-12",4,0],
+    ["2021-06-10",5,0],
+    ["2021-07-10",6,0],
+    ["2021-08-08",7,0],
+    ["2021-09-07",8,0],
+    ["2021-10-06",9,0],
+    ["2021-11-05",10,0],
+    ["2021-12-04",11,0],
+    ["2022-01-02",12,0],
+    ["2022-02-01",1,0],
+    ["2022-03-03",2,0],
+    ["2022-04-01",3,0],
+    ["2022-05-01",4,0],
+    ["2022-05-30",5,0],
+    ["2022-06-29",6,0],
+    ["2022-07-29",7,0],
+    ["2022-08-27",8,0],
+    ["2022-09-26",9,0],
+    ["2022-10-25",10,0],
+    ["2022-11-24",11,0],
+    ["2022-12-23",12,0],
+    ["2023-01-22",1,0],
+    ["2023-02-20",2,0],
+    ["2023-03-22",2,1],
+    ["2023-04-20",3,0],
+    ["2023-05-19",4,0],
+    ["2023-06-18",5,0],
+    ["2023-07-18",6,0],
+    ["2023-08-16",7,0],
+    ["2023-09-15",8,0],
+    ["2023-10-15",9,0],
+    ["2023-11-13",10,0],
+    ["2023-12-13",11,0],
+    ["2024-01-11",12,0],
+    ["2024-02-10",1,0],
+    ["2024-03-10",2,0],
+    ["2024-04-09",3,0],
+    ["2024-05-08",4,0],
+    ["2024-06-06",5,0],
+    ["2024-07-06",6,0],
+    ["2024-08-04",7,0],
+    ["2024-09-03",8,0],
+    ["2024-10-03",9,0],
+    ["2024-11-01",10,0],
+    ["2024-12-01",11,0],
+    ["2024-12-31",12,0],
+    ["2025-01-29",1,0],
+    ["2025-02-28",2,0],
+    ["2025-03-29",3,0],
+    ["2025-04-28",4,0],
+    ["2025-05-27",5,0],
+    ["2025-06-25",6,0],
+    ["2025-07-25",6,1],
+    ["2025-08-23",7,0],
+    ["2025-09-22",8,0],
+    ["2025-10-21",9,0],
+    ["2025-11-20",10,0],
+    ["2025-12-20",11,0],
+    ["2026-01-18",12,0],
+    ["2026-02-17",1,0],
+    ["2026-03-19",2,0],
+    ["2026-04-17",3,0],
+    ["2026-05-17",4,0],
+    ["2026-06-15",5,0],
+    ["2026-07-14",6,0],
+    ["2026-08-13",7,0],
+    ["2026-09-11",8,0],
+    ["2026-10-11",9,0],
+    ["2026-11-10",10,0],
+    ["2026-12-09",11,0],
+    ["2027-01-08",12,0],
+    ["2027-02-07",1,0],
+    ["2027-03-08",2,0],
+    ["2027-04-07",3,0],
+    ["2027-05-06",4,0],
+    ["2027-06-05",5,0],
+    ["2027-07-04",6,0],
+    ["2027-08-03",7,0],
+    ["2027-09-01",8,0],
+    ["2027-10-01",9,0],
+    ["2027-10-30",10,0],
+    ["2027-11-29",11,0],
+    ["2027-12-28",12,0],
+    ["2028-01-27",1,0],
+    ["2028-02-26",2,0],
+    ["2028-03-26",3,0],
+    ["2028-04-25",4,0],
+    ["2028-05-24",5,0],
+    ["2028-06-23",5,1],
+    ["2028-07-22",6,0],
+    ["2028-08-20",7,0],
+    ["2028-09-19",8,0],
+    ["2028-10-19",9,0],
+    ["2028-11-17",10,0],
+    ["2028-12-17",11,0],
+    ["2029-01-15",12,0],
+    ["2029-02-13",1,0],
+    ["2029-03-15",2,0],
+    ["2029-04-14",3,0],
+    ["2029-05-13",4,0],
+    ["2029-06-12",5,0],
+    ["2029-07-11",6,0],
+    ["2029-08-10",7,0],
+    ["2029-09-08",8,0],
+    ["2029-10-07",9,0],
+    ["2029-11-06",10,0],
+    ["2029-12-06",11,0],
+    ["2030-01-04",12,0],
+    ["2030-02-03",1,0],
+    ["2030-03-04",2,0],
+    ["2030-04-03",3,0],
+    ["2030-05-03",4,0],
+    ["2030-06-01",5,0],
+    ["2030-07-01",6,0],
+    ["2030-07-30",7,0],
+    ["2030-08-29",8,0],
+    ["2030-09-27",9,0],
+    ["2030-10-27",10,0],
+    ["2030-11-25",11,0],
+    ["2030-12-25",12,0],
+    ["2031-01-23",1,0],
+    ["2031-02-22",2,0],
+    ["2031-03-24",3,0],
+    ["2031-04-22",3,1],
+    ["2031-05-22",4,0],
+    ["2031-06-20",5,0],
+    ["2031-07-20",6,0],
+    ["2031-08-18",7,0],
+    ["2031-09-17",8,0],
+    ["2031-10-16",9,0],
+    ["2031-11-15",10,0],
+    ["2031-12-14",11,0],
+    ["2032-01-13",12,0],
+    ["2032-02-11",1,0],
+    ["2032-03-12",2,0],
+    ["2032-04-10",3,0],
+    ["2032-05-09",4,0],
+    ["2032-06-08",5,0],
+    ["2032-07-07",6,0],
+    ["2032-08-06",7,0],
+    ["2032-09-05",8,0],
+    ["2032-10-04",9,0],
+    ["2032-11-03",10,0],
+    ["2032-12-03",11,0]];
+
+  // dateStr('YYYY-MM-DD', JST暦日)から旧暦の月・日・閏月フラグを求める
+  function kyurekiLookup(dateStr) {
+    var found = null;
+    for (var i = 0; i < KYUREKI_TABLE.length; i++) {
+      if (KYUREKI_TABLE[i][0] <= dateStr) found = KYUREKI_TABLE[i]; else break;
+    }
+    if (!found) return {month:null, day:null, leap:false, label:'旧暦--月--日'};
+    var day = Math.round((new Date(dateStr+'T00:00:00Z') - new Date(found[0]+'T00:00:00Z')) / 86400000) + 1;
+    var leap = !!found[2];
+    return {month:found[1], day:day, leap:leap, label:'旧暦'+(leap?'閏':'')+found[1]+'月'+day+'日'};
+  }
 
   // 節気 (solar terms) 2026
   // 節気データ (精密時刻付き - 国立天文台データ)
@@ -1399,17 +1557,7 @@ function buildCycleChart() {
     return phases[0];
   }
 
-  function getKyurekiMonth(now) {
-    var ymd = now.getFullYear()+'-'
-      +String(now.getMonth()+1).padStart(2,'0')+'-'
-      +String(now.getDate()).padStart(2,'0');
-    // Sort by date desc and find latest that <= today
-    var sorted = KYUREKI_MONTHS.slice().sort(function(a,b){return b.g>a.g?1:-1;});
-    for(var i=0;i<sorted.length;i++){
-      if(ymd >= sorted[i].g) return sorted[i].m;
-    }
-    return '旧暦--月';
-  }
+  // (旧getKyurekiMonth()は2026-08-23にkyurekiLookup()へ統合・置換。KYUREKI_TABLE参照)
 
   function getNextSetsui(now) {
     var ymd=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
@@ -1464,8 +1612,10 @@ function buildCycleChart() {
     // --- Lunar ---
     var age = getLunarAge(now);
     var phase = getPhase(age);
-    var kyuDay = Math.floor(age)+1;
-    var kyuMonth = getKyurekiMonth(jst);
+    var jstDateStr = jst.getUTCFullYear()+'-'+pad2(jst.getUTCMonth()+1)+'-'+pad2(jst.getUTCDate());
+    var kyu = kyurekiLookup(jstDateStr);
+    var kyuDay = kyu.day;
+    var kyuMonth = '旧暦'+(kyu.leap?'閏':'')+kyu.month+'月';
 
     // Next full moon
     var daysToFull = ((SYNODIC/2) - age + SYNODIC) % SYNODIC;
@@ -2847,7 +2997,9 @@ function renderEchoCalendar() {
     var dDate=new Date(yr,mo-1,day,12);
     var age=echoLunarAge(dDate);
     var li=echoLunarIcon(age);
-    var kyuDay=Math.floor(age)+1;
+    var kyu=kyurekiLookup(ds);
+    var kyuDay=kyu.day;
+    var kyuShort=(kyu.leap?'閏':'')+kyu.month+'/'+kyuDay;
     var isPrayerDay=(kyuDay===1||kyuDay===15);
     var dd=(data[ds]&&data[ds].slots)||{};
     var isToday=ds===todayStr;
@@ -2866,7 +3018,7 @@ function renderEchoCalendar() {
       +'<span style="font-size:0.8rem;font-weight:'+(isToday?'900':'400')+';color:'+(isToday?'#90cdf4':'#666')+';">'+day+'</span>'
       +'<span style="font-size:0.75rem;" title="月齢'+age.toFixed(1)+'">'+li+'</span>'
       +'</div>'
-      +'<div style="font-size:0.6rem;line-height:1.2;margin-top:1px;'+(isPrayerDay?('font-weight:700;color:'+(kyuDay===1?'#5ba3ff':'#ffcc44')):'color:#3d4a5c;')+'" title="旧暦'+kyuDay+'日">旧'+kyuDay+(kyuDay===1?'・一日🙏':(kyuDay===15?'・十五日🙏':''))+'</div>'
+      +'<div style="font-size:0.6rem;line-height:1.2;margin-top:1px;'+(isPrayerDay?('font-weight:700;color:'+(kyuDay===1?'#5ba3ff':'#ffcc44')):'color:#3d4a5c;')+'" title="'+kyu.label+'">旧'+kyuShort+(kyuDay===1?'🙏':(kyuDay===15?'🙏':''))+'</div>'
       +strip
       +(recCnt>0?'<div style="font-size:0.55rem;color:#556;margin-top:3px;">🌟'+goodCnt+'/'+recCnt+'</div>':'<div style="font-size:0.55rem;color:#334;margin-top:3px;">未記録</div>')
       +'</td>';
@@ -2884,9 +3036,9 @@ function echoShowModal(ds) {
   modal.dataset.date=ds;
   var dDate=new Date(ds+'T12:00:00Z');
   var age=echoLunarAge(dDate);
-  var kyuDay=Math.floor(age)+1;
+  var kyu=kyurekiLookup(ds);
   var dowJ=['日','月','火','水','木','金','土'][dDate.getUTCDay()];
-  var kyuTag=kyuDay===1?'（旧暦一日・新月）':(kyuDay===15?'（旧暦十五日・満月）':'（旧暦'+kyuDay+'日）');
+  var kyuTag=kyu.day===1?'（'+kyu.label+'・新月）':(kyu.day===15?'（'+kyu.label+'・満月）':'（'+kyu.label+'）');
   document.getElementById('echo-modal-date').textContent=ds+'（'+dowJ+'） '+echoLunarIcon(age)+' '+echoLunarLabel(age)+'期・月齢'+age.toFixed(1)+' '+kyuTag;
   renderEchoSlotEditor(ds);
   modal.style.display='flex';
@@ -3280,7 +3432,7 @@ function renderEchoStats() {
         <span style="font-size:0.7rem;color:#555;">🌟見えた &nbsp;⚠️見えにくい &nbsp;❌見えず</span>
       </div>
     </div>
-    <div style="font-size:0.72rem;color:#667;margin:-6px 0 10px 2px;">沖縄の家庭カレンダーと同じく、新暦日の下に旧暦日を表示。<span style="color:#4a9eff;font-weight:700;">旧1・一日</span>＝新月・祈願の日、<span style="color:#ffcc44;font-weight:700;">旧15・十五日</span>＝満月・感謝の日として、先祖・神々への祈りの節目をセルに反映しています。</div>
+    <div style="font-size:0.72rem;color:#667;margin:-6px 0 10px 2px;">沖縄の家庭カレンダーと同じく、新暦日の下に旧暦の月/日を表示（天文暦から実測計算・実物カレンダーで検証済み）。<span style="color:#4a9eff;font-weight:700;">旧暦一日🙏</span>＝新月・祈願の日、<span style="color:#ffcc44;font-weight:700;">旧暦十五日🙏</span>＝満月・感謝の日として、先祖・神々への祈りの節目をセルに反映しています。</div>
     <div id="echo-cal-body" style="overflow-x:auto;"></div>
   </div>
 
