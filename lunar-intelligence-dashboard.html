@@ -2847,6 +2847,8 @@ function renderEchoCalendar() {
     var dDate=new Date(yr,mo-1,day,12);
     var age=echoLunarAge(dDate);
     var li=echoLunarIcon(age);
+    var kyuDay=Math.floor(age)+1;
+    var isPrayerDay=(kyuDay===1||kyuDay===15);
     var dd=(data[ds]&&data[ds].slots)||{};
     var isToday=ds===todayStr;
     var isWeekend=(new Date(yr,mo-1,day)).getDay()%6===0;
@@ -2859,11 +2861,12 @@ function renderEchoCalendar() {
     var slotVals=Object.values(dd);
     var goodCnt=slotVals.filter(function(s){return s.state===1;}).length;
     var recCnt=slotVals.filter(function(s){return s.state>0;}).length;
-    h+='<td style="border:1px solid #0d1828;padding:4px;vertical-align:top;background:'+(isToday?'#0d1f35':(isWeekend?'#050a14':'#070c16'))+';cursor:pointer;min-width:44px;" onclick="echoShowModal(\''+ds+'\')">'
+    h+='<td style="border:1px solid '+(kyuDay===1?'#3a6ea8':(kyuDay===15?'#a88a2a':'#0d1828'))+';padding:4px;vertical-align:top;background:'+(isToday?'#0d1f35':(isPrayerDay?(kyuDay===1?'#0c1a2e':'#1c1608'):(isWeekend?'#050a14':'#070c16')))+';cursor:pointer;min-width:44px;" onclick="echoShowModal(\''+ds+'\')">'
       +'<div style="display:flex;justify-content:space-between;">'
       +'<span style="font-size:0.8rem;font-weight:'+(isToday?'900':'400')+';color:'+(isToday?'#90cdf4':'#666')+';">'+day+'</span>'
       +'<span style="font-size:0.75rem;" title="月齢'+age.toFixed(1)+'">'+li+'</span>'
       +'</div>'
+      +'<div style="font-size:0.6rem;line-height:1.2;margin-top:1px;'+(isPrayerDay?('font-weight:700;color:'+(kyuDay===1?'#5ba3ff':'#ffcc44')):'color:#3d4a5c;')+'" title="旧暦'+kyuDay+'日">旧'+kyuDay+(kyuDay===1?'・一日🙏':(kyuDay===15?'・十五日🙏':''))+'</div>'
       +strip
       +(recCnt>0?'<div style="font-size:0.55rem;color:#556;margin-top:3px;">🌟'+goodCnt+'/'+recCnt+'</div>':'<div style="font-size:0.55rem;color:#334;margin-top:3px;">未記録</div>')
       +'</td>';
@@ -2881,8 +2884,10 @@ function echoShowModal(ds) {
   modal.dataset.date=ds;
   var dDate=new Date(ds+'T12:00:00Z');
   var age=echoLunarAge(dDate);
+  var kyuDay=Math.floor(age)+1;
   var dowJ=['日','月','火','水','木','金','土'][dDate.getUTCDay()];
-  document.getElementById('echo-modal-date').textContent=ds+'（'+dowJ+'） '+echoLunarIcon(age)+' '+echoLunarLabel(age)+'期・月齢'+age.toFixed(1);
+  var kyuTag=kyuDay===1?'（旧暦一日・新月）':(kyuDay===15?'（旧暦十五日・満月）':'（旧暦'+kyuDay+'日）');
+  document.getElementById('echo-modal-date').textContent=ds+'（'+dowJ+'） '+echoLunarIcon(age)+' '+echoLunarLabel(age)+'期・月齢'+age.toFixed(1)+' '+kyuTag;
   renderEchoSlotEditor(ds);
   modal.style.display='flex';
 }
@@ -3275,6 +3280,7 @@ function renderEchoStats() {
         <span style="font-size:0.7rem;color:#555;">🌟見えた &nbsp;⚠️見えにくい &nbsp;❌見えず</span>
       </div>
     </div>
+    <div style="font-size:0.72rem;color:#667;margin:-6px 0 10px 2px;">沖縄の家庭カレンダーと同じく、新暦日の下に旧暦日を表示。<span style="color:#4a9eff;font-weight:700;">旧1・一日</span>＝新月・祈願の日、<span style="color:#ffcc44;font-weight:700;">旧15・十五日</span>＝満月・感謝の日として、先祖・神々への祈りの節目をセルに反映しています。</div>
     <div id="echo-cal-body" style="overflow-x:auto;"></div>
   </div>
 
