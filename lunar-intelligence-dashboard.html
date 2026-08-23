@@ -324,6 +324,7 @@
     <button class="nav-btn" data-name="greed"       onclick="showSection('greed')">💹 欲望指数</button>
     <button class="nav-btn" data-name="extremes"    onclick="showSection('extremes')">⚠️ 市場極値</button>
     <button class="nav-btn" data-name="echo"       onclick="showSection('echo')">👶 エコー記録</button>
+    <button class="nav-btn" data-name="discovery"  onclick="showSection('discovery')">🔍 発見ログ</button>
   </div>
 </div>
 
@@ -3311,6 +3312,48 @@ function renderEchoStats() {
       ② 最初の時間枠の結果から、その日後半の予約の傾向を予測できる<br>
       ③ 「見えやすい時間帯」に合わせた予約誘導・料金設計（プレミアム枠）が可能になる</div>
     </div>
+  </div>
+</div>
+</div>
+
+<!-- ===== 発見ログ ===== -->
+<div id="sec-discovery" class="section">
+<div class="main">
+  <div class="section-title">🔍 発見ログ <span style="font-size:0.7em;color:#888;">「発見→可視化→行動」ループを記録する場所</span></div>
+  <div class="chart-desc">エコー記録と同じように、「記録する→見える化される→気づく→行動する」というループを月相×市場データの分析でも実践しています。ここには、これまでの調査で得られた発見を記録しています。判定に迷うものは断定せず「未立証D」として扱います。</div>
+
+  <div class="card" style="margin-bottom:16px;background:#0a1018;">
+    <div class="card-title" style="margin-bottom:8px;">📋 検証状況の凡例（koya-agent-os準拠）</div>
+    <div style="font-size:0.78rem;color:var(--text2);line-height:2;">
+      <span style="color:#4ade80;font-weight:700;">事実A</span>：公的統計・一次資料・実測で確認できる　|
+      <span style="color:#60a5fa;font-weight:700;">強い推論B</span>：複数の独立した根拠が同方向を示す　|
+      <span style="color:#fbbf24;font-weight:700;">競合仮説C</span>：複数の説明が残り未確定　|
+      <span style="color:#f87171;font-weight:700;">未立証D</span>：意図・因果・規模の証拠が不足
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px;overflow-x:auto;">
+    <div class="card-title" style="margin-bottom:10px;">📝 発見ログ（2026-08-23 初期投入）</div>
+    <table class="data-table">
+      <thead><tr><th>日付</th><th>発見内容</th><th>カテゴリ</th><th>検証状況</th><th>次のアクション</th></tr></thead>
+      <tbody>
+        <tr><td>2026-08-23</td><td>BTC満月のp=0.085は、9資産×2指標=18検定の多重比較を踏まえると偶然の範囲内である可能性が高い</td><td>統計的発見</td><td><span style="color:#60a5fa;font-weight:700;">強い推論B</span></td><td>統計分析タブの「最も有意性に近い」という表現を中立的な表現に改める</td></tr>
+        <tr><td>2026-08-23</td><td>S&amp;P500の新月日・満月日リターンは、99年間の日次データ(1927-2026)では全日平均と統計的に有意な差が確認できなかった</td><td>統計的発見</td><td><span style="color:#4ade80;font-weight:700;">事実A</span>(observed)</td><td>ダッシュボードに150年規模データとの比較注記を追加する</td></tr>
+        <tr><td>2026-08-23</td><td>歴史的金融パニック9件(1637-1997)は、新月付近4件・満月付近5件と偏りが見られず、月相との一貫した対応関係は確認できない</td><td>歴史的発見</td><td><span style="color:#4ade80;font-weight:700;">事実A</span>(observed)</td><td>「歴史パニック×月相」はエンタメ・教育コンテンツと位置づけ、投資判断根拠にしない</td></tr>
+        <tr><td>2026-08-23</td><td>ラマダン効果・中国旧正月効果は、月相そのものではなく暦・宗教行事による文化的な投資家心理の変化が起点である</td><td>概念的発見</td><td><span style="color:#4ade80;font-weight:700;">事実A</span>(別メカニズム)</td><td>ダッシュボードのコンテンツ軸を暦・文化効果に寄せる</td></tr>
+        <tr><td>2026-08-23</td><td>FRED経済指標・欲望可視化指標シート等でDXY・BTC価格など、実勢と乖離した古い値が複数箇所に存在していた</td><td>データ品質発見</td><td><span style="color:#4ade80;font-weight:700;">事実A</span></td><td>該当セルを実勢値に修正済み(2026-08-22完了)</td></tr>
+        <tr><td>2026-08-23</td><td>防衛株・欲望指数など、多くのタブは実はスプレッドシートと連動しない静的スナップショットであることが判明</td><td>構造的発見</td><td><span style="color:#4ade80;font-weight:700;">事実A</span></td><td>各タブに「スナップショット・自動更新なし」の注記を追加済み</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card" style="background:#0a1018;">
+    <div class="card-title" style="margin-bottom:8px;">📊 発見ログを追記する</div>
+    <div style="font-size:0.78rem;color:var(--text2);line-height:1.6;">
+      新しい気づきは、スプレッドシート「🔍発見ログ」シートに追記してください。エコー記録と同じく、記録する行為そのものが次の発見につながります。<br>
+      <a href="https://docs.google.com/spreadsheets/d/1ThQalxoAnsl9qgE6wTU1wCessZZpi9_NCjDMkKimVZ4/edit" target="_blank" style="color:#8fd090;">📊 スプレッドシートを開く</a>
+    </div>
+    <div style="font-size:0.72rem;color:#556;margin-top:10px;">💲 このタブは2026-08-23時点のスナップショットです（自動更新なし）。エコー記録タブのような読み取り専用リアルタイム同期は今後の拡張候補です。</div>
   </div>
 </div>
 </div>
