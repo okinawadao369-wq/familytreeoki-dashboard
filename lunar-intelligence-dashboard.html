@@ -1495,6 +1495,8 @@ function buildCycleChart() {
     var leap = !!found[2];
     return {month:found[1], day:day, leap:leap, label:'旧暦'+(leap?'閏':'')+found[1]+'月'+day+'日'};
   }
+  // renderEchoCalendar()等、別の<script>ブロック(IIFE外)からも呼べるようグローバル公開
+  window.kyurekiLookup = kyurekiLookup;
 
   // 節気 (solar terms) 2026
   // 節気データ (精密時刻付き - 国立天文台データ)
