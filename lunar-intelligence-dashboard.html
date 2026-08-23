@@ -2396,10 +2396,10 @@ window.addEventListener('load', function(){
 function initDefenseTab() {
   // KPI row
   const kpiData = [
-    {sym:'LMT',name:'ロッキード・マーティン',price:'$535.38',ytd:'+8.3%',color:'#48bb78'},
-    {sym:'RTX',name:'RTX (レイセオン)',price:'$200.85',ytd:'+8.1%',color:'#63b3ed'},
-    {sym:'NOC',name:'ノースロップ・グラマン',price:'$542.14',ytd:'-4%',color:'#fc8181'},
-    {sym:'GD',name:'ゼネラル・ダイナミクス',price:'$291.50',ytd:'+5%',color:'#68d391'},
+    {sym:'LMT',name:'ロッキード・マーティン',price:'$571.48',ytd:'+28.9%',color:'#48bb78'},
+    {sym:'RTX',name:'RTX (レイセオン)',price:'$216.65',ytd:'+19.0%',color:'#63b3ed'},
+    {sym:'NOC',name:'ノースロップ・グラマン',price:'$548.47',ytd:'-3.1%',color:'#fc8181'},
+    {sym:'GD',name:'ゼネラル・ダイナミクス',price:'$382.43',ytd:'+15.1%',color:'#68d391'},
   ];
   const kpiRow = document.getElementById('defense-kpi-row');
   if (kpiRow) kpiRow.innerHTML = kpiData.map(k=>`
@@ -2476,13 +2476,22 @@ function initGeopoliticsTab() {
     {date:'2026年12月',moon:'🌑新月',event:'地政学リスク：年末決算前ポジション調整',prob:'中',color:'#ffcc44'},
   ];
   const riskDiv = document.getElementById('geo-risk-2026');
-  if (riskDiv) riskDiv.innerHTML = risks2026.map(r=>`
-    <div style="display:flex;align-items:center;gap:14px;padding:8px 0;border-bottom:1px solid #222;">
-      <div style="min-width:90px;font-size:0.8rem;color:#888;">${r.date}</div>
+  const nowYM = (function(){ var n=new Date(); return n.getFullYear()*12+(n.getMonth()+1); })();
+  if (riskDiv) riskDiv.innerHTML = risks2026.map(r=>{
+    var mm = r.date.match(/(\d{4})年(\d{1,2})月/);
+    var itemYM = mm ? (parseInt(mm[1],10)*12+parseInt(mm[2],10)) : null;
+    var isPast = itemYM !== null && itemYM < nowYM;
+    var isNow = itemYM !== null && itemYM === nowYM;
+    var rowStyle = isPast ? 'opacity:0.4;filter:grayscale(0.6);' : '';
+    var tag = isPast ? '<span style="font-size:0.7rem;color:#777;margin-left:6px;">（終了）</span>' : isNow ? '<span style="font-size:0.7rem;color:#68d391;margin-left:6px;">（今月）</span>' : '';
+    return `
+    <div style="display:flex;align-items:center;gap:14px;padding:8px 0;border-bottom:1px solid #222;${rowStyle}">
+      <div style="min-width:90px;font-size:0.8rem;color:#888;">${r.date}${tag}</div>
       <div style="min-width:60px;font-size:0.9rem;">${r.moon}</div>
       <div style="flex:1;color:#ddd;">${r.event}</div>
       <div style="background:${r.color}22;border:1px solid ${r.color};border-radius:6px;padding:2px 10px;font-size:0.8rem;color:${r.color};min-width:30px;text-align:center;">${r.prob}</div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 
   // Historical events table
   const events = [
@@ -2549,16 +2558,16 @@ function initGreedTab() {
 
   // Indicators
   const indicators = [
-    {name:'VIX 恐怖指数',val:'15.6',status:'低ボラ・楽観圏',color:'#68d391'},
+    {name:'VIX 恐怖指数',val:'15.1',status:'2026年最低水準・楽観圏',color:'#68d391'},
     {name:'プットコールレシオ',val:'0.86',status:'中立〜強気',color:'#63b3ed'},
     {name:'NYSE 高値/安値比',val:'0.72',status:'やや売り優勢',color:'#ffaa44'},
     {name:'株式トレンド強度',val:'58/100',status:'改善中',color:'#f6ad55'},
     {name:'BTC 30日ボラ',val:'~48%',status:'低下中',color:'#f6ad55'},
     {name:'マージンデット',val:'$1.28T',status:'過去最高水準！',color:'#ff8800'},
     {name:'信用スプレッド(HY)',val:'267bp',status:'タイト・リスクオン',color:'#68d391'},
-    {name:'ドル指数 (DXY)',val:'120.69',status:'ドル超強・リスクオフ',color:'#fc8181'},
-    {name:'原油 (Brent)',val:'$76.0',status:'地政学懸念残る',color:'#ffcc44'},
-    {name:'金 (スポット)',val:'$4,145',status:'安全資産・最高水準',color:'#ffd700'},
+    {name:'ドル指数 (DXY)',val:'98.8',status:'月間-2.3%・軟調',color:'#f6ad55'},
+    {name:'原油 (Brent)',val:'$93.9',status:'イラン懸念で高止まり',color:'#ffcc44'},
+    {name:'金 (スポット)',val:'$4,617',status:'安全資産・史上最高水準',color:'#ffd700'},
   ];
   const indDiv = document.getElementById('greed-indicators');
   if (indDiv) indDiv.innerHTML = indicators.map(i=>`
@@ -3086,6 +3095,7 @@ function renderEchoStats() {
 <div id="sec-defense" class="section">
 <div class="main">
   <div class="section-title">🛡️ 防衛株 × 月相分析 <span style="font-size:0.7em;color:#888;">ミアシャイマー×25年データ 2000-2025</span></div>
+  <div style="font-size:0.72rem;color:#666;margin-bottom:8px;">💲 株価KPIは2026年8月20日時点のスナップショットです（自動更新なし）</div>
   <div style="color:var(--text2);font-size:0.85rem;margin-bottom:18px;">防衛・航空宇宙・コモディティ15銘柄×旧暦一日（新月）・十五日（満月）の統計検証。地政学リスクが「満月」に集中する驚愕のパターン。</div>
 
   <!-- Current price KPIs -->
@@ -3151,7 +3161,7 @@ function renderEchoStats() {
 <!-- ===== 💹 欲望指数 ===== -->
 <div id="sec-greed" class="section">
 <div class="main">
-  <div class="section-title">💹 市場欲望指数 <span style="font-size:0.7em;color:#888;">2026年7月8日 最新データ（DB確認済）</span></div>
+  <div class="section-title">💹 市場欲望指数 <span style="font-size:0.7em;color:#888;">主要指標 2026年8月22日時点に更新</span></div>
   <div style="color:var(--text2);font-size:0.85rem;margin-bottom:18px;">「人の思考が数字の影響力で知らぬ間に動く」—月の引力が欲望と恐怖を駆動する10指標の可視化。</div>
 
   <!-- Fear & Greed Gauge -->
