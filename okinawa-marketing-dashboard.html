@@ -270,6 +270,16 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP','Hiragino
 .verif-tag{display:inline-block;font-size:8px;font-weight:800;padding:0px 5px;border-radius:4px;margin-left:5px;vertical-align:middle}
 .verif-tag-real{background:#10b98122;color:#10b981}
 .verif-tag-heur{background:#f59e0b22;color:#f59e0b}
+.verif-tag-unknown{background:#6b728022;color:#9ca3af;border:1px dashed #6b728088}
+/* R-09: データ鮮度・出所バッジ */
+.verif-unknown{background:#6b728022;color:#9ca3af;border:1px dashed #6b728088}
+.prov-badge{display:inline-flex;align-items:center;gap:3px;font-size:8px;font-weight:800;padding:1px 6px;border-radius:8px;margin-left:5px;vertical-align:middle;white-space:nowrap}
+.prov-observed{background:#10b98122;color:#10b981;border:1px solid #10b98155}
+.prov-estimated{background:#3b82f622;color:#60a5fa;border:1px solid #3b82f655}
+.prov-unknown{background:#6b728022;color:#9ca3af;border:1px dashed #6b728088}
+.as-of-banner{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:10px;color:var(--text2);background:#0f172a55;border:1px solid #1e293b;border-radius:6px;padding:6px 10px;margin:6px 0 14px 0}
+.as-of-banner b{color:var(--gold);font-weight:800}
+.kpi-asof{font-size:8px;color:var(--text2);margin-top:2px;font-weight:600}
 </style>
 </head>
 <body>
@@ -300,13 +310,14 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP','Hiragino
 <div id="t1" class="tab">
   <div class="sec-head">🏆 OKINAWA-AXIS — 総合概要ダッシュボード</div>
   <div class="sec-sub">沖縄41市町村 × 8次元統合スコアリング。地政学・ユイマール社会・ザル経済・基地依存・消費者心理の全てを数値化。</div>
+  <span class="prov-banner-slot" data-keys="gdp_muni,macro_pop"></span>
 
   <!-- 動的KPIカード -->
   <div class="kpi-row" id="t1-kpi-row" style="margin-bottom:16px"></div>
 
   <!-- SOFA市場ハイライト -->
   <div style="background:linear-gradient(135deg,#1a0a2e22,#0f2040);border:1px solid #8b5cf644;border-radius:10px;padding:14px;margin-bottom:16px">
-    <div style="font-size:11px;font-weight:800;color:#a78bfa;margin-bottom:10px">🪖 SOFA軍属市場 特別ハイライト — Family Tree Oki 視点</div>
+    <div style="font-size:11px;font-weight:800;color:#a78bfa;margin-bottom:10px">🪖 SOFA軍属市場 特別ハイライト — Family Tree Oki 視点 <span class="prov-slot" data-prov="sofa_highlight" data-compact="1"></span></div>
     <div class="g3" id="t1-sofa-kpi"></div>
   </div>
 
@@ -577,6 +588,7 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP','Hiragino
 <div id="t5" class="tab">
   <div class="sec-head">🛣️ 道路・動線マーケティング分析</div>
   <div class="sec-sub">住所から国道・県道・市町村道を特定し、交通量・交差点ポジション・左右折入りやすさを数値化。道路の「前後」「左右」によって商業成功率が劇的に変わる。</div>
+  <span class="prov-banner-slot" data-keys="road"></span>
   <div class="kpi-row">
     <div class="kpi gold"><div class="val">63,851</div><div class="lbl">最大交通量（国道58号/北谷）台/日</div></div>
     <div class="kpi blue"><div class="val">55,000</div><div class="lbl">浦添牧港 交通量 台/日</div></div>
@@ -912,6 +924,73 @@ function verifBadge(key, opts){
     <span class="verif-badge ${cls}">${txt}</span>
     ${compact?'':`<span class="verif-source">${info.source}</span>`}
   </div>`;
+}
+
+// ===================== R-09: データ鮮度・出所レジストリ =====================
+// confidence: 'observed'=出典・対象年とも確認済み / 'estimated'=出典は判明だが対象年未確認、またはkoya独自推計
+//             'unknown'=出典・対象年とも未確認（証拠区分D、推測で埋めない）
+// asOf は比較可能な "YYYY-MM" 形式。不明な場合は null（タブ代表年の算出から除外される）。
+const DATA_PROVENANCE = {
+  macro_pop:            {asOf:'2026-07', asOfLabel:'2026年7月', source:'沖縄県統計課「推計人口」（2026年7月31日公表）', confidence:'observed'},
+  macro_gdp:             {asOf:'2022-04', asOfLabel:'令和4年度(2022年度)', source:'沖縄県「県民経済計算」', confidence:'observed'},
+  macro_income:          {asOf:'2022-04', asOfLabel:'令和4年度(2022年度)', source:'沖縄県「県民経済計算」（1人当たり県民所得）', confidence:'observed'},
+  macro_tourist:         {asOf:'2025-04', asOfLabel:'令和7年度（年間実績・最多）', source:'沖縄県文化観光スポーツ部「入域観光客統計」', confidence:'observed'},
+  macro_unemployment:    {asOf:'2026-06', asOfLabel:'2026年6月', source:'沖縄県「令和8年6月の雇用状況」（沖縄県企画部、2026年8月14日公表）／原統計は総務省「労働力調査」', confidence:'observed', note:'2026-08-26 に沖縄県公式サイトで一次ソースを確認済み。3.1%は最新公表値（次点R8.7分は本稿執筆時点で未公表）。'},
+  macro_sofa:            {asOf:null, asOfLabel:null, source:'在沖米軍基地関連公表資料からの概算（koya推計）', confidence:'estimated', note:'公式の在沖軍属人口統計は非公表のため、複数の公開資料から概算した数値。'},
+  macro_poverty:         {asOf:null, asOfLabel:null, source:null, confidence:'unknown', note:'コード内に出典記載なし。沖縄県「子どもの貧困実態調査」系の可能性が高いが未確認。'},
+  macro_car:             {asOf:null, asOfLabel:null, source:null, confidence:'unknown', note:'コード内に出典記載なし。'},
+  macro_productivity:    {asOf:null, asOfLabel:null, source:null, confidence:'unknown', note:'コード内に出典記載なし。'},
+  macro_military_ratio:  {asOf:null, asOfLabel:null, source:null, confidence:'unknown', note:'コード内に出典記載なし。沖縄県が公表する数値と近似するが、本ファイル内に出典の引用がないため未確認扱いとする。'},
+  road:                  {asOf:null, asOfLabel:null, source:'全国道路交通センサス（国土交通省）', confidence:'estimated', note:'調査主体名は画面内バッジで既に明示。調査年度がデータに未記載。'},
+  gdp_muni:              {asOf:'2022-04', asOfLabel:'令和4年度(2022年度)', source:'沖縄県「市町村民経済計算」', confidence:'observed', note:'市町村別人口合計(1,470,217人)を沖縄県人口統計と突合し年度を特定。'},
+  social_pop:            {asOf:'2026-07', asOfLabel:'2026年7月', source:'沖縄県統計課', confidence:'observed'},
+  social_poverty:        {asOf:null, asOfLabel:null, source:null, confidence:'unknown', note:'コード内に出典記載なし。'},
+  behavioral:            {asOf:null, asOfLabel:null, source:null, confidence:'unknown', note:'コード内に出典記載なし。'},
+  correlation:           {asOf:null, asOfLabel:null, source:null, confidence:'estimated', note:'koya独自の相関分析。組み合わせ元の統計値は各項目のバッジを参照。'},
+  employment:            {asOf:'2022-04', asOfLabel:'令和4年度(2022年度)', source:'沖縄県「就業構造基本調査」', confidence:'observed'},
+  ogb_trends:            {asOf:'2026-01', asOfLabel:'令和8年1-3月期（最新速報）', source:'内閣府沖縄総合事務局・沖縄県 経済動向', confidence:'observed'},
+  fiscal:                {asOf:'2022-04', asOfLabel:'令和4年度決算確報', source:'総務省', confidence:'observed'},
+  structural_issues:     {asOf:null, asOfLabel:null, source:'沖縄県「沖縄21世紀ビジョン基本計画」', confidence:'estimated', note:'策定年度がデータに未記載。'},
+  sofa_highlight:        {asOf:null, asOfLabel:null, source:null, confidence:'unknown', note:'SOFA年間消費額(~¥520億)・PCS年間更新率(33%)・口コミ増幅率(×3.2)はコード内に出典記載なし。SOFA人口47,000人のみ macro_sofa として概算根拠を別途保持。'},
+};
+function provBadge(key, opts){
+  const info = DATA_PROVENANCE[key];
+  if(!info) return '';
+  const compact = opts && opts.compact;
+  const noteTxt = (info.note||info.source||'出典・対象年ともに未確認').replace(/"/g,'&quot;');
+  if(info.confidence === 'unknown'){
+    return `<span class="prov-badge prov-unknown" title="${noteTxt}">❓ 未確認（証拠区分D）</span>`;
+  }
+  const icon = info.confidence === 'observed' ? '📊' : '🔎';
+  const asOfTxt = info.asOfLabel ? `${info.asOfLabel}時点` : '時点未確認';
+  const srcTxt = (info.source || '出典未確認').replace(/"/g,'&quot;');
+  const label = info.confidence === 'observed' ? asOfTxt : `${asOfTxt}・推計`;
+  return `<span class="prov-badge prov-${info.confidence}" title="${srcTxt}">${icon} ${label}${compact?'':` ／ ${info.source||'出典未確認'}`}</span>`;
+}
+function tabAsOfBanner(keys){
+  const infos = (keys||[]).map(k=>DATA_PROVENANCE[k]).filter(Boolean);
+  const known = infos.filter(i=>i.asOf);
+  // 出典未確認（証拠区分D）と、出典は判明しているが対象年未確認（estimated）を区別する。
+  // 両方を「出典未確認」と一括りにすると、出典が実は分かっている項目まで証拠区分Dに見えてしまう。
+  const trulyUnknown = infos.filter(i=>i.confidence==='unknown').length;
+  const dateUnknownOnly = infos.filter(i=>i.confidence!=='unknown' && !i.asOf).length;
+  let oldest = null;
+  known.forEach(i=>{ if(!oldest || i.asOf < oldest.asOf) oldest = i; });
+  const parts = [];
+  if(oldest){
+    parts.push(`このタブの主要データは <b>${oldest.asOfLabel}</b> 時点が最古（${oldest.source}）`);
+  } else if(infos.length){
+    parts.push(`このタブの主要データは時点未確認の項目のみ`);
+  } else {
+    parts.push(`鮮度情報は各項目のバッジを参照`);
+  }
+  if(dateUnknownOnly>0){
+    parts.push(`<span style="color:#60a5fa">出典判明・対象年未確認 ${dateUnknownOnly}件</span>`);
+  }
+  if(trulyUnknown>0){
+    parts.push(`<span style="color:#9ca3af">出典未確認 ${trulyUnknown}件（証拠区分D）</span>`);
+  }
+  return `<div class="as-of-banner">🕒 ${parts.join(' ・ ')}</div>`;
 }
 // ===================== DATA =====================
 const MUNI_DATA = [
@@ -1314,6 +1393,7 @@ function showTab(id){
   if(id==='t14') setTimeout(initTab14,50);
   if(id==='t15') setTimeout(initTab15,50);
   if(id==='t16') setTimeout(initChecklist,50);
+  setTimeout(()=>{ if(typeof applyProvSlots==='function') applyProvSlots(); },150);
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById(id).classList.add('active');
@@ -1348,6 +1428,21 @@ function runDashboardInit(){
     const key = el.dataset.key;
     const compact = el.dataset.compact==='1';
     el.outerHTML = verifBadge(key, {compact});
+  });
+  applyProvSlots();
+  setTimeout(applyProvSlots, 200);
+}
+// R-09: as_of/出典バッジ・タブ代表年バナーの差し込み。動的にHTMLを書き換える
+// initTabXX() の後でも辿れるよう、各タブ初期化の末尾からも呼ばれる（冪等）。
+function applyProvSlots(){
+  document.querySelectorAll('.prov-slot').forEach(el=>{
+    const key = el.dataset.prov;
+    const compact = el.dataset.compact==='1';
+    el.outerHTML = provBadge(key, {compact});
+  });
+  document.querySelectorAll('.prov-banner-slot').forEach(el=>{
+    const keys = (el.dataset.keys||'').split(',').map(s=>s.trim()).filter(Boolean);
+    el.outerHTML = tabAsOfBanner(keys);
   });
 }
 runDashboardInit();
@@ -2650,17 +2745,20 @@ const PSY_BIZ = [
 ];
 
 // ─── マクロKPI ───────────────────────────────────────
+// R-09: 各値に as_of（対象年月）・source（出典）・confidence を並置。
+// 数字だけ更新して as_of を更新し忘れることを防ぐため、値と時刻を同じオブジェクトで持つ。
+// confidence: 'observed'=出典・対象年とも確認済み / 'estimated'=koya独自推計または出典のみ判明 / 'unknown'=未確認（証拠区分D）
 const MACRO_KPI = [
-  {v:"1,465,613人",l:"沖縄県総人口（R8.7）",col:"var(--gold)"},
-  {v:"4兆4,615億",l:"県内総生産GDP",col:"var(--blue)"},
-  {v:"224.9万円",l:"1人当たり所得（全国最下位）",col:"var(--red)"},
-  {v:"1,093.6万人",l:"年間観光客（R7最多）",col:"var(--green)"},
-  {v:"29.9%",l:"子ども貧困率（全国1位）",col:"var(--red)"},
-  {v:"1.383台/世帯",l:"乗用車保有（全国1位）",col:"var(--purple)"},
-  {v:"3.1%",l:"完全失業率（R8.6・全国最高水準）",col:"var(--teal)"},
-  {v:"47,000人",l:"在沖SOFAマーケット",col:"var(--orange)"},
-  {v:"349万円",l:"労働生産性（全国508万円）",col:"var(--red)"},
-  {v:"70.3%",l:"全国米軍施設の沖縄集中率",col:"var(--purple)"},
+  {v:"1,465,613人",l:"沖縄県総人口（R8.7）",col:"var(--gold)",as_of:"2026-07",source:"沖縄県統計課「推計人口」（2026年7月31日公表）",confidence:"observed"},
+  {v:"4兆4,615億",l:"県内総生産GDP",col:"var(--blue)",as_of:"2022-04",source:"沖縄県「県民経済計算」（令和4年度）",confidence:"observed"},
+  {v:"224.9万円",l:"1人当たり所得（全国最下位）",col:"var(--red)",as_of:"2022-04",source:"沖縄県「県民経済計算」（令和4年度）",confidence:"observed"},
+  {v:"1,093.6万人",l:"年間観光客（R7最多）",col:"var(--green)",as_of:"2025-04",source:"沖縄県文化観光スポーツ部「入域観光客統計」（令和7年度・年間実績）",confidence:"observed"},
+  {v:"29.9%",l:"子ども貧困率（全国1位）",col:"var(--red)",as_of:null,source:null,confidence:"unknown"},
+  {v:"1.383台/世帯",l:"乗用車保有（全国1位）",col:"var(--purple)",as_of:null,source:null,confidence:"unknown"},
+  {v:"3.1%",l:"完全失業率（R8.6・全国最高水準）",col:"var(--teal)",as_of:"2026-06",source:"沖縄県「令和8年6月の雇用状況」（沖縄県企画部、2026年8月14日公表）／原統計は総務省「労働力調査」",confidence:"observed"},
+  {v:"47,000人",l:"在沖SOFAマーケット",col:"var(--orange)",as_of:null,source:"在沖米軍基地関連公表資料からの概算（koya推計）",confidence:"estimated"},
+  {v:"349万円",l:"労働生産性（全国508万円）",col:"var(--red)",as_of:null,source:null,confidence:"unknown"},
+  {v:"70.3%",l:"全国米軍施設の沖縄集中率",col:"var(--purple)",as_of:null,source:null,confidence:"unknown"},
 ];
 
 
@@ -2974,11 +3072,18 @@ function initTab11(){
   // マクロKPI
   const macroEl = document.getElementById('macro-kpis');
   if(macroEl && macroEl.innerHTML===''){
-    macroEl.innerHTML = MACRO_KPI.map(k=>`
+    macroEl.innerHTML = MACRO_KPI.map(k=>{
+      const asOfTxt = k.as_of ? k.as_of+'時点' : '時点未確認';
+      const cls = k.confidence==='observed'?'prov-observed':k.confidence==='estimated'?'prov-estimated':'prov-unknown';
+      const icon = k.confidence==='observed'?'📊':k.confidence==='estimated'?'🔎':'❓';
+      const title = (k.source||'出典未確認').replace(/"/g,'&quot;');
+      return `
       <div class="kpi-mini" style="flex:1;min-width:130px">
         <div class="v" style="color:${k.col}">${k.v}</div>
         <div class="l">${k.l}</div>
-      </div>`).join('');
+        <div class="kpi-asof"><span class="prov-badge ${cls}" title="${title}">${icon} ${asOfTxt}</span></div>
+      </div>`;
+    }).join('');
   }
 
   // 国道テーブル
@@ -5392,13 +5497,14 @@ function toggleCheck(stateKey, id, biz, area) {
 <div id="t11" class="tab">
   <div class="sec-head">📊 統計数値ハブ — 社会学・行動学・経済学・統計学・心理学 全指標</div>
   <div class="sec-sub">道路交通量・市町村GDP・行政区推計GDP・社会指標・相関統計・消費心理スコアを一覧化。エリアマーケティング判断の根拠データベース。</div>
+  <span class="prov-banner-slot" data-keys="macro_pop,macro_gdp,macro_income,macro_tourist,macro_unemployment,gdp_muni,social_pop,employment,ogb_trends,fiscal"></span>
 
   <!-- マクロKPIミニ -->
   <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px" id="macro-kpis"></div>
 
   <!-- 道路交通量 -->
   <div class="stat-section">
-    <div class="stat-section-title">🛣️ 道路別交通量 — 実測値（台/日）</div>
+    <div class="stat-section-title">🛣️ 道路別交通量 — 実測値（台/日） <span class="prov-slot" data-prov="road" data-compact="1"></span></div>
     <div class="hub-grid">
       <div>
         <div style="font-size:10px;font-weight:700;color:var(--text2);margin-bottom:6px">国道・高速</div>
@@ -5417,7 +5523,7 @@ function toggleCheck(stateKey, id, biz, area) {
 
   <!-- GDP -->
   <div class="stat-section" style="margin-top:18px">
-    <div class="stat-section-title">💰 市町村・行政区 GDP・経済指標</div>
+    <div class="stat-section-title">💰 市町村・行政区 GDP・経済指標 <span class="prov-slot" data-prov="gdp_muni" data-compact="1"></span></div>
     <div class="hub-grid">
       <div>
         <div style="font-size:10px;font-weight:700;color:var(--text2);margin-bottom:6px">市町村別GDP・所得・生産性</div>
@@ -5440,7 +5546,7 @@ function toggleCheck(stateKey, id, biz, area) {
 
   <!-- 社会学 -->
   <div class="stat-section" style="margin-top:18px">
-    <div class="stat-section-title">🏘️ 社会学指標</div>
+    <div class="stat-section-title">🏘️ 社会学指標 <span class="prov-slot" data-prov="social_pop" data-compact="1"></span> <span class="prov-slot" data-prov="social_poverty" data-compact="1"></span></div>
     <div class="hub-grid3">
       <div>
         <div style="font-size:10px;font-weight:700;color:var(--text2);margin-bottom:6px">人口・世帯構造</div>
@@ -5459,7 +5565,7 @@ function toggleCheck(stateKey, id, biz, area) {
 
   <!-- 行動学 -->
   <div class="stat-section" style="margin-top:18px">
-    <div class="stat-section-title">🚗 行動学指標 — 移動・消費行動</div>
+    <div class="stat-section-title">🚗 行動学指標 — 移動・消費行動 <span class="prov-slot" data-prov="behavioral" data-compact="1"></span></div>
     <div class="hub-grid">
       <div>
         <div style="font-size:10px;font-weight:700;color:var(--text2);margin-bottom:6px">自動車保有・移動行動</div>
@@ -5474,7 +5580,7 @@ function toggleCheck(stateKey, id, biz, area) {
 
   <!-- 経済学・統計学 -->
   <div class="stat-section" style="margin-top:18px">
-    <div class="stat-section-title">📈 経済学・統計学指標 — 相関・回帰分析</div>
+    <div class="stat-section-title">📈 経済学・統計学指標 — 相関・回帰分析 <span class="prov-slot" data-prov="correlation" data-compact="1"></span></div>
     <div class="hub-grid">
       <div>
         <div style="font-size:10px;font-weight:700;color:var(--text2);margin-bottom:6px">主要相関係数マトリクス</div>
@@ -5512,7 +5618,7 @@ function toggleCheck(stateKey, id, biz, area) {
 
   <!-- 雇用構造・所得階級 深掘り分析 -->
   <div class="stat-section" style="margin-top:18px">
-    <div class="stat-section-title">💼 雇用構造・所得階級 深掘り分析（沖縄県「令和4年就業構造基本調査」）</div>
+    <div class="stat-section-title">💼 雇用構造・所得階級 深掘り分析（沖縄県「令和4年就業構造基本調査」） <span class="prov-slot" data-prov="employment" data-compact="1"></span></div>
     <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px" id="emp-headline-kpi"></div>
     <div class="g2">
       <div class="panel">
@@ -5528,13 +5634,13 @@ function toggleCheck(stateKey, id, biz, area) {
 
   <!-- 沖縄が抱える構造的課題 -->
   <div class="stat-section" style="margin-top:18px">
-    <div class="stat-section-title">📋 沖縄が抱える構造的課題（沖縄21世紀ビジョン基本計画「4つの固有課題」）</div>
+    <div class="stat-section-title">📋 沖縄が抱える構造的課題（沖縄21世紀ビジョン基本計画「4つの固有課題」） <span class="prov-slot" data-prov="structural_issues" data-compact="1"></span></div>
     <div id="structural-issues-cards" style="display:flex;flex-direction:column;gap:8px"></div>
   </div>
 
   <!-- 沖縄総合事務局・県経済動向 -->
   <div class="stat-section" style="margin-top:18px">
-    <div class="stat-section-title">🏢 沖縄総合事務局・県経済動向（最新四半期速報 R8年1-3月期）</div>
+    <div class="stat-section-title">🏢 沖縄総合事務局・県経済動向（最新四半期速報 R8年1-3月期） <span class="prov-slot" data-prov="ogb_trends" data-compact="1"></span></div>
     <div class="sec-sub" style="margin-bottom:10px">内閣府沖縄総合事務局財務部「法人企業景気予測調査」・沖縄県企画部「沖縄県経済動向」より。景気判断は<span style="color:var(--gold);font-weight:700">「景気は、拡大基調にある」（4期連続）</span>。</div>
     <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px" id="ogb-judgment-kpi"></div>
     <div style="max-height:340px;overflow-y:auto">
@@ -5544,7 +5650,7 @@ function toggleCheck(stateKey, id, biz, area) {
 
   <!-- 財政・税収 -->
   <div class="stat-section" style="margin-top:18px">
-    <div class="stat-section-title">🏛️ 財政・税収指標（総務省R4決算確報・41市町村）</div>
+    <div class="stat-section-title">🏛️ 財政・税収指標（総務省R4決算確報・41市町村） <span class="prov-slot" data-prov="fiscal" data-compact="1"></span></div>
     <div class="hub-grid">
       <div>
         <div style="font-size:10px;font-weight:700;color:var(--text2);margin-bottom:6px">市町村別財政力・税収（百万円）</div>
@@ -5962,6 +6068,7 @@ function toggleCheck(stateKey, id, biz, area) {
 <div id="t15" class="tab">
   <div class="sec-head">🪖 SOFA軍属マーケット — 米軍家族市場インテリジェンス</div>
   <div class="sec-sub">在沖米軍約2.6万世帯の経済・行動・消費パターン分析。英語対応事業者にのみ見える「見えない市場」を数値化。</div>
+  <span class="prov-banner-slot" data-keys="macro_sofa,sofa_highlight"></span>
 
   <div class="kpi-row" id="t15-kpi-row" style="margin-bottom:16px"></div>
 
