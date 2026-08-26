@@ -69,6 +69,13 @@ const FALLBACK = {
   DEXJPUS: 155.8, CPIAUCSL: 3.4, CPILFESL: 3.6, CUSR0000SEFV: 4.2,
   UNRATE: 4.2, CES0500000003: 35.1, FEDFUNDS: 4.33, DGS10: 4.45, UMCSENT: 67.5
 };
+// R-01（沈黙故障修正）: 静的フォールバック値を「現在値」として無言表示しないための補助関数。
+// 呼び出し側は live:false のとき、必ず画面上に「フォールバック」である旨を表示すること。
+function liveOrFallback(liveValue, fallbackKey) {
+  return (liveValue != null && !isNaN(liveValue))
+    ? { v: liveValue, live: true }
+    : { v: FALLBACK[fallbackKey], live: false };
+}
 
 // GDELT Topics
 const GDELT_TOPICS = [
@@ -189,12 +196,14 @@ async function fredFetch(seriesId, limit=24) {
     if(!r.ok) throw new Error('HTTP '+r.status);
     const j = await r.json();
     const obs = (j.observations||[]).filter(o=>o.value!='.' && o.value!='');
-    return obs.map(o=>({ date:o.date, value:parseFloat(o.value) }));
+    return { data: obs.map(o=>({ date:o.date, value:parseFloat(o.value) })), error:null };
   } catch(e) {
     console.warn('FRED fetch failed:',seriesId, e.message);
-    return null;
+    return { data:null, error: e.message||'fetch failed' };
   }
 }
+
+const FRED_KEYS = ['DEXJPUS','CPIAUCSL','CPILFESL','CUSR0000SEFV','UNRATE','CES0500000003','FEDFUNDS','DGS10','UMCSENT'];
 
 async function loadFredData() {
   const results = await Promise.allSettled([
@@ -208,19 +217,22 @@ async function loadFredData() {
     fredFetch('DGS10',30),
     fredFetch('UMCSENT',24)
   ]);
-  const keys = ['DEXJPUS','CPIAUCSL','CPILFESL','CUSR0000SEFV','UNRATE','CES0500000003','FEDFUNDS','DGS10','UMCSENT'];
   const data = {};
+  const errors = {};
   let liveCount = 0;
-  keys.forEach((k,i) => {
+  FRED_KEYS.forEach((k,i) => {
     const r = results[i];
-    if(r.status==='fulfilled' && r.value && r.value.length>0) {
-      data[k] = sortAsc(r.value);
+    if(r.status==='fulfilled' && r.value && r.value.data && r.value.data.length>0) {
+      data[k] = sortAsc(r.value.data);
+      errors[k] = null;
       liveCount++;
     } else {
       data[k] = null;
+      errors[k] = (r.status==='fulfilled' && r.value && r.value.error) ? r.value.error
+                 : (r.status==='rejected' ? (r.reason&&r.reason.message||'fetch failed') : 'fetch failed');
     }
   });
-  return { data, liveCount };
+  return { data, errors, liveCount };
 }
 
 function extractLatest(series) {
@@ -250,10 +262,10 @@ async function gdeltFetch(topic, timespan='30d') {
     const r = await fetch(url, {signal: AbortSignal.timeout(12000)});
     if(!r.ok) throw new Error('HTTP '+r.status);
     const j = await r.json();
-    return j.articles || [];
+    return { articles: j.articles || [], error:null };
   } catch(e) {
     console.warn('GDELT fetch failed:',topic.id, e.message);
-    return null;
+    return { articles:null, error: e.message||'timeout/failed' };
   }
 }
 
@@ -264,7 +276,10 @@ const POS_WORDS = ['agreement','dialogue','cooperation','stable','growth','cooli
   'easing','peace','support','alliance','deterrence','investment','readiness'];
 
 function scoreArticles(articles, weight) {
-  if(!articles||articles.length===0) return 18;
+  // R-01: articles===null は「取得失敗」であり「記事0件（実測）」とは区別する。
+  // 取得失敗を無言でベーススコア18として計算に混ぜない（沈黙故障の温床だったため）。
+  if(articles===null) return null;
+  if(articles.length===0) return 18;
   const text = articles.map(a=>(a.title||'')+(a.seendate||'')).join(' ').toLowerCase();
   const riskHits = RISK_WORDS.filter(w=>text.includes(w.toLowerCase())).length;
   const posHits = POS_WORDS.filter(w=>text.includes(w.toLowerCase())).length;
@@ -278,13 +293,18 @@ async function loadGdeltData(timespan='30d') {
   );
   const scores = {};
   const articles = {};
+  const errors = {};
   GDELT_TOPICS.forEach((t,i) => {
     const r = results[i];
-    const arts = r.status==='fulfilled' ? r.value : null;
+    const payload = r.status==='fulfilled' ? r.value : null;
+    const arts = payload ? payload.articles : null;
     articles[t.id] = arts || [];
     scores[t.id] = scoreArticles(arts, t.weight);
+    errors[t.id] = (arts===null)
+      ? ((payload&&payload.error) ? payload.error : (r.status==='rejected' ? (r.reason&&r.reason.message||'timeout') : 'timeout/failed'))
+      : null;
   });
-  return { scores, articles };
+  return { scores, articles, errors };
 }
 
 // ─────────────────────────────────────────────
@@ -311,7 +331,7 @@ function calcMacroScore(fredVals) {
   return clamp(Math.round(score), 0, 100);
 }
 
-function calcAllScores(fredVals, gdeltScores) {
+function calcAllScores(fredVals, gdeltScores, missingInputs=0, totalInputs=0) {
   const g = gdeltScores || {};
   const eastAsia = clamp(Math.round(
     (g.taiwan_strait||50)*0.5 + (g.north_korea||50)*0.5
@@ -328,24 +348,31 @@ function calcAllScores(fredVals, gdeltScores) {
   const buyingIntent = clamp(Math.round(
     50 + (macro-50)*0.4 - (consumerStress-50)*0.2
   ), 0, 100);
-  const okinawaMarket = clamp(Math.round(
-    50 + forwardPosture*0.15 + okinawaBase*0.20 + defenseBudget*0.15 +
-    macro*0.10 - (100-okinawaBase)*0.05 + eastAsia*0.08
-  ), 0, 100);
-  const fx = fredVals.DEXJPUS || FALLBACK.DEXJPUS;
-  const ahe = fredVals.CES0500000003 || FALLBACK.CES0500000003;
-  const cpi = fredVals.CPIAUCSL || FALLBACK.CPIAUCSL;
-  const fxBoost = clamp((fx-130)/3, 0, 15);
-  const wageBoost = clamp((ahe-32)*1.5, 0, 8);
-  const inflationBoost = clamp((cpi-3)*2, 0, 6);
-  const familyTree = clamp(Math.round(
-    50 + fxBoost + wageBoost + inflationBoost + okinawaBase*0.15 + buyingIntent*0.10
-    - (eastAsia>80?8:0)
-  ), 0, 100);
+  // R-01: 総合スコア（沖縄市場・FTO）は、必要な入力指標（FRED9系列+GDELT8系列=計17）が
+  // 1つでも欠けている場合は数値を算出せず、算出不可として扱う（欠測値からのスコア算出を廃止）。
+  const scoreUnavailable = missingInputs > 0;
+  let okinawaMarket = null, familyTree = null;
+  if (!scoreUnavailable) {
+    okinawaMarket = clamp(Math.round(
+      50 + forwardPosture*0.15 + okinawaBase*0.20 + defenseBudget*0.15 +
+      macro*0.10 - (100-okinawaBase)*0.05 + eastAsia*0.08
+    ), 0, 100);
+    const fx = fredVals.DEXJPUS || FALLBACK.DEXJPUS;
+    const ahe = fredVals.CES0500000003 || FALLBACK.CES0500000003;
+    const cpi = fredVals.CPIAUCSL || FALLBACK.CPIAUCSL;
+    const fxBoost = clamp((fx-130)/3, 0, 15);
+    const wageBoost = clamp((ahe-32)*1.5, 0, 8);
+    const inflationBoost = clamp((cpi-3)*2, 0, 6);
+    familyTree = clamp(Math.round(
+      50 + fxBoost + wageBoost + inflationBoost + okinawaBase*0.15 + buyingIntent*0.10
+      - (eastAsia>80?8:0)
+    ), 0, 100);
+  }
   return {
     eastAsia, taiwanRisk, forwardPosture, okinawaBase,
     defenseBudget, usPolitics, consumerStress, buyingIntent,
-    okinawaMarket, familyTree, macro
+    okinawaMarket, familyTree, macro,
+    scoreUnavailable, missingInputs, totalInputs
   };
 }
 
@@ -392,10 +419,24 @@ function ScoreCircle({ score, size=80 }) {
   );
 }
 
-function KpiCard({ title, value, sub, score, trend, unit, icon, loading }) {
+function KpiCard({ title, value, sub, score, trend, unit, icon, loading, failed, failReason, failTime }) {
   const hasScore = score!=null;
   const clr = hasScore ? scoreColor(score) : 'text-blue-400';
   const bg = hasScore ? scoreBg(score) : '';
+  // R-01 fix-1: 取得失敗指標は数値もスコアも表示せず、明示的な失敗状態のみを表示する。
+  if (!loading && failed) {
+    return (
+      <div className="kpi-card rounded-xl p-4 bg-red-950/40 border border-red-800/60" style={{minHeight:120}}>
+        <div className="flex items-start justify-between mb-2">
+          <div className="text-xs text-slate-400 font-medium uppercase tracking-wider leading-tight" style={{maxWidth:'70%'}}>{title}</div>
+          {icon && <span className="text-lg opacity-40">{icon}</span>}
+        </div>
+        <div className="text-base font-bold text-red-400 mb-1">⚠ 取得失敗</div>
+        <div className="text-xs text-red-300 break-words">{failReason||'不明なエラー'}</div>
+        {failTime && <div className="text-[10px] text-slate-500 mt-1">{failTime}</div>}
+      </div>
+    );
+  }
   return (
     <div className={`kpi-card rounded-xl p-4 ${bg}`} style={{minHeight:120}}>
       <div className="flex items-start justify-between mb-2">
@@ -481,8 +522,9 @@ function prepChartData(series, label, limit=24) {
 // HEADER COMPONENT
 // ─────────────────────────────────────────────
 function Header({ scores, lastUpdate, loading, onRefresh, fredLive, gdeltLive }) {
-  const mktScore = scores?.okinawaMarket || 0;
-  const ftScore = scores?.familyTree || 0;
+  const mktScore = scores?.okinawaMarket;
+  const ftScore = scores?.familyTree;
+  const unavailable = !!scores?.scoreUnavailable;
   return (
     <header className="bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 border-b border-blue-900/40 px-4 py-3 sticky top-0 z-50">
       <div className="max-w-screen-2xl mx-auto flex flex-wrap items-center gap-3">
@@ -499,7 +541,12 @@ function Header({ scores, lastUpdate, loading, onRefresh, fredLive, gdeltLive })
             <div className={`w-2 h-2 rounded-full ${gdeltLive>0?'bg-blue-400':'bg-red-400'}`}/>
             <span className="text-xs text-slate-400">GDELT {gdeltLive}/8</span>
           </div>
-          {scores && (
+          {scores && unavailable && (
+            <div className="text-xs font-bold px-2 py-1 rounded bg-slate-800 text-slate-400 border border-slate-600">
+              算出不可（入力{scores.missingInputs}/{scores.totalInputs}欠測）
+            </div>
+          )}
+          {scores && !unavailable && (
             <>
               <div className={`text-xs font-bold px-2 py-1 rounded ${scoreBg(mktScore)} ${scoreColor(mktScore)}`}>
                 沖縄市場 {mktScore}
@@ -524,34 +571,56 @@ function Header({ scores, lastUpdate, loading, onRefresh, fredLive, gdeltLive })
 // ─────────────────────────────────────────────
 // KPI CARDS PANEL
 // ─────────────────────────────────────────────
-function IntelligenceKpiCards({ fredVals, fredSeries, scores, loading }) {
-  const fx = extractLatest(fredSeries?.DEXJPUS) || FALLBACK.DEXJPUS;
-  const fxMom = fredSeries?.DEXJPUS ? (fx - (fredSeries.DEXJPUS[fredSeries.DEXJPUS.length-2]?.value||fx)) : null;
+function IntelligenceKpiCards({ fredVals, fredSeries, fredErrors, scores, loading }) {
+  const fe = fredErrors || {};
+  const nowJst = ()=>new Date().toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'})+' JST';
+  // R-01 fix-1: 取得失敗（fredErrors[key]が真）の指標は、数値もスコアもFALLBACK補完で
+  // 計算せず、failed状態を渡してKpiCard側で「取得失敗」表示に切り替える。
+  const fx = extractLatest(fredSeries?.DEXJPUS);
+  const fxFailed = !!fe.DEXJPUS || fx==null;
+  const fxMom = (!fxFailed && fredSeries?.DEXJPUS) ? (fx - (fredSeries.DEXJPUS[fredSeries.DEXJPUS.length-2]?.value||fx)) : null;
+
   const cpiYoY = extractYoY(fredSeries?.CPIAUCSL);
-  const ahe = extractLatest(fredSeries?.CES0500000003) || FALLBACK.CES0500000003;
-  const ur = extractLatest(fredSeries?.UNRATE) || FALLBACK.UNRATE;
-  const sent = extractLatest(fredSeries?.UMCSENT) || FALLBACK.UMCSENT;
+  const cpiFailed = !!fe.CPIAUCSL || cpiYoY==null;
+
+  const ahe = extractLatest(fredSeries?.CES0500000003);
+  const aheFailed = !!fe.CES0500000003 || ahe==null;
+
+  const ur = extractLatest(fredSeries?.UNRATE);
+  const urFailed = !!fe.UNRATE || ur==null;
+
+  const sent = extractLatest(fredSeries?.UMCSENT);
+  const sentFailed = !!fe.UMCSENT || sent==null;
+
+  const scoreUnavailable = !!scores?.scoreUnavailable;
+  const missingNote = scoreUnavailable ? `算出不可（入力${scores.missingInputs}/${scores.totalInputs}欠測）` : null;
+
   const cards = [
-    { title:"USD / JPY", value: fmtNum(fx,2), sub:"対米ドル円相場", trend:fxMom, unit:"円", icon:"💱",
-      score: clamp(Math.round(50+(fx-130)/3),0,100) },
-    { title:"CPI YoY", value: fmtNum(cpiYoY,1), unit:"%", sub:"消費者物価前年比", icon:"📈",
-      score: clamp(Math.round(50+(cpiYoY-2.5)*5),0,100) },
-    { title:"平均時給", value: `$${fmtNum(ahe,2)}`, sub:"Average Hourly Earnings", icon:"💰",
-      score: clamp(Math.round(50+(ahe-32)*4),0,100) },
-    { title:"失業率", value: fmtNum(ur,1), unit:"%", sub:"U.S. Unemployment Rate", icon:"👥",
-      score: clamp(Math.round(50+(4.5-ur)*10),0,100) },
-    { title:"消費者信頼感", value: fmtNum(sent,1), sub:"Michigan Consumer Sentiment", icon:"🧭",
-      score: clamp(Math.round(sent),0,100) },
-    { title:"東アジア緊張", value: scores?.eastAsia||'--', sub:"台湾海峡・北朝鮮リスク", icon:"🌏",
+    { title:"USD / JPY", failed:fxFailed, failReason: fe.DEXJPUS?('HTTP/取得エラー: '+fe.DEXJPUS):'値が取得できませんでした', failTime: nowJst(),
+      value: fmtNum(fx,2), sub:"対米ドル円相場", trend:fxMom, unit:"円", icon:"💱",
+      score: fxFailed?null:clamp(Math.round(50+(fx-130)/3),0,100) },
+    { title:"CPI YoY", failed:cpiFailed, failReason: fe.CPIAUCSL?('HTTP/取得エラー: '+fe.CPIAUCSL):'YoY計算に必要なデータ不足', failTime: nowJst(),
+      value: fmtNum(cpiYoY,1), unit:"%", sub:"消費者物価前年比", icon:"📈",
+      score: cpiFailed?null:clamp(Math.round(50+(cpiYoY-2.5)*5),0,100) },
+    { title:"平均時給", failed:aheFailed, failReason: fe.CES0500000003?('HTTP/取得エラー: '+fe.CES0500000003):'値が取得できませんでした', failTime: nowJst(),
+      value: `$${fmtNum(ahe,2)}`, sub:"Average Hourly Earnings", icon:"💰",
+      score: aheFailed?null:clamp(Math.round(50+(ahe-32)*4),0,100) },
+    { title:"失業率", failed:urFailed, failReason: fe.UNRATE?('HTTP/取得エラー: '+fe.UNRATE):'値が取得できませんでした', failTime: nowJst(),
+      value: fmtNum(ur,1), unit:"%", sub:"U.S. Unemployment Rate", icon:"👥",
+      score: urFailed?null:clamp(Math.round(50+(4.5-ur)*10),0,100) },
+    { title:"消費者信頼感", failed:sentFailed, failReason: fe.UMCSENT?('HTTP/取得エラー: '+fe.UMCSENT):'値が取得できませんでした', failTime: nowJst(),
+      value: fmtNum(sent,1), sub:"Michigan Consumer Sentiment", icon:"🧭",
+      score: sentFailed?null:clamp(Math.round(sent),0,100) },
+    { title:"東アジア緊張", value: scores?.eastAsia??'--', sub:"台湾海峡・北朝鮮リスク", icon:"🌏",
       score: scores?.eastAsia },
-    { title:"沖縄基地重要度", value: scores?.okinawaBase||'--', sub:"USFJ・嘉手納・基地動向", icon:"🛡️",
+    { title:"沖縄基地重要度", value: scores?.okinawaBase??'--', sub:"USFJ・嘉手納・基地動向", icon:"🛡️",
       score: scores?.okinawaBase },
-    { title:"米国防予算勢い", value: scores?.defenseBudget||'--', sub:"DoD予算・国防産業", icon:"🏛️",
+    { title:"米国防予算勢い", value: scores?.defenseBudget??'--', sub:"DoD予算・国防産業", icon:"🏛️",
       score: scores?.defenseBudget },
-    { title:"沖縄米軍市場安定", value: scores?.okinawaMarket||'--', sub:"市場維持・拡大判定", icon:"⚓",
-      score: scores?.okinawaMarket },
-    { title:"FamilyTreeOki 追い風", value: scores?.familyTree||'--', sub:"事業総合追い風スコア", icon:"🌸",
-      score: scores?.familyTree },
+    { title:"沖縄米軍市場安定", value: scoreUnavailable?missingNote:(scores?.okinawaMarket??'--'), sub:"市場維持・拡大判定", icon:"⚓",
+      score: scoreUnavailable?null:scores?.okinawaMarket },
+    { title:"FamilyTreeOki 追い風", value: scoreUnavailable?missingNote:(scores?.familyTree??'--'), sub:"事業総合追い風スコア", icon:"🌸",
+      score: scoreUnavailable?null:scores?.familyTree },
   ];
   return (
     <div>
@@ -762,7 +831,9 @@ function GeopoliticalPanel({ gdeltScores, gdeltArticles, gdeltTimespan, onTimesp
 // USFJ / OKINAWA PANEL
 // ─────────────────────────────────────────────
 function UsfjOkinawaPanel({ scores, fredVals, fredSeries }) {
-  const fx = extractLatest(fredSeries?.DEXJPUS) || FALLBACK.DEXJPUS;
+  const fxLF = liveOrFallback(extractLatest(fredSeries?.DEXJPUS), 'DEXJPUS');
+  const fx = fxLF.v;
+  const fxIsFallback = !fxLF.live;
   const totalSofa = SOFA_BASES.reduce((s,b)=>s+b.pop,0);
   return (
     <div className="space-y-6">
@@ -806,9 +877,12 @@ function UsfjOkinawaPanel({ scores, fredVals, fredSeries }) {
               <span className="text-slate-200">${OHA_DATA.min}〜${OHA_DATA.max}</span>
             </div>
             <div className="flex justify-between border-b border-slate-800 py-1.5">
-              <span className="text-slate-400">OHA（円換算 @{fmtNum(fx,0)}円)</span>
+              <span className="text-slate-400">OHA（円換算 @{fmtNum(fx,0)}円{fxIsFallback && <span className="text-orange-400 font-bold"> [フォールバック]</span>})</span>
               <span className="text-yellow-300 font-bold">¥{Math.round(OHA_DATA.average*fx).toLocaleString()}/月</span>
             </div>
+            {fxIsFallback && (
+              <div className="text-[10px] text-orange-400 -mt-1 mb-1">⚠ USD/JPYはFRED取得失敗のため静的フォールバック値（{FALLBACK.DEXJPUS}円）を使用中。現在の実勢レートではありません。</div>
+            )}
             <div className="flex justify-between border-b border-slate-800 py-1.5">
               <span className="text-slate-400">最終更新</span>
               <span className="text-slate-400">{OHA_DATA.lastUpdate}</span>
@@ -830,7 +904,7 @@ function UsfjOkinawaPanel({ scores, fredVals, fredSeries }) {
               <th className="text-right pr-4">BAH/OHA</th>
               <th className="text-right pr-4">BAS</th>
               <th className="text-right pr-4">合計/月</th>
-              <th className="text-right">円換算合計</th>
+              <th className="text-right">円換算合計{fxIsFallback && <span className="text-orange-400"> [フォールバック]</span>}</th>
             </tr></thead>
             <tbody>
               {Object.entries(MIL_PAY).map(([rank, pay])=>(
@@ -906,10 +980,11 @@ function PriceSignalPanel({ fredSeries }) {
 // BUSINESS IMPACT PANEL
 // ─────────────────────────────────────────────
 function BusinessImpactPanel({ scores, fredVals, fredSeries }) {
-  const fx = extractLatest(fredSeries?.DEXJPUS) || FALLBACK.DEXJPUS;
-  const ahe = extractLatest(fredSeries?.CES0500000003) || FALLBACK.CES0500000003;
-  const cpi = extractYoY(fredSeries?.CPIAUCSL) || FALLBACK.CPIAUCSL;
-  const sent = extractLatest(fredSeries?.UMCSENT) || FALLBACK.UMCSENT;
+  const fxLF = liveOrFallback(extractLatest(fredSeries?.DEXJPUS), 'DEXJPUS');
+  const aheLF = liveOrFallback(extractLatest(fredSeries?.CES0500000003), 'CES0500000003');
+  const cpiLF = liveOrFallback(extractYoY(fredSeries?.CPIAUCSL), 'CPIAUCSL');
+  const sentLF = liveOrFallback(extractLatest(fredSeries?.UMCSENT), 'UMCSENT');
+  const fx = fxLF.v, ahe = aheLF.v, cpi = cpiLF.v, sent = sentLF.v;
 
   function getAction(score, actions) {
     if(score>=80) return actions[0];
@@ -970,15 +1045,15 @@ function BusinessImpactPanel({ scores, fredVals, fredSeries }) {
           <div className="text-sm font-semibold text-slate-200 mb-3">主要指標サマリー</div>
           <div className="space-y-2 text-xs">
             {[
-              { label:'USD/JPY', v:`¥${fmtNum(fx,2)}`, note:fx>145?'円安 → 沖縄サービスが米軍に割安':'円高傾向' },
-              { label:'米国平均時給', v:`$${fmtNum(ahe,2)}/hr`, note:'軍人・軍属の可処分所得に連動' },
-              { label:'CPI前年比', v:`${fmtNum(cpi,1)}%`, note:cpi>3?'高インフレ → 沖縄割安感強化':'インフレ安定' },
-              { label:'消費者信頼感', v:`${fmtNum(sent,1)}pt`, note:sent>70?'消費意欲強い':'消費慎重化傾向' },
-              { label:'OHA平均（沖縄）', v:`$${OHA_DATA.average}/月`, note:`¥${Math.round(OHA_DATA.average*fx).toLocaleString()}相当` },
+              { label:'USD/JPY', v:`¥${fmtNum(fx,2)}`, fallback:!fxLF.live, note:fx>145?'円安 → 沖縄サービスが米軍に割安':'円高傾向' },
+              { label:'米国平均時給', v:`$${fmtNum(ahe,2)}/hr`, fallback:!aheLF.live, note:'軍人・軍属の可処分所得に連動' },
+              { label:'CPI前年比', v:`${fmtNum(cpi,1)}%`, fallback:!cpiLF.live, note:cpi>3?'高インフレ → 沖縄割安感強化':'インフレ安定' },
+              { label:'消費者信頼感', v:`${fmtNum(sent,1)}pt`, fallback:!sentLF.live, note:sent>70?'消費意欲強い':'消費慎重化傾向' },
+              { label:'OHA平均（沖縄）', v:`$${OHA_DATA.average}/月`, fallback:!fxLF.live, note:`¥${Math.round(OHA_DATA.average*fx).toLocaleString()}相当${!fxLF.live?'（USD/JPYはフォールバック値）':''}` },
             ].map(row=>(
               <div key={row.label} className="flex flex-col border-b border-slate-800 py-1.5">
                 <div className="flex justify-between">
-                  <span className="text-slate-400">{row.label}</span>
+                  <span className="text-slate-400">{row.label}{row.fallback && <span className="text-orange-400 font-bold"> [フォールバック]</span>}</span>
                   <span className="text-blue-300 font-bold font-mono">{row.v}</span>
                 </div>
                 <span className="text-slate-500 text-xs">{row.note}</span>
@@ -1115,12 +1190,19 @@ function SourceMonitorTable() {
 // MONTHLY INTELLIGENCE REPORT
 // ─────────────────────────────────────────────
 function MonthlyIntelligenceReport({ scores, fredVals, fredSeries, gdeltScores, gdeltArticles }) {
-  const fx = extractLatest(fredSeries?.DEXJPUS) || FALLBACK.DEXJPUS;
-  const cpi = extractYoY(fredSeries?.CPIAUCSL) || FALLBACK.CPIAUCSL;
-  const ahe = extractLatest(fredSeries?.CES0500000003) || FALLBACK.CES0500000003;
-  const ur = extractLatest(fredSeries?.UNRATE) || FALLBACK.UNRATE;
-  const ff = extractLatest(fredSeries?.FEDFUNDS) || FALLBACK.FEDFUNDS;
-  const sent = extractLatest(fredSeries?.UMCSENT) || FALLBACK.UMCSENT;
+  const fxLF = liveOrFallback(extractLatest(fredSeries?.DEXJPUS), 'DEXJPUS');
+  const cpiLF = liveOrFallback(extractYoY(fredSeries?.CPIAUCSL), 'CPIAUCSL');
+  const aheLF = liveOrFallback(extractLatest(fredSeries?.CES0500000003), 'CES0500000003');
+  const urLF = liveOrFallback(extractLatest(fredSeries?.UNRATE), 'UNRATE');
+  const ffLF = liveOrFallback(extractLatest(fredSeries?.FEDFUNDS), 'FEDFUNDS');
+  const sentLF = liveOrFallback(extractLatest(fredSeries?.UMCSENT), 'UMCSENT');
+  const dgsLF = liveOrFallback(extractLatest(fredSeries?.DGS10), 'DGS10');
+  const fx=fxLF.v, cpi=cpiLF.v, ahe=aheLF.v, ur=urLF.v, ff=ffLF.v, sent=sentLF.v;
+  const anyFallback = [fxLF,cpiLF,aheLF,urLF,ffLF,sentLF,dgsLF].some(x=>!x.live);
+  const fallbackNames = [
+    !fxLF.live&&'USD/JPY', !cpiLF.live&&'CPI', !aheLF.live&&'平均時給',
+    !urLF.live&&'失業率', !ffLF.live&&'FF金利', !sentLF.live&&'消費者信頼感', !dgsLF.live&&'10年債利回り'
+  ].filter(Boolean).join('・');
   const now = new Date();
   const reportMonth = `${now.getFullYear()}年${now.getMonth()+1}月`;
   const ftScore = scores?.familyTree||50;
@@ -1136,6 +1218,13 @@ function MonthlyIntelligenceReport({ scores, fredVals, fredSeries, gdeltScores, 
   return (
     <div className="space-y-6">
       <SectionHeader title={`月次インテリジェンスレポート — ${reportMonth}`} sub="公開データ・APIデータ・推計モデルによる経営判断支援レポート"/>
+      {anyFallback && (
+        <div className="panel-card rounded-xl p-3 border border-orange-700 bg-orange-950/30">
+          <p className="text-xs text-orange-300">
+            ⚠ [フォールバック] 以下の指標はFRED APIから取得できず、静的フォールバック値を使用しています（現在の実勢値ではありません）: {fallbackNames}
+          </p>
+        </div>
+      )}
       <div className={`panel-card rounded-xl p-5 border-l-4 ${mktScore>=70?'border-green-500':mktScore>=55?'border-yellow-500':'border-red-500'}`}>
         <div className="flex items-center gap-3 mb-3">
           <div className="text-lg">📋</div>
@@ -1159,7 +1248,7 @@ function MonthlyIntelligenceReport({ scores, fredVals, fredSeries, gdeltScores, 
         {[
           {
             num:2, icon:'📊', title:'米国マクロ経済',
-            content:`GDP成長継続。FF金利${fmtNum(ff,2)}%で金融引き締めは継続中。10年債利回り${fmtNum(extractLatest(fredSeries?.DGS10)||FALLBACK.DGS10,2)}%。消費者信頼感${fmtNum(sent,1)}pt（${sent>=70?'良好':'注意水準'}）。米国経済の底堅さが在日米軍への予算配分を下支え。`
+            content:`GDP成長継続。FF金利${fmtNum(ff,2)}%で金融引き締めは継続中。10年債利回り${fmtNum(dgsLF.v,2)}%。消費者信頼感${fmtNum(sent,1)}pt（${sent>=70?'良好':'注意水準'}）。米国経済の底堅さが在日米軍への予算配分を下支え。`
           },
           {
             num:3, icon:'💸', title:'米国インフレ・賃金・雇用',
@@ -1249,7 +1338,7 @@ function MonthlyIntelligenceReport({ scores, fredVals, fredSeries, gdeltScores, 
 // ─────────────────────────────────────────────
 // OVERVIEW TAB
 // ─────────────────────────────────────────────
-function OverviewTab({ scores, fredSeries, loading }) {
+function OverviewTab({ scores, fredSeries, fredErrors, loading }) {
   const fxData = useMemo(()=>prepChartData(fredSeries?.DEXJPUS,null,20),[fredSeries]);
   const urData = useMemo(()=>prepChartData(fredSeries?.UNRATE,null,20),[fredSeries]);
   const cpiData = useMemo(()=>{
@@ -1273,7 +1362,7 @@ function OverviewTab({ scores, fredSeries, loading }) {
 
   return (
     <div className="space-y-6">
-      <IntelligenceKpiCards fredVals={{}} fredSeries={fredSeries} scores={scores} loading={loading}/>
+      <IntelligenceKpiCards fredVals={{}} fredSeries={fredSeries} fredErrors={fredErrors} scores={scores} loading={loading}/>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div className="panel-card rounded-xl p-4">
           <div className="text-xs font-semibold text-slate-300 mb-3">USD/JPY推移（直近20ヶ月）</div>
@@ -1353,9 +1442,11 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [fredSeries, setFredSeries] = useState(null);
   const [fredLive, setFredLive] = useState(0);
+  const [fredErrors, setFredErrors] = useState({});
   const [gdeltScores, setGdeltScores] = useState(null);
   const [gdeltArticles, setGdeltArticles] = useState(null);
   const [gdeltLive, setGdeltLive] = useState(0);
+  const [gdeltErrors, setGdeltErrors] = useState({});
   const [gdeltTimespan, setGdeltTimespan] = useState('30d');
   const [scores, setScores] = useState(null);
   const [lastUpdate, setLastUpdate] = useState(null);
@@ -1368,34 +1459,40 @@ function App() {
   async function fetchAll(force=false) {
     setLoading(true);
     addLog('データ取得開始...');
-    let fredData={}, fLive=0, gScores=null, gArts=null, gLive=0;
+    let fredData={}, fLive=0, fErrors={}, gScores=null, gArts=null, gLive=0, gErrors={};
     const cached = force ? null : cacheGet();
     if(cached) {
       addLog('キャッシュからデータ復元');
       fredData = cached.fredSeries||{};
       fLive = cached.fredLive||0;
+      fErrors = cached.fredErrors||{};
       gScores = cached.gdeltScores||null;
       gArts = cached.gdeltArticles||null;
       gLive = cached.gdeltLive||0;
+      gErrors = cached.gdeltErrors||{};
     } else {
       addLog('FRED APIからデータ取得中...');
       const fredResult = await loadFredData();
       fredData = fredResult.data;
       fLive = fredResult.liveCount;
+      fErrors = fredResult.errors;
       addLog(`FRED: ${fLive}/9系列取得完了`);
       addLog('GDELT APIからニューススコア取得中...');
       const gdeltResult = await loadGdeltData(gdeltTimespan);
       gScores = gdeltResult.scores;
       gArts = gdeltResult.articles;
+      gErrors = gdeltResult.errors;
       gLive = Object.values(gArts).filter(a=>a&&a.length>0).length;
       addLog(`GDELT: ${gLive}/8トピック取得完了`);
-      cacheSet({ fredSeries:fredData, fredLive:fLive, gdeltScores:gScores, gdeltArticles:gArts, gdeltLive:gLive });
+      cacheSet({ fredSeries:fredData, fredLive:fLive, fredErrors:fErrors, gdeltScores:gScores, gdeltArticles:gArts, gdeltLive:gLive, gdeltErrors:gErrors });
     }
     setFredSeries(fredData);
     setFredLive(fLive);
+    setFredErrors(fErrors);
     setGdeltScores(gScores);
     setGdeltArticles(gArts);
     setGdeltLive(gLive);
+    setGdeltErrors(gErrors);
     const fredVals = {};
     if(fredData.DEXJPUS) fredVals.DEXJPUS = extractLatest(fredData.DEXJPUS);
     if(fredData.CPIAUCSL) { const y=extractYoY(fredData.CPIAUCSL); if(y!=null)fredVals.CPIAUCSL=y; }
@@ -1406,11 +1503,24 @@ function App() {
     if(fredData.FEDFUNDS) fredVals.FEDFUNDS = extractLatest(fredData.FEDFUNDS);
     if(fredData.DGS10) fredVals.DGS10 = extractLatest(fredData.DGS10);
     if(fredData.UMCSENT) fredVals.UMCSENT = extractLatest(fredData.UMCSENT);
-    const computed = calcAllScores(fredVals, gScores);
+    // R-01 fix-3: 総合スコアの前提となる入力（FRED9系列 + GDELT8系列 = 計17）のうち
+    // 欠測している件数を数え、1件でも欠けていれば算出不可として扱う。
+    const totalInputs = FRED_KEYS.length + GDELT_TOPICS.length;
+    const fredMissing = FRED_KEYS.filter(k=>fErrors[k]).length;
+    const gdeltMissing = GDELT_TOPICS.filter(t=>gErrors[t.id]).length;
+    const missingInputs = fredMissing + gdeltMissing;
+    const computed = calcAllScores(fredVals, gScores, missingInputs, totalInputs);
     setScores(computed);
-    const now = new Date().toLocaleString('ja-JP');
-    setLastUpdate(now);
-    addLog('✅ 全データ更新完了 — '+now);
+    // R-01 fix-2: 右上の時刻表示は「レンダー時刻」ではなく「データ取得完了時刻」とする。
+    // 全指標が取得失敗の場合は時刻ではなく「データ未取得」を明示する。
+    const fetchTime = new Date().toLocaleString('ja-JP');
+    if (fLive===0 && gLive===0) {
+      setLastUpdate('データ未取得');
+      addLog('⚠ 全指標取得失敗 — データ未取得 ('+fetchTime+')');
+    } else {
+      setLastUpdate(`データ取得: ${fetchTime} (FRED ${fLive}/9, GDELT ${gLive}/8)`);
+      addLog('✅ データ取得完了 — '+fetchTime);
+    }
     setLoading(false);
   }
 
@@ -1442,7 +1552,7 @@ function App() {
         </div>
       </div>
       <main className="max-w-screen-2xl mx-auto px-3 py-4">
-        {tab==='overview'&&<OverviewTab scores={scores} fredSeries={fredSeries} loading={loading}/>}
+        {tab==='overview'&&<OverviewTab scores={scores} fredSeries={fredSeries} fredErrors={fredErrors} loading={loading}/>}
         {tab==='fred'&&<FredMacroPanel fredSeries={fredSeries} fredVals={{}} loading={loading}/>}
         {tab==='geo'&&<GeopoliticalPanel gdeltScores={gdeltScores} gdeltArticles={gdeltArticles} gdeltTimespan={gdeltTimespan} onTimespanChange={(ts)=>{setGdeltTimespan(ts);}} scores={scores} loading={loading}/>}
         {tab==='usfj'&&<UsfjOkinawaPanel scores={scores} fredVals={{}} fredSeries={fredSeries}/>}
