@@ -48,10 +48,10 @@ const { LineChart, Line, AreaChart, Area, BarChart, Bar, RadarChart, Radar, Pola
 // ─────────────────────────────────────────────
 // CONSTANTS
 // ─────────────────────────────────────────────
-const FRED_API_KEY = "8550f7c848775899f520c5d606f4e3af";
-const CACHE_KEY = "okinawa_intel_v1";
-const CACHE_TTL = 4 * 60 * 60 * 1000;
-const FRED_PROXY = "https://corsproxy.io/?https://api.stlouisfed.org/fred/series/observations";
+// R-02: FRED APIキーはもうこのファイルには存在しない。
+// FRED/GDELTの取得はGitHub Actions（サーバー側）が行い、data/latest.jsonに書き出す。
+// ブラウザはdata/latest.jsonを同一オリジンで読むだけで、外部APIキーを一切扱わない。
+const DATA_SOURCE_PATH = "./data/latest.json";
 
 const FRED_SERIES = {
   DEXJPUS: { label: "USD/JPY", unit: "円", desc: "対米ドル円相場" },
@@ -162,19 +162,11 @@ function scoreLabel(s) {
   return '逆風';
 }
 
-// localStorage cache
-function cacheGet() {
-  try {
-    const raw = localStorage.getItem(CACHE_KEY);
-    if(!raw) return null;
-    const d = JSON.parse(raw);
-    if(Date.now()-d.ts > CACHE_TTL) return null;
-    return d.data;
-  } catch{ return null; }
-}
-function cacheSet(data) {
-  try { localStorage.setItem(CACHE_KEY, JSON.stringify({ts:Date.now(), data})); } catch{}
-}
+// R-02: FRED/GDELT用のlocalStorageキャッシュ(cacheGet/cacheSet)は廃止した。
+// data/latest.jsonは1日1回しか更新されない同一オリジンの静的ファイルであり、
+// 再取得コストが極めて低いため、クライアント側キャッシュを持つ必要がなく、
+// 「古いキャッシュのせいで新しいコードが古い挙動に見える」という
+// R-01検証時に実際に発生した混乱の再発を避けるため、あえて持たせない。
 function cacheGetSource(id) {
   try {
     const raw = localStorage.getItem('okinawa_source_'+id);
@@ -187,52 +179,25 @@ function cacheSetSource(id, d) {
 }
 
 // ─────────────────────────────────────────────
-// FRED CLIENT
+// DATA SOURCE: data/latest.json（R-02）
 // ─────────────────────────────────────────────
-async function fredFetch(seriesId, limit=24) {
-  const url = `${FRED_PROXY}?series_id=${seriesId}&api_key=${FRED_API_KEY}&limit=${limit}&sort_order=desc&file_type=json`;
-  try {
-    const r = await fetch(url, {signal: AbortSignal.timeout(10000)});
-    if(!r.ok) throw new Error('HTTP '+r.status);
-    const j = await r.json();
-    const obs = (j.observations||[]).filter(o=>o.value!='.' && o.value!='');
-    return { data: obs.map(o=>({ date:o.date, value:parseFloat(o.value) })), error:null };
-  } catch(e) {
-    console.warn('FRED fetch failed:',seriesId, e.message);
-    return { data:null, error: e.message||'fetch failed' };
-  }
-}
-
+// これまでブラウザから corsproxy.io 経由でFRED APIを直接叩いていたため、
+// (1) プロキシ側の仕様変更でHTTP 403が起きると全指標が丸ごと止まる、
+// (2) FRED APIキーが公開HTMLに平文で埋め込まれる、という二重の問題があった。
+// 現在はGitHub Actionsが毎日サーバー側でFRED 9系列・GDELT 8シグナルを取得し、
+// data/latest.json に書き出す。ブラウザはこの同一オリジンの静的JSONを
+// 読むだけになり、外部APIへの直接アクセス・APIキーの露出とも解消している。
 const FRED_KEYS = ['DEXJPUS','CPIAUCSL','CPILFESL','CUSR0000SEFV','UNRATE','CES0500000003','FEDFUNDS','DGS10','UMCSENT'];
 
-async function loadFredData() {
-  const results = await Promise.allSettled([
-    fredFetch('DEXJPUS',30),
-    fredFetch('CPIAUCSL',24),
-    fredFetch('CPILFESL',24),
-    fredFetch('CUSR0000SEFV',24),
-    fredFetch('UNRATE',24),
-    fredFetch('CES0500000003',24),
-    fredFetch('FEDFUNDS',24),
-    fredFetch('DGS10',30),
-    fredFetch('UMCSENT',24)
-  ]);
-  const data = {};
-  const errors = {};
-  let liveCount = 0;
-  FRED_KEYS.forEach((k,i) => {
-    const r = results[i];
-    if(r.status==='fulfilled' && r.value && r.value.data && r.value.data.length>0) {
-      data[k] = sortAsc(r.value.data);
-      errors[k] = null;
-      liveCount++;
-    } else {
-      data[k] = null;
-      errors[k] = (r.status==='fulfilled' && r.value && r.value.error) ? r.value.error
-                 : (r.status==='rejected' ? (r.reason&&r.reason.message||'fetch failed') : 'fetch failed');
-    }
-  });
-  return { data, errors, liveCount };
+async function loadLatestJson() {
+  try {
+    const r = await fetch(DATA_SOURCE_PATH, { cache:'no-store', signal: AbortSignal.timeout(10000) });
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    return await r.json();
+  } catch(e) {
+    console.warn('data/latest.json fetch failed:', e.message);
+    return null;
+  }
 }
 
 function extractLatest(series) {
@@ -252,60 +217,9 @@ function extractMoM(series) {
   return ((latest-prev)/prev)*100;
 }
 
-// ─────────────────────────────────────────────
-// GDELT CLIENT
-// ─────────────────────────────────────────────
-async function gdeltFetch(topic, timespan='30d') {
-  const q = encodeURIComponent(topic.query);
-  const url = `https://api.gdeltproject.org/api/v2/doc/doc?query=${q}&mode=artlist&format=json&maxrecords=50&sort=datedesc&timespan=${timespan}&sourcelang=english`;
-  try {
-    const r = await fetch(url, {signal: AbortSignal.timeout(12000)});
-    if(!r.ok) throw new Error('HTTP '+r.status);
-    const j = await r.json();
-    return { articles: j.articles || [], error:null };
-  } catch(e) {
-    console.warn('GDELT fetch failed:',topic.id, e.message);
-    return { articles:null, error: e.message||'timeout/failed' };
-  }
-}
-
-const RISK_WORDS = ['missile','nuclear','war','attack','drill','exercise','deployment','blockade',
-  'invasion','sanction','tariff','inflation','layoff','shutdown','protest','incident','warning',
-  'crisis','tension','military','budget','Taiwan','China','PLA','Indo-Pacific'];
-const POS_WORDS = ['agreement','dialogue','cooperation','stable','growth','cooling','decline',
-  'easing','peace','support','alliance','deterrence','investment','readiness'];
-
-function scoreArticles(articles, weight) {
-  // R-01: articles===null は「取得失敗」であり「記事0件（実測）」とは区別する。
-  // 取得失敗を無言でベーススコア18として計算に混ぜない（沈黙故障の温床だったため）。
-  if(articles===null) return null;
-  if(articles.length===0) return 18;
-  const text = articles.map(a=>(a.title||'')+(a.seendate||'')).join(' ').toLowerCase();
-  const riskHits = RISK_WORDS.filter(w=>text.includes(w.toLowerCase())).length;
-  const posHits = POS_WORDS.filter(w=>text.includes(w.toLowerCase())).length;
-  const raw = 18 + Math.log(1+articles.length)*18 + riskHits*1.9 - posHits*0.9;
-  return clamp(Math.round(raw * weight), 0, 100);
-}
-
-async function loadGdeltData(timespan='30d') {
-  const results = await Promise.allSettled(
-    GDELT_TOPICS.map(t => gdeltFetch(t, timespan))
-  );
-  const scores = {};
-  const articles = {};
-  const errors = {};
-  GDELT_TOPICS.forEach((t,i) => {
-    const r = results[i];
-    const payload = r.status==='fulfilled' ? r.value : null;
-    const arts = payload ? payload.articles : null;
-    articles[t.id] = arts || [];
-    scores[t.id] = scoreArticles(arts, t.weight);
-    errors[t.id] = (arts===null)
-      ? ((payload&&payload.error) ? payload.error : (r.status==='rejected' ? (r.reason&&r.reason.message||'timeout') : 'timeout/failed'))
-      : null;
-  });
-  return { scores, articles, errors };
-}
+// R-02: GDELTの取得・記事スコアリング（RISK_WORDS/POS_WORDS方式）は
+// GitHub Actions側の scripts/fetch-data.js に移設済み（同一ロジックを踏襲）。
+// ブラウザはdata/latest.jsonからスコア済みの値を読むだけになった。
 
 // ─────────────────────────────────────────────
 // SCORING ENGINE
@@ -624,7 +538,7 @@ function IntelligenceKpiCards({ fredVals, fredSeries, fredErrors, scores, loadin
   ];
   return (
     <div>
-      <SectionHeader title="インテリジェンス KPIカード" sub="主要10指標のリアルタイムスコアリング"/>
+      <SectionHeader title="インテリジェンス KPIカード" sub="主要10指標のスコアリング（GitHub Actionsが1日1回サーバー側で取得）"/>
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
         {cards.map(c=>(
           <KpiCard key={c.title} {...c} loading={loading}/>
@@ -760,17 +674,21 @@ function GeopoliticalPanel({ gdeltScores, gdeltArticles, gdeltTimespan, onTimesp
 
   return (
     <div className="space-y-6">
-      <SectionHeader title="地政学インテリジェンスパネル" sub="GDELT DOC 2.0 APIによるリアルタイムニューススコアリング"/>
+      <SectionHeader title="地政学インテリジェンスパネル" sub="GDELT DOC 2.0 API — GitHub Actionsが1日1回サーバー側で取得"/>
       <div className="flex gap-2 items-center flex-wrap">
         <span className="text-xs text-slate-400">期間:</span>
         {['1d','7d','30d','90d'].map(ts=>(
-          <button key={ts} onClick={()=>onTimespanChange(ts)}
-            className={`text-xs px-3 py-1 rounded-full transition-colors ${gdeltTimespan===ts?'bg-blue-700 text-white':'bg-slate-800 text-slate-400 hover:bg-slate-700'}`}>
+          <button key={ts} disabled={ts!=='30d'} onClick={()=>ts==='30d'&&onTimespanChange(ts)}
+            title={ts!=='30d'?'現在はGitHub Actionsが30d固定でサーバー取得しています（R-02）':undefined}
+            className={`text-xs px-3 py-1 rounded-full transition-colors ${gdeltTimespan===ts?'bg-blue-700 text-white':ts!=='30d'?'bg-slate-900 text-slate-600 cursor-not-allowed':'bg-slate-800 text-slate-400 hover:bg-slate-700'}`}>
             {ts}
           </button>
         ))}
         {loading && <span className="text-xs text-slate-500 animate-pulse">取得中...</span>}
       </div>
+      <p className="text-xs text-slate-500 -mt-2">
+        ⚠ R-02によりGDELT取得はGitHub Actionsが毎日サーバー側で30d固定期間分を取得する方式に変更されました。1d/7d/90dは現在選択できません。
+      </p>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div className="panel-card rounded-xl p-4">
           <div className="text-sm font-semibold text-slate-200 mb-3">地政学スコア一覧</div>
@@ -1458,34 +1376,61 @@ function App() {
 
   async function fetchAll(force=false) {
     setLoading(true);
-    addLog('データ取得開始...');
-    let fredData={}, fLive=0, fErrors={}, gScores=null, gArts=null, gLive=0, gErrors={};
-    const cached = force ? null : cacheGet();
-    if(cached) {
-      addLog('キャッシュからデータ復元');
-      fredData = cached.fredSeries||{};
-      fLive = cached.fredLive||0;
-      fErrors = cached.fredErrors||{};
-      gScores = cached.gdeltScores||null;
-      gArts = cached.gdeltArticles||null;
-      gLive = cached.gdeltLive||0;
-      gErrors = cached.gdeltErrors||{};
-    } else {
-      addLog('FRED APIからデータ取得中...');
-      const fredResult = await loadFredData();
-      fredData = fredResult.data;
-      fLive = fredResult.liveCount;
-      fErrors = fredResult.errors;
-      addLog(`FRED: ${fLive}/9系列取得完了`);
-      addLog('GDELT APIからニューススコア取得中...');
-      const gdeltResult = await loadGdeltData(gdeltTimespan);
-      gScores = gdeltResult.scores;
-      gArts = gdeltResult.articles;
-      gErrors = gdeltResult.errors;
-      gLive = Object.values(gArts).filter(a=>a&&a.length>0).length;
-      addLog(`GDELT: ${gLive}/8トピック取得完了`);
-      cacheSet({ fredSeries:fredData, fredLive:fLive, fredErrors:fErrors, gdeltScores:gScores, gdeltArticles:gArts, gdeltLive:gLive, gdeltErrors:gErrors });
+    addLog('data/latest.json を取得中...');
+    const latest = await loadLatestJson();
+
+    if (!latest) {
+      // R-02: data/latest.json 自体が取得できない（同一オリジンのファイルが
+      // 消えている等）場合も、前回値で埋めず正直に「データ未取得」を出す。
+      addLog('⚠ data/latest.json の取得に失敗しました');
+      const emptyFredErrors = Object.fromEntries(FRED_KEYS.map(k=>[k,'data/latest.json 取得失敗']));
+      const emptyGdeltErrors = Object.fromEntries(GDELT_TOPICS.map(t=>[t.id,'data/latest.json 取得失敗']));
+      setFredSeries({});
+      setFredLive(0);
+      setFredErrors(emptyFredErrors);
+      setGdeltScores({});
+      setGdeltArticles({});
+      setGdeltLive(0);
+      setGdeltErrors(emptyGdeltErrors);
+      const totalInputs = FRED_KEYS.length + GDELT_TOPICS.length;
+      setScores(calcAllScores({}, {}, totalInputs, totalInputs));
+      setLastUpdate('データ未取得');
+      setLoading(false);
+      return;
     }
+
+    const fredData = {}, fErrors = {};
+    let fLive = 0;
+    FRED_KEYS.forEach(k => {
+      const s = latest.fred && latest.fred[k];
+      if (s && s.status === 'ok' && s.history && s.history.length) {
+        fredData[k] = s.history;
+        fErrors[k] = null;
+        fLive++;
+      } else {
+        fredData[k] = null;
+        fErrors[k] = (s && s.error) || '取得失敗';
+      }
+    });
+    addLog(`FRED: ${fLive}/9系列（data/latest.json より）`);
+
+    const gScores = {}, gArts = {}, gErrors = {};
+    let gLive = 0;
+    GDELT_TOPICS.forEach(t => {
+      const s = latest.gdelt && latest.gdelt[t.id];
+      if (s && s.status === 'ok') {
+        gScores[t.id] = s.value;
+        gArts[t.id] = s.articles || [];
+        gErrors[t.id] = null;
+        gLive++;
+      } else {
+        gScores[t.id] = null;
+        gArts[t.id] = [];
+        gErrors[t.id] = (s && s.error) || '取得失敗';
+      }
+    });
+    addLog(`GDELT: ${gLive}/8トピック（data/latest.json より）`);
+
     setFredSeries(fredData);
     setFredLive(fLive);
     setFredErrors(fErrors);
@@ -1511,15 +1456,15 @@ function App() {
     const missingInputs = fredMissing + gdeltMissing;
     const computed = calcAllScores(fredVals, gScores, missingInputs, totalInputs);
     setScores(computed);
-    // R-01 fix-2: 右上の時刻表示は「レンダー時刻」ではなく「データ取得完了時刻」とする。
-    // 全指標が取得失敗の場合は時刻ではなく「データ未取得」を明示する。
-    const fetchTime = new Date().toLocaleString('ja-JP');
+    // R-02: 右上の時刻表示は「ブラウザがJSONを読んだ時刻」ではなく、
+    // GitHub Actionsがサーバー側で実際にデータを取得した時刻（fetched_at）を使う。
+    // 全指標が取得失敗の場合は時刻ではなく「データ未取得」を明示する（R-01を踏襲）。
     if (fLive===0 && gLive===0) {
       setLastUpdate('データ未取得');
-      addLog('⚠ 全指標取得失敗 — データ未取得 ('+fetchTime+')');
+      addLog('⚠ 全指標取得失敗 — データ未取得 (fetched_at: '+(latest.fetched_at||'不明')+')');
     } else {
-      setLastUpdate(`データ取得: ${fetchTime} (FRED ${fLive}/9, GDELT ${gLive}/8)`);
-      addLog('✅ データ取得完了 — '+fetchTime);
+      setLastUpdate(`データ取得: ${latest.fetched_at} (FRED ${fLive}/9, GDELT ${gLive}/8)`);
+      addLog('✅ latest.json 読み込み完了 — fetched_at: '+latest.fetched_at);
     }
     setLoading(false);
   }
