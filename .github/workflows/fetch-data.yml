@@ -1,0 +1,44 @@
+name: Fetch FTO Dashboard Data
+
+# 毎日 JST 07:00 相当に自動実行 + 手動実行(workflow_dispatch)可
+# JST 07:00 = UTC 前日 22:00 のため cron は UTC基準で "0 22 * * *"
+on:
+  schedule:
+    - cron: '0 22 * * *'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fto-data-fetch
+  cancel-in-progress: false
+
+jobs:
+  fetch-data:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Fetch FRED + GDELT data
+        env:
+          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
+        run: node scripts/fetch-data.js
+
+      - name: Commit and push data if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/latest.json data/history/
+          if git diff --staged --quiet; then
+            echo "No data changes to commit."
+          else
+            git commit -m "chore(data): FTO dashboard data update $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            git push
+          fi
