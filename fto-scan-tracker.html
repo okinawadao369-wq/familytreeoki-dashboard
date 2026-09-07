@@ -91,7 +91,10 @@ button:active { opacity:.8; transform: scale(0.98); }
 .mcard .stat { font-size:12.5px; color:#333; margin:1px 0; }
 
 .sectiontitle { font-size:13.5px; font-weight:700; margin: 18px 0 8px; padding-left:8px; border-left:4px solid var(--gold); }
-#chartBox { background:#fff; border:1px solid #e7e7e2; border-radius:14px; padding:12px; height:280px; margin-bottom:16px; }
+#mapBox { background:#fff; border:1px solid #e7e7e2; border-radius:14px; height:280px; margin-bottom:8px; overflow:hidden; z-index:0; }
+.maplegend { display:flex; gap:16px; font-size:11px; color:#666; margin-bottom:16px; }
+.maplegend .dot { display:inline-block; width:9px; height:9px; border-radius:50%; margin-right:4px; vertical-align:middle; }
+.leaflet-popup-content { font-size:12px; line-height:1.5; }
 #tableBox { background:#fff; border:1px solid #e7e7e2; border-radius:14px; overflow-x:auto; padding:2px; }
 .gridjs-wrapper { border-radius: 12px !important; }
 .badge-ok { color:#2f7a3d; font-weight:700; }
@@ -231,8 +234,12 @@ button:active { opacity:.8; transform: scale(0.98); }
   <div class="kpis" id="kpis"></div>
   <div class="mcards" id="mediumBreakdown"></div>
 
-  <div class="sectiontitle">スキャン位置マップ（緯度・経度プロット）</div>
-  <div id="chartBox"><canvas id="scatterChart"></canvas></div>
+  <div class="sectiontitle">スキャン位置マップ（OpenStreetMap）</div>
+  <div id="mapBox"></div>
+  <div class="maplegend">
+    <span><i class="dot" style="background:#2f7a3d;"></i>予約シグナルあり</span>
+    <span><i class="dot" style="background:#999;"></i>未成立</span>
+  </div>
 
   <div class="sectiontitle">詳細一覧</div>
   <div id="tableBox"></div>
@@ -248,13 +255,16 @@ button:active { opacity:.8; transform: scale(0.98); }
 </div>
 
 <script src="https://accounts.google.com/gsi/client" async defer></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.js" integrity="sha384-iU8HYtnGQ8Cy4zl7gbNMOhsDTTKX02BTXptVP/vqAWIaTfM7isw76iyZCsjL2eVi" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/gridjs@5.0.2/dist/gridjs.umd.js" integrity="sha384-/XXDzxe4FsGiAe50i/u9pY/Vy/uX654MHB1xoc1BJNnH1WXHhqHga9g3q5tF4gj7" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gridjs@5.0.2/dist/theme/mermaid.min.css" integrity="sha384-jZvDSsmGB9oGGT/4l9bHXGoAv1OxvG/cFmSo0dZaSqmBgvQTKDBFAMftlXTmMbNW" crossorigin="anonymous">
 
 <script>
 const LS_KEY = 'fto_gps_scan_tracker_v2';
-let chartInstance = null;
+let leafletMap = null;
+let markersLayer = null;
 let lastResults = [];
 
 // ---- GA4 auto-fetch (Google Identity Services + GA4 Data API) ----
@@ -416,7 +426,7 @@ function showView(name) {
   document.getElementById('view-dashboard').classList.toggle('active', name === 'dashboard');
   document.getElementById('tab-input').classList.toggle('active', name === 'input');
   document.getElementById('tab-dashboard').classList.toggle('active', name === 'dashboard');
-  if (name === 'dashboard' && chartInstance) { setTimeout(() => chartInstance.resize(), 50); }
+  if (name === 'dashboard') { setTimeout(() => { initMap(); if (leafletMap) leafletMap.invalidateSize(); }, 60); }
 }
 
 function toggleAcc(id) {
@@ -553,37 +563,39 @@ function renderKpis(results) {
   }
 }
 
+function initMap() {
+  if (leafletMap || typeof L === 'undefined') return;
+  leafletMap = L.map('mapBox').setView([26.3344, 127.8056], 12);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors'
+  }).addTo(leafletMap);
+  markersLayer = L.layerGroup().addTo(leafletMap);
+}
+
 function renderChart(results) {
-  const ctx = document.getElementById('scatterChart').getContext('2d');
+  initMap();
+  if (!markersLayer) return;
+  markersLayer.clearLayers();
   const withLoc = results.filter(r => r.lat !== null);
-  const mediums = [...new Set(withLoc.map(r => MEDIUM_LABELS[r.medium] ? r.medium : 'other'))];
-
-  const datasets = mediums.map(med => ({
-    label: (MEDIUM_LABELS[med] || med) + '(成立)',
-    data: withLoc.filter(r => r.medium === med && r.booked).map(r => ({ x: r.lon, y: r.lat })),
-    backgroundColor: MEDIUM_COLORS[med] || '#999', pointStyle: 'circle', radius: 7
-  })).concat(mediums.map(med => ({
-    label: (MEDIUM_LABELS[med] || med) + '(未成立)',
-    data: withLoc.filter(r => r.medium === med && !r.booked).map(r => ({ x: r.lon, y: r.lat })),
-    backgroundColor: (MEDIUM_COLORS[med] || '#999') + '55', pointStyle: 'circle', radius: 4
-  })));
-
-  if (chartInstance) chartInstance.destroy();
-  chartInstance = new Chart(ctx, {
-    type: 'scatter',
-    data: { datasets },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      scales: {
-        x: { title: { display: true, text: '経度', font:{size:10} }, ticks:{font:{size:9}} },
-        y: { title: { display: true, text: '緯度', font:{size:10} }, ticks:{font:{size:9}} }
-      },
-      plugins: {
-        legend: { position: 'bottom', labels: { font: { size: 10 }, boxWidth: 10 } },
-        tooltip: { callbacks: { label: (c) => `緯度${c.parsed.y.toFixed(5)}, 経度${c.parsed.x.toFixed(5)}` } }
-      }
-    }
+  const bounds = [];
+  withLoc.forEach(r => {
+    const color = r.booked ? '#2f7a3d' : '#999999';
+    const marker = L.circleMarker([r.lat, r.lon], {
+      radius: 8, color: '#fff', weight: 1.5, fillColor: color, fillOpacity: 0.9
+    }).addTo(markersLayer);
+    marker.bindPopup(
+      `<b>${MEDIUM_LABELS[r.medium] || r.medium}</b><br>` +
+      `${r.scanTime.toLocaleString('ja-JP')}<br>` +
+      (r.booked ? '✓ 予約シグナルあり' : '未成立') +
+      `<br><a href="https://www.google.com/maps?q=${r.lat},${r.lon}" target="_blank" rel="noopener">Googleマップで開く</a>`
+    );
+    bounds.push([r.lat, r.lon]);
   });
+  if (bounds.length) {
+    leafletMap.fitBounds(bounds, { maxZoom: 15, padding: [24, 24] });
+  }
+  setTimeout(() => leafletMap.invalidateSize(), 30);
 }
 
 function renderTable(results) {
