@@ -931,21 +931,21 @@ function verifBadge(key, opts){
 //             'unknown'=出典・対象年とも未確認（証拠区分D、推測で埋めない）
 // asOf は比較可能な "YYYY-MM" 形式。不明な場合は null（タブ代表年の算出から除外される）。
 const DATA_PROVENANCE = {
-  macro_pop:            {asOf:'2026-07', asOfLabel:'2026年7月', source:'沖縄県統計課「推計人口」（2026年7月31日公表）', confidence:'observed'},
+  macro_pop:            {asOf:'2026-08', asOfLabel:'2026年8月', source:'沖縄県統計課「推計人口」2026年8月1日現在', confidence:'observed'},
   macro_gdp:             {asOf:'2022-04', asOfLabel:'令和4年度(2022年度)', source:'沖縄県「県民経済計算」', confidence:'observed'},
   macro_income:          {asOf:'2022-04', asOfLabel:'令和4年度(2022年度)', source:'沖縄県「県民経済計算」（1人当たり県民所得）', confidence:'observed'},
   macro_tourist:         {asOf:'2025-04', asOfLabel:'令和7年度（年間実績・最多）', source:'沖縄県文化観光スポーツ部「入域観光客統計」', confidence:'observed'},
-  macro_unemployment:    {asOf:'2026-06', asOfLabel:'2026年6月', source:'沖縄県「令和8年6月の雇用状況」（沖縄県企画部、2026年8月14日公表）／原統計は総務省「労働力調査」', confidence:'observed', note:'2026-08-26 に沖縄県公式サイトで一次ソースを確認済み。3.1%は最新公表値（次点R8.7分は本稿執筆時点で未公表）。'},
+  macro_unemployment:    {asOf:'2026-07', asOfLabel:'2026年7月', source:'沖縄県「令和8年7月の雇用状況」（沖縄県企画部、2026年9月1日公表）／原統計は総務省「労働力調査」', confidence:'observed', note:'2026-09-20 に沖縄県公式サイトで一次ソースを確認済み。3.0%（前年同月比-0.1pt）。労働力人口778千人・就業者755千人・完全失業者23千人。有効求人倍率1.07倍。'},
   macro_sofa:            {asOf:null, asOfLabel:null, source:'在沖米軍基地関連公表資料からの概算（koya推計）', confidence:'estimated', note:'公式の在沖軍属人口統計は非公表のため、複数の公開資料から概算した数値。'},
-  macro_poverty:         {asOf:null, asOfLabel:null, source:null, confidence:'unknown', note:'コード内に出典記載なし。沖縄県「子どもの貧困実態調査」系の可能性が高いが未確認。'},
-  macro_car:             {asOf:null, asOfLabel:null, source:null, confidence:'unknown', note:'コード内に出典記載なし。'},
-  macro_productivity:    {asOf:null, asOfLabel:null, source:null, confidence:'unknown', note:'コード内に出典記載なし。'},
-  macro_military_ratio:  {asOf:null, asOfLabel:null, source:null, confidence:'unknown', note:'コード内に出典記載なし。沖縄県が公表する数値と近似するが、本ファイル内に出典の引用がないため未確認扱いとする。'},
-  road:                  {asOf:null, asOfLabel:null, source:'全国道路交通センサス（国土交通省）', confidence:'estimated', note:'調査主体名は画面内バッジで既に明示。調査年度がデータに未記載。'},
+  macro_poverty:         {asOf:'2014-01', asOfLabel:'平成26年(2014年)データ', source:'沖縄県「平成27年度沖縄県子どもの貧困実態調査」（2016年1月公表の推計値）', confidence:'observed', note:'2026-09-20に一次ソースを特定。推計対象は平成26年データで12年前の数値。県は令和3年度・令和5年度にも調査を実施しており、より新しい値が存在する可能性がある（未照合）。'},
+  macro_car:             {asOf:'2021-03', asOfLabel:'2021年3月末', source:'自動車検査登録情報協会「自家用乗用車の世帯当たり普及台数」', confidence:'observed', note:'2026-09-20に一次ソースを特定。沖縄県は1.285台/世帯で全国26位（全国平均1.037台、1位は福井県1.715台）。従前の「1.383台・全国1位」表記は誤りだったため訂正済み。'},
+  macro_productivity:    {asOf:null, asOfLabel:null, source:'内閣府沖縄総合事務局経済産業部「沖縄における生産性向上に向けた労働生産性分析調査」', confidence:'estimated', note:'2026-09-20に出典機関を特定。ただし349万円/508万円がどの年度版の数値かはデータに未記載。'},
+  macro_military_ratio:  {asOf:'2020-03', asOfLabel:'令和2年3月末', source:'沖縄県知事公室「沖縄の基地問題」／防衛省資料', confidence:'observed', note:'2026-09-20に一次ソースを特定。令和2年3月末現在、沖縄県内31施設・184,836千m2で構成比70.3%。'},
+  road:                  {asOf:null, asOfLabel:null, source:'全国道路・街路交通情勢調査（道路交通センサス／国土交通省）', confidence:'estimated', note:'調査主体名は画面内バッジで既に明示。調査年度がデータに未記載（令和3年度調査ベースの可能性が高いが未確認）。次期データは令和7年度(2025年9〜11月実施)調査の公表待ち。'},
   gdp_muni:              {asOf:'2022-04', asOfLabel:'令和4年度(2022年度)', source:'沖縄県「市町村民経済計算」', confidence:'observed', note:'市町村別人口合計(1,470,217人)を沖縄県人口統計と突合し年度を特定。'},
-  social_pop:            {asOf:'2026-07', asOfLabel:'2026年7月', source:'沖縄県統計課', confidence:'observed'},
-  social_poverty:        {asOf:null, asOfLabel:null, source:null, confidence:'unknown', note:'コード内に出典記載なし。'},
-  behavioral:            {asOf:null, asOfLabel:null, source:null, confidence:'unknown', note:'コード内に出典記載なし。'},
+  social_pop:            {asOf:'2026-08', asOfLabel:'2026年8月', source:'沖縄県統計課「推計人口」2026年8月1日現在', confidence:'observed'},
+  social_poverty:        {asOf:'2014-01', asOfLabel:'平成26年(2014年)データ', source:'沖縄県「平成27年度沖縄県子どもの貧困実態調査」系', confidence:'estimated', note:'貧困率29.9%の出典は特定済み（macro_poverty参照）。同セクション内の他の格差指標は個別の出典が未記載。'},
+  behavioral:            {asOf:'2021-03', asOfLabel:'2021年3月末（車両系）', source:'自動車検査登録情報協会 ほか', confidence:'estimated', note:'車両保有系は出典特定済み。移動・消費行動の一部指標は個別の出典が未記載。'},
   correlation:           {asOf:null, asOfLabel:null, source:null, confidence:'estimated', note:'koya独自の相関分析。組み合わせ元の統計値は各項目のバッジを参照。'},
   employment:            {asOf:'2022-04', asOfLabel:'令和4年度(2022年度)', source:'沖縄県「就業構造基本調査」', confidence:'observed'},
   ogb_trends:            {asOf:'2026-01', asOfLabel:'令和8年1-3月期（最新速報）', source:'内閣府沖縄総合事務局・沖縄県 経済動向', confidence:'observed'},
@@ -2650,8 +2650,8 @@ const GDP_DIST = [
 
 // ─── 社会学指標 ─────────────────────────────────────
 const SOC_POP = [
-  {item:"推計人口（R8年7月）",val:"1,465,613人",source:"県統計課（2026年7月31日公表）"},
-  {item:"世帯数（R8年7月）",val:"668,018世帯",source:"県統計課（2026年7月31日公表）"},
+  {item:"推計人口（R8年8月）",val:"1,465,944人",source:"県統計課（2026年8月1日現在・対前月+331人）"},
+  {item:"世帯数（R8年8月）",val:"668,796世帯",source:"県統計課（2026年8月1日現在・対前月+778世帯）"},
   {item:"平均世帯人員",val:"2.20人",source:"国勢調査"},
   {item:"単身世帯率",val:"38.2%",source:"国勢調査"},
   {item:"三世代世帯率",val:"8.5%（全国3.7%）",source:"国勢調査"},
@@ -2677,7 +2677,7 @@ const SOC_POVERTY = [
 // ─── 行動学指標 ─────────────────────────────────────
 const BEHAV_CAR = [
   {item:"乗用車保有台数",val:"922,714台"},
-  {item:"乗用車保有/世帯",val:"1.383台（全国1位）"},
+  {item:"乗用車保有/世帯",val:"1.285台（全国26位・全国平均1.037台）"},
   {item:"軽乗用車比率",val:"44.6%（全国平均27.6%）"},
   {item:"電気自動車普及率",val:"1.8%（全国平均3.2%）"},
   {item:"新中比率-所得 相関係数",val:"r = -0.602（1%水準有意）"},
@@ -2749,16 +2749,16 @@ const PSY_BIZ = [
 // 数字だけ更新して as_of を更新し忘れることを防ぐため、値と時刻を同じオブジェクトで持つ。
 // confidence: 'observed'=出典・対象年とも確認済み / 'estimated'=koya独自推計または出典のみ判明 / 'unknown'=未確認（証拠区分D）
 const MACRO_KPI = [
-  {v:"1,465,613人",l:"沖縄県総人口（R8.7）",col:"var(--gold)",as_of:"2026-07",source:"沖縄県統計課「推計人口」（2026年7月31日公表）",confidence:"observed"},
+  {v:"1,465,944人",l:"沖縄県総人口（R8.8）",col:"var(--gold)",as_of:"2026-08",source:"沖縄県統計課「推計人口」2026年8月1日現在（対前月+331人）",confidence:"observed"},
   {v:"4兆4,615億",l:"県内総生産GDP",col:"var(--blue)",as_of:"2022-04",source:"沖縄県「県民経済計算」（令和4年度）",confidence:"observed"},
   {v:"224.9万円",l:"1人当たり所得（全国最下位）",col:"var(--red)",as_of:"2022-04",source:"沖縄県「県民経済計算」（令和4年度）",confidence:"observed"},
   {v:"1,093.6万人",l:"年間観光客（R7最多）",col:"var(--green)",as_of:"2025-04",source:"沖縄県文化観光スポーツ部「入域観光客統計」（令和7年度・年間実績）",confidence:"observed"},
-  {v:"29.9%",l:"子ども貧困率（全国1位）",col:"var(--red)",as_of:null,source:null,confidence:"unknown"},
-  {v:"1.383台/世帯",l:"乗用車保有（全国1位）",col:"var(--purple)",as_of:null,source:null,confidence:"unknown"},
-  {v:"3.1%",l:"完全失業率（R8.6・全国最高水準）",col:"var(--teal)",as_of:"2026-06",source:"沖縄県「令和8年6月の雇用状況」（沖縄県企画部、2026年8月14日公表）／原統計は総務省「労働力調査」",confidence:"observed"},
+  {v:"29.9%",l:"子ども貧困率（全国平均の約2倍）",col:"var(--red)",as_of:"2014-01",source:"沖縄県「平成27年度沖縄県子どもの貧困実態調査」（推計、2016年1月公表／推計対象は平成26年データ）",confidence:"observed"},
+  {v:"1.285台/世帯",l:"乗用車保有（全国26位・全国平均1.037台）",col:"var(--purple)",as_of:"2021-03",source:"自動車検査登録情報協会「自家用乗用車の世帯当たり普及台数」（2021年3月末／1位は福井県1.715台）",confidence:"observed"},
+  {v:"3.0%",l:"完全失業率（R8.7・前年同月比-0.1pt）",col:"var(--teal)",as_of:"2026-07",source:"沖縄県「令和8年7月の雇用状況」（沖縄県企画部、2026年9月1日公表）／原統計は総務省「労働力調査」",confidence:"observed"},
   {v:"47,000人",l:"在沖SOFAマーケット",col:"var(--orange)",as_of:null,source:"在沖米軍基地関連公表資料からの概算（koya推計）",confidence:"estimated"},
-  {v:"349万円",l:"労働生産性（全国508万円）",col:"var(--red)",as_of:null,source:null,confidence:"unknown"},
-  {v:"70.3%",l:"全国米軍施設の沖縄集中率",col:"var(--purple)",as_of:null,source:null,confidence:"unknown"},
+  {v:"349万円",l:"労働生産性（全国508万円）",col:"var(--red)",as_of:null,source:"内閣府沖縄総合事務局経済産業部「沖縄における生産性向上に向けた労働生産性分析調査」（対象年度は本データに未記載）",confidence:"estimated"},
+  {v:"70.3%",l:"全国米軍専用施設の沖縄集中率",col:"var(--purple)",as_of:"2020-03",source:"沖縄県知事公室「沖縄の基地問題」／防衛省資料（令和2年3月末現在・31施設・184,836千m2）",confidence:"observed"},
 ];
 
 
@@ -3768,7 +3768,8 @@ const GDP41 = [
 {name:"座間味村",region:"離島",pop:884,gdp:4259,income:2678,labor:278,growth:2.5,primary:0.7,secondary:9.2,tertiary:90.9,feature:"観光・ダイビング・ホエールウォッチング"},
 ];
 
-// 全52行政区 推計GDP
+// 主要行政区 推計GDP（変数名は GDP_DIST52 だが実データは49件。2026-09-20 監査で確認。
+// 変数名は他所からの参照があるため変更せず、件数の事実のみここに記録する）
 const GDP_DIST52 = [
 // ─── 那覇市 ───
 {city:"那覇市",dist:"久茂地・泉崎（商業核）",gdp_est:195000,pct:14.0,type:"商業核",note:"県庁・DFS・那覇メインプレイス核",color:"#3b82f6"},
