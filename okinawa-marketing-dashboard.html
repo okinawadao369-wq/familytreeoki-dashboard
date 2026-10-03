@@ -285,7 +285,7 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP','Hiragino
 <body>
 <div id="header">
   <h1>🧭 沖縄エリアマーケティング・インテリジェンス AXIS v2.0</h1>
-  <p>社会学・行動学・心理学・経済学・統計学・歴史文化・地政学 — 統一思考フレームワーク | koya Intelligence | 2026-06-11更新</p>
+  <p>社会学・行動学・心理学・経済学・統計学・歴史文化・地政学 — 統一思考フレームワーク | koya Intelligence | <span id="axis-upd">2026-06-11更新</span></p>
 </div>
 <div id="nav">
   <button class="nav-btn active" onclick="showTab('t1')">🏆 総合スコア</button>
@@ -5177,6 +5177,44 @@ function toggleCheck(stateKey, id, biz, area) {
 }
 
 
+
+// === シートDB連動（読み取り専用・失敗時は埋め込み値のまま） ===
+(function(){
+  const API='https://script.google.com/macros/s/AKfycbxNwChq8F-rDJRU__27acJ7PN9AP5IFAP81ljo7tKclOCH88TcVc54QGqiz9IlTJT6oKA/exec';
+  const FMT={pop:/^[\d,]+人$/,hh:/^[\d,]+世帯$/,gdp:/^[\d兆,億]+円$/,inc:/^[\d.]+万円$/,une:/^[\d.]+%$/};
+  function rl(s){const m=/令和(\d+)年(\d+)月/.exec(s||'');return m?{y:m[1],m:m[2]}:null;}
+  function swap(el,o,n){ if(el&&o!==n&&el.innerHTML.includes(o)) el.innerHTML=el.innerHTML.split(o).join(n); }
+  function apply(items){
+    const g=p=>items.find(i=>i.item.indexOf(p)===0);
+    const pop=g('推計人口'),hh=g('世帯数'),gdp=g('県内総生産'),inc=g('1人当たり県民所得'),une=g('沖縄県完全失業率');
+    const mEl=document.getElementById('macro-kpis'), sEl=document.getElementById('soc-pop-table');
+    function kpi(key,it,fmt,strip){
+      if(!it||!fmt.test(it.value)) return;
+      const k=MACRO_KPI.find(x=>x.l.indexOf(key)===0); if(!k) return;
+      const nv=strip?it.value.replace(/円$/,''):it.value; swap(mEl,k.v,nv); k.v=nv;
+      const d=rl(it.asOf);
+      if(d&&/（R[\d.]+）/.test(k.l)){ k.l=k.l.replace(/（R[\d.]+）/,'（R'+d.y+'.'+d.m+'）'); }
+    }
+    kpi('沖縄県総人口',pop,FMT.pop,false);
+    kpi('県内総生産',gdp,FMT.gdp,true);
+    kpi('1人当たり所得',inc,FMT.inc,false);
+    kpi('完全失業率',une,FMT.une,false);
+    function soc(key,it,fmt){
+      if(!it||!fmt.test(it.value)) return;
+      const r=SOC_POP.find(x=>x.item.indexOf(key)===0); if(!r) return;
+      swap(sEl,r.val,it.value); r.val=it.value;
+      const d=rl(it.asOf); if(d) r.item=key+'（R'+d.y+'年'+d.m+'月）';
+    }
+    soc('推計人口',pop,FMT.pop); soc('世帯数',hh,FMT.hh);
+  }
+  fetch(API).then(r=>r.json()).then(j=>{
+    if(!j||!j.ok||!j.items) return;
+    apply(j.items);
+    const m=/更新:\s*([\d-]+)/.exec(j.updated||''), s=document.getElementById('axis-upd');
+    if(s&&m) s.textContent=m[1]+'更新（シートDB連動）';
+    window.AXIS_DB_SYNC={ok:true,at:j.fetchedAt,updated:j.updated};
+  }).catch(e=>{window.AXIS_DB_SYNC={ok:false,error:String(e)};});
+})();
 </script>
 
 <!-- TAB 10: エリア診断ツール -->
