@@ -5183,27 +5183,65 @@ function toggleCheck(stateKey, id, biz, area) {
   const API='https://script.google.com/macros/s/AKfycbxNwChq8F-rDJRU__27acJ7PN9AP5IFAP81ljo7tKclOCH88TcVc54QGqiz9IlTJT6oKA/exec';
   const FMT={pop:/^[\d,]+人$/,hh:/^[\d,]+世帯$/,gdp:/^[\d兆,億]+円$/,inc:/^[\d.]+万円$/,une:/^[\d.]+%$/};
   function rl(s){const m=/令和(\d+)年(\d+)月/.exec(s||'');return m?{y:m[1],m:m[2]}:null;}
-  function swap(el,o,n){ if(el&&o!==n&&el.innerHTML.includes(o)) el.innerHTML=el.innerHTML.split(o).join(n); }
+  // 令和表記 → {iso, label, src}。年度表記は iso=YYYY-04
+  function era(s){
+    let m=/令和(\d+)年(\d+)月(?:(\d+)日)?/.exec(s||'');
+    if(m){const y=2018+(+m[1]);return {iso:y+'-'+('0'+m[2]).slice(-2),label:y+'年'+(+m[2])+'月',src:y+'年'+(+m[2])+'月'+(m[3]?(+m[3])+'日現在':'')};}
+    m=/令和(\d+)年度/.exec(s||'');
+    if(m){const y=2018+(+m[1]);return {iso:y+'-04',label:'令和'+m[1]+'年度('+y+'年度)'};}
+    return null;
+  }
+  // 描画済みのバッジ・タブ最古年バナーの文言を差し替える（バッジ内/バナーの<b>のみ）
+  function retext(oL,nL,oS,nS){
+    const w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
+    const nodes=[];while(w.nextNode())nodes.push(w.currentNode);
+    nodes.forEach(n=>{
+      const p=n.parentElement; if(!p||/SCRIPT|STYLE/.test(p.tagName)) return;
+      let d=n.data;
+      if(oL&&nL&&oL!==nL){
+        if(d.includes(oL+'時点')) d=d.split(oL+'時点').join(nL+'時点');
+        else if(p.tagName==='B'&&d.trim()===oL) d=d.replace(oL,nL);
+      }
+      if(oS&&nS&&oS!==nS&&d.includes(oS)) d=d.split(oS).join(nS);
+      if(d!==n.data) n.data=d;
+    });
+  }
+  function prov(keys,it){
+    const e=it&&era(it.asOf); if(!e||typeof DATA_PROVENANCE==='undefined') return;
+    keys.forEach(k=>{
+      const p=DATA_PROVENANCE[k]; if(!p) return;
+      const oL=p.asOfLabel,oS=p.source;
+      p.asOf=e.iso; p.asOfLabel=e.label;
+      if(e.src&&oS) p.source=oS.replace(/\d{4}年\d{1,2}月\d{1,2}日現在/,e.src);
+      const shared=Object.keys(DATA_PROVENANCE).some(x=>keys.indexOf(x)<0&&DATA_PROVENANCE[x].asOfLabel===oL);
+      retext(shared?null:oL,e.label,oS,p.source);
+    });
+  }
   function apply(items){
     const g=p=>items.find(i=>i.item.indexOf(p)===0);
     const pop=g('推計人口'),hh=g('世帯数'),gdp=g('県内総生産'),inc=g('1人当たり県民所得'),une=g('沖縄県完全失業率');
     const mEl=document.getElementById('macro-kpis'), sEl=document.getElementById('soc-pop-table');
-    function kpi(key,it,fmt,strip){
+    function swap(el,o,n){ if(el&&o!==n&&el.innerHTML.includes(o)) el.innerHTML=el.innerHTML.split(o).join(n); }
+    function kpi(key,it,fmt,strip,pk){
       if(!it||!fmt.test(it.value)) return;
       const k=MACRO_KPI.find(x=>x.l.indexOf(key)===0); if(!k) return;
-      const nv=strip?it.value.replace(/円$/,''):it.value; swap(mEl,k.v,nv); k.v=nv;
-      const d=rl(it.asOf);
-      if(d&&/（R[\d.]+）/.test(k.l)){ k.l=k.l.replace(/（R[\d.]+）/,'（R'+d.y+'.'+d.m+'）'); }
+      const oldL=k.l, nv=strip?it.value.replace(/円$/,''):it.value, e=era(it.asOf), d=rl(it.asOf);
+      k.v=nv; if(e) k.as_of=e.iso;
+      if(d&&/（R[\d.]+/.test(k.l)){ const nr='R'+d.y+'.'+d.m; if(!k.l.includes('（'+nr)) k.l=k.l.replace(/・前年同月比[^）]*/,''); k.l=k.l.replace(/（R[\d.]+/,'（'+nr); }
+      if(mEl){ const c=[...mEl.children].find(x=>{const l=x.querySelector('.l');return l&&l.textContent===oldL;});
+        if(c){ c.querySelector('.v').textContent=k.v; c.querySelector('.l').textContent=k.l;
+          const b=c.querySelector('.prov-badge'); if(b&&k.as_of) b.textContent=b.textContent.split(' ')[0]+' '+k.as_of+'時点'; } }
+      if(pk) prov(pk,it);
     }
-    kpi('沖縄県総人口',pop,FMT.pop,false);
-    kpi('県内総生産',gdp,FMT.gdp,true);
-    kpi('1人当たり所得',inc,FMT.inc,false);
-    kpi('完全失業率',une,FMT.une,false);
+    kpi('沖縄県総人口',pop,FMT.pop,false,['macro_pop','social_pop']);
+    kpi('県内総生産',gdp,FMT.gdp,true,['macro_gdp']);
+    kpi('1人当たり所得',inc,FMT.inc,false,['macro_income']);
+    kpi('完全失業率',une,FMT.une,false,['macro_unemployment']);
     function soc(key,it,fmt){
       if(!it||!fmt.test(it.value)) return;
       const r=SOC_POP.find(x=>x.item.indexOf(key)===0); if(!r) return;
       swap(sEl,r.val,it.value); r.val=it.value;
-      const d=rl(it.asOf); if(d) r.item=key+'（R'+d.y+'年'+d.m+'月）';
+      const d=rl(it.asOf); if(d){ const o=r.item; r.item=key+'（R'+d.y+'年'+d.m+'月）'; swap(sEl,o,r.item); }
     }
     soc('推計人口',pop,FMT.pop); soc('世帯数',hh,FMT.hh);
   }
