@@ -931,7 +931,7 @@ function verifBadge(key, opts){
 //             'unknown'=出典・対象年とも未確認（証拠区分D、推測で埋めない）
 // asOf は比較可能な "YYYY-MM" 形式。不明な場合は null（タブ代表年の算出から除外される）。
 const DATA_PROVENANCE = {
-  macro_pop:            {asOf:'2026-08', asOfLabel:'2026年8月', source:'沖縄県統計課「推計人口」2026年8月1日現在', confidence:'observed'},
+  macro_pop:            {asOf:'2026-09', asOfLabel:'2026年9月', source:'沖縄県統計課「推計人口」2026年9月1日現在', confidence:'observed'},
   macro_gdp:             {asOf:'2022-04', asOfLabel:'令和4年度(2022年度)', source:'沖縄県「県民経済計算」', confidence:'observed'},
   macro_income:          {asOf:'2022-04', asOfLabel:'令和4年度(2022年度)', source:'沖縄県「県民経済計算」（1人当たり県民所得）', confidence:'observed'},
   macro_tourist:         {asOf:'2025-04', asOfLabel:'令和7年度（年間実績・最多）', source:'沖縄県文化観光スポーツ部「入域観光客統計」', confidence:'observed'},
@@ -943,7 +943,7 @@ const DATA_PROVENANCE = {
   macro_military_ratio:  {asOf:'2020-03', asOfLabel:'令和2年3月末', source:'沖縄県知事公室「沖縄の基地問題」／防衛省資料', confidence:'observed', note:'2026-09-20に一次ソースを特定。令和2年3月末現在、沖縄県内31施設・184,836千m2で構成比70.3%。'},
   road:                  {asOf:null, asOfLabel:null, source:'全国道路・街路交通情勢調査（道路交通センサス／国土交通省）', confidence:'estimated', note:'調査主体名は画面内バッジで既に明示。調査年度がデータに未記載（令和3年度調査ベースの可能性が高いが未確認）。次期データは令和7年度(2025年9〜11月実施)調査の公表待ち。'},
   gdp_muni:              {asOf:'2022-04', asOfLabel:'令和4年度(2022年度)', source:'沖縄県「市町村民経済計算」', confidence:'observed', note:'市町村別人口合計(1,470,217人)を沖縄県人口統計と突合し年度を特定。'},
-  social_pop:            {asOf:'2026-08', asOfLabel:'2026年8月', source:'沖縄県統計課「推計人口」2026年8月1日現在', confidence:'observed'},
+  social_pop:            {asOf:'2026-09', asOfLabel:'2026年9月', source:'沖縄県統計課「推計人口」2026年9月1日現在', confidence:'observed'},
   social_poverty:        {asOf:'2014-01', asOfLabel:'平成26年(2014年)データ', source:'沖縄県「平成27年度沖縄県子どもの貧困実態調査」系', confidence:'estimated', note:'貧困率29.9%の出典は特定済み（macro_poverty参照）。同セクション内の他の格差指標は個別の出典が未記載。'},
   behavioral:            {asOf:'2021-03', asOfLabel:'2021年3月末（車両系）', source:'自動車検査登録情報協会 ほか', confidence:'estimated', note:'車両保有系は出典特定済み。移動・消費行動の一部指標は個別の出典が未記載。'},
   correlation:           {asOf:null, asOfLabel:null, source:null, confidence:'estimated', note:'koya独自の相関分析。組み合わせ元の統計値は各項目のバッジを参照。'},
@@ -2650,8 +2650,9 @@ const GDP_DIST = [
 
 // ─── 社会学指標 ─────────────────────────────────────
 const SOC_POP = [
-  {item:"推計人口（R8年8月）",val:"1,465,944人",source:"県統計課（2026年8月1日現在・対前月+331人）"},
-  {item:"世帯数（R8年8月）",val:"668,796世帯",source:"県統計課（2026年8月1日現在・対前月+778世帯）"},
+  {item:"推計人口（R8年9月）",val:"1,466,024人",source:"県統計課（2026年9月1日現在・対前月+80人）"},
+  {item:"国勢調査人口（R7年10月1日・確定）",val:"1,466,548人",source:"令和7年国勢調査 人口等基本集計（2026-10-02県公表）／前回比-932人(-0.1%)・戦後初の減少"},
+  {item:"世帯数（R8年9月）",val:"668,972世帯",source:"県統計課（2026年9月1日現在・対前月+176世帯／R2国勢調査基準の推計。R7国勢調査確定値は655,345世帯）"},
   {item:"平均世帯人員",val:"2.20人",source:"国勢調査"},
   {item:"単身世帯率",val:"38.2%",source:"国勢調査"},
   {item:"三世代世帯率",val:"8.5%（全国3.7%）",source:"国勢調査"},
@@ -2749,7 +2750,7 @@ const PSY_BIZ = [
 // 数字だけ更新して as_of を更新し忘れることを防ぐため、値と時刻を同じオブジェクトで持つ。
 // confidence: 'observed'=出典・対象年とも確認済み / 'estimated'=koya独自推計または出典のみ判明 / 'unknown'=未確認（証拠区分D）
 const MACRO_KPI = [
-  {v:"1,465,944人",l:"沖縄県総人口（R8.8）",col:"var(--gold)",as_of:"2026-08",source:"沖縄県統計課「推計人口」2026年8月1日現在（対前月+331人）",confidence:"observed"},
+  {v:"1,466,024人",l:"沖縄県総人口（R8.9）",col:"var(--gold)",as_of:"2026-09",source:"沖縄県統計課「推計人口」2026年9月1日現在（対前月+80人）／R7国勢調査確定1,466,548人（戦後初の減少-0.1%）",confidence:"observed"},
   {v:"4兆4,615億",l:"県内総生産GDP",col:"var(--blue)",as_of:"2022-04",source:"沖縄県「県民経済計算」（令和4年度）",confidence:"observed"},
   {v:"224.9万円",l:"1人当たり所得（全国最下位）",col:"var(--red)",as_of:"2022-04",source:"沖縄県「県民経済計算」（令和4年度）",confidence:"observed"},
   {v:"1,093.6万人",l:"年間観光客（R7最多）",col:"var(--green)",as_of:"2025-04",source:"沖縄県文化観光スポーツ部「入域観光客統計」（令和7年度・年間実績）",confidence:"observed"},
