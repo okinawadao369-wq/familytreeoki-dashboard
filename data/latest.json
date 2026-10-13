@@ -1,8 +1,8 @@
 {
-  "fetched_at": "2026-10-12T09:57:05.697+09:00",
+  "fetched_at": "2026-10-13T11:49:50.928+09:00",
   "fred_ok_count": 9,
   "fred_total": 9,
-  "gdelt_ok_count": 8,
+  "gdelt_ok_count": 0,
   "gdelt_total": 8,
   "fred": {
     "DEXJPUS": {
@@ -1136,556 +1136,68 @@
   },
   "gdelt": {
     "taiwan_strait": {
-      "status": "ok",
-      "value": 100,
-      "date": "2026-10-12",
-      "error": null,
-      "article_count": 50,
-      "articles": [
-        {
-          "title": "鄭麗文 、 柯志恩果貿升旗喊團結 柯志恩 ： 高雄贏 、 台灣就會贏",
-          "url": "https://n.yam.com/Article/20261010904510",
-          "domain": "n.yam.com",
-          "seendate": "20261010T064500Z"
-        },
-        {
-          "title": "馬斯克自產晶片 「 比登陸火星還難 」 被冷嘲至少要30年 傳台積電內部人士認同",
-          "url": "https://ec.ltn.com.tw/article/breakingnews/5601786",
-          "domain": "ec.ltn.com.tw",
-          "seendate": "20261010T064500Z"
-        },
-        {
-          "title": "ترامب يصرّ على أحقيته بنوبل للسلام",
-          "url": "https://middle-east-online.com/%D8%AA%D8%B1%D8%A7%D9%85%D8%A8-%D9%8A%D8%B5%D8%B1%D9%91-%D8%B9%D9%84%D9%89-%D8%A3%D8%AD%D9%82%D9%8A%D8%AA%D9%87-%D8%A8%D9%86%D9%88%D8%A8%D9%84-%D9%84%D9%84%D8%B3%D9%84%D8%A7%D9%85",
-          "domain": "middle-east-online.com",
-          "seendate": "20261010T064500Z"
-        },
-        {
-          "title": "韓國瑜開罵美中台都在看 他曝 ： 蔣萬安已經出局了 ， 讓藍軍開心剛好而已 | 政治 | 三立新聞網 SETN . COM",
-          "url": "https://www.setn.com/news/1920374",
-          "domain": "setn.com",
-          "seendate": "20261010T064500Z"
-        },
-        {
-          "title": "平塘公安  五强化五到位  圆满完成中秋国庆假期安保维稳工作",
-          "url": "https://baijiahao.baidu.com/s?id=1878642442458551801",
-          "domain": "baijiahao.baidu.com",
-          "seendate": "20261010T064500Z"
-        },
-        {
-          "title": "影 》 韓國瑜突脫稿轟大罷免 、 不副署 「 全文曝光 」 媒體人讚高招 - 政治",
-          "url": "https://www.chinatimes.com/realtimenews/20261010001850-260407",
-          "domain": "chinatimes.com",
-          "seendate": "20261010T064500Z"
-        },
-        {
-          "title": "新聞透視 》 夾在兩場川習會間 賴雙十講話避統獨論述 強化 「 民主抗威權 」 敘事 - 兩岸",
-          "url": "https://www.chinatimes.com/realtimenews/20261010001864-260409",
-          "domain": "chinatimes.com",
-          "seendate": "20261010T064500Z"
-        },
-        {
-          "title": "Taiwan Lai calls on Indo - Pacific democracies to help maintain peace in National Day speech",
-          "url": "https://www.wboc.com/news/international/taiwans-lai-calls-on-indo-pacific-democracies-to-help-maintain-peace-in-national-day-speech/article_0ffdfc19-8d85-5aac-923e-44e14e433318.html",
-          "domain": "wboc.com",
-          "seendate": "20261010T064500Z"
-        },
-        {
-          "title": "巴拿馬規模7 . 7極淺層強震 全國停課 、 機場暫停起降 ｜ 公視新聞網 PNN",
-          "url": "https://news.pts.org.tw/article/830758",
-          "domain": "news.pts.org.tw",
-          "seendate": "20261010T064500Z"
-        },
-        {
-          "title": "数采商眼里的具身智能 ： 层层倒卖与虚假订单",
-          "url": "https://tech.ifeng.com/c/8x6UpDNnKZy",
-          "domain": "tech.ifeng.com",
-          "seendate": "20261010T064500Z"
-        }
-      ]
+      "status": "failed",
+      "value": null,
+      "date": null,
+      "error": "HTTP 429",
+      "article_count": 0,
+      "articles": []
     },
     "north_korea": {
-      "status": "ok",
-      "value": 100,
-      "date": "2026-10-12",
-      "error": null,
-      "article_count": 50,
-      "articles": [
-        {
-          "title": "Η κυβέρνηση Τραμπ θέλει να επαναφέρει τις δημόσιες εκτελέσεις : Πότε και γιατί σταμάτησαν στις ΗΠΑ",
-          "url": "https://www.reporter.gr/diethnh/diethneis-eidhseis/687979-i-kyvernisi-tramp-thelei-na-epanaferei-tis-dimosies-ekteleseis-pote-kai-giati-stamatisan-stis-ipa",
-          "domain": "reporter.gr",
-          "seendate": "20261010T064500Z"
-        },
-        {
-          "title": "We Must Embrace , Not Pause , AI and Data Centers",
-          "url": "https://townhall.com/columnists/pauldriessen/2026/10/10/we-must-embrace-not-pause-ai-and-data-centers-n2684451",
-          "domain": "townhall.com",
-          "seendate": "20261010T064500Z"
-        },
-        {
-          "title": "影 》 台海和平都靠他 ！ 川普沒得諾貝爾和平獎氣炸 怒批挪威抹不去污點 - 國際",
-          "url": "https://www.chinatimes.com/realtimenews/20261010001758-260408",
-          "domain": "chinatimes.com",
-          "seendate": "20261010T064500Z"
-        },
-        {
-          "title": "再槓龜未獲諾貝爾和平獎 川普批挪威留下難抹滅汙點 | 國際",
-          "url": "https://www.cna.com.tw/news/aopl/202610100070.aspx",
-          "domain": "cna.com.tw",
-          "seendate": "20261010T064500Z"
-        },
-        {
-          "title": "  I should have won 8 Nobel Peace Prizes : Trump slams Nobel Committee for awarding Navi Pillay",
-          "url": "http://www.pakistantelegraph.com/news/279363161/i-should-have-won-8-nobel-peace-prizes-trump-slams-nobel-committee-for-awarding-navi-pillay",
-          "domain": "pakistantelegraph.com",
-          "seendate": "20261010T064500Z"
-        },
-        {
-          "title": "Corea del Nord chiede rispetto a Seul per ripristinare i rapporti",
-          "url": "https://www.laregione.ch/estero/estero/1955454/corea-kim-seul-rispetto-chiede-nord",
-          "domain": "laregione.ch",
-          "seendate": "20261008T053000Z"
-        },
-        {
-          "title": " 《 國際經濟 》 傳歐盟批准俄羅斯制裁 集中在彈道飛彈供應商 - 財經",
-          "url": "https://www.chinatimes.com/realtimenews/20261008002604-260410",
-          "domain": "chinatimes.com",
-          "seendate": "20261008T053000Z"
-        },
-        {
-          "title": "2년 연속  조희대 공방  으로 문 연 국감 … 상임위 곳곳 날선 대립",
-          "url": "https://www.fnnews.com/news/202610061617160184",
-          "domain": "fnnews.com",
-          "seendate": "20261006T083000Z"
-        },
-        {
-          "title": "Ιαπωνία : Στα σκαριά νέα υπηρεσία πληροφοριών με το βλέμμα στην Κίνα",
-          "url": "https://www.skai.gr/news/world/iaponia-sta-skaria-nea-ypiresia-pliroforion-me-to-vlemma-stin-kina",
-          "domain": "skai.gr",
-          "seendate": "20261006T083000Z"
-        },
-        {
-          "title": " [ 2026 국감 ] 조현  北 눈치보기 사실 아냐  ⋯  한미균열 · 정동영 충돌  도 부인 [ 종합 ] ",
-          "url": "http://inews24.com/view/2012138",
-          "domain": "inews24.com",
-          "seendate": "20261006T083000Z"
-        }
-      ]
+      "status": "failed",
+      "value": null,
+      "date": null,
+      "error": "HTTP 429",
+      "article_count": 0,
+      "articles": []
     },
     "indopacific": {
-      "status": "ok",
-      "value": 100,
-      "date": "2026-10-12",
-      "error": null,
-      "article_count": 50,
-      "articles": [
-        {
-          "title": "Taiwan Lai calls on Indo - Pacific democracies to help maintain peace in National Day speech",
-          "url": "https://www.wboc.com/news/international/taiwans-lai-calls-on-indo-pacific-democracies-to-help-maintain-peace-in-national-day-speech/article_0ffdfc19-8d85-5aac-923e-44e14e433318.html",
-          "domain": "wboc.com",
-          "seendate": "20261010T064500Z"
-        },
-        {
-          "title": "The Pentagon awarded $350M to a firm tied to a senior DOD official",
-          "url": "https://www.defenseone.com/policy/2026/10/pentagon-350-million-contracts-official/416543/",
-          "domain": "defenseone.com",
-          "seendate": "20261010T064500Z"
-        },
-        {
-          "title": "Taiwan Lai calls on Indo - Pacific democracies to help maintain peace in National Day speech",
-          "url": "https://www.newsday.com/news/nation/taiwan-national-day-lai-ching-te-w47437",
-          "domain": "newsday.com",
-          "seendate": "20261010T064500Z"
-        },
-        {
-          "title": "Taiwan Lai calls on Indo - Pacific democracies to help maintain peace in National Day speech",
-          "url": "http://www.stardem.com/ap/world/taiwans-lai-calls-on-indo-pacific-democracies-to-help-maintain-peace-in-national-day-speech/article_b2558553-22d8-5240-9ed3-5f3325d98864.html",
-          "domain": "stardem.com",
-          "seendate": "20261010T064500Z"
-        },
-        {
-          "title": "Taiwan Lai calls on Indo - Pacific democracies to help maintain peace in National Day speech",
-          "url": "http://www.gazettextra.com/news/nation_world/taiwans-lai-calls-on-indo-pacific-democracies-to-help-maintain-peace-in-national-day-speech/article_db4a95aa-e02d-5b20-b354-0a98427cc5c2.html",
-          "domain": "gazettextra.com",
-          "seendate": "20261010T064500Z"
-        },
-        {
-          "title": "Taiwan cherishes peace but will not give up freedom , president says",
-          "url": "https://www.asiaone.com/asia/taiwan-cherishes-peace-will-not-give-freedom-president-says",
-          "domain": "asiaone.com",
-          "seendate": "20261010T064500Z"
-        },
-        {
-          "title": "Taiwan Lai calls on Indo - Pacific democracies to help maintain peace in National Day speech",
-          "url": "https://isp.netscape.com:443/news/world/story/0001/20261010/acef4d9b8c0e988d8db93e89d84b0e9d",
-          "domain": "isp.netscape.com",
-          "seendate": "20261010T064500Z"
-        },
-        {
-          "title": "UPS員工漏看郵件 致F - 35零件誤運至香港",
-          "url": "https://www.epochtimes.com/b5/26/10/8/n14865755.htm",
-          "domain": "epochtimes.com",
-          "seendate": "20261008T053000Z"
-        },
-        {
-          "title": "Pete Hegseth a urcat pe portavionul Abraham Lincoln , întors în SUA după tentativele multiple de sinucidere de la bordul navei",
-          "url": "https://ziare.com/pete-hegseth/urcat-portavion-abraham-lincoln-sua-tentative-multiple-sinucidere-2040063",
-          "domain": "ziare.com",
-          "seendate": "20261008T053000Z"
-        },
-        {
-          "title": "Attacks by Houthis on Saudi airports highlight widening fallout from Yemen conflict",
-          "url": "https://www.wjcl.com/article/deadly-attacks-houthis-saudi-airports-yemen-conflict/74070963",
-          "domain": "wjcl.com",
-          "seendate": "20261008T053000Z"
-        }
-      ]
+      "status": "failed",
+      "value": null,
+      "date": null,
+      "error": "HTTP 429",
+      "article_count": 0,
+      "articles": []
     },
     "usfj_okinawa": {
-      "status": "ok",
-      "value": 100,
-      "date": "2026-10-12",
-      "error": null,
-      "article_count": 50,
-      "articles": [
-        {
-          "title": "Okinawa assembly resolution seeks US force action after murder case",
-          "url": "http://www.japanherald.com/news/279363031/okinawa-assembly-resolution-seeks-us-forces-action-after-murder-case",
-          "domain": "japanherald.com",
-          "seendate": "20261010T064500Z"
-        },
-        {
-          "title": "Anger in Japan grows after US Marine is arrested over the killing of a woman on Okinawa",
-          "url": "https://www.union-bulletin.com/news/world/anger-in-japan-grows-after-us-marine-is-arrested-over-the-killing-of-a-woman/article_9b9ab5c1-ec9b-5b95-8b3f-c8fb5b03957e.html",
-          "domain": "union-bulletin.com",
-          "seendate": "20261006T083000Z"
-        },
-        {
-          "title": "九州 ・ 沖縄の 「 稼ぐ力 」 を知財で強化 新たな地域拠点 「 INPIT - KYUSHU 」 が活動を開始",
-          "url": "https://www.kyodo.co.jp/pr/2026-10-02_4039592/",
-          "domain": "kyodo.co.jp",
-          "seendate": "20261002T091500Z"
-        },
-        {
-          "title": "九州 ・ 沖縄の 「 稼ぐ力 」 を知財で強化 新たな地域拠点 「 INPIT - KYUSHU 」 が活動を開始 : 共同通信PRワイヤー : 福島民友新聞社",
-          "url": "https://www.minyu-net.com/release/prwire/detail/202609145809",
-          "domain": "minyu-net.com",
-          "seendate": "20261002T091500Z"
-        },
-        {
-          "title": "九州 ・ 沖縄の 「 稼ぐ力 」 を知財で強化 新たな地域拠点 「 INPIT - KYUSHU 」 が活動を開始 ： 紀伊民報AGARA｜和歌山県のニュースサイト",
-          "url": "https://www.agara.co.jp/article/694230",
-          "domain": "agara.co.jp",
-          "seendate": "20261002T084500Z"
-        },
-        {
-          "title": "From cyber to Middle East , US and allies absorb hard lessons from 2026",
-          "url": "https://www.middle-east-online.com/en/cyber-middle-east-us-and-allies-absorb-hard-lessons-2026",
-          "domain": "middle-east-online.com",
-          "seendate": "20261002T083000Z"
-        },
-        {
-          "title": "Russia Navy Shows Its Reach Around Japan Southwestern Islands – The Diplomat",
-          "url": "https://thediplomat.com/2026/10/russias-navy-shows-its-reach-around-japans-southwestern-islands/",
-          "domain": "thediplomat.com",
-          "seendate": "20261002T074500Z"
-        },
-        {
-          "title": "アートホテル石垣島 「 アートでアートTシャツ展 」 を11月10日まで開催 ： 紀伊民報AGARA｜和歌山県のニュースサイト",
-          "url": "https://www.agara.co.jp/article/694154",
-          "domain": "agara.co.jp",
-          "seendate": "20261002T073000Z"
-        },
-        {
-          "title": "アートホテル石垣島 「 アートでアートTシャツ展 」 を11月10日まで開催",
-          "url": "https://www.kyodo.co.jp/pr/2026-10-02_4039563/",
-          "domain": "kyodo.co.jp",
-          "seendate": "20261002T071500Z"
-        },
-        {
-          "title": "元慰安婦の過酷な人生 、 英語能で 米研究者が創作 、 東京で上演",
-          "url": "https://mainichi.jp/articles/20261002/k00/00m/200/106000c",
-          "domain": "mainichi.jp",
-          "seendate": "20261002T064500Z"
-        }
-      ]
+      "status": "failed",
+      "value": null,
+      "date": null,
+      "error": "HTTP 429",
+      "article_count": 0,
+      "articles": []
     },
     "henoko": {
-      "status": "ok",
-      "value": 92,
-      "date": "2026-10-12",
-      "error": null,
-      "article_count": 50,
-      "articles": [
-        {
-          "title": "Okinawa assembly resolution seeks US force action after murder case",
-          "url": "http://www.japanherald.com/news/279363031/okinawa-assembly-resolution-seeks-us-forces-action-after-murder-case",
-          "domain": "japanherald.com",
-          "seendate": "20261010T064500Z"
-        },
-        {
-          "title": "Anger in Japan grows after US Marine is arrested over the killing of a woman on Okinawa",
-          "url": "https://www.union-bulletin.com/news/world/anger-in-japan-grows-after-us-marine-is-arrested-over-the-killing-of-a-woman/article_9b9ab5c1-ec9b-5b95-8b3f-c8fb5b03957e.html",
-          "domain": "union-bulletin.com",
-          "seendate": "20261006T083000Z"
-        },
-        {
-          "title": "九州 ・ 沖縄の 「 稼ぐ力 」 を知財で強化 新たな地域拠点 「 INPIT - KYUSHU 」 が活動を開始",
-          "url": "https://www.kyodo.co.jp/pr/2026-10-02_4039592/",
-          "domain": "kyodo.co.jp",
-          "seendate": "20261002T091500Z"
-        },
-        {
-          "title": "九州 ・ 沖縄の 「 稼ぐ力 」 を知財で強化 新たな地域拠点 「 INPIT - KYUSHU 」 が活動を開始 : 共同通信PRワイヤー : 福島民友新聞社",
-          "url": "https://www.minyu-net.com/release/prwire/detail/202609145809",
-          "domain": "minyu-net.com",
-          "seendate": "20261002T091500Z"
-        },
-        {
-          "title": "九州 ・ 沖縄の 「 稼ぐ力 」 を知財で強化 新たな地域拠点 「 INPIT - KYUSHU 」 が活動を開始 ： 紀伊民報AGARA｜和歌山県のニュースサイト",
-          "url": "https://www.agara.co.jp/article/694230",
-          "domain": "agara.co.jp",
-          "seendate": "20261002T084500Z"
-        },
-        {
-          "title": "From cyber to Middle East , US and allies absorb hard lessons from 2026",
-          "url": "https://www.middle-east-online.com/en/cyber-middle-east-us-and-allies-absorb-hard-lessons-2026",
-          "domain": "middle-east-online.com",
-          "seendate": "20261002T083000Z"
-        },
-        {
-          "title": "Russia Navy Shows Its Reach Around Japan Southwestern Islands – The Diplomat",
-          "url": "https://thediplomat.com/2026/10/russias-navy-shows-its-reach-around-japans-southwestern-islands/",
-          "domain": "thediplomat.com",
-          "seendate": "20261002T074500Z"
-        },
-        {
-          "title": "アートホテル石垣島 「 アートでアートTシャツ展 」 を11月10日まで開催 ： 紀伊民報AGARA｜和歌山県のニュースサイト",
-          "url": "https://www.agara.co.jp/article/694154",
-          "domain": "agara.co.jp",
-          "seendate": "20261002T073000Z"
-        },
-        {
-          "title": "アートホテル石垣島 「 アートでアートTシャツ展 」 を11月10日まで開催",
-          "url": "https://www.kyodo.co.jp/pr/2026-10-02_4039563/",
-          "domain": "kyodo.co.jp",
-          "seendate": "20261002T071500Z"
-        },
-        {
-          "title": "アートホテル石垣島 「 アートでアートTシャツ展 」 を11月10日まで開催",
-          "url": "https://www.chibanippo.co.jp/prwire/1674321",
-          "domain": "chibanippo.co.jp",
-          "seendate": "20261002T064500Z"
-        }
-      ]
+      "status": "failed",
+      "value": null,
+      "date": null,
+      "error": "HTTP 429",
+      "article_count": 0,
+      "articles": []
     },
     "us_defense_budget": {
-      "status": "ok",
-      "value": 100,
-      "date": "2026-10-12",
-      "error": null,
-      "article_count": 50,
-      "articles": [
-        {
-          "title": "自行申請簽證 、 謊報凶案線索 Anthropic再爆AI失控 | 國際",
-          "url": "https://www.cna.com.tw/news/aopl/202610100059.aspx",
-          "domain": "cna.com.tw",
-          "seendate": "20261010T064500Z"
-        },
-        {
-          "title": "The Pentagon awarded $350M to a firm tied to a senior DOD official",
-          "url": "https://www.defenseone.com/policy/2026/10/pentagon-350-million-contracts-official/416543/",
-          "domain": "defenseone.com",
-          "seendate": "20261010T064500Z"
-        },
-        {
-          "title": "Η κυβέρνηση Τραμπ θέλει να επαναφέρει τις δημόσιες εκτελέσεις : Πότε και γιατί σταμάτησαν στις ΗΠΑ",
-          "url": "https://www.reporter.gr/diethnh/diethneis-eidhseis/687979-i-kyvernisi-tramp-thelei-na-epanaferei-tis-dimosies-ekteleseis-pote-kai-giati-stamatisan-stis-ipa",
-          "domain": "reporter.gr",
-          "seendate": "20261010T064500Z"
-        },
-        {
-          "title": "AP News in Brief at 12 : 04 a . m . EDT",
-          "url": "http://www.gazettextra.com/news/nation_world/ap-news-in-brief-at-12-04-a-m-edt/article_f833cdbb-ff2e-5f42-965b-9b371c884967.html",
-          "domain": "gazettextra.com",
-          "seendate": "20261010T064500Z"
-        },
-        {
-          "title": "A botched execution and plans for one in public show the US is conflicted about capital punishment",
-          "url": "https://www.asiaone.com/world/botched-execution-and-plans-one-public-show-us-conflicted-about-capital-punishment",
-          "domain": "asiaone.com",
-          "seendate": "20261010T064500Z"
-        },
-        {
-          "title": "Vance 2028 buzz grows , but US midterms could sting",
-          "url": "https://www.philstar.com/world/2026/10/10/2562260/vance-2028-buzz-grows-us-midterms-could-sting",
-          "domain": "philstar.com",
-          "seendate": "20261010T064500Z"
-        },
-        {
-          "title": "AP News in Brief at 12 : 04 a . m . EDT",
-          "url": "https://www.woonsocketcall.com/news/national_and_world_news/ap-news-in-brief-at-12-04-a-m-edt/article_e52b742b-83ac-53a0-80bc-a4829bcbc907.html",
-          "domain": "woonsocketcall.com",
-          "seendate": "20261010T064500Z"
-        },
-        {
-          "title": "總統國慶演說宣示打造山巔之城 聚焦經濟表現與全民共享 ｜ 公視新聞網 PNN",
-          "url": "https://news.pts.org.tw/article/830781",
-          "domain": "news.pts.org.tw",
-          "seendate": "20261010T064500Z"
-        },
-        {
-          "title": "Dallesecuzione fallita di Pike allo streaming di Hasan | così la pena capitale diventa uno show",
-          "url": "https://www.zazoom.it/2026-10-10/dallesecuzione-fallita-di-pike-allo-streaming-di-hasan-cosi-la-pena-capitale-diventa-uno-show-2/19781297/",
-          "domain": "zazoom.it",
-          "seendate": "20261010T064500Z"
-        },
-        {
-          "title": "UPS員工漏看郵件 致F - 35零件誤運至香港",
-          "url": "https://www.epochtimes.com/b5/26/10/8/n14865755.htm",
-          "domain": "epochtimes.com",
-          "seendate": "20261008T053000Z"
-        }
-      ]
+      "status": "failed",
+      "value": null,
+      "date": null,
+      "error": "HTTP 429",
+      "article_count": 0,
+      "articles": []
     },
     "trump_defense": {
-      "status": "ok",
-      "value": 100,
-      "date": "2026-10-12",
-      "error": null,
-      "article_count": 50,
-      "articles": [
-        {
-          "title": "ترامب يصرّ على أحقيته بنوبل للسلام",
-          "url": "https://middle-east-online.com/%D8%AA%D8%B1%D8%A7%D9%85%D8%A8-%D9%8A%D8%B5%D8%B1%D9%91-%D8%B9%D9%84%D9%89-%D8%A3%D8%AD%D9%82%D9%8A%D8%AA%D9%87-%D8%A8%D9%86%D9%88%D8%A8%D9%84-%D9%84%D9%84%D8%B3%D9%84%D8%A7%D9%85",
-          "domain": "middle-east-online.com",
-          "seendate": "20261010T064500Z"
-        },
-        {
-          "title": "Že united states nedostali Nobelovu cenu za mier ? Nórsku to nezabudneme , hlási Trump",
-          "url": "https://hnonline.sk/svet/96307109-ze-usa-nedostali-nobelovu-cenu-za-mier-norsku-to-nezabudneme-hlasi-trump",
-          "domain": "hnonline.sk",
-          "seendate": "20261010T064500Z"
-        },
-        {
-          "title": "Že united states nedostaly Nobelovu cenu za mír ? Norsku to nezapomene , hlásí prezident Donald Trump",
-          "url": "https://www.idnes.cz/zpravy/zahranicni/usa-podle-trumpa-norsku-nezapomenou-ze-nedostaly-nobelovu-cenu-za-mir.A261010_071517_zahranicni_iluj",
-          "domain": "idnes.cz",
-          "seendate": "20261010T064500Z"
-        },
-        {
-          "title": "Trump faces hypocrisy charge over Russian diesel deal after targeting India",
-          "url": "https://www.orissapost.com/trump-faces-hypocrisy-charge-over-russian-diesel-deal-after-targeting-india/",
-          "domain": "orissapost.com",
-          "seendate": "20261010T064500Z"
-        },
-        {
-          "title": "Taiwan Lai calls on Indo - Pacific democracies to help maintain peace in National Day speech",
-          "url": "https://www.wboc.com/news/international/taiwans-lai-calls-on-indo-pacific-democracies-to-help-maintain-peace-in-national-day-speech/article_0ffdfc19-8d85-5aac-923e-44e14e433318.html",
-          "domain": "wboc.com",
-          "seendate": "20261010T064500Z"
-        },
-        {
-          "title": "Voices from the Arab Press : US - Iran tensions , AI dangers , and Israel vote",
-          "url": "http://www.jpost.com/middle-east/article-911021",
-          "domain": "jpost.com",
-          "seendate": "20261010T064500Z"
-        },
-        {
-          "title": "自行申請簽證 、 謊報凶案線索 Anthropic再爆AI失控 | 國際",
-          "url": "https://www.cna.com.tw/news/aopl/202610100059.aspx",
-          "domain": "cna.com.tw",
-          "seendate": "20261010T064500Z"
-        },
-        {
-          "title": "The Pentagon awarded $350M to a firm tied to a senior DOD official",
-          "url": "https://www.defenseone.com/policy/2026/10/pentagon-350-million-contracts-official/416543/",
-          "domain": "defenseone.com",
-          "seendate": "20261010T064500Z"
-        },
-        {
-          "title": "Politically motivated decisions will deeply harm US : Indian - American Congressman Thanedar on Trump H - 1B , Green Card move",
-          "url": "http://www.argentinastar.com/news/279363062/politically-motivated-decisions-will-deeply-harm-us-indian-american-congressman-thanedar-on-trump-h-1b-green-card-move",
-          "domain": "argentinastar.com",
-          "seendate": "20261010T064500Z"
-        },
-        {
-          "title": "Η κυβέρνηση Τραμπ θέλει να επαναφέρει τις δημόσιες εκτελέσεις : Πότε και γιατί σταμάτησαν στις ΗΠΑ",
-          "url": "https://www.reporter.gr/diethnh/diethneis-eidhseis/687979-i-kyvernisi-tramp-thelei-na-epanaferei-tis-dimosies-ekteleseis-pote-kai-giati-stamatisan-stis-ipa",
-          "domain": "reporter.gr",
-          "seendate": "20261010T064500Z"
-        }
-      ]
+      "status": "failed",
+      "value": null,
+      "date": null,
+      "error": "fetch failed",
+      "article_count": 0,
+      "articles": []
     },
     "us_economy_stress": {
-      "status": "ok",
-      "value": 94,
-      "date": "2026-10-12",
-      "error": null,
-      "article_count": 50,
-      "articles": [
-        {
-          "title": "  Being ashamed of family wealth as backup ?: Why young Indians born around 2005 face a tougher future with AI , rising house prices and fewer good jobs",
-          "url": "https://www.indiatimes.com/trending/being-ashamed-of-family-wealth-as-backup-why-young-indians-born-around-2005-face-a-tougher-future-with-ai-rising-house-prices-and-fewer-good-jobs/articleshow/134836708.html",
-          "domain": "indiatimes.com",
-          "seendate": "20261010T064500Z"
-        },
-        {
-          "title": "中央政法委发布第三季度见义勇为勇士榜 _ 国内国际 _ 新闻 _ ",
-          "url": "http://www.chuzhou.cn/2026/1010/990136.shtml",
-          "domain": "chuzhou.cn",
-          "seendate": "20261010T064500Z"
-        },
-        {
-          "title": "Πληθωρισμός 5 %, στέγαση +14 , 7 %: Ο μισθός τελειώνει πριν τελειώσει ο μήνας – Η ακρίβεια καταπίνει τις αυξήσεις και τις φοροελαφρύνσεις",
-          "url": "https://newpost.gr/eidiseis/plithorismos-5-stegasi-14-7-o-misthos-teleionei-prin-teleiosei-o-minas-i-akriveia-katapinei-tis-ayxiseis-kai-tis-foroelafrynseis/",
-          "domain": "newpost.gr",
-          "seendate": "20261010T064500Z"
-        },
-        {
-          "title": "Сколько добавят к пособиям инвалидам с 1 февраля 2027 года : новый прогноз",
-          "url": "https://abnews.ru/news/2026/10/10/golikova-nazvala-srok-i-razmer-indeksaczii-ezhemesyachnyh-vyplat-invalidam-v-2027-godu",
-          "domain": "abnews.ru",
-          "seendate": "20261010T064500Z"
-        },
-        {
-          "title": "Nhà đầu tư  thở phào  với giá vàng",
-          "url": "https://baomoi.com/nha-dau-tu-tho-phao-voi-gia-vang-c56238753.epi",
-          "domain": "baomoi.com",
-          "seendate": "20261010T064500Z"
-        },
-        {
-          "title": "RBI rate hikes of 50 bps expected in next two policies , terminal repo rate to reach 6 . 0 %: Kotak report",
-          "url": "http://www.pakistantelegraph.com/news/279362992/rbi-rate-hikes-of-50-bps-expected-in-next-two-policies-terminal-repo-rate-to-reach-60-kotak-report",
-          "domain": "pakistantelegraph.com",
-          "seendate": "20261010T064500Z"
-        },
-        {
-          "title": "It Time to Confront America Insurance Monopolies",
-          "url": "https://townhall.com/columnists/joelwhite/2026/10/10/its-time-to-confront-americas-insurance-monopolies-n2684235",
-          "domain": "townhall.com",
-          "seendate": "20261010T064500Z"
-        },
-        {
-          "title": "RBI rate hikes of 50 bps expected in next two policies , terminal repo rate to reach 6 . 0 %: Kotak report",
-          "url": "https://timesofoman.com/article/177844-rbi-rate-hikes-of-50-bps-expected-in-next-two-policies-kotak-report",
-          "domain": "timesofoman.com",
-          "seendate": "20261010T064500Z"
-        },
-        {
-          "title": "  If voters arent better off by the next election , were screwed : Labour insiders voice fears over budget | Budget",
-          "url": "https://www.theguardian.com/uk-news/2026/oct/10/labour-fears-budget-burnham-healey",
-          "domain": "theguardian.com",
-          "seendate": "20261010T064500Z"
-        },
-        {
-          "title": "Названы регионы , где зарплаты в два раза превышают средние по России",
-          "url": "https://abnews.ru/news/2026/10/10/nazvany-regiony-rossii-s-samymi-vysokimi-srednimi-zarplatami",
-          "domain": "abnews.ru",
-          "seendate": "20261010T064500Z"
-        }
-      ]
+      "status": "failed",
+      "value": null,
+      "date": null,
+      "error": "fetch failed",
+      "article_count": 0,
+      "articles": []
     }
   }
 }
