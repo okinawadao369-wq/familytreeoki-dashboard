@@ -1,8 +1,8 @@
 {
-  "fetched_at": "2026-10-17T09:08:55.665+09:00",
+  "fetched_at": "2026-10-18T08:44:15.699+09:00",
   "fred_ok_count": 9,
   "fred_total": 9,
-  "gdelt_ok_count": 1,
+  "gdelt_ok_count": 0,
   "gdelt_total": 8,
   "fred": {
     "DEXJPUS": {
@@ -1164,73 +1164,12 @@
       "articles": []
     },
     "henoko": {
-      "status": "ok",
-      "value": 94,
-      "date": "2026-10-17",
-      "error": null,
-      "article_count": 50,
-      "articles": [
-        {
-          "title": "＜九州高校野球大会組み合わせ＞早稲田佐賀 － 宮崎商 （ 宮崎第2代表 ）、 佐賀北 － 大分 （ 大分第1代表 ） センバツ目指し 、 16チーム熱戦 熊本で10月24日開幕 | スポーツ | 佐賀県のニュース",
-          "url": "https://www.saga-s.co.jp/articles/-/1811967",
-          "domain": "saga-s.co.jp",
-          "seendate": "20261016T233000Z"
-        },
-        {
-          "title": "Okinawa Prefecture reverses stance on U . S . Osprey deployment",
-          "url": "https://japantoday.com/category/politics/urgent-okinawa-prefecture-reverses-stance-on-u.s.-osprey-deployment",
-          "domain": "japantoday.com",
-          "seendate": "20261016T214500Z"
-        },
-        {
-          "title": "Что было бы , если бы японский суперлинкор « Ямато » напал на советский флот в Великую Отечественную",
-          "url": "https://echo.msk.ru/istoriya/chto-bylo-by-esli-by-yaponskiy-superlinkor-yamato-napal-na-sovetskiy-flot-v-velikuyu-otechestvennuyu/",
-          "domain": "echo.msk.ru",
-          "seendate": "20261016T140000Z"
-        },
-        {
-          "title": "Новые власти Окинавы разрешили размещать в префектуре конвертопланы США",
-          "url": "https://www.aex.ru/news/2026/10/16/300538/",
-          "domain": "aex.ru",
-          "seendate": "20261016T133000Z"
-        },
-        {
-          "title": "普天間のオスプレイ容認で方針転換 沖縄県の古謝知事が安全保障政策で現実路線に",
-          "url": "https://www.sankei.com/article/20261016-5ECA4USUA5LDHEFWQ2RQNDWIDY/",
-          "domain": "sankei.com",
-          "seendate": "20261016T114500Z"
-        },
-        {
-          "title": "沖繩那霸日臺親善協會訪基隆 邱佩琳盼拓展觀光文化合作 | ETtoday地方新聞",
-          "url": "https://www.ettoday.net/news/20261016/3255963.htm",
-          "domain": "ettoday.net",
-          "seendate": "20261016T113000Z"
-        },
-        {
-          "title": "沖繩命案陰影猶存 日防衛省要求美軍利劍軍演期間減少外出 | 國際",
-          "url": "https://www.cna.com.tw/news/aopl/202610160295.aspx",
-          "domain": "cna.com.tw",
-          "seendate": "20261016T113000Z"
-        },
-        {
-          "title": "Μητέρα τεσσάρων παιδιών έφυγε από το Λας Βέγκας για να ζήσει σε νησί , όπου οι κάτοικοι συχνά ζουν μέχρι τα 100 ή και περισσότερο",
-          "url": "https://www.newsbeast.gr/world/arthro/13429495/mitera-tessaron-paidion-efyge-apo-to-las-vegkas-gia-na-zisei-se-nisi-opou-oi-katoikoi-sychna-zoun-mechri-ta-100-i-kai-perissotero",
-          "domain": "newsbeast.gr",
-          "seendate": "20261016T101500Z"
-        },
-        {
-          "title": "沖繩立場 「 重大轉變 」 古謝玄太表態 ： 容許 「 魚鷹 」 續駐普天間 | 國際",
-          "url": "https://newtalk.tw/news/view/2026-10-16/1065956",
-          "domain": "newtalk.tw",
-          "seendate": "20261016T090000Z"
-        },
-        {
-          "title": "Governor of Japan Okinawa accepts U . S . Osprey deployment , reverses longtime stance",
-          "url": "http://en.people.cn/n3/2026/1016/c90000-20509336.html",
-          "domain": "en.people.cn",
-          "seendate": "20261016T090000Z"
-        }
-      ]
+      "status": "failed",
+      "value": null,
+      "date": null,
+      "error": "HTTP 429",
+      "article_count": 0,
+      "articles": []
     },
     "us_defense_budget": {
       "status": "failed",
