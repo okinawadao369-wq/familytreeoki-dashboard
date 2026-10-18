@@ -1,8 +1,8 @@
 {
-  "fetched_at": "2026-10-18T08:44:15.699+09:00",
+  "fetched_at": "2026-10-19T08:54:05.805+09:00",
   "fred_ok_count": 9,
   "fred_total": 9,
-  "gdelt_ok_count": 0,
+  "gdelt_ok_count": 8,
   "gdelt_total": 8,
   "fred": {
     "DEXJPUS": {
@@ -1132,68 +1132,556 @@
   },
   "gdelt": {
     "taiwan_strait": {
-      "status": "failed",
-      "value": null,
-      "date": null,
-      "error": "HTTP 429",
-      "article_count": 0,
-      "articles": []
+      "status": "ok",
+      "value": 100,
+      "date": "2026-10-19",
+      "error": null,
+      "article_count": 50,
+      "articles": [
+        {
+          "title": "沈伯洋車掃3萬人爆場 ！ 21 ： 30全場秒安靜 「 氣音喊凍蒜 」 網驚 ： 高水準 | 政治",
+          "url": "https://www.setn.com/news/1924732",
+          "domain": "setn.com",
+          "seendate": "20261018T230000Z"
+        },
+        {
+          "title": "證實離婚後首露面 ！ 張秀卿淚崩 唱 「 贏一口氣 」 送前夫 ？ ",
+          "url": "https://news.tvbs.com.tw/entertainment/4037944",
+          "domain": "news.tvbs.com.tw",
+          "seendate": "20261018T214500Z"
+        },
+        {
+          "title": "  读懂过去与现在 ， 参与发展与未来  ",
+          "url": "https://baijiahao.baidu.com/s?id=1879420274824772443",
+          "domain": "baijiahao.baidu.com",
+          "seendate": "20261018T210000Z"
+        },
+        {
+          "title": "我国科学家揭示中国北方早期粟作人群的本地起源",
+          "url": "http://news.china.com.cn/2026-10/19/content_118738694.shtml",
+          "domain": "news.china.com.cn",
+          "seendate": "20261018T210000Z"
+        },
+        {
+          "title": "AI泡沫破了吗 ？ 硅谷四大佬给出不同答案",
+          "url": "https://www.wenxuecity.com/news/2026/10/18/126808682.html",
+          "domain": "wenxuecity.com",
+          "seendate": "20261018T210000Z"
+        },
+        {
+          "title": "两岸媒体人在湘感受美丽乡村建设",
+          "url": "http://news.china.com.cn/2026-10/19/content_118738687.shtml",
+          "domain": "news.china.com.cn",
+          "seendate": "20261018T210000Z"
+        },
+        {
+          "title": "王毅同黑山副总理兼外长伊布拉希莫维奇会谈",
+          "url": "http://news.china.com.cn/2026-10/19/content_118738701.shtml",
+          "domain": "news.china.com.cn",
+          "seendate": "20261018T210000Z"
+        },
+        {
+          "title": "Ne îndreptăm spre al treilea război mondial ? Avertismentul Financial Times pentru Europa",
+          "url": "https://www.mediafax.ro/externe/ne-indreptam-spre-al-treilea-razboi-mondial-avertismentul-financial-times-pentru-europa-23827744",
+          "domain": "mediafax.ro",
+          "seendate": "20261018T210000Z"
+        },
+        {
+          "title": "New tea shop opens in Manchester , featuring more than 100 specialty teas and handcrafted artisan teaware",
+          "url": "https://www.manchesterjournal.com/business/new-tea-shop-opens-in-manchester-featuring-more-than-100-specialty-teas-and-handcrafted-artisan-teaware/5038038",
+          "domain": "manchesterjournal.com",
+          "seendate": "20261018T210000Z"
+        },
+        {
+          "title": "台大名醫也出門追洋流 ： 像迪士尼遊行 ！ - 美洲台灣日報",
+          "url": "https://taiwandaily.net/%E5%8D%B3%E6%99%82%E6%96%B0%E8%81%9E/163111/",
+          "domain": "taiwandaily.net",
+          "seendate": "20261018T204500Z"
+        }
+      ]
     },
     "north_korea": {
-      "status": "failed",
-      "value": null,
-      "date": null,
-      "error": "HTTP 429",
-      "article_count": 0,
-      "articles": []
+      "status": "ok",
+      "value": 100,
+      "date": "2026-10-19",
+      "error": null,
+      "article_count": 50,
+      "articles": [
+        {
+          "title": "Ne îndreptăm spre al treilea război mondial ? Avertismentul Financial Times pentru Europa",
+          "url": "https://www.mediafax.ro/externe/ne-indreptam-spre-al-treilea-razboi-mondial-avertismentul-financial-times-pentru-europa-23827744",
+          "domain": "mediafax.ro",
+          "seendate": "20261018T210000Z"
+        },
+        {
+          "title": "電影 《 無問西東 》 背後 ： 中國空軍筧橋一代的最後青春",
+          "url": "https://www.epochtimes.com/b5/26/9/30/n14860634.htm",
+          "domain": "epochtimes.com",
+          "seendate": "20261018T191500Z"
+        },
+        {
+          "title": "FT : Υπνοβατούμε προς τον Γ΄ Παγκόσμιο Πόλεμο ; - Ο φόβος μιας παγκόσμιας ανάφλεξης",
+          "url": "https://www.ekriti.gr/kosmos/ft-ypnobatoyme-pros-ton-g-pagkosmio-polemo-o-fobos-mias-pagkosmias-anaflexis",
+          "domain": "ekriti.gr",
+          "seendate": "20261018T190000Z"
+        },
+        {
+          "title": "欧洲沉沦 ， 中美两强的时代已经到来 - 博客",
+          "url": "https://blog.wenxuecity.com/myblog/78474/202610/12451.html",
+          "domain": "blog.wenxuecity.com",
+          "seendate": "20261018T184500Z"
+        },
+        {
+          "title": "Un yate con una piscina de 50 metros y toboganes acuáticos : imágenes satelitales revelan el lujoso complejo de vacaciones de Kim Jong - un en Corea del Norte",
+          "url": "https://laopinion.com/2026/10/18/un-yate-con-una-piscina-de-50-metros-y-toboganes-acuaticos-imagenes-satelitales-revelan-el-lujoso-complejo-de-vacaciones-de-kim-jong-un-en-corea-del-norte/",
+          "domain": "laopinion.com",
+          "seendate": "20261018T183000Z"
+        },
+        {
+          "title": "Броят на въоръжените конфликти по света е най - голям от Втората световна война насам",
+          "url": "https://dnes.dir.bg/svyat/broyat-na-vaorazhenite-konflikti-po-sveta-e-nay-golyam-ot-vtorata-svetovna-voyna-nasam",
+          "domain": "dnes.dir.bg",
+          "seendate": "20261018T183000Z"
+        },
+        {
+          "title": "回家的路 - 胡一诺发表于 几曾回首 - 论坛",
+          "url": "https://bbs.wenxuecity.com/memory/1940917.html",
+          "domain": "bbs.wenxuecity.com",
+          "seendate": "20261018T174500Z"
+        },
+        {
+          "title": "  文革  时的  幸福生活  片段 - chufang发表于 文革 - 论坛",
+          "url": "https://bbs.wenxuecity.com/culturerevolution/1941140.html",
+          "domain": "bbs.wenxuecity.com",
+          "seendate": "20261018T174500Z"
+        },
+        {
+          "title": " 《 花开锦绣 》 之外的真实盐政",
+          "url": "http://www.ftchinese.com/story/001111134",
+          "domain": "ftchinese.com",
+          "seendate": "20261018T173000Z"
+        },
+        {
+          "title": "社评 ： 高市政权越来越像个极端邪教",
+          "url": "https://baijiahao.baidu.com/s?id=1879403665807500058",
+          "domain": "baijiahao.baidu.com",
+          "seendate": "20261018T171500Z"
+        }
+      ]
     },
     "indopacific": {
-      "status": "failed",
-      "value": null,
-      "date": null,
-      "error": "HTTP 429",
-      "article_count": 0,
-      "articles": []
+      "status": "ok",
+      "value": 100,
+      "date": "2026-10-19",
+      "error": null,
+      "article_count": 50,
+      "articles": [
+        {
+          "title": "Кто подставляет Трампа и Маска : почему отключение Starlink на Украине не пророссийский жест",
+          "url": "https://news.mail.ru/politics/72766985/",
+          "domain": "news.mail.ru",
+          "seendate": "20261018T214500Z"
+        },
+        {
+          "title": "한국 배제  동맹 논리  에 잇따른 수주 실패 , K방산 한계를 마주하다 - 오피니언ㅣ한국일보",
+          "url": "https://www.hankookilbo.com/news/article/A2026101410010004966",
+          "domain": "hankookilbo.com",
+          "seendate": "20261018T210000Z"
+        },
+        {
+          "title": "EBRSO confirms pepper balls were used to disperse unruly crowds following Saturday LSU game",
+          "url": "https://www.wbrz.com/news/ebrso-confirms-pepper-balls-were-used-to-disperse-unruly-crowds-following-saturday-s-lsu-game",
+          "domain": "wbrz.com",
+          "seendate": "20261018T204500Z"
+        },
+        {
+          "title": "馬斯克等人主導美軍未來戰爭評估 ！ 北京智庫籲借鏡美 「 子午線計畫 」 建立國防科技評估閉環機制 - 國際",
+          "url": "https://news.ltn.com.tw/news/world/breakingnews/5610763",
+          "domain": "news.ltn.com.tw",
+          "seendate": "20261018T193000Z"
+        },
+        {
+          "title": "  Bangladesh First  policy prioritizes national interest , sovereignty",
+          "url": "https://banglamirrornews.com/2026/10/18/213442/",
+          "domain": "banglamirrornews.com",
+          "seendate": "20261018T191500Z"
+        },
+        {
+          "title": "Indian Navy Expands Global Reach With 2026 Deployments",
+          "url": "https://indiawest.com/indian-navy-spreads-its-reach-across-major-maritime-regions/",
+          "domain": "indiawest.com",
+          "seendate": "20261018T184500Z"
+        },
+        {
+          "title": "欧洲沉沦 ， 中美两强的时代已经到来 - 博客",
+          "url": "https://blog.wenxuecity.com/myblog/78474/202610/12451.html",
+          "domain": "blog.wenxuecity.com",
+          "seendate": "20261018T184500Z"
+        },
+        {
+          "title": "Full transcript of  Face the Nation with Margaret Brennan , Oct . 18 , 2026",
+          "url": "https://www.cbsnews.com/news/face-the-nation-full-transcript-10-18-2026/",
+          "domain": "cbsnews.com",
+          "seendate": "20261018T184500Z"
+        },
+        {
+          "title": "USA : s robotjagare på ovanligt besök i Bottenhavet",
+          "url": "https://www.dn.se/sverige/usas-ovanliga-drag-krigsfartyg-utanfor-sundsvall/",
+          "domain": "dn.se",
+          "seendate": "20261018T183000Z"
+        },
+        {
+          "title": "Τα σκυλιά του ρεζερβουάρ",
+          "url": "https://www.kathimerini.gr/world/564529159/ta-skylia-toy-rezervoyar/",
+          "domain": "kathimerini.gr",
+          "seendate": "20261018T183000Z"
+        }
+      ]
     },
     "usfj_okinawa": {
-      "status": "failed",
-      "value": null,
-      "date": null,
-      "error": "HTTP 429",
-      "article_count": 0,
-      "articles": []
+      "status": "ok",
+      "value": 100,
+      "date": "2026-10-19",
+      "error": null,
+      "article_count": 50,
+      "articles": [
+        {
+          "title": " ［ 社説 ］ 辺野古事故 遺族が要請 思い受け止め対応急げ | 社説",
+          "url": "https://www.okinawatimes.co.jp/articles/-/1947352",
+          "domain": "okinawatimes.co.jp",
+          "seendate": "20261018T210000Z"
+        },
+        {
+          "title": "Дальнее эхо китов и деревьев - Троицкий вариант Наука",
+          "url": "https://www.trv-science.ru/2026/10/dalnee-eho-kitov-i-derevev/",
+          "domain": "trv-science.ru",
+          "seendate": "20261018T191500Z"
+        },
+        {
+          "title": "Laura Plantation in Vacherie offers educational tour | Entertainment / Life",
+          "url": "https://www.nola.com/entertainment_life/laura-plantation-museum-goer/article_2aff514b-66a2-48e4-b945-7ea41743636b.html",
+          "domain": "nola.com",
+          "seendate": "20261018T154500Z"
+        },
+        {
+          "title": "צעיר לנצח : כל מה שרציתם לדעת על  Longevity  ",
+          "url": "http://www.srugim.co.il/101013743-%D7%A6%D7%A2%D7%99%D7%A8-%D7%9C%D7%A0%D7%A6%D7%97-%D7%9B%D7%9C-%D7%9E%D7%94-%D7%A9%D7%A8%D7%A6%D7%99%D7%AA%D7%9D-%D7%9C%D7%93%D7%A2%D7%AA-%D7%A2%D7%9C-longevity",
+          "domain": "srugim.co.il",
+          "seendate": "20261018T120000Z"
+        },
+        {
+          "title": "US - Japan  Keen Sword 27  drills to begin amid protests in Japan ; expert warns of further provocations against China",
+          "url": "https://www.globaltimes.cn/page/202610/1372465.shtml",
+          "domain": "globaltimes.cn",
+          "seendate": "20261018T110000Z"
+        },
+        {
+          "title": " 「 どんなにつらい思いを …」 辺野古転覆事故 、 高校生の遺族が献花",
+          "url": "https://mainichi.jp/articles/20261018/k00/00m/040/108000c",
+          "domain": "mainichi.jp",
+          "seendate": "20261018T103000Z"
+        },
+        {
+          "title": "生徒遺族 、 辺野古で献花 「 なぜ命落とさなければ 」 ｜全国のニュース｜Web東奥",
+          "url": "https://www.toonippo.co.jp/articles/-/2385319",
+          "domain": "toonippo.co.jp",
+          "seendate": "20261018T081500Z"
+        },
+        {
+          "title": "辺野古沖転覆事故 「 自分だけ帰ってこられないなんて思ってなかっただろうな 」 女子生徒の両親が献花",
+          "url": "https://www.okinawatimes.co.jp/articles/-/1947187",
+          "domain": "okinawatimes.co.jp",
+          "seendate": "20261018T064500Z"
+        },
+        {
+          "title": "辺野古沖転覆事故 亡くなった女子高校生の両親が沖縄県知事と面談 修学旅行や教育旅行の安全確保などを要請",
+          "url": "https://news.livedoor.com/article/detail/32592431/",
+          "domain": "news.livedoor.com",
+          "seendate": "20261018T034500Z"
+        },
+        {
+          "title": "平和と暮らし守る市政へ / 那覇市長選きょう告示 久手堅さちこ氏集会",
+          "url": "https://www.jcp.or.jp/akahata/aik26/2026-10-18/2026101804_02_0.php",
+          "domain": "jcp.or.jp",
+          "seendate": "20261018T034500Z"
+        }
+      ]
     },
     "henoko": {
-      "status": "failed",
-      "value": null,
-      "date": null,
-      "error": "HTTP 429",
-      "article_count": 0,
-      "articles": []
+      "status": "ok",
+      "value": 100,
+      "date": "2026-10-19",
+      "error": null,
+      "article_count": 50,
+      "articles": [
+        {
+          "title": " ［ 社説 ］ 辺野古事故 遺族が要請 思い受け止め対応急げ | 社説",
+          "url": "https://www.okinawatimes.co.jp/articles/-/1947352",
+          "domain": "okinawatimes.co.jp",
+          "seendate": "20261018T210000Z"
+        },
+        {
+          "title": "צעיר לנצח : כל מה שרציתם לדעת על  Longevity  ",
+          "url": "http://www.srugim.co.il/101013743-%D7%A6%D7%A2%D7%99%D7%A8-%D7%9C%D7%A0%D7%A6%D7%97-%D7%9B%D7%9C-%D7%9E%D7%94-%D7%A9%D7%A8%D7%A6%D7%99%D7%AA%D7%9D-%D7%9C%D7%93%D7%A2%D7%AA-%D7%A2%D7%9C-longevity",
+          "domain": "srugim.co.il",
+          "seendate": "20261018T120000Z"
+        },
+        {
+          "title": "US - Japan  Keen Sword 27  drills to begin amid protests in Japan ; expert warns of further provocations against China",
+          "url": "https://www.globaltimes.cn/page/202610/1372465.shtml",
+          "domain": "globaltimes.cn",
+          "seendate": "20261018T110000Z"
+        },
+        {
+          "title": " 「 どんなにつらい思いを …」 辺野古転覆事故 、 高校生の遺族が献花",
+          "url": "https://mainichi.jp/articles/20261018/k00/00m/040/108000c",
+          "domain": "mainichi.jp",
+          "seendate": "20261018T103000Z"
+        },
+        {
+          "title": "生徒遺族 、 辺野古で献花 「 なぜ命落とさなければ 」 ｜全国のニュース｜Web東奥",
+          "url": "https://www.toonippo.co.jp/articles/-/2385319",
+          "domain": "toonippo.co.jp",
+          "seendate": "20261018T081500Z"
+        },
+        {
+          "title": "辺野古沖転覆事故 「 自分だけ帰ってこられないなんて思ってなかっただろうな 」 女子生徒の両親が献花",
+          "url": "https://www.okinawatimes.co.jp/articles/-/1947187",
+          "domain": "okinawatimes.co.jp",
+          "seendate": "20261018T064500Z"
+        },
+        {
+          "title": "辺野古沖転覆事故 亡くなった女子高校生の両親が沖縄県知事と面談 修学旅行や教育旅行の安全確保などを要請",
+          "url": "https://news.livedoor.com/article/detail/32592431/",
+          "domain": "news.livedoor.com",
+          "seendate": "20261018T034500Z"
+        },
+        {
+          "title": "平和と暮らし守る市政へ / 那覇市長選きょう告示 久手堅さちこ氏集会",
+          "url": "https://www.jcp.or.jp/akahata/aik26/2026-10-18/2026101804_02_0.php",
+          "domain": "jcp.or.jp",
+          "seendate": "20261018T034500Z"
+        },
+        {
+          "title": "在日米軍基地 資産額３２兆円 / 世界で突出 面積 ・ 兵力も / 欧州は縮小 日本は増強",
+          "url": "https://www.jcp.or.jp/akahata/aik26/2026-10-18/2026101801_02_0.php",
+          "domain": "jcp.or.jp",
+          "seendate": "20261018T034500Z"
+        },
+        {
+          "title": " _ 冰山冷热 ( 000530 ) 股吧 _ 东方财富网股吧",
+          "url": "https://guba.eastmoney.com/o/news,000530,1783892761.html",
+          "domain": "guba.eastmoney.com",
+          "seendate": "20261018T010000Z"
+        }
+      ]
     },
     "us_defense_budget": {
-      "status": "failed",
-      "value": null,
-      "date": null,
-      "error": "HTTP 429",
-      "article_count": 0,
-      "articles": []
+      "status": "ok",
+      "value": 100,
+      "date": "2026-10-19",
+      "error": null,
+      "article_count": 50,
+      "articles": [
+        {
+          "title": "基辅出动逾千架无人机袭击俄罗斯 ， 圣彼得堡多处石油设施燃起大火",
+          "url": "https://www.voachinese.com/a/blaze-at-st-petersburg-oil-sites-as-kyiv-launches-more-than-1-000-drones-at-russia-20261018/8212529.html",
+          "domain": "voachinese.com",
+          "seendate": "20261018T230000Z"
+        },
+        {
+          "title": "브런슨  한국은 DMZ 이남부터  논란에 유엔사  韓 주권 의문 여지 없어  ",
+          "url": "https://biz.heraldcorp.com/article/10906421",
+          "domain": "biz.heraldcorp.com",
+          "seendate": "20261018T230000Z"
+        },
+        {
+          "title": "Кто подставляет Трампа и Маска : почему отключение Starlink на Украине не пророссийский жест",
+          "url": "https://news.mail.ru/politics/72766985/",
+          "domain": "news.mail.ru",
+          "seendate": "20261018T214500Z"
+        },
+        {
+          "title": "Ukraine and the U . S . are at odds over Starshield . Here what to know",
+          "url": "https://www.kasu.org/2026-10-18/ukraine-and-the-u-s-are-at-odds-over-starshield-heres-what-to-know",
+          "domain": "kasu.org",
+          "seendate": "20261018T214500Z"
+        },
+        {
+          "title": "Lessons on the French rebellion must not be lost on the British labour movement",
+          "url": "https://morningstaronline.co.uk/article/lessons-french-rebellion-must-not-be-lost-british-labour-movement",
+          "domain": "morningstaronline.co.uk",
+          "seendate": "20261018T210000Z"
+        },
+        {
+          "title": "Ukraine and the U . S . are at odds over Starshield . Here what to know",
+          "url": "https://www.kmxt.org/2026-10-18/ukraine-and-the-u-s-are-at-odds-over-starshield-heres-what-to-know",
+          "domain": "kmxt.org",
+          "seendate": "20261018T210000Z"
+        },
+        {
+          "title": "한국 배제  동맹 논리  에 잇따른 수주 실패 , K방산 한계를 마주하다 - 오피니언ㅣ한국일보",
+          "url": "https://www.hankookilbo.com/news/article/A2026101410010004966",
+          "domain": "hankookilbo.com",
+          "seendate": "20261018T210000Z"
+        },
+        {
+          "title": "Ukraine and the U . S . are at odds over Starshield . Here what to know",
+          "url": "https://www.wbaa.org/npr-news/2026-10-18/ukraine-and-the-u-s-are-at-odds-over-starshield-heres-what-to-know",
+          "domain": "wbaa.org",
+          "seendate": "20261018T210000Z"
+        },
+        {
+          "title": "  한국은 MDL 남쪽 철책선 이남  브런슨 발언에  주권 무시   폭주  비판",
+          "url": "https://www.hani.co.kr/arti/politics/defense/1282970.html",
+          "domain": "hani.co.kr",
+          "seendate": "20261018T210000Z"
+        },
+        {
+          "title": "  The order to limit the use of SpaceX Starshield in Kiev came from the White House  ",
+          "url": "https://www.odnako.org/the-order-to-limit-the-use-of-spacexs-starshield-in-kiev-came-from-the-white-house/",
+          "domain": "odnako.org",
+          "seendate": "20261018T210000Z"
+        }
+      ]
     },
     "trump_defense": {
-      "status": "failed",
-      "value": null,
-      "date": null,
-      "error": "HTTP 429",
-      "article_count": 0,
-      "articles": []
+      "status": "ok",
+      "value": 100,
+      "date": "2026-10-19",
+      "error": null,
+      "article_count": 50,
+      "articles": [
+        {
+          "title": "基辅出动逾千架无人机袭击俄罗斯 ， 圣彼得堡多处石油设施燃起大火",
+          "url": "https://www.voachinese.com/a/blaze-at-st-petersburg-oil-sites-as-kyiv-launches-more-than-1-000-drones-at-russia-20261018/8212529.html",
+          "domain": "voachinese.com",
+          "seendate": "20261018T230000Z"
+        },
+        {
+          "title": "Кто подставляет Трампа и Маска : почему отключение Starlink на Украине не пророссийский жест",
+          "url": "https://news.mail.ru/politics/72766985/",
+          "domain": "news.mail.ru",
+          "seendate": "20261018T214500Z"
+        },
+        {
+          "title": "KBS 뉴스",
+          "url": "https://news.kbs.co.kr/news/pc/view/view.do?ncd=8688568",
+          "domain": "news.kbs.co.kr",
+          "seendate": "20261018T214500Z"
+        },
+        {
+          "title": "Ukraine and the U . S . are at odds over Starshield . Here what to know",
+          "url": "https://www.kasu.org/2026-10-18/ukraine-and-the-u-s-are-at-odds-over-starshield-heres-what-to-know",
+          "domain": "kasu.org",
+          "seendate": "20261018T214500Z"
+        },
+        {
+          "title": "Возможность восстановления голоса Венесуэлы в ГА ООН",
+          "url": "https://iz.ru/2185332/vladislav-petrov-anastasiia-kostina/rf-rasschityvaet-na-vozvrat-venesuehle-golosa-v-ga-oon",
+          "domain": "iz.ru",
+          "seendate": "20261018T214500Z"
+        },
+        {
+          "title": "AI泡沫破了吗 ？ 硅谷四大佬给出不同答案",
+          "url": "https://www.wenxuecity.com/news/2026/10/18/126808682.html",
+          "domain": "wenxuecity.com",
+          "seendate": "20261018T210000Z"
+        },
+        {
+          "title": "中东搞砸 俄乌谈崩 AI云暴雷 高通胀 … 灾难一周  改变了什么 ？ ",
+          "url": "https://www.wenxuecity.com/news/2026/10/18/126808658.html",
+          "domain": "wenxuecity.com",
+          "seendate": "20261018T210000Z"
+        },
+        {
+          "title": "Ukraine and the U . S . are at odds over Starshield . Here what to know",
+          "url": "https://www.kmxt.org/2026-10-18/ukraine-and-the-u-s-are-at-odds-over-starshield-heres-what-to-know",
+          "domain": "kmxt.org",
+          "seendate": "20261018T210000Z"
+        },
+        {
+          "title": "Ukraine and the U . S . are at odds over Starshield . Here what to know",
+          "url": "https://www.wbaa.org/npr-news/2026-10-18/ukraine-and-the-u-s-are-at-odds-over-starshield-heres-what-to-know",
+          "domain": "wbaa.org",
+          "seendate": "20261018T210000Z"
+        },
+        {
+          "title": "美재무 ,  우크라는 동맹인가  질문에 … 난 국무장관 아냐  ",
+          "url": "https://biz.heraldcorp.com/article/10906379",
+          "domain": "biz.heraldcorp.com",
+          "seendate": "20261018T210000Z"
+        }
+      ]
     },
     "us_economy_stress": {
-      "status": "failed",
-      "value": null,
-      "date": null,
-      "error": "HTTP 429",
-      "article_count": 0,
-      "articles": []
+      "status": "ok",
+      "value": 96,
+      "date": "2026-10-19",
+      "error": null,
+      "article_count": 50,
+      "articles": [
+        {
+          "title": "الطبقة السياسية الحاكمة في العراق و  الثالوث الظلامي . – كتابات",
+          "url": "https://kitabat.com/%D8%A7%D9%84%D8%B7%D8%A8%D9%82%D8%A9-%D8%A7%D9%84%D8%B3%D9%8A%D8%A7%D8%B3%D9%8A%D8%A9-%D8%A7%D9%84%D8%AD%D8%A7%D9%83%D9%85%D8%A9-%D9%81%D9%8A-%D8%A7%D9%84%D8%B9%D8%B1%D8%A7%D9%82-%D9%88%D8%A7%D9%84/",
+          "domain": "kitabat.com",
+          "seendate": "20261018T230000Z"
+        },
+        {
+          "title": "Taiwan Semiconductor Manufacturing - al şaselea profit record , cu prudenţă pentru 2027",
+          "url": "https://www.bursa.ro/taiwan-semiconductor-manufacturing-al-saselea-profit-record-cu-prudenta-pentru-2027-07476060",
+          "domain": "bursa.ro",
+          "seendate": "20261018T230000Z"
+        },
+        {
+          "title": "Dinamica euro nu ţine cont de majorarea dobânzilor BCE",
+          "url": "https://www.bursa.ro/dinamica-euro-nu-tine-cont-de-majorarea-dobanzilor-bce-03376065",
+          "domain": "bursa.ro",
+          "seendate": "20261018T230000Z"
+        },
+        {
+          "title": "Droits de douane , franc fort et inflation : comment la Suisse a résisté aux vents contraires",
+          "url": "https://www.letemps.ch/economie/finance/droits-de-douane-franc-fort-et-inflation-comment-la-suisse-a-resiste-aux-vents-contraires",
+          "domain": "letemps.ch",
+          "seendate": "20261018T230000Z"
+        },
+        {
+          "title": "Счетная палата усомнилась в снижении инфляции до 4 % в 2027 году : как изменится рост цен",
+          "url": "https://iz.ru/2185438/olga-anaseva-milana-gadzhieva/schetnaya-palata-predupredila-o-riske-sohraneniya-vysokoj-inflyacii",
+          "domain": "iz.ru",
+          "seendate": "20261018T214500Z"
+        },
+        {
+          "title": "سعر الدولار أمام الجنيه السوداني في بنك الخرطوم مساء اليوم",
+          "url": "https://www.vetogate.com/5752867",
+          "domain": "vetogate.com",
+          "seendate": "20261018T210000Z"
+        },
+        {
+          "title": "이끼 낀 바윗돌 , 그 묵묵함에 대하여 - 오피니언ㅣ한국일보",
+          "url": "https://www.hankookilbo.com/news/article/A2026101508150000593",
+          "domain": "hankookilbo.com",
+          "seendate": "20261018T210000Z"
+        },
+        {
+          "title": "Dólar en Colombia : ¿ qué se espera para la próxima semana ? ",
+          "url": "https://www.elespectador.com/economia/dolar-en-colombia-que-se-espera-para-la-proxima-semana/",
+          "domain": "elespectador.com",
+          "seendate": "20261018T210000Z"
+        },
+        {
+          "title": "A Rising Tide Lifted Floating Wind Turbines . Now Comes the Real Test . - Governor Wind Energy Coalition",
+          "url": "https://governorswindenergycoalition.org/a-rising-tide-lifted-floating-wind-turbines-now-comes-the-real-test/",
+          "domain": "governorswindenergycoalition.org",
+          "seendate": "20261018T210000Z"
+        },
+        {
+          "title": "GPW liderem rynków akcji",
+          "url": "https://www.parkiet.com/felietony/art45353801-gpw-liderem-rynkow-akcji",
+          "domain": "parkiet.com",
+          "seendate": "20261018T210000Z"
+        }
+      ]
     }
   }
 }
