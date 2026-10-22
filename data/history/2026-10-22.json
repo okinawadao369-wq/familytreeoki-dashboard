@@ -1,0 +1,138 @@
+{
+  "fetched_at": "2026-10-22T09:25:46.444+09:00",
+  "fred_ok_count": 0,
+  "fred_total": 9,
+  "gdelt_ok_count": 0,
+  "gdelt_total": 8,
+  "fred": {
+    "DEXJPUS": {
+      "status": "failed",
+      "value": null,
+      "date": null,
+      "error": "Unexpected token '<', \"<!doctype \"... is not valid JSON",
+      "history": []
+    },
+    "CPIAUCSL": {
+      "status": "failed",
+      "value": null,
+      "date": null,
+      "error": "Unexpected token '<', \"<!doctype \"... is not valid JSON",
+      "history": []
+    },
+    "CPILFESL": {
+      "status": "failed",
+      "value": null,
+      "date": null,
+      "error": "Unexpected token '<', \"<!doctype \"... is not valid JSON",
+      "history": []
+    },
+    "CUSR0000SEFV": {
+      "status": "failed",
+      "value": null,
+      "date": null,
+      "error": "Unexpected token '<', \"<!doctype \"... is not valid JSON",
+      "history": []
+    },
+    "UNRATE": {
+      "status": "failed",
+      "value": null,
+      "date": null,
+      "error": "Unexpected token '<', \"<!doctype \"... is not valid JSON",
+      "history": []
+    },
+    "CES0500000003": {
+      "status": "failed",
+      "value": null,
+      "date": null,
+      "error": "Unexpected token '<', \"<!doctype \"... is not valid JSON",
+      "history": []
+    },
+    "FEDFUNDS": {
+      "status": "failed",
+      "value": null,
+      "date": null,
+      "error": "Unexpected token '<', \"<!doctype \"... is not valid JSON",
+      "history": []
+    },
+    "DGS10": {
+      "status": "failed",
+      "value": null,
+      "date": null,
+      "error": "Unexpected token '<', \"<!doctype \"... is not valid JSON",
+      "history": []
+    },
+    "UMCSENT": {
+      "status": "failed",
+      "value": null,
+      "date": null,
+      "error": "Unexpected token '<', \"<!doctype \"... is not valid JSON",
+      "history": []
+    }
+  },
+  "gdelt": {
+    "taiwan_strait": {
+      "status": "failed",
+      "value": null,
+      "date": null,
+      "error": "HTTP 429",
+      "article_count": 0,
+      "articles": []
+    },
+    "north_korea": {
+      "status": "failed",
+      "value": null,
+      "date": null,
+      "error": "HTTP 429",
+      "article_count": 0,
+      "articles": []
+    },
+    "indopacific": {
+      "status": "failed",
+      "value": null,
+      "date": null,
+      "error": "HTTP 429",
+      "article_count": 0,
+      "articles": []
+    },
+    "usfj_okinawa": {
+      "status": "failed",
+      "value": null,
+      "date": null,
+      "error": "HTTP 429",
+      "article_count": 0,
+      "articles": []
+    },
+    "henoko": {
+      "status": "failed",
+      "value": null,
+      "date": null,
+      "error": "HTTP 429",
+      "article_count": 0,
+      "articles": []
+    },
+    "us_defense_budget": {
+      "status": "failed",
+      "value": null,
+      "date": null,
+      "error": "HTTP 429",
+      "article_count": 0,
+      "articles": []
+    },
+    "trump_defense": {
+      "status": "failed",
+      "value": null,
+      "date": null,
+      "error": "HTTP 429",
+      "article_count": 0,
+      "articles": []
+    },
+    "us_economy_stress": {
+      "status": "failed",
+      "value": null,
+      "date": null,
+      "error": "HTTP 429",
+      "article_count": 0,
+      "articles": []
+    }
+  }
+}
