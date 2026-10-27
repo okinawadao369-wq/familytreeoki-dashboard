@@ -1,32 +1,16 @@
 {
-  "fetched_at": "2026-10-26T08:47:24.340+09:00",
+  "fetched_at": "2026-10-27T10:06:20.720+09:00",
   "fred_ok_count": 9,
   "fred_total": 9,
-  "gdelt_ok_count": 1,
+  "gdelt_ok_count": 0,
   "gdelt_total": 8,
   "fred": {
     "DEXJPUS": {
       "status": "ok",
-      "value": 158,
-      "date": "2026-10-16",
+      "value": 156.87,
+      "date": "2026-10-23",
       "error": null,
       "history": [
-        {
-          "date": "2026-09-08",
-          "value": 154.24
-        },
-        {
-          "date": "2026-09-09",
-          "value": 153.5
-        },
-        {
-          "date": "2026-09-10",
-          "value": 154.06
-        },
-        {
-          "date": "2026-09-11",
-          "value": 153.71
-        },
         {
           "date": "2026-09-14",
           "value": 154.42
@@ -122,6 +106,26 @@
         {
           "date": "2026-10-16",
           "value": 158
+        },
+        {
+          "date": "2026-10-19",
+          "value": 158.49
+        },
+        {
+          "date": "2026-10-20",
+          "value": 158.2
+        },
+        {
+          "date": "2026-10-21",
+          "value": 158.13
+        },
+        {
+          "date": "2026-10-22",
+          "value": 157.11
+        },
+        {
+          "date": "2026-10-23",
+          "value": 156.87
         }
       ]
     },
@@ -879,14 +883,10 @@
     },
     "DGS10": {
       "status": "ok",
-      "value": 4.96,
-      "date": "2026-10-22",
+      "value": 5,
+      "date": "2026-10-23",
       "error": null,
       "history": [
-        {
-          "date": "2026-09-11",
-          "value": 4.96
-        },
         {
           "date": "2026-09-14",
           "value": 4.97
@@ -998,6 +998,10 @@
         {
           "date": "2026-10-22",
           "value": 4.96
+        },
+        {
+          "date": "2026-10-23",
+          "value": 5
         }
       ]
     },
@@ -1132,79 +1136,18 @@
   },
   "gdelt": {
     "taiwan_strait": {
-      "status": "ok",
-      "value": 100,
-      "date": "2026-10-26",
-      "error": null,
-      "article_count": 50,
-      "articles": [
-        {
-          "title": "Notes from Central Taiwan : Taiwan welcome has limits",
-          "url": "https://www.taipeitimes.com/News/feat/archives/2026/10/26/2003866610",
-          "domain": "taipeitimes.com",
-          "seendate": "20261025T191500Z"
-        },
-        {
-          "title": "Kevin Tsai says he has never supported Taiwan independence",
-          "url": "https://www.taipeitimes.com/News/taiwan/archives/2026/10/26/2003866645",
-          "domain": "taipeitimes.com",
-          "seendate": "20261025T191500Z"
-        },
-        {
-          "title": "车企应树立  合规即竞争力  理念 - 新浪汽车",
-          "url": "https://k.sina.com.cn/article_5952915705_162d248f906703rlg6.html",
-          "domain": "k.sina.com.cn",
-          "seendate": "20261025T191500Z"
-        },
-        {
-          "title": "结果  一键输出 ， 科研过程还重要吗 院士谈AI的使用边界",
-          "url": "https://baijiahao.baidu.com/s?id=1880048294289380627",
-          "domain": "baijiahao.baidu.com",
-          "seendate": "20261025T191500Z"
-        },
-        {
-          "title": "HK agents risk losing Taiwan status",
-          "url": "https://www.taipeitimes.com/News/front/archives/2026/10/26/2003866611",
-          "domain": "taipeitimes.com",
-          "seendate": "20261025T191500Z"
-        },
-        {
-          "title": "Army adopts  unscripted  training to boost readiness",
-          "url": "https://www.taipeitimes.com/News/taiwan/archives/2026/10/26/2003866632",
-          "domain": "taipeitimes.com",
-          "seendate": "20261025T191500Z"
-        },
-        {
-          "title": "表態切割台獨 ！ 蔡康永微博發簡體字聲明 陸網不買單怒嗆 ： 去IG發啊",
-          "url": "https://star.setn.com/news/1928426",
-          "domain": "star.setn.com",
-          "seendate": "20261025T180000Z"
-        },
-        {
-          "title": "雲門舞集 「 十三聲 」 艋舺戶外演出 重返創作萌芽地 | 文化",
-          "url": "https://www.cna.com.tw/news/acul/202610250197.aspx",
-          "domain": "cna.com.tw",
-          "seendate": "20261025T180000Z"
-        },
-        {
-          "title": "Η διαβολοβδομάδα και η νέα « βόμβα » του Time",
-          "url": "https://www.efsyn.gr/stiles/1495812/i-diavolovdomada-kai-i-nea-vomva-toy-time/",
-          "domain": "efsyn.gr",
-          "seendate": "20261025T180000Z"
-        },
-        {
-          "title": "沈伯洋 ： 傾聽市民的聲音最重要 我相信我能贏 | 政治",
-          "url": "https://www.cna.com.tw/news/aipl/202610250195.aspx",
-          "domain": "cna.com.tw",
-          "seendate": "20261025T180000Z"
-        }
-      ]
+      "status": "failed",
+      "value": null,
+      "date": null,
+      "error": "HTTP 429",
+      "article_count": 0,
+      "articles": []
     },
     "north_korea": {
       "status": "failed",
       "value": null,
       "date": null,
-      "error": "This operation was aborted",
+      "error": "HTTP 429",
       "article_count": 0,
       "articles": []
     },
@@ -1220,7 +1163,7 @@
       "status": "failed",
       "value": null,
       "date": null,
-      "error": "This operation was aborted",
+      "error": "HTTP 429",
       "article_count": 0,
       "articles": []
     },
