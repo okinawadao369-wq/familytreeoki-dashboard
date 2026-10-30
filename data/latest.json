@@ -1,8 +1,8 @@
 {
-  "fetched_at": "2026-10-29T10:31:26.681+09:00",
+  "fetched_at": "2026-10-30T10:31:54.451+09:00",
   "fred_ok_count": 9,
   "fred_total": 9,
-  "gdelt_ok_count": 0,
+  "gdelt_ok_count": 4,
   "gdelt_total": 8,
   "fred": {
     "DEXJPUS": {
@@ -883,14 +883,10 @@
     },
     "DGS10": {
       "status": "ok",
-      "value": 4.99,
-      "date": "2026-10-27",
+      "value": 5.05,
+      "date": "2026-10-28",
       "error": null,
       "history": [
-        {
-          "date": "2026-09-16",
-          "value": 5.01
-        },
         {
           "date": "2026-09-17",
           "value": 4.94
@@ -1002,6 +998,10 @@
         {
           "date": "2026-10-27",
           "value": 4.99
+        },
+        {
+          "date": "2026-10-28",
+          "value": 5.05
         }
       ]
     },
@@ -1136,18 +1136,79 @@
   },
   "gdelt": {
     "taiwan_strait": {
-      "status": "failed",
-      "value": null,
-      "date": null,
-      "error": "fetch failed",
-      "article_count": 0,
-      "articles": []
+      "status": "ok",
+      "value": 100,
+      "date": "2026-10-30",
+      "error": null,
+      "article_count": 50,
+      "articles": [
+        {
+          "title": "光復連假臺南湧121萬人次 ！ 溫泉 、 美食與國際藝文帶動秋遊熱潮",
+          "url": "https://n.yam.com/Article/20261027843540",
+          "domain": "n.yam.com",
+          "seendate": "20261027T051500Z"
+        },
+        {
+          "title": " 「 無偵 - 7 」 首加入遼寧艦編隊部署 6萬呎高空引導飛彈威脅台海",
+          "url": "https://def.ltn.com.tw/article/breakingnews/5620143",
+          "domain": "def.ltn.com.tw",
+          "seendate": "20261027T051500Z"
+        },
+        {
+          "title": "iPhone Duo开裂 、 大量订单取消 ： 黄牛血亏 ， 赚差价买房的算盘碎一地",
+          "url": "https://news.pedaily.cn/202610/570890.shtml",
+          "domain": "news.pedaily.cn",
+          "seendate": "20261027T051500Z"
+        },
+        {
+          "title": "比MPV还舒服 ！ 这台国产SUV ， 正在抢埃尔法的饭碗",
+          "url": "https://k.sina.com.cn/article_6162941440_16f57060002001inqy.html",
+          "domain": "k.sina.com.cn",
+          "seendate": "20261027T051500Z"
+        },
+        {
+          "title": "Poseł wywołał poruszenie , bo korzystał z inteligentnych okularów .  Mamy XXI wiek  ",
+          "url": "https://www.wirtualnemedia.pl/posel-wywolal-poruszenie-bo-korzystal-z-inteligentnych-okularow-mamy-xxi-wiek,7344187297224736a",
+          "domain": "wirtualnemedia.pl",
+          "seendate": "20261027T051500Z"
+        },
+        {
+          "title": "路面龜裂不能再等 ！ 雲林砸971萬整頓斗六雲55道路",
+          "url": "https://n.yam.com/Article/20261027970098",
+          "domain": "n.yam.com",
+          "seendate": "20261027T051500Z"
+        },
+        {
+          "title": " « Clayface »: Η ταινία τρόμου που σαρώνει το παγκόσμιο box office με 43 εκατομμύρια δολάρια",
+          "url": "https://www.inewsgr.com/54/Clayface-i-tainia-tromou-pou-saronei-to-pagkosmio-box-office-me-43-ekatommyria-dolaria.htm",
+          "domain": "inewsgr.com",
+          "seendate": "20261027T051500Z"
+        },
+        {
+          "title": " 《 贵州省教育发展  十五五  规划 》 发布",
+          "url": "https://www.gzstv.com/a/3344dd7b887543bc962de95dca3c13ea",
+          "domain": "gzstv.com",
+          "seendate": "20261027T051500Z"
+        },
+        {
+          "title": "面具之魅 · 文明互鉴 世界面具与安顺地戏脸谱展在安顺武庙开幕",
+          "url": "https://www.gzstv.com/a/e5b9ebb629ec46e38ae7d03b1e26975a",
+          "domain": "gzstv.com",
+          "seendate": "20261027T051500Z"
+        },
+        {
+          "title": "2026顶科论坛即将开幕 ， 顶尖智慧如何在上海落地生根 ？ ",
+          "url": "https://finance.sina.com.cn/tech/roll/2026-10-27/doc-iniwruyx1440014.shtml",
+          "domain": "finance.sina.com.cn",
+          "seendate": "20261027T051500Z"
+        }
+      ]
     },
     "north_korea": {
       "status": "failed",
       "value": null,
       "date": null,
-      "error": "fetch failed",
+      "error": "This operation was aborted",
       "article_count": 0,
       "articles": []
     },
@@ -1155,7 +1216,7 @@
       "status": "failed",
       "value": null,
       "date": null,
-      "error": "fetch failed",
+      "error": "This operation was aborted",
       "article_count": 0,
       "articles": []
     },
@@ -1163,39 +1224,222 @@
       "status": "failed",
       "value": null,
       "date": null,
-      "error": "fetch failed",
+      "error": "This operation was aborted",
       "article_count": 0,
       "articles": []
     },
     "henoko": {
-      "status": "failed",
-      "value": null,
-      "date": null,
-      "error": "fetch failed",
-      "article_count": 0,
-      "articles": []
+      "status": "ok",
+      "value": 100,
+      "date": "2026-10-30",
+      "error": null,
+      "article_count": 50,
+      "articles": [
+        {
+          "title": "Japan indicts US Marine on murder charge in Okinawa",
+          "url": "https://arynews.tv/japan-indicts-us-marine-on-murder-charge-in-okinawa",
+          "domain": "arynews.tv",
+          "seendate": "20261026T071500Z"
+        },
+        {
+          "title": "Un  crime exceptionnellement brutal et odieux : un militaire américain mis en examen pour le meurtre dune femme au Japon",
+          "url": "https://www.bfmtv.com/international/asie/japon/un-crime-exceptionnellement-brutal-et-odieux-un-militaire-americain-mis-en-examen-pour-le-meurtre-d-une-femme-au-japon_AD-202610260081.html",
+          "domain": "bfmtv.com",
+          "seendate": "20261026T071500Z"
+        },
+        {
+          "title": "冲绳那霸地检以抢劫杀人罪 起诉驻日美军士兵 | 国际",
+          "url": "https://www.orientaldaily.com.my/news/international/2026/10/26/857983",
+          "domain": "orientaldaily.com.my",
+          "seendate": "20261026T050000Z"
+        },
+        {
+          "title": "Żołnierz piechoty morskiej united states oskarżony o morderstwo Japonki na Okinawie",
+          "url": "https://www.rp.pl/przestepczosc/art45391971-zabojstwo-japonki-na-okinawie-amerykanskiemu-zolnierzowi-grozi-nawet-kara-smierci",
+          "domain": "rp.pl",
+          "seendate": "20261025T123000Z"
+        },
+        {
+          "title": "Dieta de 5 zile care poate reseta organismul : metoda cercetătorului Valter Longo pentru longevitate",
+          "url": "https://www.libertatea.ro/lifestyle/dieta-cinci-zile-valter-longo-post-longevitate-resetare-organism-n7q75pj",
+          "domain": "libertatea.ro",
+          "seendate": "20261025T103000Z"
+        },
+        {
+          "title": "US Marine indicted over robbery , murder of woman in Okinawa , reports local media",
+          "url": "https://www.thestar.com.my/aseanplus/aseanplus-news/2026/10/25/us-marine-indicted-over-robbery-murder-of-woman-in-okinawa-reports-local-media",
+          "domain": "thestar.com.my",
+          "seendate": "20261025T103000Z"
+        },
+        {
+          "title": "老安游记 《 海外漂泊搬家记 》 第4篇 ： 三次搬家 ， 不离温莎 （ 下 ） - 博客",
+          "url": "https://blog.wenxuecity.com/myblog/78035/202610/17629.html",
+          "domain": "blog.wenxuecity.com",
+          "seendate": "20261025T081500Z"
+        },
+        {
+          "title": "距台灣160公里 ！ 美軍海馬士登菲國北端島嶼 另從南韓調運彈藥",
+          "url": "https://def.ltn.com.tw/article/breakingnews/5617748",
+          "domain": "def.ltn.com.tw",
+          "seendate": "20261024T150000Z"
+        },
+        {
+          "title": "Niente auto Byd in una base militare statunitense",
+          "url": "https://www.gazzetta.it/motori/la-mia-auto/24-10-2026/niente-auto-byd-in-una-base-militare-statunitense.shtml",
+          "domain": "gazzetta.it",
+          "seendate": "20261024T083000Z"
+        },
+        {
+          "title": "美日 「 利劍27 」 軍演聚焦台海突發狀況 台灣樂見區域合作",
+          "url": "https://n.yam.com/Article/20261024214829",
+          "domain": "n.yam.com",
+          "seendate": "20261024T060000Z"
+        }
+      ]
     },
     "us_defense_budget": {
-      "status": "failed",
-      "value": null,
-      "date": null,
-      "error": "fetch failed",
-      "article_count": 0,
-      "articles": []
+      "status": "ok",
+      "value": 100,
+      "date": "2026-10-30",
+      "error": null,
+      "article_count": 50,
+      "articles": [
+        {
+          "title": "Хмара запросил у стран Европы ракеты для Patriot – Минобороны | Новости Украины",
+          "url": "https://news.liga.net/war/news/minoborony-ukraina-prosit-u-partnerov-10-ih-zapasov-raket-dlya-patriot-i-iris-t",
+          "domain": "news.liga.net",
+          "seendate": "20261027T051500Z"
+        },
+        {
+          "title": "La izquierda se aferra a la victoria de Lula para pelear por otra remontada",
+          "url": "https://elpais.com/espana/elecciones-generales/2026-10-27/la-izquierda-se-aferra-a-la-victoria-de-lula-para-pelear-por-otra-remontada.html",
+          "domain": "elpais.com",
+          "seendate": "20261027T051500Z"
+        },
+        {
+          "title": "Anthropic files for potentially the biggest IPO ever as CEO warns of risk to humanity from AI",
+          "url": "http://www.thedailytimes.com/ap/business/anthropic-files-for-potentially-the-biggest-ipo-ever-as-ceo-warns-of-risk-to-humanity/article_5dfd4b80-6ce8-5fb9-89d3-5c05dce075a7.html",
+          "domain": "thedailytimes.com",
+          "seendate": "20261027T051500Z"
+        },
+        {
+          "title": "Вторжение Сальвадора на Гаити : почему произошло , к чему приведет",
+          "url": "https://iz.ru/2190905/2026-10-27/salvador-vtorgsia-v-zakhvachennyi-bandami-gaiti-chto-nuzhno-znat",
+          "domain": "iz.ru",
+          "seendate": "20261027T051500Z"
+        },
+        {
+          "title": "Anthropic招股书里最值得看的14个细节 ( 10 - 26 - 2026 ) - 博客",
+          "url": "https://blog.wenxuecity.com/myblog/82886/202610/19037.html",
+          "domain": "blog.wenxuecity.com",
+          "seendate": "20261027T051500Z"
+        },
+        {
+          "title": "Qué piensa un israelí antes de votar en las elecciones más importantes de su vida :  Nos robaron la inocencia  ",
+          "url": "https://www.elconfidencial.com/mundo/2026-10-27/que-piensa-israeli-antes-votar-elecciones-mas-importantes_4453032/",
+          "domain": "elconfidencial.com",
+          "seendate": "20261027T051500Z"
+        },
+        {
+          "title": "Rick Steves Scandinavia",
+          "url": "https://www.hachettebookgroup.com/titles/rick-steves/rick-steves-scandinavia/9781641717175/",
+          "domain": "hachettebookgroup.com",
+          "seendate": "20261027T051500Z"
+        },
+        {
+          "title": "تقرير : الولايات المتحدة تستعد لشن ضربات جديدة ضد إيران عقب انتهاء انتخابات التجديد النصفي",
+          "url": "http://arabic.peopledaily.com.cn/n3/2026/1027/c31663-20512572.html",
+          "domain": "arabic.peopledaily.com.cn",
+          "seendate": "20261027T051500Z"
+        },
+        {
+          "title": "特朗普扬言或再袭伊朗 内塔尼亚胡面临选举  生死战  中东局势一文速览",
+          "url": "https://www.gzstv.com/a/2df19595b19d428a8aff01326214cf7d",
+          "domain": "gzstv.com",
+          "seendate": "20261027T051500Z"
+        },
+        {
+          "title": "강신철  전작권 전환 목표연도 , 美와 공감대 … 독자 행사엔 신중",
+          "url": "https://www.edaily.co.kr/News/Read?newsId=03575206645616856&mediaCodeNo=257",
+          "domain": "edaily.co.kr",
+          "seendate": "20261026T071500Z"
+        }
+      ]
     },
     "trump_defense": {
-      "status": "failed",
-      "value": null,
-      "date": null,
-      "error": "fetch failed",
-      "article_count": 0,
-      "articles": []
+      "status": "ok",
+      "value": 100,
+      "date": "2026-10-30",
+      "error": null,
+      "article_count": 50,
+      "articles": [
+        {
+          "title": "전쟁 · 관세 청구서 받아든 유권자 ... 트럼프 외교 심판대 올라 [ 11 · 3 중간선거 … 미국의 선택은 ]( 3 ) ",
+          "url": "https://www.fnnews.com/news/202610241838147461",
+          "domain": "fnnews.com",
+          "seendate": "20261027T051500Z"
+        },
+        {
+          "title": "Anthropic files for potentially the biggest IPO ever as CEO warns of risk to humanity from AI",
+          "url": "http://www.thedailytimes.com/ap/business/anthropic-files-for-potentially-the-biggest-ipo-ever-as-ceo-warns-of-risk-to-humanity/article_5dfd4b80-6ce8-5fb9-89d3-5c05dce075a7.html",
+          "domain": "thedailytimes.com",
+          "seendate": "20261027T051500Z"
+        },
+        {
+          "title": "Washington orders suppliers to axe Iran aircraft contracts - ch - aviation",
+          "url": "https://www.ch-aviation.com/news/67061-washington-orders-suppliers-to-axe-iran-aircraft-contracts",
+          "domain": "ch-aviation.com",
+          "seendate": "20261027T051500Z"
+        },
+        {
+          "title": "Trumpova administratíva údajne presadzuje Orbána na čelo OSN , počíta s podporou Ruska a Číny",
+          "url": "https://spravy.pozri.sk/clanok/trumpova-administrativa-udajne-presadzuje-orbana-na-celo-osn-pocita-s-podporou-ruska-a-ciny/1615407",
+          "domain": "spravy.pozri.sk",
+          "seendate": "20261027T051500Z"
+        },
+        {
+          "title": "Lula win in Brazil bucks regional shift to right , denies Trump ally",
+          "url": "https://www.sentinelandenterprise.com/2026/10/26/lula-win-brazil-election-regional-holdout/",
+          "domain": "sentinelandenterprise.com",
+          "seendate": "20261027T051500Z"
+        },
+        {
+          "title": "تقرير : الولايات المتحدة تستعد لشن ضربات جديدة ضد إيران عقب انتهاء انتخابات التجديد النصفي",
+          "url": "http://arabic.peopledaily.com.cn/n3/2026/1027/c31663-20512572.html",
+          "domain": "arabic.peopledaily.com.cn",
+          "seendate": "20261027T051500Z"
+        },
+        {
+          "title": "How Lula turned the tables on the right in Brazil and the US with his comeback presidential victory",
+          "url": "https://www.suncommercial.com/brazil_times/news/national/article_7ef17163-e568-5e3f-a2de-4e9f0104a513.html",
+          "domain": "suncommercial.com",
+          "seendate": "20261027T051500Z"
+        },
+        {
+          "title": "特朗普扬言或再袭伊朗 内塔尼亚胡面临选举  生死战  中东局势一文速览",
+          "url": "https://www.gzstv.com/a/2df19595b19d428a8aff01326214cf7d",
+          "domain": "gzstv.com",
+          "seendate": "20261027T051500Z"
+        },
+        {
+          "title": " 「 トランプ氏は専制的な人物 、『 麻薬運搬船 』 攻撃は違法 」 元米当局者 [ トランプ再来 ]： 朝日新聞",
+          "url": "https://www.asahi.com/articles/ASVBR3H8RVBRUHBI00CM.html",
+          "domain": "asahi.com",
+          "seendate": "20261027T051500Z"
+        },
+        {
+          "title": "פרשנות | נתניהו לא החמיץ הזדמנות להחמיץ הזדמנות , וצירף את ישראל לליגת המצורעות - בחירות 2026",
+          "url": "https://www.haaretz.co.il/news/elections/2026-10-27/ty-article/.premium/000001a1-79d8-dfb9-a5a9-fbfd1c700000",
+          "domain": "haaretz.co.il",
+          "seendate": "20261027T051500Z"
+        }
+      ]
     },
     "us_economy_stress": {
       "status": "failed",
       "value": null,
       "date": null,
-      "error": "fetch failed",
+      "error": "This operation was aborted",
       "article_count": 0,
       "articles": []
     }
