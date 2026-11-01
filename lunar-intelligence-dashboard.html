@@ -2808,6 +2808,7 @@ function initEchoTab() {
   var inp=document.getElementById('echo-webhook-input');
   if(inp) inp.value = echoGetWebhookUrl();
   echoUpdateSyncStatus();
+  echoUpdateTokenStatus();
   renderEchoPrediction();
   renderEchoCalendar();
   renderEchoStats();
@@ -2822,7 +2823,7 @@ function echoFetchRemoteAndMerge() {
   if (!url) return;
   var statusEl = document.getElementById('echo-sync-status');
   var sep = url.indexOf('?') >= 0 ? '&' : '?';
-  fetch(url + sep + 'diag=1&start=1&count=3000')
+  fetch(url + sep + 'diag=1&start=1&count=3000&token=' + encodeURIComponent(echoGetToken()))
     .then(function(r){ return r.json(); })
     .then(function(d){
       if (!d || !d.rows) return;
@@ -3075,6 +3076,19 @@ var ECHO_WEBHOOK_KEY = 'fto_echo_webhook_url';
 var ECHO_SHEET_URL = 'https://docs.google.com/spreadsheets/d/1qC03MdKzIMoV7ceRteJA87X13R4poJ5_RKG6p5cru3Q/edit';
 var ECHO_WEBHOOK_DEFAULT = 'https://script.google.com/macros/s/AKfycbw8waR5WsWDvWfzANxsOyfgMhh2c-BaV9mYLC2882R7DJyNLA8S9X_TiUoa69ESrvFI/exec';
 function echoGetWebhookUrl(){ return localStorage.getItem(ECHO_WEBHOOK_KEY) || ECHO_WEBHOOK_DEFAULT; }
+var ECHO_TOKEN_KEY = 'fto_echo_token';
+function echoGetToken(){ try { return localStorage.getItem(ECHO_TOKEN_KEY) || ''; } catch(e) { return ''; } }
+function echoSetToken(){
+  var el=document.getElementById('echo-token-input'); if(!el) return;
+  localStorage.setItem(ECHO_TOKEN_KEY, el.value.trim()); el.value='';
+  echoUpdateTokenStatus(); echoFetchRemoteAndMerge();
+}
+function echoUpdateTokenStatus(){
+  var st=document.getElementById('echo-token-status'); if(!st) return;
+  st.innerHTML = echoGetToken()
+    ? '<span style="color:#68d391;">🔒 合言葉: この端末に設定済み</span>'
+    : '<span style="color:#f6ad55;">🔓 合言葉: 未設定（記録の送信・他端末の記録の表示に必要です）</span>';
+}
 function echoSetWebhookUrl(){
   var v=document.getElementById('echo-webhook-input').value.trim();
   localStorage.setItem(ECHO_WEBHOOK_KEY, v);
@@ -3094,6 +3108,7 @@ function echoSyncToSheet(ds,t,extra){
   var slot=(data[ds]&&data[ds].slots&&data[ds].slots[t])||{state:0,type:'',note:''};
   var age=(data[ds]&&data[ds].lunarAge)||echoLunarAge(new Date(ds+'T12:00:00Z'));
   var payload={
+    token:echoGetToken(),
     date:ds, dow:echoDOWJ(ds), time:t,
     type:slot.type||'', state:ECHO_STATE_FULL[slot.state||0],
     note:slot.note||'', lunarAge:age.toFixed(1), lunarLabel:echoLunarLabel(age)
@@ -3419,6 +3434,11 @@ function renderEchoStats() {
       <a href="https://docs.google.com/spreadsheets/d/1qC03MdKzIMoV7ceRteJA87X13R4poJ5_RKG6p5cru3Q/edit" target="_blank" style="background:#1a2a1a;color:#8fd090;border:1px solid #2a5a2a;border-radius:6px;padding:7px 14px;font-size:0.78rem;text-decoration:none;">📊 スプレッドシートを開く</a>
     </div>
     <div id="echo-sync-status" style="font-size:0.76rem;"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px;">
+      <input id="echo-token-input" type="password" autocomplete="off" placeholder="合言葉（端末ごとに一度だけ入力）" style="flex:1;min-width:220px;background:#050a14;color:#ccc;border:1px solid #1c2c40;border-radius:6px;padding:7px 10px;font-size:0.78rem;box-sizing:border-box;">
+      <button onclick="echoSetToken()" style="background:#1e4a7a;color:#fff;border:none;border-radius:6px;padding:7px 14px;cursor:pointer;font-size:0.78rem;font-weight:700;">合言葉を保存</button>
+    </div>
+    <div id="echo-token-status" style="font-size:0.76rem;margin-top:4px;"></div>
   </div>
 
   <!-- 今日の予報バナー -->
