@@ -1,8 +1,8 @@
 {
-  "fetched_at": "2026-11-03T12:17:49.553+09:00",
+  "fetched_at": "2026-11-04T10:52:50.055+09:00",
   "fred_ok_count": 9,
   "fred_total": 9,
-  "gdelt_ok_count": 6,
+  "gdelt_ok_count": 0,
   "gdelt_total": 8,
   "fred": {
     "DEXJPUS": {
@@ -883,14 +883,10 @@
     },
     "DGS10": {
       "status": "ok",
-      "value": 4.94,
-      "date": "2026-10-30",
+      "value": 4.91,
+      "date": "2026-11-02",
       "error": null,
       "history": [
-        {
-          "date": "2026-09-21",
-          "value": 4.96
-        },
         {
           "date": "2026-09-22",
           "value": 4.96
@@ -1002,6 +998,10 @@
         {
           "date": "2026-10-30",
           "value": 4.94
+        },
+        {
+          "date": "2026-11-02",
+          "value": 4.91
         }
       ]
     },
@@ -1136,434 +1136,68 @@
   },
   "gdelt": {
     "taiwan_strait": {
-      "status": "ok",
-      "value": 100,
-      "date": "2026-11-03",
-      "error": null,
-      "article_count": 50,
-      "articles": [
-        {
-          "title": "蔡康永挺身護 「 同志酒吧爭議 」 中華人權協會6點聲明 ： 平權不等於特權",
-          "url": "https://star.setn.com/news/1932609",
-          "domain": "star.setn.com",
-          "seendate": "20261103T021500Z"
-        },
-        {
-          "title": "深度调研 | 脑机接口产业调查 ： 离现实生产力还有多远",
-          "url": "https://www.qstheory.cn/20261102/cd387b989632498db9d8baa247433f97/c.html",
-          "domain": "qstheory.cn",
-          "seendate": "20261103T021500Z"
-        },
-        {
-          "title": "走進德國 Mercedes - Benz 總部 ： 從撞擊測試到風洞體驗 直擊品牌技術核心 ！ | 品牌故事",
-          "url": "https://autos.udn.com/autos/story/7828/9036286?from=udn-search_ch1018",
-          "domain": "autos.udn.com",
-          "seendate": "20261103T021500Z"
-        },
-        {
-          "title": "中共出動49機6艦大量擾台 國軍嚴密監控應處",
-          "url": "https://def.ltn.com.tw/article/breakingnews/5627354",
-          "domain": "def.ltn.com.tw",
-          "seendate": "20261103T021500Z"
-        },
-        {
-          "title": "真正的噩夢 ！ 她曝沈伯洋噴這句話 ： 蔣萬安背脊發涼訊號 | 政治 | 三立新聞網 SETN . COM",
-          "url": "https://www.setn.com/news/1932613",
-          "domain": "setn.com",
-          "seendate": "20261103T021500Z"
-        },
-        {
-          "title": "中職球迷能接受這種把台北市民是弱智嗎等比 ? 蔡其昌酸 「 市民弱智 ？」 蔣萬安要求道歉 豈止是蔡失言 ? - 拒看鬼扯電視新聞的評論員",
-          "url": "https://blog.udn.com:443/471027/192687445",
-          "domain": "blog.udn.com",
-          "seendate": "20261103T021500Z"
-        },
-        {
-          "title": "铸牢共同体 中华一家亲丨一条通道联通内外 一座车间共促增收 一处院落守望相伴 一条街巷交融共生",
-          "url": "https://www.163.com/news/article/LAQ5M0OH000189FH.html",
-          "domain": "163.com",
-          "seendate": "20261103T021500Z"
-        },
-        {
-          "title": "蔡康永挺身護 「 同志酒吧爭議 」 中華人權協會6點聲明 ： 平權不等於特權 | 娛樂 | 三立新聞網 SETN . COM",
-          "url": "https://www.setn.com/news/1932609",
-          "domain": "setn.com",
-          "seendate": "20261103T021500Z"
-        },
-        {
-          "title": "对话金史密斯创始人景志峰 ： 不下牌桌的秘诀 ， 就是不下牌桌",
-          "url": "https://www.163.com/dy/article/LAQ5GQTL05318W1H.html",
-          "domain": "163.com",
-          "seendate": "20261103T021500Z"
-        },
-        {
-          "title": "一周展讯｜文人艺术展中的董其昌丰子恺王蘧常",
-          "url": "https://www.163.com/dy/article/LAQ65HO70514R9P4.html",
-          "domain": "163.com",
-          "seendate": "20261103T021500Z"
-        }
-      ]
+      "status": "failed",
+      "value": null,
+      "date": null,
+      "error": "HTTP 429",
+      "article_count": 0,
+      "articles": []
     },
     "north_korea": {
-      "status": "ok",
-      "value": 100,
-      "date": "2026-11-03",
-      "error": null,
-      "article_count": 50,
-      "articles": [
-        {
-          "title": "川普選前受訪表明不急著再轟伊朗 ！ 美媒揭3套方案待定奪 | 國際焦點 | 全球",
-          "url": "https://udn.com/news/story/6809/9853347",
-          "domain": "udn.com",
-          "seendate": "20261103T021500Z"
-        },
-        {
-          "title": "שודדי המיארלדים : צבא הסייבר של קים ג  ונג און",
-          "url": "https://www.ynet.co.il/economy/article/yokra14945754",
-          "domain": "ynet.co.il",
-          "seendate": "20261103T021500Z"
-        },
-        {
-          "title": "北朝鮮 、 巡航ミサイルでもクラスター弾試験 多様な攻撃能力誇示",
-          "url": "https://mainichi.jp/articles/20261103/k00/00m/030/007000c",
-          "domain": "mainichi.jp",
-          "seendate": "20261103T021500Z"
-        },
-        {
-          "title": "北韓試射戰略巡弋飛彈 宣稱可將5至6公頃夷為平地 | 國際焦點 | 全球",
-          "url": "https://udn.com/news/story/6809/9853410",
-          "domain": "udn.com",
-          "seendate": "20261103T021500Z"
-        },
-        {
-          "title": "Korea Utara Bantah Tudingan AS terkait Peretasan Bursa Kripto Binance",
-          "url": "https://koran-jakarta.com/2026-11-03/korea-utara-bantah-tudingan-as-terkait-peretasan-bursa-kripto-binance",
-          "domain": "koran-jakarta.com",
-          "seendate": "20261103T021500Z"
-        },
-        {
-          "title": "North Korea denies involvement in Binance hack and criticizes FBI probe as  a trite provocation  ",
-          "url": "https://www.sandiegouniontribune.com/2026/11/02/north-korea-binance/",
-          "domain": "sandiegouniontribune.com",
-          "seendate": "20261103T021500Z"
-        },
-        {
-          "title": "China is a potential enemy",
-          "url": "https://www.mdislander.com/opinion/letters_to_editor/china-is-a-potential-enemy/article_0540b376-a186-4a2a-97e8-377e098668fa.html",
-          "domain": "mdislander.com",
-          "seendate": "20261103T021500Z"
-        },
-        {
-          "title": "Північна Корея заперечила причетність до злому Binance на $6 млрд",
-          "url": "https://glavcom.ua/world/world-politics/pivnichna-koreja-zaperechila-prichetnist-do-zlomu-binance-na-6-mlrd-1153071.html",
-          "domain": "glavcom.ua",
-          "seendate": "20261103T021500Z"
-        },
-        {
-          "title": "Nordkorea testet Streusprengkopf für Marschflugkörper",
-          "url": "https://www.noz.de/deutschland-welt/politik/artikel/nordkorea-testet-streusprengkopf-fuer-marschflugkoerper-51688167",
-          "domain": "noz.de",
-          "seendate": "20261103T021500Z"
-        },
-        {
-          "title": "פרשנות | חרב מונחת על צווארו של נתניהו , והיא יכולה לשמש את איזנקוט - בחירות 2026",
-          "url": "https://www.haaretz.co.il/news/elections/2026-10-27/ty-article/.premium/000001a1-79b9-d682-a7af-79bf4a6e0000",
-          "domain": "haaretz.co.il",
-          "seendate": "20261027T051500Z"
-        }
-      ]
+      "status": "failed",
+      "value": null,
+      "date": null,
+      "error": "HTTP 429",
+      "article_count": 0,
+      "articles": []
     },
     "indopacific": {
       "status": "failed",
       "value": null,
       "date": null,
-      "error": "This operation was aborted",
+      "error": "HTTP 429",
       "article_count": 0,
       "articles": []
     },
     "usfj_okinawa": {
-      "status": "ok",
-      "value": 100,
-      "date": "2026-11-03",
-      "error": null,
-      "article_count": 50,
-      "articles": [
-        {
-          "title": "Japan indicts US Marine on murder charge in Okinawa",
-          "url": "https://arynews.tv/japan-indicts-us-marine-on-murder-charge-in-okinawa",
-          "domain": "arynews.tv",
-          "seendate": "20261026T071500Z"
-        },
-        {
-          "title": "Un  crime exceptionnellement brutal et odieux : un militaire américain mis en examen pour le meurtre dune femme au Japon",
-          "url": "https://www.bfmtv.com/international/asie/japon/un-crime-exceptionnellement-brutal-et-odieux-un-militaire-americain-mis-en-examen-pour-le-meurtre-d-une-femme-au-japon_AD-202610260081.html",
-          "domain": "bfmtv.com",
-          "seendate": "20261026T071500Z"
-        },
-        {
-          "title": "冲绳那霸地检以抢劫杀人罪 起诉驻日美军士兵 | 国际",
-          "url": "https://www.orientaldaily.com.my/news/international/2026/10/26/857983",
-          "domain": "orientaldaily.com.my",
-          "seendate": "20261026T050000Z"
-        },
-        {
-          "title": "Japan Defense Academy Chief Calls for 3  Red Line in Competition With China",
-          "url": "https://www.theepochtimes.com/world/japan-defense-academy-chief-calls-for-3-red-lines-in-competition-with-china-6108657",
-          "domain": "theepochtimes.com",
-          "seendate": "20261026T050000Z"
-        },
-        {
-          "title": "专家解读辽宁舰编队中双055  万吨大驱  强大战力 _ 凤凰网",
-          "url": "https://mil.ifeng.com/c/8xU9C1Cxi78",
-          "domain": "mil.ifeng.com",
-          "seendate": "20261026T050000Z"
-        },
-        {
-          "title": "Żołnierz piechoty morskiej united states oskarżony o morderstwo Japonki na Okinawie",
-          "url": "https://www.rp.pl/przestepczosc/art45391971-zabojstwo-japonki-na-okinawie-amerykanskiemu-zolnierzowi-grozi-nawet-kara-smierci",
-          "domain": "rp.pl",
-          "seendate": "20261025T123000Z"
-        },
-        {
-          "title": "U . S . Marine indicted on robbery - murder charges in Japan Okinawa - Xinhua",
-          "url": "https://english.news.cn/asiapacific/20261025/9037c066c64242298f8908e67ad3ceaf/c.html",
-          "domain": "english.news.cn",
-          "seendate": "20261025T123000Z"
-        },
-        {
-          "title": "В Японии американкому морпеху предъявлено обвинение в убийстве и грабеже",
-          "url": "https://www.sb.by/articles/v-yaponii-amerikankomu-morpekhu-predyavleno-obvinenie-v-ubiystve-i-grabezhe.html",
-          "domain": "sb.by",
-          "seendate": "20261025T111500Z"
-        },
-        {
-          "title": "U . S . Marine indicted on robbery - murder charges in Japan Okinawa - Xinhua",
-          "url": "https://english.news.cn/20261025/cf425d689cfc4e1ea06b6a064bb0e32c/c.html",
-          "domain": "english.news.cn",
-          "seendate": "20261025T104500Z"
-        },
-        {
-          "title": "Un soldat américain inculpé pour lassassinat dune femme au Japon",
-          "url": "https://www.dhnet.be/actu/monde/2026/10/25/un-soldat-americain-inculpe-pour-lassassinat-dune-femme-au-japon-AVOPAFQZXJH55CHUJTBJTHZW64/",
-          "domain": "dhnet.be",
-          "seendate": "20261025T103000Z"
-        }
-      ]
+      "status": "failed",
+      "value": null,
+      "date": null,
+      "error": "HTTP 429",
+      "article_count": 0,
+      "articles": []
     },
     "henoko": {
-      "status": "ok",
-      "value": 100,
-      "date": "2026-11-03",
-      "error": null,
-      "article_count": 50,
-      "articles": [
-        {
-          "title": "Japan indicts US Marine on murder charge in Okinawa",
-          "url": "https://arynews.tv/japan-indicts-us-marine-on-murder-charge-in-okinawa",
-          "domain": "arynews.tv",
-          "seendate": "20261026T071500Z"
-        },
-        {
-          "title": "Un  crime exceptionnellement brutal et odieux : un militaire américain mis en examen pour le meurtre dune femme au Japon",
-          "url": "https://www.bfmtv.com/international/asie/japon/un-crime-exceptionnellement-brutal-et-odieux-un-militaire-americain-mis-en-examen-pour-le-meurtre-d-une-femme-au-japon_AD-202610260081.html",
-          "domain": "bfmtv.com",
-          "seendate": "20261026T071500Z"
-        },
-        {
-          "title": "冲绳那霸地检以抢劫杀人罪 起诉驻日美军士兵 | 国际",
-          "url": "https://www.orientaldaily.com.my/news/international/2026/10/26/857983",
-          "domain": "orientaldaily.com.my",
-          "seendate": "20261026T050000Z"
-        },
-        {
-          "title": "Żołnierz piechoty morskiej united states oskarżony o morderstwo Japonki na Okinawie",
-          "url": "https://www.rp.pl/przestepczosc/art45391971-zabojstwo-japonki-na-okinawie-amerykanskiemu-zolnierzowi-grozi-nawet-kara-smierci",
-          "domain": "rp.pl",
-          "seendate": "20261025T123000Z"
-        },
-        {
-          "title": "Dieta de 5 zile care poate reseta organismul : metoda cercetătorului Valter Longo pentru longevitate",
-          "url": "https://www.libertatea.ro/lifestyle/dieta-cinci-zile-valter-longo-post-longevitate-resetare-organism-n7q75pj",
-          "domain": "libertatea.ro",
-          "seendate": "20261025T103000Z"
-        },
-        {
-          "title": "US Marine indicted over robbery , murder of woman in Okinawa , reports local media",
-          "url": "https://www.thestar.com.my/aseanplus/aseanplus-news/2026/10/25/us-marine-indicted-over-robbery-murder-of-woman-in-okinawa-reports-local-media",
-          "domain": "thestar.com.my",
-          "seendate": "20261025T103000Z"
-        },
-        {
-          "title": "老安游记 《 海外漂泊搬家记 》 第4篇 ： 三次搬家 ， 不离温莎 （ 下 ） - 博客",
-          "url": "https://blog.wenxuecity.com/myblog/78035/202610/17629.html",
-          "domain": "blog.wenxuecity.com",
-          "seendate": "20261025T081500Z"
-        },
-        {
-          "title": "距台灣160公里 ！ 美軍海馬士登菲國北端島嶼 另從南韓調運彈藥",
-          "url": "https://def.ltn.com.tw/article/breakingnews/5617748",
-          "domain": "def.ltn.com.tw",
-          "seendate": "20261024T150000Z"
-        },
-        {
-          "title": "Niente auto Byd in una base militare statunitense",
-          "url": "https://www.gazzetta.it/motori/la-mia-auto/24-10-2026/niente-auto-byd-in-una-base-militare-statunitense.shtml",
-          "domain": "gazzetta.it",
-          "seendate": "20261024T083000Z"
-        },
-        {
-          "title": "美日 「 利劍27 」 軍演聚焦台海突發狀況 台灣樂見區域合作",
-          "url": "https://n.yam.com/Article/20261024214829",
-          "domain": "n.yam.com",
-          "seendate": "20261024T060000Z"
-        }
-      ]
+      "status": "failed",
+      "value": null,
+      "date": null,
+      "error": "HTTP 429",
+      "article_count": 0,
+      "articles": []
     },
     "us_defense_budget": {
       "status": "failed",
       "value": null,
       "date": null,
-      "error": "This operation was aborted",
+      "error": "HTTP 429",
       "article_count": 0,
       "articles": []
     },
     "trump_defense": {
-      "status": "ok",
-      "value": 100,
-      "date": "2026-11-03",
-      "error": null,
-      "article_count": 50,
-      "articles": [
-        {
-          "title": "שודדי המיארלדים : צבא הסייבר של קים ג  ונג און",
-          "url": "https://www.ynet.co.il/economy/article/yokra14945754",
-          "domain": "ynet.co.il",
-          "seendate": "20261103T021500Z"
-        },
-        {
-          "title": "Паніка Путіна перед виборами у США - в чому причина",
-          "url": "https://zn.ua/ukr/usa/chas-bilshe-ne-na-botsi-moskvi-u-konhresi-ssha-zaklikali-ukrajinu-vistojati-do-sichnja.html",
-          "domain": "zn.ua",
-          "seendate": "20261103T021500Z"
-        },
-        {
-          "title": "Media Monitor : Newsweek Says Trump Administration Preparing to Scale Back Pregnancy Workplace Protections",
-          "url": "https://newsroomamerica.com/a/DXgP84BHAXeNRUB6K3BLxNOzqFI/newsweek_reports_the_trump_administration_is_preparing_to_pare_back_workplace_protections_for_pregnant_women_noting_the_u_s_is_the_only_oecd_country_without_national_paid_maternity_leave.html",
-          "domain": "newsroomamerica.com",
-          "seendate": "20261103T021500Z"
-        },
-        {
-          "title": "War , tariffs and China : What the US midterms mean for the Asia - Pacific - Dominican Republic Post – Caribbean News , Business , Travel & Culture",
-          "url": "https://dominicanrepublicpost.com/war-tariffs-and-china-what-the-us-midterms-mean-for-the-asia-pacific/",
-          "domain": "dominicanrepublicpost.com",
-          "seendate": "20261103T021500Z"
-        },
-        {
-          "title": "IRIB says US attacked two fishing boats near Qeshm Island",
-          "url": "https://www.el-balad.com/17063414",
-          "domain": "el-balad.com",
-          "seendate": "20261103T021500Z"
-        },
-        {
-          "title": "Trump admin will cut South Africa , Rwanda from AGOA trade program",
-          "url": "https://www.wxii12.com/article/trump-cut-south-africa-rwanda-agoa-trade-program/74316061",
-          "domain": "wxii12.com",
-          "seendate": "20261103T021500Z"
-        },
-        {
-          "title": "China is a potential enemy",
-          "url": "https://www.mdislander.com/opinion/letters_to_editor/china-is-a-potential-enemy/article_0540b376-a186-4a2a-97e8-377e098668fa.html",
-          "domain": "mdislander.com",
-          "seendate": "20261103T021500Z"
-        },
-        {
-          "title": "Half a century later : Remembering Jimmy Carter historic 1976 presidential victory",
-          "url": "https://www.wrdw.com/2026/11/02/half-century-later-remembering-jimmy-carters-historic-1976-presidential-victory/",
-          "domain": "wrdw.com",
-          "seendate": "20261103T021500Z"
-        },
-        {
-          "title": "华尔街见闻早餐FM - Radio | 2026年11月3日",
-          "url": "https://wallstreetcn.com/articles/3785026",
-          "domain": "wallstreetcn.com",
-          "seendate": "20261103T021500Z"
-        },
-        {
-          "title": "Зброя для України - США готують новий запит до союзників НАТО - новини США",
-          "url": "https://zn.ua/ukr/usa/ssha-khochut-zbilshiti-vneski-krajin-nato-na-ozbrojennja-ukrajini-bloomberg.html",
-          "domain": "zn.ua",
-          "seendate": "20261103T021500Z"
-        }
-      ]
+      "status": "failed",
+      "value": null,
+      "date": null,
+      "error": "HTTP 429",
+      "article_count": 0,
+      "articles": []
     },
     "us_economy_stress": {
-      "status": "ok",
-      "value": 89,
-      "date": "2026-11-03",
-      "error": null,
-      "article_count": 50,
-      "articles": [
-        {
-          "title": "San Diego gas prices down 40 cents a gallon in the past month . But what happens next ? ",
-          "url": "https://www.sandiegouniontribune.com/2026/11/02/san-diego-gas-prices-down-40-cents-a-gallon-in-the-past-month-but-what-happens-next/",
-          "domain": "sandiegouniontribune.com",
-          "seendate": "20261103T021500Z"
-        },
-        {
-          "title": "القماطي : التضخم في ليبيا نتاج اختلالات نقدية ومالية وهيكلية",
-          "url": "https://www.libyaakhbar.com/libya-news/2910097.html",
-          "domain": "libyaakhbar.com",
-          "seendate": "20261103T021500Z"
-        },
-        {
-          "title": "黃金低點大反攻 ！ 原因一次看 - 自由財經",
-          "url": "https://ec.ltn.com.tw/article/breakingnews/5627358",
-          "domain": "ec.ltn.com.tw",
-          "seendate": "20261103T021500Z"
-        },
-        {
-          "title": "李대통령  집값 폭등도 폭락도 바람직 안 해 … 정확한 데이터 알려야  ",
-          "url": "https://www.edaily.co.kr/News/Read?newsId=03611286645642112&mediaCodeNo=257",
-          "domain": "edaily.co.kr",
-          "seendate": "20261103T021500Z"
-        },
-        {
-          "title": "Tierra del Fuego tuvo suba de fondos nacionales en octubre",
-          "url": "https://www.tiemposur.com.ar/politica/tierra-del-fuego-tuvo-suba-de-fondos-nacionales-en-octubre",
-          "domain": "tiemposur.com.ar",
-          "seendate": "20261103T021500Z"
-        },
-        {
-          "title": "对冲基金巨头Elliott ： 当前市场与大萧条前高度相似 ， 熊市的所有警报已经拉响",
-          "url": "https://wallstreetcn.com/articles/3785034",
-          "domain": "wallstreetcn.com",
-          "seendate": "20261103T021500Z"
-        },
-        {
-          "title": " 【 路博邁投信 】 投資長觀點 － 透過暫緩升息看升息進程",
-          "url": "https://news.cnyes.com/news/id/6621856",
-          "domain": "news.cnyes.com",
-          "seendate": "20261103T021500Z"
-        },
-        {
-          "title": "Miami - Dade va a las urnas con cargos , impuestos y fondos escolares en juego",
-          "url": "https://www.diariolasamericas.com/miami-dade-va-las-urnas-cargos-impuestos-y-fondos-escolares-juego-n5404671",
-          "domain": "diariolasamericas.com",
-          "seendate": "20261103T021500Z"
-        },
-        {
-          "title": "Trump says midterms most important  in our lifetime  as voters head to polls",
-          "url": "https://www.bordertelegraph.com/news/national/26692839.trump-says-midterms-important-in-lifetime-voters-head-polls/",
-          "domain": "bordertelegraph.com",
-          "seendate": "20261103T021500Z"
-        },
-        {
-          "title": "Building immunity to shocks - The HinduBusinessLine",
-          "url": "https://www.thehindubusinessline.com/opinion/building-immunity-to-shocks/article71657750.ece",
-          "domain": "thehindubusinessline.com",
-          "seendate": "20261103T021500Z"
-        }
-      ]
+      "status": "failed",
+      "value": null,
+      "date": null,
+      "error": "HTTP 429",
+      "article_count": 0,
+      "articles": []
     }
   }
 }
