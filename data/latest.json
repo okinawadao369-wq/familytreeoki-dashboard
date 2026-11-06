@@ -1,8 +1,8 @@
 {
-  "fetched_at": "2026-11-05T10:58:55.972+09:00",
+  "fetched_at": "2026-11-06T10:59:00.228+09:00",
   "fred_ok_count": 9,
   "fred_total": 9,
-  "gdelt_ok_count": 1,
+  "gdelt_ok_count": 0,
   "gdelt_total": 8,
   "fred": {
     "DEXJPUS": {
@@ -883,14 +883,10 @@
     },
     "DGS10": {
       "status": "ok",
-      "value": 4.95,
-      "date": "2026-11-03",
+      "value": 4.9,
+      "date": "2026-11-04",
       "error": null,
       "history": [
-        {
-          "date": "2026-09-23",
-          "value": 5.11
-        },
         {
           "date": "2026-09-24",
           "value": 5.18
@@ -1002,6 +998,10 @@
         {
           "date": "2026-11-03",
           "value": 4.95
+        },
+        {
+          "date": "2026-11-04",
+          "value": 4.9
         }
       ]
     },
@@ -1168,73 +1168,12 @@
       "articles": []
     },
     "henoko": {
-      "status": "ok",
-      "value": 100,
-      "date": "2026-11-05",
-      "error": null,
-      "article_count": 50,
-      "articles": [
-        {
-          "title": "不到一個月 ， 再有駐日美軍士兵被捕",
-          "url": "https://www.hkcna.hk/hk/content/s6aea845ce4b0893034d757fe.html",
-          "domain": "hkcna.hk",
-          "seendate": "20261104T013000Z"
-        },
-        {
-          "title": "Japan indicts US Marine on murder charge in Okinawa",
-          "url": "https://arynews.tv/japan-indicts-us-marine-on-murder-charge-in-okinawa",
-          "domain": "arynews.tv",
-          "seendate": "20261026T071500Z"
-        },
-        {
-          "title": "Un  crime exceptionnellement brutal et odieux : un militaire américain mis en examen pour le meurtre dune femme au Japon",
-          "url": "https://www.bfmtv.com/international/asie/japon/un-crime-exceptionnellement-brutal-et-odieux-un-militaire-americain-mis-en-examen-pour-le-meurtre-d-une-femme-au-japon_AD-202610260081.html",
-          "domain": "bfmtv.com",
-          "seendate": "20261026T071500Z"
-        },
-        {
-          "title": "冲绳那霸地检以抢劫杀人罪 起诉驻日美军士兵 | 国际",
-          "url": "https://www.orientaldaily.com.my/news/international/2026/10/26/857983",
-          "domain": "orientaldaily.com.my",
-          "seendate": "20261026T050000Z"
-        },
-        {
-          "title": "Żołnierz piechoty morskiej united states oskarżony o morderstwo Japonki na Okinawie",
-          "url": "https://www.rp.pl/przestepczosc/art45391971-zabojstwo-japonki-na-okinawie-amerykanskiemu-zolnierzowi-grozi-nawet-kara-smierci",
-          "domain": "rp.pl",
-          "seendate": "20261025T123000Z"
-        },
-        {
-          "title": "Dieta de 5 zile care poate reseta organismul : metoda cercetătorului Valter Longo pentru longevitate",
-          "url": "https://www.libertatea.ro/lifestyle/dieta-cinci-zile-valter-longo-post-longevitate-resetare-organism-n7q75pj",
-          "domain": "libertatea.ro",
-          "seendate": "20261025T103000Z"
-        },
-        {
-          "title": "US Marine indicted over robbery , murder of woman in Okinawa , reports local media",
-          "url": "https://www.thestar.com.my/aseanplus/aseanplus-news/2026/10/25/us-marine-indicted-over-robbery-murder-of-woman-in-okinawa-reports-local-media",
-          "domain": "thestar.com.my",
-          "seendate": "20261025T103000Z"
-        },
-        {
-          "title": "老安游记 《 海外漂泊搬家记 》 第4篇 ： 三次搬家 ， 不离温莎 （ 下 ） - 博客",
-          "url": "https://blog.wenxuecity.com/myblog/78035/202610/17629.html",
-          "domain": "blog.wenxuecity.com",
-          "seendate": "20261025T081500Z"
-        },
-        {
-          "title": "距台灣160公里 ！ 美軍海馬士登菲國北端島嶼 另從南韓調運彈藥",
-          "url": "https://def.ltn.com.tw/article/breakingnews/5617748",
-          "domain": "def.ltn.com.tw",
-          "seendate": "20261024T150000Z"
-        },
-        {
-          "title": "Niente auto Byd in una base militare statunitense",
-          "url": "https://www.gazzetta.it/motori/la-mia-auto/24-10-2026/niente-auto-byd-in-una-base-militare-statunitense.shtml",
-          "domain": "gazzetta.it",
-          "seendate": "20261024T083000Z"
-        }
-      ]
+      "status": "failed",
+      "value": null,
+      "date": null,
+      "error": "HTTP 429",
+      "article_count": 0,
+      "articles": []
     },
     "us_defense_budget": {
       "status": "failed",
