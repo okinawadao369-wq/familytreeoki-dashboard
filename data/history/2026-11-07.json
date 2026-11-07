@@ -1,0 +1,1569 @@
+{
+  "fetched_at": "2026-11-07T10:35:35.109+09:00",
+  "fred_ok_count": 9,
+  "fred_total": 9,
+  "gdelt_ok_count": 6,
+  "gdelt_total": 8,
+  "fred": {
+    "DEXJPUS": {
+      "status": "ok",
+      "value": 157.47,
+      "date": "2026-10-30",
+      "error": null,
+      "history": [
+        {
+          "date": "2026-09-21",
+          "value": 157.46
+        },
+        {
+          "date": "2026-09-22",
+          "value": 157.55
+        },
+        {
+          "date": "2026-09-23",
+          "value": 158.3
+        },
+        {
+          "date": "2026-09-24",
+          "value": 158.92
+        },
+        {
+          "date": "2026-09-25",
+          "value": 157.18
+        },
+        {
+          "date": "2026-09-28",
+          "value": 157.44
+        },
+        {
+          "date": "2026-09-29",
+          "value": 157.5
+        },
+        {
+          "date": "2026-09-30",
+          "value": 157.25
+        },
+        {
+          "date": "2026-10-01",
+          "value": 157.63
+        },
+        {
+          "date": "2026-10-02",
+          "value": 157.81
+        },
+        {
+          "date": "2026-10-05",
+          "value": 157.97
+        },
+        {
+          "date": "2026-10-06",
+          "value": 158.12
+        },
+        {
+          "date": "2026-10-07",
+          "value": 158.11
+        },
+        {
+          "date": "2026-10-08",
+          "value": 158.33
+        },
+        {
+          "date": "2026-10-09",
+          "value": 158.34
+        },
+        {
+          "date": "2026-10-13",
+          "value": 158.36
+        },
+        {
+          "date": "2026-10-14",
+          "value": 158.84
+        },
+        {
+          "date": "2026-10-15",
+          "value": 158.18
+        },
+        {
+          "date": "2026-10-16",
+          "value": 158
+        },
+        {
+          "date": "2026-10-19",
+          "value": 158.49
+        },
+        {
+          "date": "2026-10-20",
+          "value": 158.2
+        },
+        {
+          "date": "2026-10-21",
+          "value": 158.13
+        },
+        {
+          "date": "2026-10-22",
+          "value": 157.11
+        },
+        {
+          "date": "2026-10-23",
+          "value": 156.87
+        },
+        {
+          "date": "2026-10-26",
+          "value": 157.58
+        },
+        {
+          "date": "2026-10-27",
+          "value": 157.86
+        },
+        {
+          "date": "2026-10-28",
+          "value": 158.24
+        },
+        {
+          "date": "2026-10-29",
+          "value": 157.83
+        },
+        {
+          "date": "2026-10-30",
+          "value": 157.47
+        }
+      ]
+    },
+    "CPIAUCSL": {
+      "status": "ok",
+      "value": 336.298,
+      "date": "2026-09-01",
+      "error": null,
+      "history": [
+        {
+          "date": "2024-04-01",
+          "value": 313.023
+        },
+        {
+          "date": "2024-05-01",
+          "value": 313.175
+        },
+        {
+          "date": "2024-06-01",
+          "value": 313.044
+        },
+        {
+          "date": "2024-07-01",
+          "value": 313.569
+        },
+        {
+          "date": "2024-08-01",
+          "value": 314.062
+        },
+        {
+          "date": "2024-09-01",
+          "value": 314.732
+        },
+        {
+          "date": "2024-10-01",
+          "value": 315.631
+        },
+        {
+          "date": "2024-11-01",
+          "value": 316.528
+        },
+        {
+          "date": "2024-12-01",
+          "value": 317.604
+        },
+        {
+          "date": "2025-01-01",
+          "value": 318.961
+        },
+        {
+          "date": "2025-02-01",
+          "value": 319.679
+        },
+        {
+          "date": "2025-03-01",
+          "value": 319.785
+        },
+        {
+          "date": "2025-04-01",
+          "value": 320.302
+        },
+        {
+          "date": "2025-05-01",
+          "value": 320.62
+        },
+        {
+          "date": "2025-06-01",
+          "value": 321.435
+        },
+        {
+          "date": "2025-07-01",
+          "value": 322.169
+        },
+        {
+          "date": "2025-08-01",
+          "value": 323.291
+        },
+        {
+          "date": "2025-09-01",
+          "value": 324.245
+        },
+        {
+          "date": "2025-11-01",
+          "value": 325.063
+        },
+        {
+          "date": "2025-12-01",
+          "value": 326.031
+        },
+        {
+          "date": "2026-01-01",
+          "value": 326.588
+        },
+        {
+          "date": "2026-02-01",
+          "value": 327.46
+        },
+        {
+          "date": "2026-03-01",
+          "value": 330.293
+        },
+        {
+          "date": "2026-04-01",
+          "value": 332.407
+        },
+        {
+          "date": "2026-05-01",
+          "value": 333.979
+        },
+        {
+          "date": "2026-06-01",
+          "value": 332.568
+        },
+        {
+          "date": "2026-07-01",
+          "value": 332.813
+        },
+        {
+          "date": "2026-08-01",
+          "value": 334.131
+        },
+        {
+          "date": "2026-09-01",
+          "value": 336.298
+        }
+      ]
+    },
+    "CPILFESL": {
+      "status": "ok",
+      "value": 338.896,
+      "date": "2026-09-01",
+      "error": null,
+      "history": [
+        {
+          "date": "2024-04-01",
+          "value": 317.649
+        },
+        {
+          "date": "2024-05-01",
+          "value": 318.095
+        },
+        {
+          "date": "2024-06-01",
+          "value": 318.39
+        },
+        {
+          "date": "2024-07-01",
+          "value": 318.94
+        },
+        {
+          "date": "2024-08-01",
+          "value": 319.75
+        },
+        {
+          "date": "2024-09-01",
+          "value": 320.732
+        },
+        {
+          "date": "2024-10-01",
+          "value": 321.731
+        },
+        {
+          "date": "2024-11-01",
+          "value": 322.657
+        },
+        {
+          "date": "2024-12-01",
+          "value": 323.259
+        },
+        {
+          "date": "2025-01-01",
+          "value": 324.638
+        },
+        {
+          "date": "2025-02-01",
+          "value": 325.465
+        },
+        {
+          "date": "2025-03-01",
+          "value": 325.69
+        },
+        {
+          "date": "2025-04-01",
+          "value": 326.467
+        },
+        {
+          "date": "2025-05-01",
+          "value": 326.893
+        },
+        {
+          "date": "2025-06-01",
+          "value": 327.658
+        },
+        {
+          "date": "2025-07-01",
+          "value": 328.682
+        },
+        {
+          "date": "2025-08-01",
+          "value": 329.7
+        },
+        {
+          "date": "2025-09-01",
+          "value": 330.418
+        },
+        {
+          "date": "2025-11-01",
+          "value": 331.043
+        },
+        {
+          "date": "2025-12-01",
+          "value": 331.814
+        },
+        {
+          "date": "2026-01-01",
+          "value": 332.793
+        },
+        {
+          "date": "2026-02-01",
+          "value": 333.512
+        },
+        {
+          "date": "2026-03-01",
+          "value": 334.165
+        },
+        {
+          "date": "2026-04-01",
+          "value": 335.423
+        },
+        {
+          "date": "2026-05-01",
+          "value": 336.121
+        },
+        {
+          "date": "2026-06-01",
+          "value": 336.065
+        },
+        {
+          "date": "2026-07-01",
+          "value": 336.789
+        },
+        {
+          "date": "2026-08-01",
+          "value": 337.765
+        },
+        {
+          "date": "2026-09-01",
+          "value": 338.896
+        }
+      ]
+    },
+    "CUSR0000SEFV": {
+      "status": "ok",
+      "value": 398.783,
+      "date": "2026-09-01",
+      "error": null,
+      "history": [
+        {
+          "date": "2024-04-01",
+          "value": 365.813
+        },
+        {
+          "date": "2024-05-01",
+          "value": 367.099
+        },
+        {
+          "date": "2024-06-01",
+          "value": 368.616
+        },
+        {
+          "date": "2024-07-01",
+          "value": 369.383
+        },
+        {
+          "date": "2024-08-01",
+          "value": 370.348
+        },
+        {
+          "date": "2024-09-01",
+          "value": 371.604
+        },
+        {
+          "date": "2024-10-01",
+          "value": 372.486
+        },
+        {
+          "date": "2024-11-01",
+          "value": 373.53
+        },
+        {
+          "date": "2024-12-01",
+          "value": 374.644
+        },
+        {
+          "date": "2025-01-01",
+          "value": 375.532
+        },
+        {
+          "date": "2025-02-01",
+          "value": 376.991
+        },
+        {
+          "date": "2025-03-01",
+          "value": 378.363
+        },
+        {
+          "date": "2025-04-01",
+          "value": 380.039
+        },
+        {
+          "date": "2025-05-01",
+          "value": 381.228
+        },
+        {
+          "date": "2025-06-01",
+          "value": 382.75
+        },
+        {
+          "date": "2025-07-01",
+          "value": 383.808
+        },
+        {
+          "date": "2025-08-01",
+          "value": 384.909
+        },
+        {
+          "date": "2025-09-01",
+          "value": 385.451
+        },
+        {
+          "date": "2025-11-01",
+          "value": 387.202
+        },
+        {
+          "date": "2025-12-01",
+          "value": 389.889
+        },
+        {
+          "date": "2026-01-01",
+          "value": 390.471
+        },
+        {
+          "date": "2026-02-01",
+          "value": 391.706
+        },
+        {
+          "date": "2026-03-01",
+          "value": 392.652
+        },
+        {
+          "date": "2026-04-01",
+          "value": 393.546
+        },
+        {
+          "date": "2026-05-01",
+          "value": 394.728
+        },
+        {
+          "date": "2026-06-01",
+          "value": 395.633
+        },
+        {
+          "date": "2026-07-01",
+          "value": 396.859
+        },
+        {
+          "date": "2026-08-01",
+          "value": 397.868
+        },
+        {
+          "date": "2026-09-01",
+          "value": 398.783
+        }
+      ]
+    },
+    "UNRATE": {
+      "status": "ok",
+      "value": 4.1,
+      "date": "2026-10-01",
+      "error": null,
+      "history": [
+        {
+          "date": "2024-05-01",
+          "value": 3.9
+        },
+        {
+          "date": "2024-06-01",
+          "value": 4.1
+        },
+        {
+          "date": "2024-07-01",
+          "value": 4.2
+        },
+        {
+          "date": "2024-08-01",
+          "value": 4.2
+        },
+        {
+          "date": "2024-09-01",
+          "value": 4.1
+        },
+        {
+          "date": "2024-10-01",
+          "value": 4.1
+        },
+        {
+          "date": "2024-11-01",
+          "value": 4.2
+        },
+        {
+          "date": "2024-12-01",
+          "value": 4.1
+        },
+        {
+          "date": "2025-01-01",
+          "value": 4
+        },
+        {
+          "date": "2025-02-01",
+          "value": 4.2
+        },
+        {
+          "date": "2025-03-01",
+          "value": 4.2
+        },
+        {
+          "date": "2025-04-01",
+          "value": 4.2
+        },
+        {
+          "date": "2025-05-01",
+          "value": 4.3
+        },
+        {
+          "date": "2025-06-01",
+          "value": 4.1
+        },
+        {
+          "date": "2025-07-01",
+          "value": 4.3
+        },
+        {
+          "date": "2025-08-01",
+          "value": 4.3
+        },
+        {
+          "date": "2025-09-01",
+          "value": 4.4
+        },
+        {
+          "date": "2025-11-01",
+          "value": 4.5
+        },
+        {
+          "date": "2025-12-01",
+          "value": 4.4
+        },
+        {
+          "date": "2026-01-01",
+          "value": 4.3
+        },
+        {
+          "date": "2026-02-01",
+          "value": 4.4
+        },
+        {
+          "date": "2026-03-01",
+          "value": 4.3
+        },
+        {
+          "date": "2026-04-01",
+          "value": 4.3
+        },
+        {
+          "date": "2026-05-01",
+          "value": 4.3
+        },
+        {
+          "date": "2026-06-01",
+          "value": 4.2
+        },
+        {
+          "date": "2026-07-01",
+          "value": 4.1
+        },
+        {
+          "date": "2026-08-01",
+          "value": 4.1
+        },
+        {
+          "date": "2026-09-01",
+          "value": 4.2
+        },
+        {
+          "date": "2026-10-01",
+          "value": 4.1
+        }
+      ]
+    },
+    "CES0500000003": {
+      "status": "ok",
+      "value": 38,
+      "date": "2026-10-01",
+      "error": null,
+      "history": [
+        {
+          "date": "2024-05-01",
+          "value": 34.89
+        },
+        {
+          "date": "2024-06-01",
+          "value": 35.01
+        },
+        {
+          "date": "2024-07-01",
+          "value": 35.08
+        },
+        {
+          "date": "2024-08-01",
+          "value": 35.22
+        },
+        {
+          "date": "2024-09-01",
+          "value": 35.34
+        },
+        {
+          "date": "2024-10-01",
+          "value": 35.46
+        },
+        {
+          "date": "2024-11-01",
+          "value": 35.6
+        },
+        {
+          "date": "2024-12-01",
+          "value": 35.69
+        },
+        {
+          "date": "2025-01-01",
+          "value": 35.84
+        },
+        {
+          "date": "2025-02-01",
+          "value": 35.94
+        },
+        {
+          "date": "2025-03-01",
+          "value": 36.11
+        },
+        {
+          "date": "2025-04-01",
+          "value": 36.12
+        },
+        {
+          "date": "2025-05-01",
+          "value": 36.28
+        },
+        {
+          "date": "2025-06-01",
+          "value": 36.36
+        },
+        {
+          "date": "2025-07-01",
+          "value": 36.47
+        },
+        {
+          "date": "2025-08-01",
+          "value": 36.62
+        },
+        {
+          "date": "2025-09-01",
+          "value": 36.7
+        },
+        {
+          "date": "2025-10-01",
+          "value": 36.85
+        },
+        {
+          "date": "2025-11-01",
+          "value": 37
+        },
+        {
+          "date": "2025-12-01",
+          "value": 37.02
+        },
+        {
+          "date": "2026-01-01",
+          "value": 37.15
+        },
+        {
+          "date": "2026-02-01",
+          "value": 37.27
+        },
+        {
+          "date": "2026-03-01",
+          "value": 37.35
+        },
+        {
+          "date": "2026-04-01",
+          "value": 37.41
+        },
+        {
+          "date": "2026-05-01",
+          "value": 37.49
+        },
+        {
+          "date": "2026-06-01",
+          "value": 37.59
+        },
+        {
+          "date": "2026-07-01",
+          "value": 37.64
+        },
+        {
+          "date": "2026-08-01",
+          "value": 37.76
+        },
+        {
+          "date": "2026-09-01",
+          "value": 37.86
+        },
+        {
+          "date": "2026-10-01",
+          "value": 38
+        }
+      ]
+    },
+    "FEDFUNDS": {
+      "status": "ok",
+      "value": 3.88,
+      "date": "2026-10-01",
+      "error": null,
+      "history": [
+        {
+          "date": "2024-05-01",
+          "value": 5.33
+        },
+        {
+          "date": "2024-06-01",
+          "value": 5.33
+        },
+        {
+          "date": "2024-07-01",
+          "value": 5.33
+        },
+        {
+          "date": "2024-08-01",
+          "value": 5.33
+        },
+        {
+          "date": "2024-09-01",
+          "value": 5.13
+        },
+        {
+          "date": "2024-10-01",
+          "value": 4.83
+        },
+        {
+          "date": "2024-11-01",
+          "value": 4.64
+        },
+        {
+          "date": "2024-12-01",
+          "value": 4.48
+        },
+        {
+          "date": "2025-01-01",
+          "value": 4.33
+        },
+        {
+          "date": "2025-02-01",
+          "value": 4.33
+        },
+        {
+          "date": "2025-03-01",
+          "value": 4.33
+        },
+        {
+          "date": "2025-04-01",
+          "value": 4.33
+        },
+        {
+          "date": "2025-05-01",
+          "value": 4.33
+        },
+        {
+          "date": "2025-06-01",
+          "value": 4.33
+        },
+        {
+          "date": "2025-07-01",
+          "value": 4.33
+        },
+        {
+          "date": "2025-08-01",
+          "value": 4.33
+        },
+        {
+          "date": "2025-09-01",
+          "value": 4.22
+        },
+        {
+          "date": "2025-10-01",
+          "value": 4.09
+        },
+        {
+          "date": "2025-11-01",
+          "value": 3.88
+        },
+        {
+          "date": "2025-12-01",
+          "value": 3.72
+        },
+        {
+          "date": "2026-01-01",
+          "value": 3.64
+        },
+        {
+          "date": "2026-02-01",
+          "value": 3.64
+        },
+        {
+          "date": "2026-03-01",
+          "value": 3.64
+        },
+        {
+          "date": "2026-04-01",
+          "value": 3.64
+        },
+        {
+          "date": "2026-05-01",
+          "value": 3.63
+        },
+        {
+          "date": "2026-06-01",
+          "value": 3.63
+        },
+        {
+          "date": "2026-07-01",
+          "value": 3.63
+        },
+        {
+          "date": "2026-08-01",
+          "value": 3.63
+        },
+        {
+          "date": "2026-09-01",
+          "value": 3.75
+        },
+        {
+          "date": "2026-10-01",
+          "value": 3.88
+        }
+      ]
+    },
+    "DGS10": {
+      "status": "ok",
+      "value": 4.84,
+      "date": "2026-11-05",
+      "error": null,
+      "history": [
+        {
+          "date": "2026-09-25",
+          "value": 5.17
+        },
+        {
+          "date": "2026-09-28",
+          "value": 5.24
+        },
+        {
+          "date": "2026-09-29",
+          "value": 5.26
+        },
+        {
+          "date": "2026-09-30",
+          "value": 5.29
+        },
+        {
+          "date": "2026-10-01",
+          "value": 5.24
+        },
+        {
+          "date": "2026-10-02",
+          "value": 5.28
+        },
+        {
+          "date": "2026-10-05",
+          "value": 5.31
+        },
+        {
+          "date": "2026-10-06",
+          "value": 5.27
+        },
+        {
+          "date": "2026-10-07",
+          "value": 5.28
+        },
+        {
+          "date": "2026-10-08",
+          "value": 5.22
+        },
+        {
+          "date": "2026-10-09",
+          "value": 5.24
+        },
+        {
+          "date": "2026-10-13",
+          "value": 5.21
+        },
+        {
+          "date": "2026-10-14",
+          "value": 5.19
+        },
+        {
+          "date": "2026-10-15",
+          "value": 5.1
+        },
+        {
+          "date": "2026-10-16",
+          "value": 5.09
+        },
+        {
+          "date": "2026-10-19",
+          "value": 5.15
+        },
+        {
+          "date": "2026-10-20",
+          "value": 5.12
+        },
+        {
+          "date": "2026-10-21",
+          "value": 5.13
+        },
+        {
+          "date": "2026-10-22",
+          "value": 4.96
+        },
+        {
+          "date": "2026-10-23",
+          "value": 5
+        },
+        {
+          "date": "2026-10-26",
+          "value": 5
+        },
+        {
+          "date": "2026-10-27",
+          "value": 4.99
+        },
+        {
+          "date": "2026-10-28",
+          "value": 5.05
+        },
+        {
+          "date": "2026-10-29",
+          "value": 4.98
+        },
+        {
+          "date": "2026-10-30",
+          "value": 4.94
+        },
+        {
+          "date": "2026-11-02",
+          "value": 4.91
+        },
+        {
+          "date": "2026-11-03",
+          "value": 4.95
+        },
+        {
+          "date": "2026-11-04",
+          "value": 4.9
+        },
+        {
+          "date": "2026-11-05",
+          "value": 4.84
+        }
+      ]
+    },
+    "UMCSENT": {
+      "status": "ok",
+      "value": 48.1,
+      "date": "2026-09-01",
+      "error": null,
+      "history": [
+        {
+          "date": "2024-04-01",
+          "value": 77.2
+        },
+        {
+          "date": "2024-05-01",
+          "value": 69.1
+        },
+        {
+          "date": "2024-06-01",
+          "value": 68.2
+        },
+        {
+          "date": "2024-07-01",
+          "value": 66.4
+        },
+        {
+          "date": "2024-08-01",
+          "value": 67.9
+        },
+        {
+          "date": "2024-09-01",
+          "value": 70.1
+        },
+        {
+          "date": "2024-10-01",
+          "value": 70.5
+        },
+        {
+          "date": "2024-11-01",
+          "value": 71.8
+        },
+        {
+          "date": "2024-12-01",
+          "value": 74
+        },
+        {
+          "date": "2025-01-01",
+          "value": 71.7
+        },
+        {
+          "date": "2025-02-01",
+          "value": 64.7
+        },
+        {
+          "date": "2025-03-01",
+          "value": 57
+        },
+        {
+          "date": "2025-04-01",
+          "value": 52.2
+        },
+        {
+          "date": "2025-05-01",
+          "value": 52.2
+        },
+        {
+          "date": "2025-06-01",
+          "value": 60.7
+        },
+        {
+          "date": "2025-07-01",
+          "value": 61.7
+        },
+        {
+          "date": "2025-08-01",
+          "value": 58.2
+        },
+        {
+          "date": "2025-09-01",
+          "value": 55.1
+        },
+        {
+          "date": "2025-10-01",
+          "value": 53.6
+        },
+        {
+          "date": "2025-11-01",
+          "value": 51
+        },
+        {
+          "date": "2025-12-01",
+          "value": 52.9
+        },
+        {
+          "date": "2026-01-01",
+          "value": 56.4
+        },
+        {
+          "date": "2026-02-01",
+          "value": 56.6
+        },
+        {
+          "date": "2026-03-01",
+          "value": 53.3
+        },
+        {
+          "date": "2026-04-01",
+          "value": 49.8
+        },
+        {
+          "date": "2026-05-01",
+          "value": 44.8
+        },
+        {
+          "date": "2026-06-01",
+          "value": 49.5
+        },
+        {
+          "date": "2026-07-01",
+          "value": 55.2
+        },
+        {
+          "date": "2026-08-01",
+          "value": 51.7
+        },
+        {
+          "date": "2026-09-01",
+          "value": 48.1
+        }
+      ]
+    }
+  },
+  "gdelt": {
+    "taiwan_strait": {
+      "status": "ok",
+      "value": 100,
+      "date": "2026-11-07",
+      "error": null,
+      "article_count": 50,
+      "articles": [
+        {
+          "title": "D St Lights Up , Ends Diwali Week with a Firecracker of a Friday",
+          "url": "https://economictimes.indiatimes.com/satet-front/d-st-lights-up-ends-diwali-week-with-a-firecracker-of-a-friday/articleshow/135621274.cms",
+          "domain": "economictimes.indiatimes.com",
+          "seendate": "20261107T010000Z"
+        },
+        {
+          "title": "蔣萬安的問題出在哪 （ 陳杉榮 ） - 美洲台灣日報",
+          "url": "https://taiwandaily.net/%E6%94%BF%E6%B2%BB%E8%A9%95%E8%AB%96/166344/",
+          "domain": "taiwandaily.net",
+          "seendate": "20261107T010000Z"
+        },
+        {
+          "title": "牛弹琴 ： 一觉醒来 ， 卸磨杀驴了",
+          "url": "https://finance.sina.com.cn/stock/marketresearch/2026-11-07/doc-inixwhsh4930959.shtml",
+          "domain": "finance.sina.com.cn",
+          "seendate": "20261107T010000Z"
+        },
+        {
+          "title": "Britain blasts new state - of - the - art military satellite into orbit capable of tracking Putin troops",
+          "url": "https://www.dailymail.com/news/article-16271765/britain-military-satellite-spy-russian-soldiers.html",
+          "domain": "dailymail.com",
+          "seendate": "20261107T010000Z"
+        },
+        {
+          "title": "羅智強稱沈伯洋辦火舞沒人敢抓他 網批 ： 硬要潑糞水 - 政治",
+          "url": "https://news.ltn.com.tw/news/politics/breakingnews/5632353",
+          "domain": "news.ltn.com.tw",
+          "seendate": "20261107T010000Z"
+        },
+        {
+          "title": "中央气象台发布暴雪黄色预警 京津冀等局地有大到暴雪",
+          "url": "https://www.yangtse.com/news/txs/202611/t20261107_410134.html",
+          "domain": "yangtse.com",
+          "seendate": "20261107T010000Z"
+        },
+        {
+          "title": "蔚来李斌再警示新能源车超重风险 ； 字节出售沐瞳科技获市监总局批准",
+          "url": "https://www.163.com/dy/article/LB4BCJI70511B8LM.html",
+          "domain": "163.com",
+          "seendate": "20261107T010000Z"
+        },
+        {
+          "title": "Kejutan di Superliga Junior 2026 ! Tim Polandia dan AS Gagal Tembus Semifinal",
+          "url": "https://koran-jakarta.com/2026-11-07/kejutan-di-superliga-junior-2026-tim-polandia-dan-as-gagal-tembus-semifinal",
+          "domain": "koran-jakarta.com",
+          "seendate": "20261107T000000Z"
+        },
+        {
+          "title": "荷蘭議員 ： 台海緊張若加劇 經濟危機更甚新冠疫情 | 國際 | 三立新聞網 SETN . COM",
+          "url": "https://www.setn.com/news/1934885",
+          "domain": "setn.com",
+          "seendate": "20261107T000000Z"
+        },
+        {
+          "title": "謝明瑞觀點 ： 不再溫良恭儉讓下的雙北市長選情分析─伯仲之間的較優解 | 謝明瑞 | 評論",
+          "url": "https://www.storm.mg/article/11178637",
+          "domain": "storm.mg",
+          "seendate": "20261107T000000Z"
+        }
+      ]
+    },
+    "north_korea": {
+      "status": "ok",
+      "value": 100,
+      "date": "2026-11-07",
+      "error": null,
+      "article_count": 50,
+      "articles": [
+        {
+          "title": "強硬姿勢崩さぬ習政権 中国 、 超党派や民間団体は受け入れ ― 台湾有事答弁１年 ： 時事ドットコム",
+          "url": "https://www.jiji.com/jc/article?k=2026110601107&g=int",
+          "domain": "jiji.com",
+          "seendate": "20261107T000000Z"
+        },
+        {
+          "title": "Asia Intelligence Brief for Friday , November 6 , 2026",
+          "url": "https://www.riotimesonline.com/asia-intelligence-brief-friday-november-6-2026/",
+          "domain": "riotimesonline.com",
+          "seendate": "20261106T140000Z"
+        },
+        {
+          "title": "トランプ氏の北朝鮮接近に懸念 、「 歴史的功績 」 への執着が招くリスク | ニューズウィーク日本版 オフィシャルサイト",
+          "url": "https://www.newsweekjapan.jp/articles/-/339333",
+          "domain": "newsweekjapan.jp",
+          "seendate": "20261106T123000Z"
+        },
+        {
+          "title": "Rocket launcher deal illustrates deepening Russia - Iran relations",
+          "url": "https://www.aljazeera.com/news/2026/11/6/rocket-launcher-deal-illustrates-deepening-russia-iran-relations",
+          "domain": "aljazeera.com",
+          "seendate": "20261106T120000Z"
+        },
+        {
+          "title": "Χάκερ : Στον στρατό του Κιμ Γιονγκ Ουν από 11 ετών",
+          "url": "https://www.philenews.com/kosmos/article/1792079/o-stratos-ton-chaker-tou-kim-giongk-oun-stratologounte-apo-ta-11-tous-lamvanoun-diamerismata-ke-pachiles-amives-zoun-ipo-asfiktiki-piesi/",
+          "domain": "philenews.com",
+          "seendate": "20261106T120000Z"
+        },
+        {
+          "title": "North Korea hacker army : How Kim Jong Un built a cyber force linked to $6 . 3 - billion Binance hack",
+          "url": "https://www.moneycontrol.com/world/north-korea-s-hacker-army-how-kim-jong-un-built-a-cyber-force-linked-to-6-3-billion-binance-hack-article-14073204.html",
+          "domain": "moneycontrol.com",
+          "seendate": "20261106T113000Z"
+        },
+        {
+          "title": "North Korea army of world - class hackers is secret weapon that took down Binance",
+          "url": "https://www.asiaone.com:443/asia/north-koreas-army-world-class-hackers-secret-weapon-took-down-binance",
+          "domain": "asiaone.com",
+          "seendate": "20261106T113000Z"
+        },
+        {
+          "title": "مكافآت بالملايين وشقق في بيونغ يانغ .. كيف تصنع كوريا الشمالية جيشاً من قراصنة الإنترنت ؟ ",
+          "url": "https://www.okaz.com.sa/variety/na/2274236",
+          "domain": "okaz.com.sa",
+          "seendate": "20261106T113000Z"
+        },
+        {
+          "title": "कस्ता छन् अर्बौँ डलरको साइबर हमला गर्न सक्ने उत्तर कोरियाली  ह्याकर सेना  ? | Nepal first 24 - hour updated news portal",
+          "url": "https://www.ratopati.com/story/603778/what-is-the-north-korean-hacker-army-capable-of-carrying-out-billion-dollar-cyber-attacks",
+          "domain": "ratopati.com",
+          "seendate": "20261106T113000Z"
+        },
+        {
+          "title": "台韓學術交流振興論壇 盼雙邊積極對話共創福祉 | 政治",
+          "url": "https://www.cna.com.tw/news/aipl/202611060201.aspx",
+          "domain": "cna.com.tw",
+          "seendate": "20261106T110000Z"
+        }
+      ]
+    },
+    "indopacific": {
+      "status": "failed",
+      "value": null,
+      "date": null,
+      "error": "This operation was aborted",
+      "article_count": 0,
+      "articles": []
+    },
+    "usfj_okinawa": {
+      "status": "ok",
+      "value": 100,
+      "date": "2026-11-07",
+      "error": null,
+      "article_count": 50,
+      "articles": [
+        {
+          "title": "Japan , U . S . agree on measures to prevent crimes by troops in Okinawa",
+          "url": "https://japantoday.com/category/politics/japan-us-agree-on-measures-to-prevent-crimes-by-troops-in-okinawa",
+          "domain": "japantoday.com",
+          "seendate": "20261107T000000Z"
+        },
+        {
+          "title": "Night Zoo for Autumn Night",
+          "url": "https://okinawa.stripes.com/travel/night-zoo-okinawa.html",
+          "domain": "okinawa.stripes.com",
+          "seendate": "20261106T083000Z"
+        },
+        {
+          "title": "政府と沖縄県 、 対立から協調へ転換 新知事は辺野古 ・ オスプレイ容認 [ 沖縄県 ]： 朝日新聞",
+          "url": "https://www.asahi.com/articles/ASVC60TQ5VC6TPOB003M.html",
+          "domain": "asahi.com",
+          "seendate": "20261106T080000Z"
+        },
+        {
+          "title": "Okinawa Policy Council Meeting Held for 1st Time in 13 Yrs",
+          "url": "https://www.nippon.com/en/articles/-/56999",
+          "domain": "nippon.com",
+          "seendate": "20261106T063000Z"
+        },
+        {
+          "title": "美海军陆战队员在日本训练事故中死亡 ， 更多细节曝光",
+          "url": "https://www.163.com/dy/article/LB0B3V1B0514R9OJ.html",
+          "domain": "163.com",
+          "seendate": "20261106T033000Z"
+        },
+        {
+          "title": "米追随外交猛省せよ / 参院外交防衛委 山添氏が政府を追及 | しんぶん赤旗｜日本共産党",
+          "url": "https://www.jcp.or.jp/akahata/aik26/2026-11-06/2026110602_04_0.php",
+          "domain": "jcp.or.jp",
+          "seendate": "20261106T030000Z"
+        },
+        {
+          "title": "US Marine , 25 , dies after being rushed to hospital during  fast roping  training accident in Japan following horror stadium stunt that killed US airman",
+          "url": "https://www.dailymail.com/news/article-16268583/US-Marine-Devin-Hernandez-dies-fast-roping.html",
+          "domain": "dailymail.com",
+          "seendate": "20261106T030000Z"
+        },
+        {
+          "title": "日本考虑紧急时运进核武 原则名义尚存实已松动 _ 军事频道 _ 中华网",
+          "url": "https://military.china.com/news/13004177/20261106/49845739.html",
+          "domain": "military.china.com",
+          "seendate": "20261106T023000Z"
+        },
+        {
+          "title": "首相 「 基地負担軽減へ全力 」 沖縄知事と１３年ぶり政策協 ： 中日新聞Web",
+          "url": "https://www.chunichi.co.jp:443/article/1335496",
+          "domain": "chunichi.co.jp",
+          "seendate": "20261106T010000Z"
+        },
+        {
+          "title": "US Military Must Not Be Allowed To Hide Source of PFAS Contamination",
+          "url": "https://watchingamerica.com/2026/11/05/us-military-must-not-be-allowed-to-hide-source-of-pfas-contamination/",
+          "domain": "watchingamerica.com",
+          "seendate": "20261105T220000Z"
+        }
+      ]
+    },
+    "henoko": {
+      "status": "ok",
+      "value": 96,
+      "date": "2026-11-07",
+      "error": null,
+      "article_count": 50,
+      "articles": [
+        {
+          "title": "Night Zoo for Autumn Night",
+          "url": "https://okinawa.stripes.com/travel/night-zoo-okinawa.html",
+          "domain": "okinawa.stripes.com",
+          "seendate": "20261106T083000Z"
+        },
+        {
+          "title": "政府と沖縄県 、 対立から協調へ転換 新知事は辺野古 ・ オスプレイ容認 [ 沖縄県 ]： 朝日新聞",
+          "url": "https://www.asahi.com/articles/ASVC60TQ5VC6TPOB003M.html",
+          "domain": "asahi.com",
+          "seendate": "20261106T080000Z"
+        },
+        {
+          "title": "Okinawa Policy Council Meeting Held for 1st Time in 13 Yrs",
+          "url": "https://www.nippon.com/en/articles/-/56999",
+          "domain": "nippon.com",
+          "seendate": "20261106T063000Z"
+        },
+        {
+          "title": "米追随外交猛省せよ / 参院外交防衛委 山添氏が政府を追及 | しんぶん赤旗｜日本共産党",
+          "url": "https://www.jcp.or.jp/akahata/aik26/2026-11-06/2026110602_04_0.php",
+          "domain": "jcp.or.jp",
+          "seendate": "20261106T030000Z"
+        },
+        {
+          "title": "US Marine , 25 , dies after being rushed to hospital during  fast roping  training accident in Japan following horror stadium stunt that killed US airman",
+          "url": "https://www.dailymail.com/news/article-16268583/US-Marine-Devin-Hernandez-dies-fast-roping.html",
+          "domain": "dailymail.com",
+          "seendate": "20261106T030000Z"
+        },
+        {
+          "title": "首相 「 基地負担軽減へ全力 」 沖縄知事と１３年ぶり政策協 ： 中日新聞Web",
+          "url": "https://www.chunichi.co.jp:443/article/1335496",
+          "domain": "chunichi.co.jp",
+          "seendate": "20261106T010000Z"
+        },
+        {
+          "title": "US Military Must Not Be Allowed To Hide Source of PFAS Contamination",
+          "url": "https://watchingamerica.com/2026/11/05/us-military-must-not-be-allowed-to-hide-source-of-pfas-contamination/",
+          "domain": "watchingamerica.com",
+          "seendate": "20261105T220000Z"
+        },
+        {
+          "title": "Eurodeputații cer Comisiei Europene evaluarea riscurilor vehiculelor BYD și posibile restricții pe piața europeană",
+          "url": "https://business24.ro/byd/evaluare-riscuri-vehicule-byd-restrictii-piata-europa-1673891",
+          "domain": "business24.ro",
+          "seendate": "20261105T220000Z"
+        },
+        {
+          "title": "不到一個月 ， 再有駐日美軍士兵被捕",
+          "url": "https://www.hkcna.hk/hk/content/s6aea845ce4b0893034d757fe.html",
+          "domain": "hkcna.hk",
+          "seendate": "20261104T013000Z"
+        },
+        {
+          "title": "Japan indicts US Marine on murder charge in Okinawa",
+          "url": "https://arynews.tv/japan-indicts-us-marine-on-murder-charge-in-okinawa",
+          "domain": "arynews.tv",
+          "seendate": "20261026T071500Z"
+        }
+      ]
+    },
+    "us_defense_budget": {
+      "status": "ok",
+      "value": 100,
+      "date": "2026-11-07",
+      "error": null,
+      "article_count": 50,
+      "articles": [
+        {
+          "title": "紫牛早新闻｜立冬遇上冷空气 ， 江苏降雨降温大风组团来袭",
+          "url": "https://www.yangtse.com/news/txs/202611/t20261107_410129.html",
+          "domain": "yangtse.com",
+          "seendate": "20261107T010000Z"
+        },
+        {
+          "title": "觀點投書 ： 今昔大不同 ， 沈伯洋 「 無限都更 」 根本不切實際 | 林柏翰 | 評論",
+          "url": "https://www.storm.mg/article/11178371",
+          "domain": "storm.mg",
+          "seendate": "20261107T000000Z"
+        },
+        {
+          "title": " ¿ Ayuda o Amenaza ? Informantes de EE . UU . y el Narco",
+          "url": "https://radio.foxnews.com/2026/11/06/ayuda-o-amenaza-informantes-de-ee-uu-y-el-narco/",
+          "domain": "radio.foxnews.com",
+          "seendate": "20261107T000000Z"
+        },
+        {
+          "title": "Trump addresses movement to impeach Pete Hegseth as tensions rise , hits back at the man behind the resolution : ... very bad guy  ",
+          "url": "https://www.themarysue.com/trump-addresses-movement-to-impeach-pete-hegseth-as-tensions-rise-hits-back-at-the-man-behind-the-resolution-very-bad-guy/",
+          "domain": "themarysue.com",
+          "seendate": "20261107T000000Z"
+        },
+        {
+          "title": "اقتصاديات .. تكلفة الفرصة البديلة ( 1 - 2 ) ",
+          "url": "https://www.raya.com/2026/11/07/%D8%A7%D9%82%D8%AA%D8%B5%D8%A7%D8%AF%D9%8A%D8%A7%D8%AA-%D8%AA%D9%83%D9%84%D9%81%D8%A9-%D8%A7%D9%84%D9%81%D8%B1%D8%B5%D8%A9-%D8%A7%D9%84%D8%A8%D8%AF%D9%8A%D9%84%D8%A9-1-2",
+          "domain": "raya.com",
+          "seendate": "20261107T000000Z"
+        },
+        {
+          "title": "This Week in the World : Inspiring Midterm Turnout Shows Resilience of Our Democracy | Friends Committee On National Legislation",
+          "url": "https://www.fcnl.org/updates/2026-11/week-world-inspiring-midterm-turnout-shows-resilience-our-democracy",
+          "domain": "fcnl.org",
+          "seendate": "20261107T000000Z"
+        },
+        {
+          "title": "夏一新觀點 ： 哈米尼 「 無地理限制 」 警告─伊朗要讓川普算清動武代價 | 夏一新 | 評論",
+          "url": "https://www.storm.mg/article/11177548",
+          "domain": "storm.mg",
+          "seendate": "20261107T000000Z"
+        },
+        {
+          "title": "Pentagon says US troops are poised to strike Iran . Then 5 tankers are hit in the Strait of Hormuz",
+          "url": "https://www.themarysue.com/pentagon-says-thousands-of-us-troops-are-poised-to-strike-iran-then-reports-emerge-of-what-happened-to-five-tankers-in-the-strait-of-hormuz/",
+          "domain": "themarysue.com",
+          "seendate": "20261107T000000Z"
+        },
+        {
+          "title": "Trump troca chefe de Gabinete após derrota republicana e nomeia linha - dura da migrao para o cargo",
+          "url": "https://oglobo.globo.com/mundo/noticia/2026/11/06/trump-troca-chefe-de-gabinete-apos-derrota-republicana-e-nomeia-linha-dura-da-migracao-para-o-cargo.ghtml",
+          "domain": "oglobo.globo.com",
+          "seendate": "20261107T000000Z"
+        },
+        {
+          "title": "Βγήκαν  μαχαίρια  στο κόμμα Τραμπ - Στο στόχαστρο υπουργοί και συνεργάτες ... ",
+          "url": "https://www.thetoc.gr/diethni/article/maxairia-sto-esoteriko-ton-repoumplikanon-sto-stoxastro-upourgoi-sunergates-tramp-akoma-kai-stratiotikoi-dioikites/",
+          "domain": "thetoc.gr",
+          "seendate": "20261107T000000Z"
+        }
+      ]
+    },
+    "trump_defense": {
+      "status": "failed",
+      "value": null,
+      "date": null,
+      "error": "This operation was aborted",
+      "article_count": 0,
+      "articles": []
+    },
+    "us_economy_stress": {
+      "status": "ok",
+      "value": 93,
+      "date": "2026-11-07",
+      "error": null,
+      "article_count": 50,
+      "articles": [
+        {
+          "title": "Le Big Tech e il risparmio europeo",
+          "url": "https://www.ilmessaggero.it/economia/news/big_tech_risparmio_europeo_rischi_fondi_pensione-9873866.html",
+          "domain": "ilmessaggero.it",
+          "seendate": "20261107T010000Z"
+        },
+        {
+          "title": "D St Lights Up , Ends Diwali Week with a Firecracker of a Friday",
+          "url": "https://economictimes.indiatimes.com/satet-front/d-st-lights-up-ends-diwali-week-with-a-firecracker-of-a-friday/articleshow/135621274.cms",
+          "domain": "economictimes.indiatimes.com",
+          "seendate": "20261107T010000Z"
+        },
+        {
+          "title": "Trump says he open to working with Democrats , but blames them for market turmoil",
+          "url": "https://cbs4local.com/news/nation-world/trump-says-hes-open-to-working-with-democrats-but-blames-them-for-market-turmoil-congress-stock-big-beautifull-bill",
+          "domain": "cbs4local.com",
+          "seendate": "20261107T010000Z"
+        },
+        {
+          "title": "Kenorland Minerals Closes Oversubscribed $16 Million Financing",
+          "url": "https://www.chathamdailynews.ca/press-releases/newsfile/kenorland-minerals-closes-oversubscribed-16-million-financing/",
+          "domain": "chathamdailynews.ca",
+          "seendate": "20261107T010000Z"
+        },
+        {
+          "title": "Fitch : Αμετάβλητη η αξιολόγηση της Ελλάδας στο ΒΒΒ , σταθερό outlook",
+          "url": "https://sofokleous10.gr/2026/11/07/fitch-%CE%B1%CE%BC%CE%B5%CF%84%CE%AC%CE%B2%CE%BB%CE%B7%CF%84%CE%B7-%CE%B7-%CE%B1%CE%BE%CE%B9%CE%BF%CE%BB%CF%8C%CE%B3%CE%B7%CF%83%CE%B7-%CF%84%CE%B7%CF%82-%CE%B5%CE%BB%CE%BB%CE%AC%CE%B4%CE%B1%CF%82/",
+          "domain": "sofokleous10.gr",
+          "seendate": "20261107T010000Z"
+        },
+        {
+          "title": "中国资产反攻 ！ 小鹏 、 百度 、 B站 、 网易领涨 _ 东方财富网",
+          "url": "https://finance.eastmoney.com/a/202611073925334833.html",
+          "domain": "finance.eastmoney.com",
+          "seendate": "20261107T010000Z"
+        },
+        {
+          "title": "Trump says he open to working with Democrats , but blames them for market turmoil",
+          "url": "https://nbcmontana.com/news/nation-world/trump-says-hes-open-to-working-with-democrats-but-blames-them-for-market-turmoil-congress-stock-big-beautifull-bill",
+          "domain": "nbcmontana.com",
+          "seendate": "20261107T010000Z"
+        },
+        {
+          "title": "Trump says he open to working with Democrats , but blames them for market turmoil",
+          "url": "https://kfdm.com/news/nation-world/trump-says-hes-open-to-working-with-democrats-but-blames-them-for-market-turmoil-congress-stock-big-beautifull-bill",
+          "domain": "kfdm.com",
+          "seendate": "20261107T010000Z"
+        },
+        {
+          "title": "Why didnt the strong jobs report send mortgage rates skyrocketing ? ",
+          "url": "https://www.housingwire.com/articles/jobs-report-mortgage-rates-flat/",
+          "domain": "housingwire.com",
+          "seendate": "20261107T010000Z"
+        },
+        {
+          "title": "Chilliwack - Hope MP Strahl calls Liberal budget  borrowing binge  ",
+          "url": "https://hopestandard.com/2026/11/06/chilliwack-hope-mp-strahl-calls-liberal-budget-borrowing-binge/",
+          "domain": "hopestandard.com",
+          "seendate": "20261107T010000Z"
+        }
+      ]
+    }
+  }
+}
