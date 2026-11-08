@@ -285,7 +285,7 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP','Hiragino
 <body>
 <div id="header">
   <h1>🧭 沖縄エリアマーケティング・インテリジェンス AXIS v2.0</h1>
-  <p>社会学・行動学・心理学・経済学・統計学・歴史文化・地政学 — 統一思考フレームワーク | koya Intelligence | <span id="axis-upd">2026-06-11更新</span></p>
+  <p>社会学・行動学・心理学・経済学・統計学・歴史文化・地政学 — 統一思考フレームワーク | koya Intelligence | <span id="axis-upd">2026-11-08更新</span></p>
 </div>
 <div id="nav">
   <button class="nav-btn active" onclick="showTab('t1')">🏆 総合スコア</button>
@@ -572,7 +572,7 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP','Hiragino
         </div>
         <div style="background:var(--card2);border-radius:8px;padding:10px;font-size:10px;color:var(--text2);line-height:1.7">
           <strong style="color:var(--green)">参入タイミング示唆:</strong><br>
-          辺野古・北部エリアは基地返還後の32倍成長が期待される「先行投資ゾーン」。競合薄の今が参入の最大窓口。
+          辺野古・北部エリアは基地返還後の32倍成長が期待される「先行投資ゾーン」。競合薄の今が参入の最大窓口。<br><span style="font-size:9px;color:var(--text2)">【2026-08-14 県推計（報道ベース・証拠区分B）】返還予定の5基地の返還後の経済効果は年間計1兆1,908億円・返還前の約19倍。上記32倍は那覇新都心等の過去実績・旧試算。</span>
           名護市ジャングリア開業予定 + 辺野古工事需要 = 短中期での先行参入メリット大。
         </div>
       </div>
@@ -931,11 +931,11 @@ function verifBadge(key, opts){
 //             'unknown'=出典・対象年とも未確認（証拠区分D、推測で埋めない）
 // asOf は比較可能な "YYYY-MM" 形式。不明な場合は null（タブ代表年の算出から除外される）。
 const DATA_PROVENANCE = {
-  macro_pop:            {asOf:'2026-09', asOfLabel:'2026年9月', source:'沖縄県統計課「推計人口」2026年9月1日現在', confidence:'observed'},
-  macro_gdp:             {asOf:'2022-04', asOfLabel:'令和4年度(2022年度)', source:'沖縄県「県民経済計算」', confidence:'observed'},
-  macro_income:          {asOf:'2022-04', asOfLabel:'令和4年度(2022年度)', source:'沖縄県「県民経済計算」（1人当たり県民所得）', confidence:'observed'},
+  macro_pop:            {asOf:'2026-10', asOfLabel:'2026年10月', source:'沖縄県統計課「推計人口」2026年10月1日現在（令和7年国勢調査確報値基準）', confidence:'observed'},
+  macro_gdp:             {asOf:'2023-04', asOfLabel:'令和5年度(2023年度)', source:'沖縄県「令和5年度県民経済計算」（2026-05-15公表）', confidence:'observed'},
+  macro_income:          {asOf:'2023-04', asOfLabel:'令和5年度(2023年度)', source:'沖縄県「令和5年度県民経済計算」（1人当たり県民所得）', confidence:'observed'},
   macro_tourist:         {asOf:'2025-04', asOfLabel:'令和7年度（年間実績・最多）', source:'沖縄県文化観光スポーツ部「入域観光客統計」', confidence:'observed'},
-  macro_unemployment:    {asOf:'2026-07', asOfLabel:'2026年7月', source:'沖縄県「令和8年7月の雇用状況」（沖縄県企画部、2026年9月1日公表）／原統計は総務省「労働力調査」', confidence:'observed', note:'2026-09-20 に沖縄県公式サイトで一次ソースを確認済み。3.0%（前年同月比-0.1pt）。労働力人口778千人・就業者755千人・完全失業者23千人。有効求人倍率1.07倍。'},
+  macro_unemployment:    {asOf:'2026-09', asOfLabel:'2026年9月', source:'沖縄県統計課「労働力調査」完全失業率（原数値）令和8年9月／原統計は総務省「労働力調査」', confidence:'observed', note:'2026-09-20 に沖縄県公式サイトで一次ソースを確認済み。3.0%（前年同月比-0.1pt）。労働力人口778千人・就業者755千人・完全失業者23千人。有効求人倍率1.07倍。'},
   macro_sofa:            {asOf:null, asOfLabel:null, source:'在沖米軍基地関連公表資料からの概算（koya推計）', confidence:'estimated', note:'公式の在沖軍属人口統計は非公表のため、複数の公開資料から概算した数値。'},
   macro_poverty:         {asOf:'2014-01', asOfLabel:'平成26年(2014年)データ', source:'沖縄県「平成27年度沖縄県子どもの貧困実態調査」（2016年1月公表の推計値）', confidence:'observed', note:'2026-09-20に一次ソースを特定。推計対象は平成26年データで12年前の数値。県は令和3年度・令和5年度にも調査を実施しており、より新しい値が存在する可能性がある（未照合）。'},
   macro_car:             {asOf:'2021-03', asOfLabel:'2021年3月末', source:'自動車検査登録情報協会「自家用乗用車の世帯当たり普及台数」', confidence:'observed', note:'2026-09-20に一次ソースを特定。沖縄県は1.285台/世帯で全国26位（全国平均1.037台、1位は福井県1.715台）。従前の「1.383台・全国1位」表記は誤りだったため訂正済み。'},
@@ -943,7 +943,7 @@ const DATA_PROVENANCE = {
   macro_military_ratio:  {asOf:'2020-03', asOfLabel:'令和2年3月末', source:'沖縄県知事公室「沖縄の基地問題」／防衛省資料', confidence:'observed', note:'2026-09-20に一次ソースを特定。令和2年3月末現在、沖縄県内31施設・184,836千m2で構成比70.3%。'},
   road:                  {asOf:null, asOfLabel:null, source:'全国道路・街路交通情勢調査（道路交通センサス／国土交通省）', confidence:'estimated', note:'調査主体名は画面内バッジで既に明示。調査年度がデータに未記載（令和3年度調査ベースの可能性が高いが未確認）。次期データは令和7年度(2025年9〜11月実施)調査の公表待ち。'},
   gdp_muni:              {asOf:'2023-04', asOfLabel:'令和5年度(2023年度)', source:'沖縄県「市町村民経済計算」令和5年度（2026-07-24公表）', confidence:'observed', note:'市町村別人口合計(1,470,217人)を沖縄県人口統計と突合し年度を特定。'},
-  social_pop:            {asOf:'2026-09', asOfLabel:'2026年9月', source:'沖縄県統計課「推計人口」2026年9月1日現在', confidence:'observed'},
+  social_pop:            {asOf:'2026-10', asOfLabel:'2026年10月', source:'沖縄県統計課「推計人口」2026年10月1日現在（令和7年国勢調査確報値基準）', confidence:'observed'},
   social_poverty:        {asOf:'2014-01', asOfLabel:'平成26年(2014年)データ', source:'沖縄県「平成27年度沖縄県子どもの貧困実態調査」系', confidence:'estimated', note:'貧困率29.9%の出典は特定済み（macro_poverty参照）。同セクション内の他の格差指標は個別の出典が未記載。'},
   behavioral:            {asOf:'2021-03', asOfLabel:'2021年3月末（車両系）', source:'自動車検査登録情報協会 ほか', confidence:'estimated', note:'車両保有系は出典特定済み。移動・消費行動の一部指標は個別の出典が未記載。'},
   correlation:           {asOf:null, asOfLabel:null, source:null, confidence:'estimated', note:'koya独自の相関分析。組み合わせ元の統計値は各項目のバッジを参照。'},
@@ -2300,32 +2300,32 @@ function runDiagnosis(){
 
   // 行政区GDP表示
   const distGDPAll = [
-    {city:"那覇市",dist:"久茂地・泉崎",gdp_est:195000,pct:14.0,type:"商業核"},
-    {city:"那覇市",dist:"おもろまち",gdp_est:162000,pct:11.6,type:"商業核"},
-    {city:"那覇市",dist:"牧志・安里",gdp_est:140000,pct:10.0,type:"観光商業"},
-    {city:"那覇市",dist:"小禄",gdp_est:118000,pct:8.5,type:"商業核"},
-    {city:"浦添市",dist:"牧港",gdp_est:88000,pct:21.3,type:"商業核"},
-    {city:"浦添市",dist:"城間・屋富祖",gdp_est:72000,pct:17.4,type:"住宅商業"},
-    {city:"浦添市",dist:"経塚・伊祖",gdp_est:65000,pct:15.7,type:"商業核"},
-    {city:"北谷町",dist:"美浜",gdp_est:42000,pct:48.0,type:"観光商業"},
-    {city:"北谷町",dist:"北前・桑江",gdp_est:28000,pct:32.0,type:"基地商業"},
-    {city:"宜野湾市",dist:"大謝名",gdp_est:62000,pct:28.1,type:"商業核"},
-    {city:"宜野湾市",dist:"真栄原・大山",gdp_est:48000,pct:21.7,type:"住宅商業"},
-    {city:"沖縄市",dist:"コザ",gdp_est:62000,pct:18.4,type:"商業核"},
-    {city:"うるま市",dist:"具志川",gdp_est:78000,pct:28.8,type:"商業核"},
-    {city:"名護市",dist:"名護市街",gdp_est:42000,pct:33.9,type:"商業核"},
-    {city:"名護市",dist:"許田（ジャングリア）",gdp_est:22000,pct:17.8,type:"観光商業"},
-    {city:"豊見城市",dist:"豊崎",gdp_est:68000,pct:41.0,type:"観光商業"},
-    {city:"南風原町",dist:"兼城（北IC）",gdp_est:58000,pct:35.0,type:"商業核"},
-    {city:"北中城村",dist:"喜舎場（イオン）",gdp_est:32000,pct:73.0,type:"大型商業"},
-    {city:"嘉手納町",dist:"嘉手納正門",gdp_est:28000,pct:71.2,type:"基地商業"},
-    {city:"糸満市",dist:"糸満市街",gdp_est:32000,pct:33.2,type:"商業核"},
-    {city:"西原町",dist:"与那城（西原IC）",gdp_est:52000,pct:42.0,type:"教育商業"},
-    {city:"読谷村",dist:"楚辺・残波",gdp_est:32000,pct:33.2,type:"観光商業"},
-    {city:"恩納村",dist:"恩納（万座）",gdp_est:28000,pct:57.4,type:"リゾート"},
-    {city:"宮古島市",dist:"平良",gdp_est:68000,pct:38.1,type:"商業核"},
-    {city:"石垣市",dist:"石垣市街",gdp_est:62000,pct:37.2,type:"商業核"},
-    {city:"南城市",dist:"（南城市全体）",gdp_est:88375,pct:100,type:"住宅農業"},
+    {city:"那覇市",dist:"久茂地・泉崎",gdp_est:202667,pct:14.0,type:"商業核"},
+    {city:"那覇市",dist:"おもろまち",gdp_est:167924,pct:11.6,type:"商業核"},
+    {city:"那覇市",dist:"牧志・安里",gdp_est:144762,pct:10.0,type:"観光商業"},
+    {city:"那覇市",dist:"小禄",gdp_est:123048,pct:8.5,type:"商業核"},
+    {city:"浦添市",dist:"牧港",gdp_est:89955,pct:21.3,type:"商業核"},
+    {city:"浦添市",dist:"城間・屋富祖",gdp_est:73484,pct:17.4,type:"住宅商業"},
+    {city:"浦添市",dist:"経塚・伊祖",gdp_est:66305,pct:15.7,type:"商業核"},
+    {city:"北谷町",dist:"美浜",gdp_est:46125,pct:48.0,type:"観光商業"},
+    {city:"北谷町",dist:"北前・桑江",gdp_est:30750,pct:32.0,type:"基地商業"},
+    {city:"宜野湾市",dist:"大謝名",gdp_est:63067,pct:28.1,type:"商業核"},
+    {city:"宜野湾市",dist:"真栄原・大山",gdp_est:48703,pct:21.7,type:"住宅商業"},
+    {city:"沖縄市",dist:"コザ",gdp_est:62843,pct:18.4,type:"商業核"},
+    {city:"うるま市",dist:"具志川",gdp_est:84883,pct:28.8,type:"商業核"},
+    {city:"名護市",dist:"名護市街",gdp_est:70142,pct:33.9,type:"商業核"},
+    {city:"名護市",dist:"許田（ジャングリア）",gdp_est:36830,pct:17.8,type:"観光商業"},
+    {city:"豊見城市",dist:"豊崎",gdp_est:72477,pct:41.0,type:"観光商業"},
+    {city:"南風原町",dist:"兼城（北IC）",gdp_est:35817,pct:35.0,type:"商業核"},
+    {city:"北中城村",dist:"喜舎場（イオン）",gdp_est:32567,pct:73.0,type:"大型商業"},
+    {city:"嘉手納町",dist:"嘉手納正門",gdp_est:29603,pct:71.2,type:"基地商業"},
+    {city:"糸満市",dist:"糸満市街",gdp_est:48633,pct:33.2,type:"商業核"},
+    {city:"西原町",dist:"与那城（西原IC）",gdp_est:53433,pct:42.0,type:"教育商業"},
+    {city:"読谷村",dist:"楚辺・残波",gdp_est:21087,pct:33.2,type:"観光商業"},
+    {city:"恩納村",dist:"恩納（万座）",gdp_est:34842,pct:57.4,type:"リゾート"},
+    {city:"宮古島市",dist:"平良",gdp_est:73500,pct:38.1,type:"商業核"},
+    {city:"石垣市",dist:"石垣市街",gdp_est:65083,pct:37.2,type:"商業核"},
+    {city:"南城市",dist:"（南城市全体）",gdp_est:92065,pct:100,type:"住宅農業"},
   ];
   const muniDists = distGDPAll.filter(d=>d.city===muni);
   const inputDist = district.trim();
@@ -2519,7 +2519,7 @@ const OKINAWA_STRUCTURAL_ISSUES = [
   {issue:"米軍基地の存在に起因する諸課題",detail:"全国面積の0.6%の沖縄に米軍専用施設の約70.3%が集中。基地跡地利用・振興と表裏一体の経済構造",data_link:"MACRO_KPI: 全国米軍施設沖縄集中率70.3%"},
   {issue:"離島県としての地理的不利性",detail:"本土との輸送コスト増（食品等の物価高要因）。振興開発が全国一律の制度設計になじみにくい",data_link:"物価: 消費者物価指数は上昇基調が継続"},
   {issue:"産業基盤（特に製造業）の脆弱性",detail:"製造業の就業者割合は全国比-10.6pt。観光・サービス業への依存度が高く、所得水準の低さに直結",data_link:"就業構造: 製造業5.0%（全国15.6%）"},
-  {issue:"本土との所得・所得格差の是正",detail:"1人当たり県民所得224.9万円は全国最下位、正規職員でも300万円未満43.7%（全国24.7%）",data_link:"就業構造: 正規職員300万円未満43.7%"},
+  {issue:"本土との所得・所得格差の是正",detail:"1人当たり県民所得231.5万円（R5年度・国=100で65.7）は全国最下位水準、正規職員でも300万円未満43.7%（全国24.7%）",data_link:"就業構造: 正規職員300万円未満43.7%"},
 ];
 
 // === 市町村別財政指標（総務省 R4決算確報 / 単位:百万円） ===
@@ -2593,7 +2593,7 @@ const OGB_ECONOMIC_TRENDS = {
     {cat:"雇用",item:"有効求人倍率(季調値)",val:"1.08倍",yoy:"±0pt",note:"15期連続で1倍超"},
     {cat:"雇用",item:"正社員有効求人倍率",val:"0.76倍",yoy:"+0.03pt",note:"原数値"},
     {cat:"雇用",item:"労働力人口",val:"80.9万人",yoy:"+1.7万人",note:"就業者数78.4万人(+1.4万人)"},
-    {cat:"物価",item:"消費者物価指数(総合)",val:"114.6",yoy:"+1.3%",note:"18期連続上昇も伸び率縮小"},
+    {cat:"物価",item:"消費者物価指数(総合)",val:"114.6",yoy:"+1.3%",note:"18期連続上昇も伸び率縮小（令和2年=100。県統計課は2026年から令和7年=100に基準改定、最新R8.9那覇102.7・+2.5%）"},
     {cat:"物価",item:"レギュラーガソリン小売価格",val:"162.0円/L",yoy:"△24.0円",note:"4期連続で前年同期を下回る"},
     {cat:"金融",item:"実質預金残高(県内6行庫)",val:"6兆5,505億円",yoy:"+4.2%",note:"日本銀行"},
     {cat:"金融",item:"貸出金残高(県内6行庫)",val:"4兆6,701億円",yoy:"+2.2%",note:"日本銀行"},
@@ -2629,31 +2629,31 @@ const NEW_INDICATORS_2026 = [
 
 // ─── 行政区推計GDP ──────────────────────────────────
 const GDP_DIST = [
-  {city:"那覇市",dist:"久茂地・泉崎（商業核）",gdp_est:195000,pct:14.0,type:"商業行政"},
-  {city:"那覇市",dist:"おもろまち（新都心）",gdp_est:165000,pct:11.8,type:"新興商業"},
-  {city:"那覇市",dist:"牧志・安里（国際通り）",gdp_est:142000,pct:10.2,type:"観光商業"},
-  {city:"那覇市",dist:"小禄・真和志",gdp_est:98000,pct:7.0,type:"住宅商業"},
-  {city:"浦添市",dist:"牧港（国道58号）",gdp_est:95000,pct:23.0,type:"商業核"},
-  {city:"浦添市",dist:"城間・屋富祖",gdp_est:82000,pct:19.8,type:"商業住宅"},
-  {city:"浦添市",dist:"経塚・伊祖",gdp_est:68000,pct:16.4,type:"住宅商業"},
-  {city:"北谷町",dist:"美浜（アメリカンビレッジ）",gdp_est:42000,pct:48.0,type:"観光核"},
-  {city:"北谷町",dist:"北前・桑江",gdp_est:28000,pct:32.0,type:"商業"},
-  {city:"宜野湾市",dist:"大謝名（国道58号）",gdp_est:62000,pct:27.2,type:"商業核"},
-  {city:"宜野湾市",dist:"真栄原・宜野湾（BP）",gdp_est:55000,pct:24.1,type:"大型商業"},
-  {city:"北中城村",dist:"喜舎場（IC・イオン）",gdp_est:32000,pct:73.0,type:"大型商業"},
-  {city:"嘉手納町",dist:"嘉手納（正門）",gdp_est:28000,pct:71.2,type:"基地商業"},
-  {city:"豊見城市",dist:"豊崎（免税店）",gdp_est:58000,pct:35.0,type:"観光商業"},
-  {city:"南風原町",dist:"兼城（北IC）",gdp_est:42000,pct:43.5,type:"商業物流"},
-  {city:"名護市",dist:"名護市街（東江）",gdp_est:68000,pct:30.8,type:"商業行政"},
-  {city:"恩納村",dist:"恩納（万座）",gdp_est:32000,pct:65.6,type:"リゾート"},
-  {city:"西原町",dist:"与那城（西原IC）",gdp_est:52000,pct:42.0,type:"教育商業"},
+  {city:"那覇市",dist:"久茂地・泉崎（商業核）",gdp_est:202667,pct:14.0,type:"商業行政"},
+  {city:"那覇市",dist:"おもろまち（新都心）",gdp_est:170819,pct:11.8,type:"新興商業"},
+  {city:"那覇市",dist:"牧志・安里（国際通り）",gdp_est:147657,pct:10.2,type:"観光商業"},
+  {city:"那覇市",dist:"小禄・真和志",gdp_est:101333,pct:7.0,type:"住宅商業"},
+  {city:"浦添市",dist:"牧港（国道58号）",gdp_est:97134,pct:23.0,type:"商業核"},
+  {city:"浦添市",dist:"城間・屋富祖",gdp_est:83620,pct:19.8,type:"商業住宅"},
+  {city:"浦添市",dist:"経塚・伊祖",gdp_est:69261,pct:16.4,type:"住宅商業"},
+  {city:"北谷町",dist:"美浜（アメリカンビレッジ）",gdp_est:46125,pct:48.0,type:"観光核"},
+  {city:"北谷町",dist:"北前・桑江",gdp_est:30750,pct:32.0,type:"商業"},
+  {city:"宜野湾市",dist:"大謝名（国道58号）",gdp_est:61047,pct:27.2,type:"商業核"},
+  {city:"宜野湾市",dist:"真栄原・宜野湾（BP）",gdp_est:54089,pct:24.1,type:"大型商業"},
+  {city:"北中城村",dist:"喜舎場（IC・イオン）",gdp_est:32567,pct:73.0,type:"大型商業"},
+  {city:"嘉手納町",dist:"嘉手納（正門）",gdp_est:29603,pct:71.2,type:"基地商業"},
+  {city:"豊見城市",dist:"豊崎（免税店）",gdp_est:61870,pct:35.0,type:"観光商業"},
+  {city:"南風原町",dist:"兼城（北IC）",gdp_est:44515,pct:43.5,type:"商業物流"},
+  {city:"名護市",dist:"名護市街（東江）",gdp_est:63728,pct:30.8,type:"商業行政"},
+  {city:"恩納村",dist:"恩納（万座）",gdp_est:39820,pct:65.6,type:"リゾート"},
+  {city:"西原町",dist:"与那城（西原IC）",gdp_est:53433,pct:42.0,type:"教育商業"},
 ];
 
 // ─── 社会学指標 ─────────────────────────────────────
 const SOC_POP = [
-  {item:"推計人口（R8年9月）",val:"1,466,024人",source:"県統計課（2026年9月1日現在・対前月+80人）"},
+  {item:"推計人口（R8年10月）",val:"1,466,144人",source:"県統計課（2026年10月1日現在・対前月+26人／10月分からR7国勢調査確報値基準）"},
   {item:"国勢調査人口（R7年10月1日・確定）",val:"1,466,548人",source:"令和7年国勢調査 人口等基本集計（2026-10-02県公表）／前回比-932人(-0.1%)・戦後初の減少"},
-  {item:"世帯数（R8年9月）",val:"668,972世帯",source:"県統計課（2026年9月1日現在・対前月+176世帯／R2国勢調査基準の推計。R7国勢調査確定値は655,345世帯）"},
+  {item:"世帯数（R8年10月）",val:"664,853世帯",source:"県統計課（2026年10月1日現在・対前月+556世帯）。※10月分から推計の基礎をR2国勢調査→R7国勢調査確報値に切替えたため、9月以前（R2基準・668,972世帯）とは接続しない。減少に見えるのは基準変更による段差で、実際の世帯減ではない"},
   {item:"平均世帯人員",val:"2.20人",source:"国勢調査"},
   {item:"単身世帯率",val:"38.2%",source:"国勢調査"},
   {item:"三世代世帯率",val:"8.5%（全国3.7%）",source:"国勢調査"},
@@ -2668,8 +2668,8 @@ const SOC_POVERTY = [
   {item:"世帯相対的貧困率",val:"16.9%",rank:"全国最下位",note:"低所得世帯の集中"},
   {item:"子どもの困窮層割合",val:"21.8%",rank:"全国最悪",note:"独自統計基準"},
   {item:"非正規雇用率",val:"全国1位",rank:"全国1位",note:"製造業基盤欠如"},
-  {item:"完全失業率（R8.7）",val:"3.0%",rank:"全国最高水準",note:"全国2.5%（R8.8労働力調査）を上回る高水準が継続。前年同月比-0.1pt（沖縄県企画部「令和8年7月の雇用状況」、2026年9月1日公表）"},
-  {item:"1人当たり県民所得",val:"224.9万円",rank:"全国最下位",note:"全国平均の約70%"},
+  {item:"完全失業率（R8.9）",val:"2.4%",rank:"全国上位水準",note:"原数値。R8.7 3.0%→R8.8 2.9%→R8.9 2.4%と低下（全国はR8.9季調2.4%）。月次原数値の振れに注意（沖縄県統計課「労働力調査」）"},
+  {item:"1人当たり県民所得（R5年度）",val:"231.5万円",rank:"全国最下位水準",note:"国民所得=100で65.7（沖縄県「令和5年度県民経済計算」）"},
   {item:"実質賃金（最新）",val:"13ヶ月連続マイナス（△3.7%）",rank:"全国最悪水準",note:"物価高が購買力侵食"},
   {item:"低所得世帯インフラ費比率",val:"46.2%（全国22.3%）",rank:"全国最高",note:"可処分所得が極小"},
   {item:"生活保護受給率",val:"1.85%（全国平均1.62%）",rank:"高め",note:"那覇市区部が高い"},
@@ -2751,15 +2751,16 @@ const PSY_BIZ = [
 // 数字だけ更新して as_of を更新し忘れることを防ぐため、値と時刻を同じオブジェクトで持つ。
 // confidence: 'observed'=出典・対象年とも確認済み / 'estimated'=koya独自推計または出典のみ判明 / 'unknown'=未確認（証拠区分D）
 const MACRO_KPI = [
-  {v:"1,466,024人",l:"沖縄県総人口（R8.9）",col:"var(--gold)",as_of:"2026-09",source:"沖縄県統計課「推計人口」2026年9月1日現在（対前月+80人）／R7国勢調査確定1,466,548人（戦後初の減少-0.1%）",confidence:"observed"},
-  {v:"4兆4,615億",l:"県内総生産GDP",col:"var(--blue)",as_of:"2022-04",source:"沖縄県「県民経済計算」（令和4年度）",confidence:"observed"},
-  {v:"224.9万円",l:"1人当たり所得（全国最下位）",col:"var(--red)",as_of:"2022-04",source:"沖縄県「県民経済計算」（令和4年度）",confidence:"observed"},
+  {v:"1,466,144人",l:"沖縄県総人口（R8.10）",col:"var(--gold)",as_of:"2026-10",source:"沖縄県統計課「推計人口」2026年10月1日現在（対前月+26人・10月分からR7国勢調査確報値基準に切替）／R7国勢調査確定1,466,548人（戦後初の減少-0.1%）",confidence:"observed"},
+  {v:"4兆6,430億",l:"県内総生産GDP",col:"var(--blue)",as_of:"2023-04",source:"沖縄県「令和5年度県民経済計算」（名目・前年度比+4.7%／実質4兆4,246億円・+2.5%、2026-05-15公表）",confidence:"observed"},
+  {v:"231.5万円",l:"1人当たり所得（全国最下位水準）",col:"var(--red)",as_of:"2023-04",source:"沖縄県「令和5年度県民経済計算」／同「市町村民経済計算」（県計2,315千円、国=100で65.7）",confidence:"observed"},
   {v:"1,093.6万人",l:"年間観光客（R7最多）",col:"var(--green)",as_of:"2025-04",source:"沖縄県文化観光スポーツ部「入域観光客統計」（令和7年度・年間実績）",confidence:"observed"},
   {v:"29.9%",l:"子ども貧困率（全国平均の約2倍）",col:"var(--red)",as_of:"2014-01",source:"沖縄県「平成27年度沖縄県子どもの貧困実態調査」（推計、2016年1月公表／推計対象は平成26年データ）",confidence:"observed"},
   {v:"1.285台/世帯",l:"乗用車保有（全国26位・全国平均1.037台）",col:"var(--purple)",as_of:"2021-03",source:"自動車検査登録情報協会「自家用乗用車の世帯当たり普及台数」（2021年3月末／1位は福井県1.715台）",confidence:"observed"},
-  {v:"3.0%",l:"完全失業率（R8.7・前年同月比-0.1pt）",col:"var(--teal)",as_of:"2026-07",source:"沖縄県「令和8年7月の雇用状況」（沖縄県企画部、2026年9月1日公表）／原統計は総務省「労働力調査」",confidence:"observed"},
+  {v:"2.4%",l:"完全失業率（R8.9・原数値）",col:"var(--teal)",as_of:"2026-09",source:"沖縄県統計課「労働力調査」令和8年9月（原数値）。参考: R8.8は2.9%・R8.7は3.0%／全国2.4%（季節調整値・R8.9）。月次原数値は振れが大きい点に注意",confidence:"observed"},
   {v:"47,000人",l:"在沖SOFAマーケット",col:"var(--orange)",as_of:null,source:"在沖米軍基地関連公表資料からの概算（koya推計）",confidence:"estimated"},
   {v:"349万円",l:"労働生産性（全国508万円）",col:"var(--red)",as_of:null,source:"内閣府沖縄総合事務局経済産業部「沖縄における生産性向上に向けた労働生産性分析調査」（対象年度は本データに未記載）",confidence:"estimated"},
+  {v:"102.7",l:"消費者物価・那覇市（R8.9・前年比+2.5%）",col:"var(--orange)",as_of:"2026-09",source:"沖縄県統計課「那覇市及び沖縄県の消費者物価指数の動向」令和8年9月分（2026-10-30公表、令和7年=100）。沖縄県103.2（+3.0%）・全国102.2（+2.1%）",confidence:"observed"},
   {v:"70.3%",l:"全国米軍専用施設の沖縄集中率",col:"var(--purple)",as_of:"2020-03",source:"沖縄県知事公室「沖縄の基地問題」／防衛省資料（令和2年3月末現在・31施設・184,836千m2）",confidence:"observed"},
 ];
 
@@ -5228,7 +5229,8 @@ function toggleCheck(stateKey, id, biz, area) {
     function kpi(key,it,fmt,strip,pk){
       if(!it||!fmt.test(it.value)) return;
       const k=MACRO_KPI.find(x=>x.l.indexOf(key)===0); if(!k) return;
-      const oldL=k.l, nv=strip?it.value.replace(/円$/,''):it.value, e=era(it.asOf), d=rl(it.asOf);
+      const e0=era(it.asOf); if(e0&&k.as_of&&e0.iso<k.as_of) return; // シート側が埋め込み値より古い場合は上書きしない
+      const oldL=k.l, nv=strip?it.value.replace(/円$/,''):it.value, e=e0, d=rl(it.asOf);
       k.v=nv; if(e) k.as_of=e.iso;
       if(d&&/（R[\d.]+/.test(k.l)){ const nr='R'+d.y+'.'+d.m; if(!k.l.includes('（'+nr)) k.l=k.l.replace(/・前年同月比[^）]*/,''); k.l=k.l.replace(/（R[\d.]+/,'（'+nr); }
       if(mEl){ const c=[...mEl.children].find(x=>{const l=x.querySelector('.l');return l&&l.textContent===oldL;});
@@ -5243,6 +5245,7 @@ function toggleCheck(stateKey, id, biz, area) {
     function soc(key,it,fmt){
       if(!it||!fmt.test(it.value)) return;
       const r=SOC_POP.find(x=>x.item.indexOf(key)===0); if(!r) return;
+      const d0=rl(it.asOf), m0=/R(\d+)年(\d+)月/.exec(r.item); if(d0&&m0&&(+d0.y*12+ +d0.m)<(+m0[1]*12+ +m0[2])) return; // 古いシート値で上書きしない
       swap(sEl,r.val,it.value); r.val=it.value;
       const d=rl(it.asOf); if(d){ const o=r.item; r.item=key+'（R'+d.y+'年'+d.m+'月）'; swap(sEl,o,r.item); }
     }
