@@ -935,12 +935,12 @@ const DATA_PROVENANCE = {
   macro_gdp:             {asOf:'2023-04', asOfLabel:'令和5年度(2023年度)', source:'沖縄県「令和5年度県民経済計算」（2026-05-15公表）', confidence:'observed'},
   macro_income:          {asOf:'2023-04', asOfLabel:'令和5年度(2023年度)', source:'沖縄県「令和5年度県民経済計算」（1人当たり県民所得）', confidence:'observed'},
   macro_tourist:         {asOf:'2025-04', asOfLabel:'令和7年度（年間実績・最多）', source:'沖縄県文化観光スポーツ部「入域観光客統計」', confidence:'observed'},
-  macro_unemployment:    {asOf:'2026-09', asOfLabel:'2026年9月', source:'沖縄県統計課「労働力調査」完全失業率（原数値）令和8年9月／原統計は総務省「労働力調査」', confidence:'observed', note:'2026-09-20 に沖縄県公式サイトで一次ソースを確認済み。3.0%（前年同月比-0.1pt）。労働力人口778千人・就業者755千人・完全失業者23千人。有効求人倍率1.07倍。'},
+  macro_unemployment:    {asOf:'2026-09', asOfLabel:'2026年9月', source:'沖縄県統計課「労働力調査」完全失業率（原数値）令和8年9月／原統計は総務省「労働力調査」', confidence:'observed', note:'2026-11-09再確認。令和8年9月の完全失業率（原数値）2.4%（沖縄県統計課主要指標）。推移: R8.7 3.0%→R8.8 2.9%→R8.9 2.4%。月次原数値は標本が小さく振れが大きいため、四半期・年平均と併せて解釈すること。有効求人倍率（季調）の最新確認値はR8.8の1.06倍（R8.9分は未確認）。'},
   macro_sofa:            {asOf:null, asOfLabel:null, source:'在沖米軍基地関連公表資料からの概算（koya推計）', confidence:'estimated', note:'公式の在沖軍属人口統計は非公表のため、複数の公開資料から概算した数値。'},
   macro_poverty:         {asOf:'2014-01', asOfLabel:'平成26年(2014年)データ', source:'沖縄県「平成27年度沖縄県子どもの貧困実態調査」（2016年1月公表の推計値）', confidence:'observed', note:'2026-09-20に一次ソースを特定。推計対象は平成26年データで12年前の数値。県は令和3年度・令和5年度にも調査を実施しており、より新しい値が存在する可能性がある（未照合）。'},
   macro_car:             {asOf:'2021-03', asOfLabel:'2021年3月末', source:'自動車検査登録情報協会「自家用乗用車の世帯当たり普及台数」', confidence:'observed', note:'2026-09-20に一次ソースを特定。沖縄県は1.285台/世帯で全国26位（全国平均1.037台、1位は福井県1.715台）。従前の「1.383台・全国1位」表記は誤りだったため訂正済み。'},
   macro_productivity:    {asOf:null, asOfLabel:null, source:'内閣府沖縄総合事務局経済産業部「沖縄における生産性向上に向けた労働生産性分析調査」', confidence:'estimated', note:'2026-09-20に出典機関を特定。ただし349万円/508万円がどの年度版の数値かはデータに未記載。'},
-  macro_military_ratio:  {asOf:'2020-03', asOfLabel:'令和2年3月末', source:'沖縄県知事公室「沖縄の基地問題」／防衛省資料', confidence:'observed', note:'2026-09-20に一次ソースを特定。令和2年3月末現在、沖縄県内31施設・184,836千m2で構成比70.3%。'},
+  macro_military_ratio:  {asOf:'2025-01', asOfLabel:'令和7年1月1日現在', source:'沖縄県知事公室基地対策課「沖縄の米軍及び自衛隊基地（統計資料集）」令和8年4月（原資料: 沖縄防衛局）', confidence:'observed', note:'2026-11-09に一次ソースで更新。令和7年1月1日現在、沖縄の米軍専用施設31施設・184,542千㎡／全国262,624千㎡＝70.27%（全国76施設の40.8%）。'},
   road:                  {asOf:null, asOfLabel:null, source:'全国道路・街路交通情勢調査（道路交通センサス／国土交通省）', confidence:'estimated', note:'調査主体名は画面内バッジで既に明示。調査年度がデータに未記載（令和3年度調査ベースの可能性が高いが未確認）。次期データは令和7年度(2025年9〜11月実施)調査の公表待ち。'},
   gdp_muni:              {asOf:'2023-04', asOfLabel:'令和5年度(2023年度)', source:'沖縄県「市町村民経済計算」令和5年度（2026-07-24公表）', confidence:'observed', note:'市町村別人口合計(1,470,217人)を沖縄県人口統計と突合し年度を特定。'},
   social_pop:            {asOf:'2026-10', asOfLabel:'2026年10月', source:'沖縄県統計課「推計人口」2026年10月1日現在（令和7年国勢調査確報値基準）', confidence:'observed'},
@@ -948,7 +948,7 @@ const DATA_PROVENANCE = {
   behavioral:            {asOf:'2021-03', asOfLabel:'2021年3月末（車両系）', source:'自動車検査登録情報協会 ほか', confidence:'estimated', note:'車両保有系は出典特定済み。移動・消費行動の一部指標は個別の出典が未記載。'},
   correlation:           {asOf:null, asOfLabel:null, source:null, confidence:'estimated', note:'koya独自の相関分析。組み合わせ元の統計値は各項目のバッジを参照。'},
   employment:            {asOf:'2022-04', asOfLabel:'令和4年度(2022年度)', source:'沖縄県「就業構造基本調査」', confidence:'observed'},
-  ogb_trends:            {asOf:'2026-01', asOfLabel:'令和8年1-3月期（最新速報）', source:'内閣府沖縄総合事務局・沖縄県 経済動向', confidence:'observed'},
+  ogb_trends:            {asOf:'2026-01', asOfLabel:'令和8年1-3月期（項目値）', source:'内閣府沖縄総合事務局・沖縄県 経済動向', confidence:'observed'},
   fiscal:                {asOf:'2024-04', asOfLabel:'令和6年度決算（市町村決算カード）', source:'総務省「令和6年度市町村決算カード」', confidence:'observed'},
   structural_issues:     {asOf:null, asOfLabel:null, source:'沖縄県「沖縄21世紀ビジョン基本計画」', confidence:'estimated', note:'策定年度がデータに未記載。'},
   sofa_highlight:        {asOf:null, asOfLabel:null, source:null, confidence:'unknown', note:'SOFA年間消費額(~¥520億)・PCS年間更新率(33%)・口コミ増幅率(×3.2)はコード内に出典記載なし。SOFA人口47,000人のみ macro_sofa として概算根拠を別途保持。'},
@@ -2522,7 +2522,7 @@ const OKINAWA_STRUCTURAL_ISSUES = [
   {issue:"本土との所得・所得格差の是正",detail:"1人当たり県民所得231.5万円（R5年度・国=100で65.7）は全国最下位水準、正規職員でも300万円未満43.7%（全国24.7%）",data_link:"就業構造: 正規職員300万円未満43.7%"},
 ];
 
-// === 市町村別財政指標（総務省 R4決算確報 / 単位:百万円） ===
+// === 市町村別財政指標（総務省「令和6年度市町村決算カード」/ 単位:百万円。市町村税41合計2,042億円＝シートB8 2,041.9億円と整合） ===
 const MUNI_FISCAL = [
   {name:"那覇市",findex:0.84,ratio:88.2,rev:185570,exp:178538,tax:56197,grant:11342,subsidy:54471,bonds:11527},
   {name:"宜野湾市",findex:0.67,ratio:95.7,rev:60546,exp:59201,tax:14673,grant:6374,subsidy:19775,bonds:2430},
@@ -2568,12 +2568,12 @@ const MUNI_FISCAL = [
 ];
 
 
-// === 沖縄総合事務局・沖縄県経済動向（R8年1-3月期最新速報 / 2026-06-30公表） ===
+// === 沖縄総合事務局・沖縄県経済動向（各項目はR8年1-3月期の集計 / 2026-06-30公表）。最新の総括判断は財務部「管内経済情勢報告」R8年10月（2026-11-05公表）で「緩やかに拡大しつつある」（4期連続据え置き） ===
 const OGB_ECONOMIC_TRENDS = {
   judgment: {
     text: "景気は、拡大基調にある。",
     streak: "4期連続",
-    outlook: "観光需要増加を背景に拡大基調継続を期待。中東情勢による物価高・サプライチェーン停滞に留意",
+    outlook: "観光需要増加を背景に拡大基調継続を期待。中東情勢による物価高・サプライチェーン停滞に留意（最新: 沖縄総合事務局 管内経済情勢報告 R8年10月判断「緩やかに拡大しつつある」4期連続据え置き、2026-11-05公表）",
     bsi: 5.5,
     bsi_next: 10.1,
     bsi_source: "沖縄総合事務局財務部 法人企業景気予測調査"
@@ -2589,8 +2589,8 @@ const OGB_ECONOMIC_TRENDS = {
     {cat:"建設",item:"住宅着工戸数",val:"2,742戸",yoy:"+20.2%",note:"3期連続で前年同期を上回る"},
     {cat:"建設",item:"公共工事請負額",val:"2,278億円",yoy:"+20.6%",note:"保証件数も前年同期を上回る"},
     {cat:"建設",item:"非居住建築物工事費",val:"700億円",yoy:"+237.5%",note:"2期連続で前年同期を上回る"},
-    {cat:"雇用",item:"完全失業率(原数値)",val:"3.1%",yoy:"+0.3pt",note:"R8年5月単月は3.2%"},
-    {cat:"雇用",item:"有効求人倍率(季調値)",val:"1.08倍",yoy:"±0pt",note:"15期連続で1倍超"},
+    {cat:"雇用",item:"完全失業率(原数値)",val:"3.1%",yoy:"+0.3pt",note:"1-3月期の値（参考: 期間外のR8年5月単月3.2%、最新R8.9は2.4%）"},
+    {cat:"雇用",item:"有効求人倍率(季調値)",val:"1.08倍",yoy:"±0pt",note:"1-3月期。15期連続で1倍超（最新の月次確認値はR8.8の1.06倍）"},
     {cat:"雇用",item:"正社員有効求人倍率",val:"0.76倍",yoy:"+0.03pt",note:"原数値"},
     {cat:"雇用",item:"労働力人口",val:"80.9万人",yoy:"+1.7万人",note:"就業者数78.4万人(+1.4万人)"},
     {cat:"物価",item:"消費者物価指数(総合)",val:"114.6",yoy:"+1.3%",note:"18期連続上昇も伸び率縮小（令和2年=100。県統計課は2026年から令和7年=100に基準改定、最新R8.9那覇102.7・+2.5%）"},
@@ -2761,7 +2761,7 @@ const MACRO_KPI = [
   {v:"47,000人",l:"在沖SOFAマーケット",col:"var(--orange)",as_of:null,source:"在沖米軍基地関連公表資料からの概算（koya推計）",confidence:"estimated"},
   {v:"349万円",l:"労働生産性（全国508万円）",col:"var(--red)",as_of:null,source:"内閣府沖縄総合事務局経済産業部「沖縄における生産性向上に向けた労働生産性分析調査」（対象年度は本データに未記載）",confidence:"estimated"},
   {v:"102.7",l:"消費者物価・那覇市（R8.9・前年比+2.5%）",col:"var(--orange)",as_of:"2026-09",source:"沖縄県統計課「那覇市及び沖縄県の消費者物価指数の動向」令和8年9月分（2026-10-30公表、令和7年=100）。沖縄県103.2（+3.0%）・全国102.2（+2.1%）",confidence:"observed"},
-  {v:"70.3%",l:"全国米軍専用施設の沖縄集中率",col:"var(--purple)",as_of:"2020-03",source:"沖縄県知事公室「沖縄の基地問題」／防衛省資料（令和2年3月末現在・31施設・184,836千m2）",confidence:"observed"},
+  {v:"70.3%",l:"全国米軍専用施設の沖縄集中率",col:"var(--purple)",as_of:"2025-01",source:"沖縄県知事公室基地対策課「沖縄の米軍及び自衛隊基地（統計資料集）」令和8年4月（令和7年1月1日現在・31施設・184,542千㎡／全国262,624千㎡）",confidence:"observed"},
 ];
 
 
@@ -5723,7 +5723,7 @@ function toggleCheck(stateKey, id, biz, area) {
 
   <!-- 沖縄総合事務局・県経済動向 -->
   <div class="stat-section" style="margin-top:18px">
-    <div class="stat-section-title">🏢 沖縄総合事務局・県経済動向（最新四半期速報 R8年1-3月期） <span class="prov-slot" data-prov="ogb_trends" data-compact="1"></span></div>
+    <div class="stat-section-title">🏢 沖縄総合事務局・県経済動向（項目値はR8年1-3月期／最新総括判断はR8年10月） <span class="prov-slot" data-prov="ogb_trends" data-compact="1"></span></div>
     <div class="sec-sub" style="margin-bottom:10px">内閣府沖縄総合事務局財務部「法人企業景気予測調査」・沖縄県企画部「沖縄県経済動向」より。景気判断は<span style="color:var(--gold);font-weight:700">「景気は、拡大基調にある」（4期連続）</span>。</div>
     <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px" id="ogb-judgment-kpi"></div>
     <div style="max-height:340px;overflow-y:auto">
