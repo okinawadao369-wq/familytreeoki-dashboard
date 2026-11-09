@@ -1701,6 +1701,31 @@ function toggleTarget(el){
   }
 }
 
+
+// === 不動産取引価格（国土交通省 不動産情報ライブラリAPI、2025Q3〜2026Q2、2026-11-09取得・koya集計。APIキーは含まない） ===
+// [取引件数, 土地件数, 土地㎡単価中央値(円), マンション件数, マンション中央値(円), 土地建物件数, 土地建物中央値(円)]／3件未満の中央値はnull
+const REINFOLIB_PRICE = {"那覇市": [422, 55, 180000.0, 257, 35000000.0, 110, 48500000.0], "沖縄市": [165, 56, 84000.0, 33, 29000000.0, 71, 39000000.0], "うるま市": [142, 50, 45000.0, 1, null, 72, 33500000.0], "浦添市": [130, 23, 170000.0, 62, 36500000.0, 45, 50000000.0], "宮古島市": [119, 43, 36000.0, 0, null, 41, 38000000.0], "糸満市": [109, 30, 86500.0, 8, 35500000.0, 50, 34000000.0], "宜野湾市": [108, 42, 130000.0, 28, 34000000.0, 38, 43500000.0], "石垣市": [107, 33, 28000.0, 7, 42000000.0, 39, 35000000.0], "名護市": [106, 52, 29500.0, 5, 18000000.0, 26, 40000000.0], "南城市": [81, 33, 19000.0, 1, null, 29, 28000000.0], "豊見城市": [79, 9, 100000.0, 32, 39500000.0, 38, 42000000.0], "読谷村": [72, 34, 55000.0, 4, 49500000.0, 24, 44500000.0], "本部町": [61, 37, 17000.0, 1, null, 14, 20000000.0], "北谷町": [47, 10, 210000.0, 25, 40000000.0, 12, 67500000.0], "西原町": [42, 17, 79000.0, 2, null, 22, 43500000.0], "北中城村": [40, 25, 9500.0, 6, 44500000.0, 8, 38000000.0], "南風原町": [33, 9, 95000.0, 4, 41000000.0, 16, 31500000.0], "八重瀬町": [30, 8, 45000.0, 3, 30000000.0, 12, 32500000.0], "今帰仁村": [24, 9, 21000.0, 0, null, 6, 27500000.0], "中城村": [23, 8, 89500.0, 3, 40000000.0, 5, 31000000.0], "与那原町": [23, 5, 110000.0, 2, null, 15, 43000000.0], "恩納村": [20, 10, 66000.0, 1, null, 6, 40500000.0], "国頭村": [19, 9, 12000.0, 0, null, 5, 15000000.0], "竹富町": [17, 7, 7500.0, 0, null, 1, null], "宜野座村": [13, 5, 15000.0, 0, null, 4, 39000000.0], "金武町": [13, 2, null, 1, null, 7, 31000000.0], "伊江村": [12, 12, 2200.0, 0, null, 0, null], "久米島町": [10, 1, null, 0, null, 4, 5500000.0], "粟国村": [7, 3, 1800.0, 0, null, 0, null], "伊是名村": [5, 3, 3900.0, 0, null, 1, null], "大宜味村": [4, 1, null, 0, null, 0, null], "東村": [3, 1, null, 0, null, 0, null], "嘉手納町": [3, 2, null, 0, null, 1, null], "北大東村": [3, 0, null, 0, null, 0, null], "座間味村": [2, 1, null, 0, null, 1, null], "与那国町": [2, 0, null, 0, null, 1, null], "渡嘉敷村": [1, 1, null, 0, null, 0, null], "多良間村": [1, 0, null, 0, null, 1, null], "南大東村": [1, 0, null, 0, null, 1, null]};
+const REINFOLIB_META = {period:"2025年Q3〜2026年Q2", fetched:"2026-11-09", prefLand:50000, prefMansion:36000000, prefHouse:40000000};
+function renderLandCost(muni){
+  const el=document.getElementById("diag-landcost"); if(!el) return;
+  const r=REINFOLIB_PRICE[muni];
+  if(!r){ el.innerHTML=`<h3 style="font-size:12px;margin-bottom:6px">🏠 土地・物件コストの目安</h3><div style="font-size:10px;color:var(--text2)">${muni}は直近4四半期に取引データがありません（国土交通省 不動産情報ライブラリ）。</div>`; return; }
+  const [n,nl,land,nm,man,nh,house]=r, M=REINFOLIB_META;
+  const yen=v=>v==null?"—":Math.round(v).toLocaleString();
+  const man10k=v=>v==null?"—":Math.round(v/10000).toLocaleString();
+  let lvl="—",col="var(--text2)",ratio=null;
+  if(land!=null){ ratio=land/M.prefLand; if(ratio>=1.5){lvl="高コスト";col="var(--red)";} else if(ratio>=0.6){lvl="中程度";col="var(--gold)";} else {lvl="低コスト";col="var(--green)";} }
+  let gap="";
+  try{ const s=calcAxisScore(muni); if(land!=null&&nl>=8&&s){ if(s>=68&&ratio<0.6) gap="AXIS評価に比べて土地は割安。ただし郊外地・斜面地などが取引に多く含まれている可能性があり、商業地の相場とは限らない。"; else if(s<62&&ratio>=1.5) gap="AXIS評価に比べて土地は高い。那覇南部の通勤圏などで住宅需要が価格を押し上げている可能性。コストを踏まえた収支確認を推奨。"; } }catch(e){}
+  el.innerHTML=`<h3 style="font-size:12px;margin-bottom:6px">🏠 土地・物件コストの目安（${muni}）</h3>
+   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-bottom:6px">
+    <div class="kpi"><div class="val" style="color:${col}">${yen(land)}<span style="font-size:10px">円/㎡</span></div><div class="lbl">土地 ㎡単価中央値（${nl}件）／県比 ${ratio==null?"—":ratio.toFixed(1)+"倍"}・${lvl}</div></div>
+    <div class="kpi"><div class="val">${man10k(man)}<span style="font-size:10px">万円</span></div><div class="lbl">中古マンション中央値（${nm}件）</div></div>
+    <div class="kpi"><div class="val">${man10k(house)}<span style="font-size:10px">万円</span></div><div class="lbl">土地建物中央値（${nh}件）</div></div>
+   </div>
+   ${gap?`<div style="font-size:10px;margin-bottom:4px">💡 ${gap}</div>`:""}
+   <div style="font-size:9px;color:var(--text2)">出典: 国土交通省「不動産情報ライブラリ」取引価格（${M.period}、取引${n}件、${M.fetched}取得・koya集計）。県全体の土地中央値は${yen(M.prefLand)}円/㎡。3件未満は表示しない。中央値は取引の構成で大きく動くため相場の目安として扱う。<b>この情報はGO判定・スコアの計算には使っていない（参考表示）</b>。</div>`;
+}
 function runDiagnosis(){
   const muni = document.getElementById('d-muni').value;
   const district = document.getElementById('d-district').value.trim();
@@ -2070,6 +2095,7 @@ function runDiagnosis(){
   pwarn.className = 'paradox-warn ' + pwarnClass;
   pwarn.innerHTML = pwarnContent;
 
+  try{ renderLandCost(muni); }catch(e){ console.warn('landcost',e); }
   document.getElementById('diag-result').className='result-visible';
   document.getElementById('diag-result').scrollIntoView({behavior:'smooth',block:'start'});
 
@@ -5468,6 +5494,7 @@ function toggleCheck(stateKey, id, biz, area) {
 
     <!-- VERDICT BASIS: 判定根拠TOP3 -->
     <div class="panel" id="verdict-basis" style="margin-bottom:14px;border:1px solid #d9770655"></div>
+    <div class="panel" id="diag-landcost" style="margin-bottom:14px;border:1px solid #3b82f655"></div>
 
     <!-- COMMUNITY PARADOX PANEL -->
     <div class="paradox-panel" id="paradox-panel">
