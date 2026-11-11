@@ -100,8 +100,11 @@ for y, q in quarters:
     raw[(y, q)] = rows
     agg = aggregate(rows)
     tag = f"{y}Q{q}"
-    json.dump({"quarter": tag, "fetched": today.isoformat(), "source": "国土交通省 不動産情報ライブラリ XIT001（沖縄県）", "munis": agg},
-              open(f"{OUT_DIR}/{tag}.json", "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
+    if prev_counts.get(tag) == len(rows) and os.path.exists(f"{OUT_DIR}/{tag}.json"):
+        pass  # 件数が前回と同じ四半期は書き換えない（無駄なコミットを防ぐ）
+    else:
+      json.dump({"quarter": tag, "fetched": today.isoformat(), "source": "国土交通省 不動産情報ライブラリ XIT001（沖縄県）", "munis": agg},
+                open(f"{OUT_DIR}/{tag}.json", "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
     P = agg["_県計"]
     series.append({"quarter": tag, "n": P["n"], "land": P["land"], "mansion": P["mansion"], "house": P["house"]})
 
@@ -124,6 +127,9 @@ summary = {
     "latest4": aggregate([r for k in latest4 for r in raw[k]]),
     "prev_year_window": aggregate([r for k in prev4 for r in raw[k]]) if prev4 else None,
 }
-json.dump(summary, open("reinfolib-okinawa.json", "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
+if not summary["new_or_changed_quarters"] and prev_summary:
+    print("no new or changed quarters; summary kept as is")
+else:
+    json.dump(summary, open("reinfolib-okinawa.json", "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
 print("quarters:", [s["quarter"] + ":" + str(s["n"]) for s in series])
 print("changed:", summary["new_or_changed_quarters"])
