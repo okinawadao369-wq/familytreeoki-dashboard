@@ -1801,6 +1801,39 @@ function renderSiteGuide(muni,biz,verdict,finalScore){
    </div>
    <div style="font-size:9px;color:var(--text2);margin-top:6px">出典: 国土交通省「不動産情報ライブラリ」取引価格（2025年Q3〜2026年Q2）を用途地域・取引後の利用目的・前面道路で koya が集計。3件未満の市町村値は県全体の値で代替。用途制限は建築基準法の一般的な目安で、個別の可否は各市町村の都市計画課・建築指導課で確認すること。農地の区分（青地・白地）は農林水産省「eMAFF農地ナビ」と各市町村の農業委員会で確認すること。<b>この情報はGO判定・スコアには使っていない（参考表示）</b>。</div>`;
 }
+// === 地形・災害リスクの目安（国土地理院 住所検索API・標高API。キー不要・出典明示で利用。判定・スコアには使わない） ===
+async function renderTerrain(muni,district){
+  const el=document.getElementById('diag-terrain'); if(!el) return;
+  const q='沖縄県'+muni+(district||'');
+  el.innerHTML=`<h3 style="font-size:12px;margin-bottom:6px">📍 地形・災害リスクの目安（${muni}${district?' / '+district:''}）</h3><div style="font-size:10px;color:var(--text2)">国土地理院のデータを取得中…</div>`;
+  const ctl=new AbortController(); const timer=setTimeout(()=>ctl.abort(),8000);
+  try{
+    const g=await fetch('https://msearch.gsi.go.jp/address-search/AddressSearch?q='+encodeURIComponent(q),{signal:ctl.signal}).then(r=>r.json());
+    if(!g||!g.length) throw new Error('住所が見つかりません');
+    const hit=g.find(x=>(x.properties&&x.properties.title||'').indexOf(muni)>=0)||g[0];
+    const [lon,lat]=hit.geometry.coordinates, title=hit.properties.title;
+    const e=await fetch(`https://cyberjapandata2.gsi.go.jp/general/dem/scripts/getelevation.php?lon=${lon}&lat=${lat}&outtype=JSON`,{signal:ctl.signal}).then(r=>r.json());
+    clearTimeout(timer);
+    const h=(e&&typeof e.elevation==='number')?e.elevation:null;
+    let lvl='—',col='var(--text2)',msg='標高を取得できませんでした（海上・データ欠損の可能性）。地図で確認してください。';
+    if(h!=null){
+      if(h<5){lvl='低地';col='var(--red)';msg='標高5m未満の低地。津波・高潮・大雨時の浸水に注意。沖縄県の津波浸水想定と重ねるハザードマップで、浸水深と避難先を必ず確認（1階店舗・駐車場・設備の配置に影響）。';}
+      else if(h<10){lvl='注意';col='var(--gold)';msg='標高5〜10m。大規模津波の浸水想定区域に入る場合があるため、ハザードマップで確認。';}
+      else {lvl='比較的高い';col='var(--green)';msg='標高10m以上。津波リスクは相対的に低いが、土砂災害・内水氾濫の区域はハザードマップで確認。';}
+    }
+    const ll=`${lat.toFixed(5)},${lon.toFixed(5)}`;
+    el.innerHTML=`<h3 style="font-size:12px;margin-bottom:6px">📍 地形・災害リスクの目安（${title}）</h3>
+     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-bottom:6px">
+      <div class="kpi"><div class="val" style="color:${col}">${h==null?'—':h.toFixed(1)}<span style="font-size:10px">m</span></div><div class="lbl">標高（${e&&e.hsrc?e.hsrc:'—'}）／${lvl}</div></div>
+     </div>
+     <div style="font-size:10px;margin-bottom:6px">💡 ${msg}</div>
+     <div style="font-size:10px;margin-bottom:6px;line-height:1.8">🔗 <a href="https://disaportal.gsi.go.jp/maps/?ll=${ll}&z=16&base=pale&vs=c1j0l0u0t0h0z0" target="_blank" rel="noopener" style="color:var(--accent)">重ねるハザードマップ（浸水・津波・土砂）</a>　｜　<a href="https://maps.gsi.go.jp/#16/${lat.toFixed(6)}/${lon.toFixed(6)}/&base=std&ls=std" target="_blank" rel="noopener" style="color:var(--accent)">地理院地図（地形・標高）</a>　｜　<a href="https://maps.gsi.go.jp/#16/${lat.toFixed(6)}/${lon.toFixed(6)}/&base=std&ls=std%7Cseamlessphoto" target="_blank" rel="noopener" style="color:var(--accent)">空中写真（現況）</a>　｜　<a href="https://mapps.gsi.go.jp/" target="_blank" rel="noopener" style="color:var(--accent)">過去の空中写真（地図・空中写真閲覧サービス：埋立地・旧河川・基地跡地の履歴確認）</a></div>
+     <div style="font-size:9px;color:var(--text2)">出典: 国土地理院「住所検索API」「標高API」・地理院地図・重ねるハザードマップ。位置は${district?'入力した行政区名':'市町村'}から自動検索した代表点で、個別の敷地ではない。標高は浸水リスクの簡易な目安で、浸水深・区域は各ハザードマップと沖縄県の津波浸水想定で確認すること。<b>この情報はGO判定・スコアには使っていない（参考表示）</b>。</div>`;
+  }catch(err){
+    clearTimeout(timer);
+    el.innerHTML=`<h3 style="font-size:12px;margin-bottom:6px">📍 地形・災害リスクの目安</h3><div style="font-size:10px;color:var(--text2)">国土地理院のデータを取得できませんでした（${err.name==='AbortError'?'時間切れ':err.message}）。<a href="https://disaportal.gsi.go.jp/" target="_blank" rel="noopener" style="color:var(--accent)">重ねるハザードマップ</a>で直接確認してください。</div>`;
+  }
+}
 function runDiagnosis(){
   const muni = document.getElementById('d-muni').value;
   const district = document.getElementById('d-district').value.trim();
@@ -2172,6 +2205,7 @@ function runDiagnosis(){
 
   try{ renderLandCost(muni); }catch(e){ console.warn('landcost',e); }
   try{ renderSiteGuide(muni,biz,verdict,finalScore); }catch(e){ console.warn('siteguide',e); }
+  try{ renderTerrain(muni,district); }catch(e){ console.warn('terrain',e); }
   document.getElementById('diag-result').className='result-visible';
   document.getElementById('diag-result').scrollIntoView({behavior:'smooth',block:'start'});
 
@@ -5572,6 +5606,7 @@ function toggleCheck(stateKey, id, biz, area) {
     <div class="panel" id="verdict-basis" style="margin-bottom:14px;border:1px solid #d9770655"></div>
     <div class="panel" id="diag-landcost" style="margin-bottom:14px;border:1px solid #3b82f655"></div>
     <div class="panel" id="diag-siteguide" style="margin-bottom:14px;border:1px solid #14b8a655"></div>
+    <div class="panel" id="diag-terrain" style="margin-bottom:14px;border:1px solid #f59e0b55"></div>
 
     <!-- COMMUNITY PARADOX PANEL -->
     <div class="paradox-panel" id="paradox-panel">
