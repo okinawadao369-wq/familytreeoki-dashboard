@@ -1768,6 +1768,14 @@ function renderSiteGuide(muni,biz,verdict,finalScore){
   const bizN=Z?Z.biz[0]+Z.biz[1]:0;
   chk.push(bizN>=3?['ok',`店舗・事務所目的の土地・建物取引が${bizN}件あり、事業用の需要が確認できる`]:['info',`店舗・事務所目的の取引は${bizN}件。事業用物件の流通が少ない可能性（賃貸物件の在庫も確認）`]);
   if(g.road>=12) chk.push(['warn','大型業態のため前面道路12m以上・幹線沿いの敷地が条件（県全体で12m以上の取引は約7%）']);
+  // 農地チェック（eMAFF農地ナビ）: 白地・調整区域・区域外を候補にする業種、または市町村の土地取引の多くがそれらの区分の場合
+  try{ const outN=Z?Z.out[0]:0, allN=Z?(Z.com[0]+Z.res[0]+Z.ind[0]+Z.out[0]):0, outShare=allN?outN/allN:0;
+    const farmBiz=['tourism','food_souvenir','retail_daily','fitness','childcare'].includes(biz)||g.zones.includes('out');
+    if(farmBiz||outShare>=0.5){
+      chk.push(['warn',`候補地が農地の場合は <a href="https://map.maff.go.jp/FarmInformation/Index" target="_blank" rel="noopener" style="color:var(--accent)">eMAFF農地ナビ</a> で「農振法区分」を確認。<b>青地（農用地区域内）は原則として転用不可</b>（店舗・倉庫・駐車場も不可）、白地・農振地域外でも農業委員会の農地転用許可が必要${outShare>=0.5?`（${muni}は土地取引の${Math.round(outShare*100)}%が調整区域・白地・区域外）`:''}`]);
+      if(['tourism','food_souvenir'].includes(biz)) chk.push(['info','観光農園・加工施設なら、農地ナビの「所有者の意向（貸したい・売りたい）」「農地中間管理機構が募集中」「遊休農地（不耕作緑）」の絞り込みで候補地を探せる。農地のまま使う場合は農地法3条の許可を確認']);
+    }
+  }catch(e){}
   // 総合メモ（判定は変えない）
   const main=pick(g.zones[0]);
   let memo=`${verdict}（スコア${finalScore}）。この業種は「${g.type}」で、第一候補の用途地域は${ZONE_LABEL[g.zones[0]]}（土地㎡単価の目安 ${yen(main.v)}円・${main.src}）。`;
@@ -1791,7 +1799,7 @@ function renderSiteGuide(muni,biz,verdict,finalScore){
      ${chk.map(c=>`<div style="font-size:10px;margin-bottom:5px">${icon[c[0]]} ${c[1]}</div>`).join('')}
     </div>
    </div>
-   <div style="font-size:9px;color:var(--text2);margin-top:6px">出典: 国土交通省「不動産情報ライブラリ」取引価格（2025年Q3〜2026年Q2）を用途地域・取引後の利用目的・前面道路で koya が集計。3件未満の市町村値は県全体の値で代替。用途制限は建築基準法の一般的な目安で、個別の可否は各市町村の都市計画課・建築指導課で確認すること。<b>この情報はGO判定・スコアには使っていない（参考表示）</b>。</div>`;
+   <div style="font-size:9px;color:var(--text2);margin-top:6px">出典: 国土交通省「不動産情報ライブラリ」取引価格（2025年Q3〜2026年Q2）を用途地域・取引後の利用目的・前面道路で koya が集計。3件未満の市町村値は県全体の値で代替。用途制限は建築基準法の一般的な目安で、個別の可否は各市町村の都市計画課・建築指導課で確認すること。農地の区分（青地・白地）は農林水産省「eMAFF農地ナビ」と各市町村の農業委員会で確認すること。<b>この情報はGO判定・スコアには使っていない（参考表示）</b>。</div>`;
 }
 function runDiagnosis(){
   const muni = document.getElementById('d-muni').value;
