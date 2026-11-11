@@ -1717,6 +1717,7 @@ function renderLandCost(muni){
   if(land!=null){ ratio=land/M.prefLand; if(ratio>=1.5){lvl="高コスト";col="var(--red)";} else if(ratio>=0.6){lvl="中程度";col="var(--gold)";} else {lvl="低コスト";col="var(--green)";} }
   let gap="";
   try{ const s=calcAxisScore(muni); if(land!=null&&nl>=8&&s){ if(s>=68&&ratio<0.6) gap="AXIS評価に比べて土地は割安。ただし郊外地・斜面地などが取引に多く含まれている可能性があり、商業地の相場とは限らない。"; else if(s<62&&ratio>=1.5) gap="AXIS評価に比べて土地は高い。那覇南部の通勤圏などで住宅需要が価格を押し上げている可能性。コストを踏まえた収支確認を推奨。"; } }catch(e){}
+  try{ const Zr=(typeof REINFOLIB_ZONE!=='undefined')&&REINFOLIB_ZONE[muni]; if(Zr&&land!=null){ const parts=[]; ['com','res','out'].forEach(k=>{ if(Zr[k][1]!=null) parts.push((k==='com'?'商業系':k==='res'?'住居系':'白地・調整区域等')+' '+Math.round(Zr[k][1]).toLocaleString()+'円（'+Zr[k][0]+'件）'); }); if(parts.length) gap=(gap?gap+' ':'')+'用途地域別の㎡単価: '+parts.join('／')+'。'; } }catch(e){}
   el.innerHTML=`<h3 style="font-size:12px;margin-bottom:6px">🏠 土地・物件コストの目安（${muni}）</h3>
    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-bottom:6px">
     <div class="kpi"><div class="val" style="color:${col}">${yen(land)}<span style="font-size:10px">円/㎡</span></div><div class="lbl">土地 ㎡単価中央値（${nl}件）／県比 ${ratio==null?"—":ratio.toFixed(1)+"倍"}・${lvl}</div></div>
@@ -1725,6 +1726,72 @@ function renderLandCost(muni){
    </div>
    ${gap?`<div style="font-size:10px;margin-bottom:4px">💡 ${gap}</div>`:""}
    <div style="font-size:9px;color:var(--text2)">出典: 国土交通省「不動産情報ライブラリ」取引価格（${M.period}、取引${n}件、${M.fetched}取得・koya集計）。県全体の土地中央値は${yen(M.prefLand)}円/㎡。3件未満は表示しない。中央値は取引の構成で大きく動くため相場の目安として扱う。<b>この情報はGO判定・スコアの計算には使っていない（参考表示）</b>。</div>`;
+}
+// === 業種別 立地条件ガイド（国交省 不動産情報ライブラリ 2025Q3〜2026Q2 の用途地域別・事業用取引を koya 集計。判定・スコアには使わない） ===
+// com=商業系(商業・近隣商業) res=住居系 ind=工業系 out=調整区域・白地・区域外 → [件数, 土地㎡単価中央値(円) ※3件未満null]
+// biz=[店舗目的, 事務所目的, 倉庫・工場目的の取引件数] road=[前面道路6m以上の件数, 幅員判明件数]
+const REINFOLIB_ZONE = {"那覇市":{"com":[9,310000],"res":[45,160000],"ind":[0,null],"out":[1,null],"biz":[2,9,4],"road":[68,143]},"宜野湾市":{"com":[4,150000],"res":[36,130000],"ind":[0,null],"out":[2,null],"biz":[0,4,2],"road":[36,72]},"石垣市":{"com":[2,null],"res":[11,87000],"ind":[1,null],"out":[19,17000],"biz":[3,3,0],"road":[36,69]},"浦添市":{"com":[0,null],"res":[22,175000],"ind":[0,null],"out":[1,null],"biz":[3,1,0],"road":[34,62]},"名護市":{"com":[0,null],"res":[13,58000],"ind":[1,null],"out":[38,22000],"biz":[3,4,1],"road":[41,66]},"糸満市":{"com":[0,null],"res":[18,104000],"ind":[1,null],"out":[11,31000],"biz":[2,1,1],"road":[41,74]},"沖縄市":{"com":[6,180000],"res":[28,88000],"ind":[3,93000],"out":[19,74000],"biz":[7,3,2],"road":[71,116]},"豊見城市":{"com":[0,null],"res":[4,96000],"ind":[0,null],"out":[5,110000],"biz":[0,0,0],"road":[24,42]},"うるま市":{"com":[4,68500],"res":[22,61000],"ind":[0,null],"out":[24,35000],"biz":[2,0,1],"road":[57,116]},"宮古島市":{"com":[3,190000],"res":[7,65000],"ind":[1,null],"out":[32,24500],"biz":[3,1,2],"road":[52,80]},"南城市":{"com":[0,null],"res":[1,null],"ind":[0,null],"out":[32,18500],"biz":[1,1,0],"road":[21,57]},"国頭村":{"com":[0,null],"res":[0,null],"ind":[0,null],"out":[9,12000],"biz":[2,0,0],"road":[2,12]},"大宜味村":{"com":[0,null],"res":[0,null],"ind":[0,null],"out":[1,null],"biz":[0,0,0],"road":[1,1]},"東村":{"com":[0,null],"res":[0,null],"ind":[0,null],"out":[1,null],"biz":[0,0,0],"road":[1,1]},"今帰仁村":{"com":[0,null],"res":[0,null],"ind":[0,null],"out":[9,21000],"biz":[1,1,1],"road":[6,12]},"本部町":{"com":[0,null],"res":[0,null],"ind":[0,null],"out":[37,17000],"biz":[2,0,1],"road":[9,36]},"恩納村":{"com":[0,null],"res":[0,null],"ind":[0,null],"out":[10,66000],"biz":[0,0,1],"road":[12,14]},"宜野座村":{"com":[0,null],"res":[0,null],"ind":[0,null],"out":[5,15000],"biz":[0,1,1],"road":[3,7]},"金武町":{"com":[0,null],"res":[0,null],"ind":[0,null],"out":[2,null],"biz":[0,0,0],"road":[5,9]},"伊江村":{"com":[0,null],"res":[0,null],"ind":[0,null],"out":[12,2200],"biz":[0,0,0],"road":[5,12]},"読谷村":{"com":[0,null],"res":[20,73000],"ind":[0,null],"out":[14,43000],"biz":[1,1,0],"road":[25,50]},"嘉手納町":{"com":[0,null],"res":[2,null],"ind":[0,null],"out":[0,null],"biz":[0,0,0],"road":[1,3]},"北谷町":{"com":[0,null],"res":[10,210000],"ind":[0,null],"out":[0,null],"biz":[1,2,0],"road":[19,22]},"北中城村":{"com":[0,null],"res":[4,123500],"ind":[0,null],"out":[21,9400],"biz":[1,0,0],"road":[4,11]},"中城村":{"com":[0,null],"res":[3,160000],"ind":[0,null],"out":[5,68000],"biz":[0,0,2],"road":[5,11]},"西原町":{"com":[0,null],"res":[10,120000],"ind":[1,null],"out":[6,36000],"biz":[0,2,1],"road":[14,32]},"与那原町":{"com":[0,null],"res":[5,110000],"ind":[0,null],"out":[0,null],"biz":[1,0,0],"road":[6,18]},"南風原町":{"com":[0,null],"res":[6,125000],"ind":[0,null],"out":[3,76000],"biz":[2,0,0],"road":[10,23]},"渡嘉敷村":{"com":[0,null],"res":[0,null],"ind":[0,null],"out":[1,null],"biz":[1,0,0],"road":[0,1]},"座間味村":{"com":[0,null],"res":[0,null],"ind":[0,null],"out":[1,null],"biz":[0,0,0],"road":[0,2]},"粟国村":{"com":[0,null],"res":[0,null],"ind":[0,null],"out":[3,1800],"biz":[0,0,0],"road":[0,1]},"北大東村":{"com":[0,null],"res":[0,null],"ind":[0,null],"out":[0,null],"biz":[0,0,0],"road":[0,0]},"伊是名村":{"com":[0,null],"res":[0,null],"ind":[0,null],"out":[3,3900],"biz":[0,0,0],"road":[1,3]},"久米島町":{"com":[0,null],"res":[0,null],"ind":[0,null],"out":[1,null],"biz":[0,1,0],"road":[3,5]},"八重瀬町":{"com":[1,null],"res":[1,null],"ind":[0,null],"out":[6,43000],"biz":[0,1,1],"road":[9,19]},"竹富町":{"com":[0,null],"res":[0,null],"ind":[0,null],"out":[7,7500],"biz":[0,0,0],"road":[4,7]},"与那国町":{"com":[0,null],"res":[0,null],"ind":[0,null],"out":[0,null],"biz":[1,0,0],"road":[1,1]},"多良間村":{"com":[0,null],"res":[0,null],"ind":[0,null],"out":[0,null],"biz":[0,0,0],"road":[0,1]},"南大東村":{"com":[0,null],"res":[0,null],"ind":[0,null],"out":[0,null],"biz":[0,0,0],"road":[0,1]},"_県計":{"com":[29,180000],"res":[268,110000],"ind":[8,71000],"out":[341,22000],"biz":[39,36,21],"road":[627,1212]}};
+const ZONE_LABEL = {com:'商業系（商業・近隣商業）',res:'住居系',ind:'工業系',out:'調整区域・白地・区域外'};
+// 業種 → 立地タイプ。zones=推奨順、road=前面道路の目安、park=駐車場、law=用途制限の目安（建築基準法別表第二。詳細は各市町村の都市計画課で要確認）
+const BIZ_SITE_GUIDE = {
+  maternity:        {type:'予約制サービス', zones:['res','com'], road:6,  park:'必須（妊婦・子連れの車来店。最低2〜3台＋乗降スペース）', law:'第1種住居・第2種住居・準住居・近隣商業が現実的。第1種低層住居専用は店舗に強い制限、第1種中高層は店舗等500㎡以下・2階以下が目安', why:'目的来店型のため視認性より「駐車・アクセス・落ち着いた環境」を優先。商業地の割増コストを払う必要は小さい'},
+  childcare:        {type:'子育て支援施設', zones:['res'], road:6, park:'送迎用の停車・駐車スペース必須', law:'保育所等は多くの用途地域で立地可能だが、認可・開設基準（面積・園庭・避難）を別途確認', why:'利用者の生活圏（住宅地）に近いことが最重要。送迎動線の安全性を確認'},
+  restaurant_casual:{type:'集客型（日常飲食）', zones:['com','res'], road:6, park:'郊外は10台以上が目安。那覇中心部は徒歩・コインパーキング前提', law:'住居系なら第2種住居・準住居（幹線沿い）が出店しやすい。第1種中高層以下は規模・業態に制限', why:'通行量と駐車場の両立が鍵。商業系は割高なので、幹線沿いの住居系も比較する'},
+  restaurant_premium:{type:'目的来店（高単価飲食）', zones:['com','res'], road:6, park:'郊外立地なら必須。観光客向けは送迎・代行の想定も', law:'酒類提供・深夜営業は用途地域と風営法の確認が必要', why:'立地の格（景観・眺望・中心性）が価格に直結。商業系の高コストを客単価で回収できるか試算'},
+  salon:            {type:'予約制サービス', zones:['res','com'], road:6, park:'2〜4台程度', law:'第1種中高層は店舗等500㎡以下・2階以下が目安。第1種低層住居専用は住宅兼用の小規模のみ', why:'リピート型で駐車のしやすさが継続率に効く。住居系の幹線近くがコスト効率が高い'},
+  medical:          {type:'医療（診療所）', zones:['res','com'], road:6, park:'必須（高齢者・子連れ）', law:'診療所はほぼ全ての用途地域で立地可能（病院は低層住専等で不可）。医療法の手続きを別途確認', why:'生活圏への近さと駐車場。商業系にこだわる必要は小さい'},
+  retail_daily:     {type:'集客型（日用品・大型）', zones:['res','com','ind'], road:12, park:'大規模駐車場必須', law:'売場3,000㎡超は第2種住居以上、10,000㎡超は商業・近隣商業・準工業が目安', why:'幹線道路沿いの大きな敷地が条件。準工業・幹線沿い住居系の単価を比較'},
+  retail_fashion:   {type:'集客型（物販・観光動線）', zones:['com'], road:6, park:'中心部は不要の場合あり。郊外は必須', law:'商業系が基本。住居系は規模制限に注意', why:'人通り（観光動線・商業集積）が売上を決める。商業系の単価を前提に家賃負担率を試算'},
+  english:          {type:'教室・スクール', zones:['res','com'], road:6, park:'送迎の一時停車スペース', law:'学習塾等は用途地域ごとに規模制限があるため要確認', why:'生徒の生活圏（住宅地・学校近く）と送迎のしやすさ'},
+  fitness:          {type:'集客型（運動施設）', zones:['res','com','ind'], road:6, park:'必須（10台以上が目安）', law:'運動施設は第1種住居以上・規模制限あり。準工業も候補', why:'広い床面積が必要なため、単価の低い幹線沿い住居系・準工業がコスト面で有利'},
+  tourism:          {type:'観光体験', zones:['out','res','com'], road:4, park:'レンタカー前提で必須', law:'市街化調整区域・白地は開発許可や景観・自然公園の規制を確認', why:'観光資源への近さが最優先。土地は安いが規制と季節変動に注意'},
+  realestate:       {type:'事務所（来店型）', zones:['com','res'], road:6, park:'2〜3台', law:'事務所は第1種中高層では制限あり、第1種住居以上で規模に応じ可', why:'来店客の分かりやすさと駐車。事務所目的の取引が多い市町村は需要の目安になる'},
+  b2b:              {type:'事務所（法人向け）', zones:['com','res'], road:6, park:'来客分', law:'事務所は第1種住居以上で規模に応じ可', why:'取引先へのアクセス（那覇・浦添・宜野湾の業務集積）が重要'},
+  food_souvenir:    {type:'製造・物流＋販売', zones:['ind','out','res'], road:6, park:'搬入車両＋来店客分', law:'食品製造は「作業場」扱いで住居系は面積・原動機の制限が厳しい。準工業・工業・白地が候補（保健所の営業許可も確認）', why:'製造部分は工業系・白地の安い土地、販売は観光動線という分離も検討'}
+};
+function renderSiteGuide(muni,biz,verdict,finalScore){
+  const el=document.getElementById('diag-siteguide'); if(!el) return;
+  const g=BIZ_SITE_GUIDE[biz]; if(!g){ el.innerHTML=''; return; }
+  const Z=REINFOLIB_ZONE[muni], P=REINFOLIB_ZONE['_県計'];
+  const yen=v=>v==null?'—':Math.round(v).toLocaleString();
+  const pick=(k)=>{ const z=Z&&Z[k]; if(z&&z[1]!=null) return {v:z[1],n:z[0],src:muni}; return {v:P[k][1],n:P[k][0],src:'県全体'}; };
+  // 推奨用途地域ごとのコスト（100㎡≒30坪の土地取得目安）
+  const rows=g.zones.map(k=>{const p=pick(k);return `<tr><td>${ZONE_LABEL[k]}</td><td class="stat-num">${yen(p.v)}</td><td class="stat-num">${p.v==null?'—':Math.round(p.v*100/10000).toLocaleString()+'万円'}</td><td style="font-size:9px;color:var(--text2)">${p.src}（${p.n}件）</td></tr>`;}).join('');
+  // チェックリスト
+  const chk=[];
+  const landN=Z?(Z.com[0]+Z.res[0]+Z.ind[0]+Z.out[0]):0;
+  chk.push(landN>=8?['ok',`土地の取引データ ${landN}件（判断材料として一定の厚み）`]:['warn',`土地の取引データが${landN}件と少ない。県全体の値で補っているため、現地の不動産業者・路線価で裏取りを`]);
+  if(Z&&Z.com[1]!=null&&Z.res[1]!=null){ const r=Z.com[1]/Z.res[1];
+    chk.push(r>=1.6?['warn',`商業系は住居系の約${r.toFixed(1)}倍。${g.zones[0]==='com'?'商業系が前提の業種のため、家賃負担率（売上の10%以内が目安）を必ず試算':'予約制・目的来店型なら住居系も有力な候補'}`]:['ok',`商業系と住居系の差が約${r.toFixed(1)}倍と小さく、商業系の立地を取りやすい市町村`]); }
+  else chk.push(['info','この市町村は商業系の土地取引が3件未満で、商業地の割増率は不明（県全体では住居系の約1.6倍）']);
+  if(Z&&Z.road[1]>=5){ const s=Z.road[0]/Z.road[1]; chk.push(s>=0.5?['ok',`取引の${Math.round(s*100)}%が前面道路6m以上。車でのアクセスを確保しやすい`]:s>=0.4?['info',`前面道路6m以上は取引の${Math.round(s*100)}%。物件ごとに接道（幅員・駐車のしやすさ）を確認`]:['warn',`前面道路6m以上は取引の${Math.round(s*100)}%のみ。狭い道路の物件が多く、駐車・搬入・視認性を現地確認`]); }
+  const bizN=Z?Z.biz[0]+Z.biz[1]:0;
+  chk.push(bizN>=3?['ok',`店舗・事務所目的の土地・建物取引が${bizN}件あり、事業用の需要が確認できる`]:['info',`店舗・事務所目的の取引は${bizN}件。事業用物件の流通が少ない可能性（賃貸物件の在庫も確認）`]);
+  if(g.road>=12) chk.push(['warn','大型業態のため前面道路12m以上・幹線沿いの敷地が条件（県全体で12m以上の取引は約7%）']);
+  // 総合メモ（判定は変えない）
+  const main=pick(g.zones[0]);
+  let memo=`${verdict}（スコア${finalScore}）。この業種は「${g.type}」で、第一候補の用途地域は${ZONE_LABEL[g.zones[0]]}（土地㎡単価の目安 ${yen(main.v)}円・${main.src}）。`;
+  const zr=(main.src===muni&&P[g.zones[0]][1])?main.v/P[g.zones[0]][1]:null;
+  if(finalScore<55) memo+='市場適合が低いため、コストが安くても代替エリアとの比較を優先。';
+  else if(zr==null) memo+='この市町村の同区分の取引が少なく県全体の値で代替しているため、現地の賃料・売買相場の確認が必要。';
+  else if(zr>=1.4) memo+=`同じ用途地域の県水準の${zr.toFixed(1)}倍と高い。市場適合は取れているので、賃料・初期費用を織り込んだ収支で最終判断を。`;
+  else if(zr<=0.7) memo+=`同じ用途地域の県水準の${zr.toFixed(1)}倍と割安で、初期投資を抑えやすい。`;
+  else memo+=`同じ用途地域の県水準とほぼ同等（${zr.toFixed(1)}倍）。`;
+  const icon={ok:'✅',warn:'⚠️',info:'ℹ️'};
+  el.innerHTML=`<h3 style="font-size:12px;margin-bottom:6px">🧭 業種別 立地条件ガイド（${muni}×${g.type}）</h3>
+   <div style="font-size:10px;margin-bottom:8px;padding:8px;border-radius:6px;background:#3b82f611">📝 <b>立地・コスト込みの総合メモ:</b> ${memo}</div>
+   <div class="hub-grid">
+    <div>
+     <div style="font-size:10px;font-weight:700;color:var(--text2);margin-bottom:4px">推奨する用途地域と土地コスト（優先順）</div>
+     <table class="stat-table"><thead><tr><th>用途地域</th><th>㎡単価中央値(円)</th><th>100㎡(約30坪)の目安</th><th>根拠</th></tr></thead><tbody>${rows}</tbody></table>
+     <div style="font-size:9px;margin-top:6px;line-height:1.6"><b>前面道路:</b> ${g.road}m以上が目安 ／ <b>駐車場:</b> ${g.park}<br><b>用途制限の目安:</b> ${g.law}<br><b>考え方:</b> ${g.why}</div>
+    </div>
+    <div>
+     <div style="font-size:10px;font-weight:700;color:var(--text2);margin-bottom:4px">立地チェックリスト（${muni}）</div>
+     ${chk.map(c=>`<div style="font-size:10px;margin-bottom:5px">${icon[c[0]]} ${c[1]}</div>`).join('')}
+    </div>
+   </div>
+   <div style="font-size:9px;color:var(--text2);margin-top:6px">出典: 国土交通省「不動産情報ライブラリ」取引価格（2025年Q3〜2026年Q2）を用途地域・取引後の利用目的・前面道路で koya が集計。3件未満の市町村値は県全体の値で代替。用途制限は建築基準法の一般的な目安で、個別の可否は各市町村の都市計画課・建築指導課で確認すること。<b>この情報はGO判定・スコアには使っていない（参考表示）</b>。</div>`;
 }
 function runDiagnosis(){
   const muni = document.getElementById('d-muni').value;
@@ -2096,6 +2163,7 @@ function runDiagnosis(){
   pwarn.innerHTML = pwarnContent;
 
   try{ renderLandCost(muni); }catch(e){ console.warn('landcost',e); }
+  try{ renderSiteGuide(muni,biz,verdict,finalScore); }catch(e){ console.warn('siteguide',e); }
   document.getElementById('diag-result').className='result-visible';
   document.getElementById('diag-result').scrollIntoView({behavior:'smooth',block:'start'});
 
@@ -5495,6 +5563,7 @@ function toggleCheck(stateKey, id, biz, area) {
     <!-- VERDICT BASIS: 判定根拠TOP3 -->
     <div class="panel" id="verdict-basis" style="margin-bottom:14px;border:1px solid #d9770655"></div>
     <div class="panel" id="diag-landcost" style="margin-bottom:14px;border:1px solid #3b82f655"></div>
+    <div class="panel" id="diag-siteguide" style="margin-bottom:14px;border:1px solid #14b8a655"></div>
 
     <!-- COMMUNITY PARADOX PANEL -->
     <div class="paradox-panel" id="paradox-panel">
