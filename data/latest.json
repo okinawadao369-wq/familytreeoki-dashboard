@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-11-11T10:41:59.514+09:00",
+  "fetched_at": "2026-11-12T11:40:46.515+09:00",
   "fred_ok_count": 9,
   "fred_total": 9,
   "gdelt_ok_count": 0,
@@ -1139,7 +1139,7 @@
       "status": "failed",
       "value": null,
       "date": null,
-      "error": "HTTP 429",
+      "error": "fetch failed",
       "article_count": 0,
       "articles": []
     },
@@ -1147,7 +1147,7 @@
       "status": "failed",
       "value": null,
       "date": null,
-      "error": "HTTP 429",
+      "error": "fetch failed",
       "article_count": 0,
       "articles": []
     },
@@ -1155,7 +1155,7 @@
       "status": "failed",
       "value": null,
       "date": null,
-      "error": "HTTP 429",
+      "error": "fetch failed",
       "article_count": 0,
       "articles": []
     },
@@ -1163,7 +1163,7 @@
       "status": "failed",
       "value": null,
       "date": null,
-      "error": "HTTP 429",
+      "error": "fetch failed",
       "article_count": 0,
       "articles": []
     },
@@ -1171,7 +1171,7 @@
       "status": "failed",
       "value": null,
       "date": null,
-      "error": "HTTP 429",
+      "error": "fetch failed",
       "article_count": 0,
       "articles": []
     },
@@ -1179,7 +1179,7 @@
       "status": "failed",
       "value": null,
       "date": null,
-      "error": "HTTP 429",
+      "error": "fetch failed",
       "article_count": 0,
       "articles": []
     },
@@ -1187,7 +1187,7 @@
       "status": "failed",
       "value": null,
       "date": null,
-      "error": "HTTP 429",
+      "error": "fetch failed",
       "article_count": 0,
       "articles": []
     },
@@ -1195,7 +1195,7 @@
       "status": "failed",
       "value": null,
       "date": null,
-      "error": "HTTP 429",
+      "error": "fetch failed",
       "article_count": 0,
       "articles": []
     }
