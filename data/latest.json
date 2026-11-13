@@ -1,8 +1,8 @@
 {
-  "fetched_at": "2026-11-12T11:40:46.515+09:00",
+  "fetched_at": "2026-11-13T11:22:04.095+09:00",
   "fred_ok_count": 9,
   "fred_total": 9,
-  "gdelt_ok_count": 0,
+  "gdelt_ok_count": 1,
   "gdelt_total": 8,
   "fred": {
     "DEXJPUS": {
@@ -883,14 +883,10 @@
     },
     "DGS10": {
       "status": "ok",
-      "value": 4.88,
-      "date": "2026-11-09",
+      "value": 4.98,
+      "date": "2026-11-10",
       "error": null,
       "history": [
-        {
-          "date": "2026-09-29",
-          "value": 5.26
-        },
         {
           "date": "2026-09-30",
           "value": 5.29
@@ -1002,6 +998,10 @@
         {
           "date": "2026-11-09",
           "value": 4.88
+        },
+        {
+          "date": "2026-11-10",
+          "value": 4.98
         }
       ]
     },
@@ -1139,7 +1139,7 @@
       "status": "failed",
       "value": null,
       "date": null,
-      "error": "fetch failed",
+      "error": "HTTP 429",
       "article_count": 0,
       "articles": []
     },
@@ -1147,7 +1147,7 @@
       "status": "failed",
       "value": null,
       "date": null,
-      "error": "fetch failed",
+      "error": "HTTP 429",
       "article_count": 0,
       "articles": []
     },
@@ -1155,7 +1155,7 @@
       "status": "failed",
       "value": null,
       "date": null,
-      "error": "fetch failed",
+      "error": "HTTP 429",
       "article_count": 0,
       "articles": []
     },
@@ -1163,7 +1163,7 @@
       "status": "failed",
       "value": null,
       "date": null,
-      "error": "fetch failed",
+      "error": "HTTP 429",
       "article_count": 0,
       "articles": []
     },
@@ -1171,7 +1171,7 @@
       "status": "failed",
       "value": null,
       "date": null,
-      "error": "fetch failed",
+      "error": "HTTP 429",
       "article_count": 0,
       "articles": []
     },
@@ -1179,23 +1179,84 @@
       "status": "failed",
       "value": null,
       "date": null,
-      "error": "fetch failed",
+      "error": "HTTP 429",
       "article_count": 0,
       "articles": []
     },
     "trump_defense": {
-      "status": "failed",
-      "value": null,
-      "date": null,
-      "error": "fetch failed",
-      "article_count": 0,
-      "articles": []
+      "status": "ok",
+      "value": 100,
+      "date": "2026-11-13",
+      "error": null,
+      "article_count": 50,
+      "articles": [
+        {
+          "title": "Democrat Midterm Wins Encourage Activists at Climate Change Convention",
+          "url": "https://www.theepochtimes.com/business/democrats-midterm-wins-encourage-activists-at-climate-change-convention-6124411",
+          "domain": "theepochtimes.com",
+          "seendate": "20261113T004500Z"
+        },
+        {
+          "title": "早报丨黄仁勋卸任离场 ， 美国司法部将调查英伟达 ； 特斯拉与SpaceX合并推进 ， 最快12月公布 ； 思科上调全年指引 ， 应用材料交出亮眼业绩 _ 东方财富网",
+          "url": "https://finance.eastmoney.com/a/202611133930295541.html",
+          "domain": "finance.eastmoney.com",
+          "seendate": "20261113T004500Z"
+        },
+        {
+          "title": "黄仁勋辞职 ！ 特朗普 、 马斯克发声",
+          "url": "https://www.163.com/dy/article/LBJNRKF905128U4M.html",
+          "domain": "163.com",
+          "seendate": "20261113T004500Z"
+        },
+        {
+          "title": "Trump Pushes for Nvidia to Hire Former Apple Chief Tim Cook to Replace Jensen Huang",
+          "url": "https://www.breitbart.com/politics/2026/11/12/trump-pushes-for-nvidia-to-hire-former-apple-chief-tim-cook-to-replace-jensen-huang/",
+          "domain": "breitbart.com",
+          "seendate": "20261113T004500Z"
+        },
+        {
+          "title": "Tinubu , 2027 and the price of losing trusted journalism",
+          "url": "https://punchng.com/tinubu-2027-and-the-price-of-losing-trusted-journalism/",
+          "domain": "punchng.com",
+          "seendate": "20261113T004500Z"
+        },
+        {
+          "title": "U . S . stocks lose steam on Nvidia CEO exit , rising bond yields",
+          "url": "http://www.bangladeshsun.com/news/279429293/u-s-stocks-lose-steam-on-nvidia-ceo-exit-rising-bond-yields",
+          "domain": "bangladeshsun.com",
+          "seendate": "20261113T004500Z"
+        },
+        {
+          "title": "Trump claims arch at Arlington National Cemetery would honor military personnel , veterans",
+          "url": "https://www.armytimes.com/veterans/2026/11/12/trump-claims-arch-at-arlington-national-cemetery-would-honor-military-personnel-veterans/",
+          "domain": "armytimes.com",
+          "seendate": "20261113T004500Z"
+        },
+        {
+          "title": "美股收盘 ： AMD  五连阳  累涨超40 % 科技硬件链盘后利好频出 _ 腾讯新闻",
+          "url": "https://news.qq.com/rain/a/20261113A02W4J00",
+          "domain": "news.qq.com",
+          "seendate": "20261113T004500Z"
+        },
+        {
+          "title": "The Beginning Of The End : Israel At The Heart Of America Political Civil War",
+          "url": "https://www.scoop.co.nz/stories/HL2611/S00032/the-beginning-of-the-end-israel-at-the-heart-of-americas-political-civil-war.htm",
+          "domain": "scoop.co.nz",
+          "seendate": "20261113T004500Z"
+        },
+        {
+          "title": "8点1氪丨英伟达宣布CEO黄仁勋辞职 ， 特朗普 ： 建议库克接任 ； 腾讯  裁员50 %？ 知情人士回应 ； 宣扬错误婚恋观 ， 德芙代运营方被罚80万|知名企业|蒂姆 · 库克|唐纳 · 川普",
+          "url": "https://www.163.com/dy/article/LBJP2QG805118DFD.html",
+          "domain": "163.com",
+          "seendate": "20261113T004500Z"
+        }
+      ]
     },
     "us_economy_stress": {
       "status": "failed",
       "value": null,
       "date": null,
-      "error": "fetch failed",
+      "error": "HTTP 429",
       "article_count": 0,
       "articles": []
     }
