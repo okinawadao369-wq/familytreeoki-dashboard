@@ -1,0 +1,1626 @@
+{
+  "fetched_at": "2026-11-14T10:57:55.072+09:00",
+  "fred_ok_count": 9,
+  "fred_total": 9,
+  "gdelt_ok_count": 7,
+  "gdelt_total": 8,
+  "fred": {
+    "DEXJPUS": {
+      "status": "ok",
+      "value": 158.23,
+      "date": "2026-11-06",
+      "error": null,
+      "history": [
+        {
+          "date": "2026-09-28",
+          "value": 157.44
+        },
+        {
+          "date": "2026-09-29",
+          "value": 157.5
+        },
+        {
+          "date": "2026-09-30",
+          "value": 157.25
+        },
+        {
+          "date": "2026-10-01",
+          "value": 157.63
+        },
+        {
+          "date": "2026-10-02",
+          "value": 157.81
+        },
+        {
+          "date": "2026-10-05",
+          "value": 157.97
+        },
+        {
+          "date": "2026-10-06",
+          "value": 158.12
+        },
+        {
+          "date": "2026-10-07",
+          "value": 158.11
+        },
+        {
+          "date": "2026-10-08",
+          "value": 158.33
+        },
+        {
+          "date": "2026-10-09",
+          "value": 158.34
+        },
+        {
+          "date": "2026-10-13",
+          "value": 158.36
+        },
+        {
+          "date": "2026-10-14",
+          "value": 158.84
+        },
+        {
+          "date": "2026-10-15",
+          "value": 158.18
+        },
+        {
+          "date": "2026-10-16",
+          "value": 158
+        },
+        {
+          "date": "2026-10-19",
+          "value": 158.49
+        },
+        {
+          "date": "2026-10-20",
+          "value": 158.2
+        },
+        {
+          "date": "2026-10-21",
+          "value": 158.13
+        },
+        {
+          "date": "2026-10-22",
+          "value": 157.11
+        },
+        {
+          "date": "2026-10-23",
+          "value": 156.87
+        },
+        {
+          "date": "2026-10-26",
+          "value": 157.58
+        },
+        {
+          "date": "2026-10-27",
+          "value": 157.86
+        },
+        {
+          "date": "2026-10-28",
+          "value": 158.24
+        },
+        {
+          "date": "2026-10-29",
+          "value": 157.83
+        },
+        {
+          "date": "2026-10-30",
+          "value": 157.47
+        },
+        {
+          "date": "2026-11-02",
+          "value": 157.81
+        },
+        {
+          "date": "2026-11-03",
+          "value": 158.5
+        },
+        {
+          "date": "2026-11-04",
+          "value": 158.44
+        },
+        {
+          "date": "2026-11-05",
+          "value": 157.76
+        },
+        {
+          "date": "2026-11-06",
+          "value": 158.23
+        }
+      ]
+    },
+    "CPIAUCSL": {
+      "status": "ok",
+      "value": 337.476,
+      "date": "2026-10-01",
+      "error": null,
+      "history": [
+        {
+          "date": "2024-05-01",
+          "value": 313.175
+        },
+        {
+          "date": "2024-06-01",
+          "value": 313.044
+        },
+        {
+          "date": "2024-07-01",
+          "value": 313.569
+        },
+        {
+          "date": "2024-08-01",
+          "value": 314.062
+        },
+        {
+          "date": "2024-09-01",
+          "value": 314.732
+        },
+        {
+          "date": "2024-10-01",
+          "value": 315.631
+        },
+        {
+          "date": "2024-11-01",
+          "value": 316.528
+        },
+        {
+          "date": "2024-12-01",
+          "value": 317.604
+        },
+        {
+          "date": "2025-01-01",
+          "value": 318.961
+        },
+        {
+          "date": "2025-02-01",
+          "value": 319.679
+        },
+        {
+          "date": "2025-03-01",
+          "value": 319.785
+        },
+        {
+          "date": "2025-04-01",
+          "value": 320.302
+        },
+        {
+          "date": "2025-05-01",
+          "value": 320.62
+        },
+        {
+          "date": "2025-06-01",
+          "value": 321.435
+        },
+        {
+          "date": "2025-07-01",
+          "value": 322.169
+        },
+        {
+          "date": "2025-08-01",
+          "value": 323.291
+        },
+        {
+          "date": "2025-09-01",
+          "value": 324.245
+        },
+        {
+          "date": "2025-11-01",
+          "value": 325.063
+        },
+        {
+          "date": "2025-12-01",
+          "value": 326.031
+        },
+        {
+          "date": "2026-01-01",
+          "value": 326.588
+        },
+        {
+          "date": "2026-02-01",
+          "value": 327.46
+        },
+        {
+          "date": "2026-03-01",
+          "value": 330.293
+        },
+        {
+          "date": "2026-04-01",
+          "value": 332.407
+        },
+        {
+          "date": "2026-05-01",
+          "value": 333.979
+        },
+        {
+          "date": "2026-06-01",
+          "value": 332.568
+        },
+        {
+          "date": "2026-07-01",
+          "value": 332.813
+        },
+        {
+          "date": "2026-08-01",
+          "value": 334.131
+        },
+        {
+          "date": "2026-09-01",
+          "value": 336.298
+        },
+        {
+          "date": "2026-10-01",
+          "value": 337.476
+        }
+      ]
+    },
+    "CPILFESL": {
+      "status": "ok",
+      "value": 339.9,
+      "date": "2026-10-01",
+      "error": null,
+      "history": [
+        {
+          "date": "2024-05-01",
+          "value": 318.095
+        },
+        {
+          "date": "2024-06-01",
+          "value": 318.39
+        },
+        {
+          "date": "2024-07-01",
+          "value": 318.94
+        },
+        {
+          "date": "2024-08-01",
+          "value": 319.75
+        },
+        {
+          "date": "2024-09-01",
+          "value": 320.732
+        },
+        {
+          "date": "2024-10-01",
+          "value": 321.731
+        },
+        {
+          "date": "2024-11-01",
+          "value": 322.657
+        },
+        {
+          "date": "2024-12-01",
+          "value": 323.259
+        },
+        {
+          "date": "2025-01-01",
+          "value": 324.638
+        },
+        {
+          "date": "2025-02-01",
+          "value": 325.465
+        },
+        {
+          "date": "2025-03-01",
+          "value": 325.69
+        },
+        {
+          "date": "2025-04-01",
+          "value": 326.467
+        },
+        {
+          "date": "2025-05-01",
+          "value": 326.893
+        },
+        {
+          "date": "2025-06-01",
+          "value": 327.658
+        },
+        {
+          "date": "2025-07-01",
+          "value": 328.682
+        },
+        {
+          "date": "2025-08-01",
+          "value": 329.7
+        },
+        {
+          "date": "2025-09-01",
+          "value": 330.418
+        },
+        {
+          "date": "2025-11-01",
+          "value": 331.043
+        },
+        {
+          "date": "2025-12-01",
+          "value": 331.814
+        },
+        {
+          "date": "2026-01-01",
+          "value": 332.793
+        },
+        {
+          "date": "2026-02-01",
+          "value": 333.512
+        },
+        {
+          "date": "2026-03-01",
+          "value": 334.165
+        },
+        {
+          "date": "2026-04-01",
+          "value": 335.423
+        },
+        {
+          "date": "2026-05-01",
+          "value": 336.121
+        },
+        {
+          "date": "2026-06-01",
+          "value": 336.065
+        },
+        {
+          "date": "2026-07-01",
+          "value": 336.789
+        },
+        {
+          "date": "2026-08-01",
+          "value": 337.765
+        },
+        {
+          "date": "2026-09-01",
+          "value": 338.896
+        },
+        {
+          "date": "2026-10-01",
+          "value": 339.9
+        }
+      ]
+    },
+    "CUSR0000SEFV": {
+      "status": "ok",
+      "value": 400.85,
+      "date": "2026-10-01",
+      "error": null,
+      "history": [
+        {
+          "date": "2024-05-01",
+          "value": 367.099
+        },
+        {
+          "date": "2024-06-01",
+          "value": 368.616
+        },
+        {
+          "date": "2024-07-01",
+          "value": 369.383
+        },
+        {
+          "date": "2024-08-01",
+          "value": 370.348
+        },
+        {
+          "date": "2024-09-01",
+          "value": 371.604
+        },
+        {
+          "date": "2024-10-01",
+          "value": 372.486
+        },
+        {
+          "date": "2024-11-01",
+          "value": 373.53
+        },
+        {
+          "date": "2024-12-01",
+          "value": 374.644
+        },
+        {
+          "date": "2025-01-01",
+          "value": 375.532
+        },
+        {
+          "date": "2025-02-01",
+          "value": 376.991
+        },
+        {
+          "date": "2025-03-01",
+          "value": 378.363
+        },
+        {
+          "date": "2025-04-01",
+          "value": 380.039
+        },
+        {
+          "date": "2025-05-01",
+          "value": 381.228
+        },
+        {
+          "date": "2025-06-01",
+          "value": 382.75
+        },
+        {
+          "date": "2025-07-01",
+          "value": 383.808
+        },
+        {
+          "date": "2025-08-01",
+          "value": 384.909
+        },
+        {
+          "date": "2025-09-01",
+          "value": 385.451
+        },
+        {
+          "date": "2025-11-01",
+          "value": 387.202
+        },
+        {
+          "date": "2025-12-01",
+          "value": 389.889
+        },
+        {
+          "date": "2026-01-01",
+          "value": 390.471
+        },
+        {
+          "date": "2026-02-01",
+          "value": 391.706
+        },
+        {
+          "date": "2026-03-01",
+          "value": 392.652
+        },
+        {
+          "date": "2026-04-01",
+          "value": 393.546
+        },
+        {
+          "date": "2026-05-01",
+          "value": 394.728
+        },
+        {
+          "date": "2026-06-01",
+          "value": 395.633
+        },
+        {
+          "date": "2026-07-01",
+          "value": 396.859
+        },
+        {
+          "date": "2026-08-01",
+          "value": 397.868
+        },
+        {
+          "date": "2026-09-01",
+          "value": 398.783
+        },
+        {
+          "date": "2026-10-01",
+          "value": 400.85
+        }
+      ]
+    },
+    "UNRATE": {
+      "status": "ok",
+      "value": 4.1,
+      "date": "2026-10-01",
+      "error": null,
+      "history": [
+        {
+          "date": "2024-05-01",
+          "value": 3.9
+        },
+        {
+          "date": "2024-06-01",
+          "value": 4.1
+        },
+        {
+          "date": "2024-07-01",
+          "value": 4.2
+        },
+        {
+          "date": "2024-08-01",
+          "value": 4.2
+        },
+        {
+          "date": "2024-09-01",
+          "value": 4.1
+        },
+        {
+          "date": "2024-10-01",
+          "value": 4.1
+        },
+        {
+          "date": "2024-11-01",
+          "value": 4.2
+        },
+        {
+          "date": "2024-12-01",
+          "value": 4.1
+        },
+        {
+          "date": "2025-01-01",
+          "value": 4
+        },
+        {
+          "date": "2025-02-01",
+          "value": 4.2
+        },
+        {
+          "date": "2025-03-01",
+          "value": 4.2
+        },
+        {
+          "date": "2025-04-01",
+          "value": 4.2
+        },
+        {
+          "date": "2025-05-01",
+          "value": 4.3
+        },
+        {
+          "date": "2025-06-01",
+          "value": 4.1
+        },
+        {
+          "date": "2025-07-01",
+          "value": 4.3
+        },
+        {
+          "date": "2025-08-01",
+          "value": 4.3
+        },
+        {
+          "date": "2025-09-01",
+          "value": 4.4
+        },
+        {
+          "date": "2025-11-01",
+          "value": 4.5
+        },
+        {
+          "date": "2025-12-01",
+          "value": 4.4
+        },
+        {
+          "date": "2026-01-01",
+          "value": 4.3
+        },
+        {
+          "date": "2026-02-01",
+          "value": 4.4
+        },
+        {
+          "date": "2026-03-01",
+          "value": 4.3
+        },
+        {
+          "date": "2026-04-01",
+          "value": 4.3
+        },
+        {
+          "date": "2026-05-01",
+          "value": 4.3
+        },
+        {
+          "date": "2026-06-01",
+          "value": 4.2
+        },
+        {
+          "date": "2026-07-01",
+          "value": 4.1
+        },
+        {
+          "date": "2026-08-01",
+          "value": 4.1
+        },
+        {
+          "date": "2026-09-01",
+          "value": 4.2
+        },
+        {
+          "date": "2026-10-01",
+          "value": 4.1
+        }
+      ]
+    },
+    "CES0500000003": {
+      "status": "ok",
+      "value": 38,
+      "date": "2026-10-01",
+      "error": null,
+      "history": [
+        {
+          "date": "2024-05-01",
+          "value": 34.89
+        },
+        {
+          "date": "2024-06-01",
+          "value": 35.01
+        },
+        {
+          "date": "2024-07-01",
+          "value": 35.08
+        },
+        {
+          "date": "2024-08-01",
+          "value": 35.22
+        },
+        {
+          "date": "2024-09-01",
+          "value": 35.34
+        },
+        {
+          "date": "2024-10-01",
+          "value": 35.46
+        },
+        {
+          "date": "2024-11-01",
+          "value": 35.6
+        },
+        {
+          "date": "2024-12-01",
+          "value": 35.69
+        },
+        {
+          "date": "2025-01-01",
+          "value": 35.84
+        },
+        {
+          "date": "2025-02-01",
+          "value": 35.94
+        },
+        {
+          "date": "2025-03-01",
+          "value": 36.11
+        },
+        {
+          "date": "2025-04-01",
+          "value": 36.12
+        },
+        {
+          "date": "2025-05-01",
+          "value": 36.28
+        },
+        {
+          "date": "2025-06-01",
+          "value": 36.36
+        },
+        {
+          "date": "2025-07-01",
+          "value": 36.47
+        },
+        {
+          "date": "2025-08-01",
+          "value": 36.62
+        },
+        {
+          "date": "2025-09-01",
+          "value": 36.7
+        },
+        {
+          "date": "2025-10-01",
+          "value": 36.85
+        },
+        {
+          "date": "2025-11-01",
+          "value": 37
+        },
+        {
+          "date": "2025-12-01",
+          "value": 37.02
+        },
+        {
+          "date": "2026-01-01",
+          "value": 37.15
+        },
+        {
+          "date": "2026-02-01",
+          "value": 37.27
+        },
+        {
+          "date": "2026-03-01",
+          "value": 37.35
+        },
+        {
+          "date": "2026-04-01",
+          "value": 37.41
+        },
+        {
+          "date": "2026-05-01",
+          "value": 37.49
+        },
+        {
+          "date": "2026-06-01",
+          "value": 37.59
+        },
+        {
+          "date": "2026-07-01",
+          "value": 37.64
+        },
+        {
+          "date": "2026-08-01",
+          "value": 37.76
+        },
+        {
+          "date": "2026-09-01",
+          "value": 37.86
+        },
+        {
+          "date": "2026-10-01",
+          "value": 38
+        }
+      ]
+    },
+    "FEDFUNDS": {
+      "status": "ok",
+      "value": 3.88,
+      "date": "2026-10-01",
+      "error": null,
+      "history": [
+        {
+          "date": "2024-05-01",
+          "value": 5.33
+        },
+        {
+          "date": "2024-06-01",
+          "value": 5.33
+        },
+        {
+          "date": "2024-07-01",
+          "value": 5.33
+        },
+        {
+          "date": "2024-08-01",
+          "value": 5.33
+        },
+        {
+          "date": "2024-09-01",
+          "value": 5.13
+        },
+        {
+          "date": "2024-10-01",
+          "value": 4.83
+        },
+        {
+          "date": "2024-11-01",
+          "value": 4.64
+        },
+        {
+          "date": "2024-12-01",
+          "value": 4.48
+        },
+        {
+          "date": "2025-01-01",
+          "value": 4.33
+        },
+        {
+          "date": "2025-02-01",
+          "value": 4.33
+        },
+        {
+          "date": "2025-03-01",
+          "value": 4.33
+        },
+        {
+          "date": "2025-04-01",
+          "value": 4.33
+        },
+        {
+          "date": "2025-05-01",
+          "value": 4.33
+        },
+        {
+          "date": "2025-06-01",
+          "value": 4.33
+        },
+        {
+          "date": "2025-07-01",
+          "value": 4.33
+        },
+        {
+          "date": "2025-08-01",
+          "value": 4.33
+        },
+        {
+          "date": "2025-09-01",
+          "value": 4.22
+        },
+        {
+          "date": "2025-10-01",
+          "value": 4.09
+        },
+        {
+          "date": "2025-11-01",
+          "value": 3.88
+        },
+        {
+          "date": "2025-12-01",
+          "value": 3.72
+        },
+        {
+          "date": "2026-01-01",
+          "value": 3.64
+        },
+        {
+          "date": "2026-02-01",
+          "value": 3.64
+        },
+        {
+          "date": "2026-03-01",
+          "value": 3.64
+        },
+        {
+          "date": "2026-04-01",
+          "value": 3.64
+        },
+        {
+          "date": "2026-05-01",
+          "value": 3.63
+        },
+        {
+          "date": "2026-06-01",
+          "value": 3.63
+        },
+        {
+          "date": "2026-07-01",
+          "value": 3.63
+        },
+        {
+          "date": "2026-08-01",
+          "value": 3.63
+        },
+        {
+          "date": "2026-09-01",
+          "value": 3.75
+        },
+        {
+          "date": "2026-10-01",
+          "value": 3.88
+        }
+      ]
+    },
+    "DGS10": {
+      "status": "ok",
+      "value": 5.1,
+      "date": "2026-11-12",
+      "error": null,
+      "history": [
+        {
+          "date": "2026-10-02",
+          "value": 5.28
+        },
+        {
+          "date": "2026-10-05",
+          "value": 5.31
+        },
+        {
+          "date": "2026-10-06",
+          "value": 5.27
+        },
+        {
+          "date": "2026-10-07",
+          "value": 5.28
+        },
+        {
+          "date": "2026-10-08",
+          "value": 5.22
+        },
+        {
+          "date": "2026-10-09",
+          "value": 5.24
+        },
+        {
+          "date": "2026-10-13",
+          "value": 5.21
+        },
+        {
+          "date": "2026-10-14",
+          "value": 5.19
+        },
+        {
+          "date": "2026-10-15",
+          "value": 5.1
+        },
+        {
+          "date": "2026-10-16",
+          "value": 5.09
+        },
+        {
+          "date": "2026-10-19",
+          "value": 5.15
+        },
+        {
+          "date": "2026-10-20",
+          "value": 5.12
+        },
+        {
+          "date": "2026-10-21",
+          "value": 5.13
+        },
+        {
+          "date": "2026-10-22",
+          "value": 4.96
+        },
+        {
+          "date": "2026-10-23",
+          "value": 5
+        },
+        {
+          "date": "2026-10-26",
+          "value": 5
+        },
+        {
+          "date": "2026-10-27",
+          "value": 4.99
+        },
+        {
+          "date": "2026-10-28",
+          "value": 5.05
+        },
+        {
+          "date": "2026-10-29",
+          "value": 4.98
+        },
+        {
+          "date": "2026-10-30",
+          "value": 4.94
+        },
+        {
+          "date": "2026-11-02",
+          "value": 4.91
+        },
+        {
+          "date": "2026-11-03",
+          "value": 4.95
+        },
+        {
+          "date": "2026-11-04",
+          "value": 4.9
+        },
+        {
+          "date": "2026-11-05",
+          "value": 4.84
+        },
+        {
+          "date": "2026-11-06",
+          "value": 4.86
+        },
+        {
+          "date": "2026-11-09",
+          "value": 4.88
+        },
+        {
+          "date": "2026-11-10",
+          "value": 4.98
+        },
+        {
+          "date": "2026-11-12",
+          "value": 5.1
+        }
+      ]
+    },
+    "UMCSENT": {
+      "status": "ok",
+      "value": 48.1,
+      "date": "2026-09-01",
+      "error": null,
+      "history": [
+        {
+          "date": "2024-04-01",
+          "value": 77.2
+        },
+        {
+          "date": "2024-05-01",
+          "value": 69.1
+        },
+        {
+          "date": "2024-06-01",
+          "value": 68.2
+        },
+        {
+          "date": "2024-07-01",
+          "value": 66.4
+        },
+        {
+          "date": "2024-08-01",
+          "value": 67.9
+        },
+        {
+          "date": "2024-09-01",
+          "value": 70.1
+        },
+        {
+          "date": "2024-10-01",
+          "value": 70.5
+        },
+        {
+          "date": "2024-11-01",
+          "value": 71.8
+        },
+        {
+          "date": "2024-12-01",
+          "value": 74
+        },
+        {
+          "date": "2025-01-01",
+          "value": 71.7
+        },
+        {
+          "date": "2025-02-01",
+          "value": 64.7
+        },
+        {
+          "date": "2025-03-01",
+          "value": 57
+        },
+        {
+          "date": "2025-04-01",
+          "value": 52.2
+        },
+        {
+          "date": "2025-05-01",
+          "value": 52.2
+        },
+        {
+          "date": "2025-06-01",
+          "value": 60.7
+        },
+        {
+          "date": "2025-07-01",
+          "value": 61.7
+        },
+        {
+          "date": "2025-08-01",
+          "value": 58.2
+        },
+        {
+          "date": "2025-09-01",
+          "value": 55.1
+        },
+        {
+          "date": "2025-10-01",
+          "value": 53.6
+        },
+        {
+          "date": "2025-11-01",
+          "value": 51
+        },
+        {
+          "date": "2025-12-01",
+          "value": 52.9
+        },
+        {
+          "date": "2026-01-01",
+          "value": 56.4
+        },
+        {
+          "date": "2026-02-01",
+          "value": 56.6
+        },
+        {
+          "date": "2026-03-01",
+          "value": 53.3
+        },
+        {
+          "date": "2026-04-01",
+          "value": 49.8
+        },
+        {
+          "date": "2026-05-01",
+          "value": 44.8
+        },
+        {
+          "date": "2026-06-01",
+          "value": 49.5
+        },
+        {
+          "date": "2026-07-01",
+          "value": 55.2
+        },
+        {
+          "date": "2026-08-01",
+          "value": 51.7
+        },
+        {
+          "date": "2026-09-01",
+          "value": 48.1
+        }
+      ]
+    }
+  },
+  "gdelt": {
+    "taiwan_strait": {
+      "status": "ok",
+      "value": 100,
+      "date": "2026-11-14",
+      "error": null,
+      "article_count": 50,
+      "articles": [
+        {
+          "title": "早上起床先做这 3 件事 ？ 肝 ： 我招谁惹谁了 - 贝佳药业发表于 商业信息 - 论坛",
+          "url": "https://bbs.wenxuecity.com/advpost/4334.html",
+          "domain": "bbs.wenxuecity.com",
+          "seendate": "20261113T180000Z"
+        },
+        {
+          "title": "成本推动价格修复 大尺寸面板12月有望小幅涨价",
+          "url": "https://www.163.com/dy/article/LBLE7R4U05198CJN.html",
+          "domain": "163.com",
+          "seendate": "20261113T180000Z"
+        },
+        {
+          "title": "路透社 ： 中国逾32亿美元AI算力项目依赖英伟达",
+          "url": "https://www.wenxuecity.com/news/2026/11/13/126835171.html",
+          "domain": "wenxuecity.com",
+          "seendate": "20261113T180000Z"
+        },
+        {
+          "title": "ANNONS : Fysisk AI flyttar in på fabriksgolvet",
+          "url": "https://www.di.se/brandstudio/fysisk-ai-flyttar-in-pa-fabriksgolvet/",
+          "domain": "di.se",
+          "seendate": "20261113T180000Z"
+        },
+        {
+          "title": "黄仁勋为什么辞职 ？ 从公司治理到危机公关 | www . wenxuecity . com",
+          "url": "https://www.wenxuecity.com/blog/202611/71138/9662.html",
+          "domain": "wenxuecity.com",
+          "seendate": "20261113T180000Z"
+        },
+        {
+          "title": "黄乐曾获英伟达管制芯片 关联企业投DeepSeek",
+          "url": "https://www.wenxuecity.com/news/2026/11/13/126835208.html",
+          "domain": "wenxuecity.com",
+          "seendate": "20261113T180000Z"
+        },
+        {
+          "title": "黄仁勋离开英伟达之后 | www . wenxuecity . com",
+          "url": "https://www.wenxuecity.com/blog/202611/72453/9843.html",
+          "domain": "wenxuecity.com",
+          "seendate": "20261113T180000Z"
+        },
+        {
+          "title": "贸易战 · 印度餐 （ 六 ） | www . wenxuecity . com",
+          "url": "https://www.wenxuecity.com/blog/202611/71805/9876.html",
+          "domain": "wenxuecity.com",
+          "seendate": "20261113T180000Z"
+        },
+        {
+          "title": "Day10 . 凑热闹去 - 塞维利亚弗拉门戈节 、 米兰人骨教堂 - 嘻xi哈发表于 世界风情 - 论坛",
+          "url": "https://bbs.wenxuecity.com/travel/774520.html",
+          "domain": "bbs.wenxuecity.com",
+          "seendate": "20261113T180000Z"
+        },
+        {
+          "title": "回国出门必带的东西 | www . wenxuecity . com",
+          "url": "https://www.wenxuecity.com/blog/202611/26211/9880.html",
+          "domain": "wenxuecity.com",
+          "seendate": "20261113T180000Z"
+        }
+      ]
+    },
+    "north_korea": {
+      "status": "ok",
+      "value": 100,
+      "date": "2026-11-14",
+      "error": null,
+      "article_count": 50,
+      "articles": [
+        {
+          "title": "Ukraine claims record 3 , 000 Russian casualties in one day as war drags on",
+          "url": "https://www.aljazeera.com/news/2026/11/13/russias-demands-come-from-different-reality-as-war-efforts-stagnates",
+          "domain": "aljazeera.com",
+          "seendate": "20261113T180000Z"
+        },
+        {
+          "title": "早报丨黄仁勋卸任离场 ， 美国司法部将调查英伟达 ； 特斯拉与SpaceX合并推进 ， 最快12月公布 ； 思科上调全年指引 ， 应用材料交出亮眼业绩 _ 东方财富网",
+          "url": "https://finance.eastmoney.com/a/202611133930295541.html",
+          "domain": "finance.eastmoney.com",
+          "seendate": "20261113T004500Z"
+        },
+        {
+          "title": "2027年菜越早買越好 ？ 早鳥預購3大好處一次看 五星飯店 、 米其林名店菜色賞星鮮選擇多",
+          "url": "https://n.yam.com/Article/20261113596774",
+          "domain": "n.yam.com",
+          "seendate": "20261113T004500Z"
+        },
+        {
+          "title": "东京审判宣判78周年 日本反省了吗 历史账单待清算 _ 军事频道 _ 中华网",
+          "url": "https://military.china.com/news/13004177/20261113/49867520.html",
+          "domain": "military.china.com",
+          "seendate": "20261113T004500Z"
+        },
+        {
+          "title": "Dobrindt : Nemecko by malo na kyberútoky odpovedať protiúdermi",
+          "url": "https://www.teraz.sk/zahranicie/dobrindt-nemecko-by-malo-na-kyberutoky/1007016-clanok.html",
+          "domain": "teraz.sk",
+          "seendate": "20261112T070000Z"
+        },
+        {
+          "title": "西班牙14年來首度全國大罷工 逾17萬人上街抗議高生活成本 | 國際",
+          "url": "https://www.cna.com.tw/news/asoc/202611120053.aspx",
+          "domain": "cna.com.tw",
+          "seendate": "20261112T070000Z"
+        },
+        {
+          "title": "North Korea Kim Yo Jong criticizes UN over border blast",
+          "url": "http://www.caribbeanherald.com/news/279424224/north-korea-s-kim-yo-jong-criticizes-un-over-border-blast",
+          "domain": "caribbeanherald.com",
+          "seendate": "20261112T070000Z"
+        },
+        {
+          "title": "新竹縣長最新民調 徐欣瑩44 . 4 % 領先鄭朝方 ： 縣民期待陽光政治 | 縣市長議員選戰 | 要聞",
+          "url": "https://udn.com/news/story/124652/9874345",
+          "domain": "udn.com",
+          "seendate": "20261112T070000Z"
+        },
+        {
+          "title": "Как и обещали : США вернули Венесуэле миллиарды долларов",
+          "url": "https://ria.ru/20261112/ssha-2131020184.html",
+          "domain": "ria.ru",
+          "seendate": "20261112T070000Z"
+        },
+        {
+          "title": "North Korea Kim Yo Jong criticizes UN over border blast",
+          "url": "http://www.taiwansun.com/news/279424224/north-korea-s-kim-yo-jong-criticizes-un-over-border-blast",
+          "domain": "taiwansun.com",
+          "seendate": "20261112T070000Z"
+        }
+      ]
+    },
+    "indopacific": {
+      "status": "ok",
+      "value": 100,
+      "date": "2026-11-14",
+      "error": null,
+      "article_count": 50,
+      "articles": [
+        {
+          "title": "Труд : Премьер Польши собрался устроить ИИ - революцию",
+          "url": "https://www.trud.ru/article/13-11-2026/1853701_premjer_polshi_sobralsja_ustroit_ii-revoljutsiju.html",
+          "domain": "trud.ru",
+          "seendate": "20261113T180000Z"
+        },
+        {
+          "title": "黄仁勋为什么辞职 ？ 从公司治理到危机公关 | www . wenxuecity . com",
+          "url": "https://www.wenxuecity.com/blog/202611/71138/9662.html",
+          "domain": "wenxuecity.com",
+          "seendate": "20261113T180000Z"
+        },
+        {
+          "title": "Will Democrats try to strip US - Israel initiative from Pentagon funding ? ",
+          "url": "https://www.aljazeera.com/news/2026/11/13/will-democrats-try-to-strip-us-israel-initiative-from-pentagon-funding",
+          "domain": "aljazeera.com",
+          "seendate": "20261113T180000Z"
+        },
+        {
+          "title": "Труд : Российский командир рассказал о работе робота - сапёра Мухтара",
+          "url": "https://www.trud.ru/article/13-11-2026/1853761_rossijskij_komandir_rasskazal_o_rabote_robota-sapera_muxtara.html",
+          "domain": "trud.ru",
+          "seendate": "20261113T180000Z"
+        },
+        {
+          "title": "CIA orchestrated Jensen Huang ouster to seize control of Nvidia AI tech",
+          "url": "https://www.bankingnews.gr/diethni/articles/910933/cia-orchestrated-jensen-huang-s-ouster-to-seize-control-of-nvidia-s-ai-tech",
+          "domain": "bankingnews.gr",
+          "seendate": "20261113T180000Z"
+        },
+        {
+          "title": "Pentagon  greenlit  permanent presence of US troops in Poland , official says",
+          "url": "https://www.armytimes.com/news/pentagon-congress/2026/11/12/pentagon-greenlit-permanent-presence-of-us-troops-in-poland-official-says/",
+          "domain": "armytimes.com",
+          "seendate": "20261113T004500Z"
+        },
+        {
+          "title": "Trump Is Right : Ukraine Needs a Leader Who Can Close the Deal",
+          "url": "https://townhall.com/columnists/dugganflanakin/2026/11/12/trump-is-right-ukraine-needs-a-leader-who-can-close-the-deal-n2686316",
+          "domain": "townhall.com",
+          "seendate": "20261112T070000Z"
+        },
+        {
+          "title": "跨越半个地球硬刚阿根廷 ！ 伊朗突然将阿根廷海空军列为恐怖组织 ， 三十余年积怨未了 ， 下一步会闹多大",
+          "url": "https://www.163.com/news/article/LBHR6U2C0001899O.html",
+          "domain": "163.com",
+          "seendate": "20261112T070000Z"
+        },
+        {
+          "title": "Fijivillage",
+          "url": "https://www.fijivillage.com/tags/Japan/",
+          "domain": "fijivillage.com",
+          "seendate": "20261112T064500Z"
+        },
+        {
+          "title": "As Geopolitical Realities Shift , Trump Power to Shape Events Recedes",
+          "url": "https://www.theamericanconservative.com/as-geopolitical-realities-shift-trumps-power-to-shape-events-recedes/",
+          "domain": "theamericanconservative.com",
+          "seendate": "20261112T053000Z"
+        }
+      ]
+    },
+    "usfj_okinawa": {
+      "status": "ok",
+      "value": 100,
+      "date": "2026-11-14",
+      "error": null,
+      "article_count": 50,
+      "articles": [
+        {
+          "title": "Germany bans Dji drones at military bases immediately",
+          "url": "https://www.el-balad.com/17066100",
+          "domain": "el-balad.com",
+          "seendate": "20261112T070000Z"
+        },
+        {
+          "title": "2027年開始の 「 こどもNISA 」、 毎月いくら積み立てる ？ 全国平均は1万4 , 012円 ： 紀伊民報AGARA｜和歌山県のニュースサイト",
+          "url": "https://www.agara.co.jp/article/711529",
+          "domain": "agara.co.jp",
+          "seendate": "20261112T053000Z"
+        },
+        {
+          "title": "Honoring service , building bonds : Veterans Day events in Northampton , Amherst highlight camaraderie and community",
+          "url": "https://gazettenet.com/2026/11/11/honoring-service-building-bonds-veterans-day-events-in-northampton-amherst-highlight-camaraderie-and-community/",
+          "domain": "gazettenet.com",
+          "seendate": "20261112T034500Z"
+        },
+        {
+          "title": "2027年開始の 「 こどもNISA 」、 毎月いくら積み立てる ？ 全国平均は1万4 , 012円｜共同通信PRワイヤー プレスリリース｜京都新聞デジタル 京都 ・ 滋賀のニュースサイト",
+          "url": "https://www.kyoto-np.co.jp/ud/pressrelease/6af52be7126217118b000000",
+          "domain": "kyoto-np.co.jp",
+          "seendate": "20261112T034500Z"
+        },
+        {
+          "title": "比亞迪遭美軍駐日基地禁入 ？ 嘉手納空軍基地拒絕所有比亞迪車輛進出 | 國際車訊",
+          "url": "https://autos.udn.com/autos/story/7826/9865534",
+          "domain": "autos.udn.com",
+          "seendate": "20261112T033000Z"
+        },
+        {
+          "title": "自民党沖縄県連が党本部に申し入れをすると … ",
+          "url": "https://www.y-mainichi.co.jp/news/42961/",
+          "domain": "y-mainichi.co.jp",
+          "seendate": "20261111T023000Z"
+        },
+        {
+          "title": "熊本の防災士6倍 「 今なら力に 」、 16年地震から急増 避難所でも支援",
+          "url": "https://www.nikkei.com/article/DGXZQOUD30CX70Q6A031C2000000/",
+          "domain": "nikkei.com",
+          "seendate": "20261111T023000Z"
+        },
+        {
+          "title": "自民党沖縄県連が党本部に申し入れをすると … ",
+          "url": "https://www.y-mainichi.co.jp/news/42961",
+          "domain": "y-mainichi.co.jp",
+          "seendate": "20261111T023000Z"
+        },
+        {
+          "title": "Warnings of Okinawa terrorism",
+          "url": "https://spacewar.com/warnings-of-okinawa-terrorism-999/",
+          "domain": "spacewar.com",
+          "seendate": "20261111T013000Z"
+        },
+        {
+          "title": " 〈 視点 〉 中国の認知戦 沖縄帰属疑義の狙いは 論説委員 ・ 新貝憲弘 ： 東京新聞デジタル",
+          "url": "https://www.tokyo-np.co.jp:443/article/527361",
+          "domain": "tokyo-np.co.jp",
+          "seendate": "20261111T010000Z"
+        }
+      ]
+    },
+    "henoko": {
+      "status": "ok",
+      "value": 100,
+      "date": "2026-11-14",
+      "error": null,
+      "article_count": 50,
+      "articles": [
+        {
+          "title": "2027年開始の 「 こどもNISA 」、 毎月いくら積み立てる ？ 全国平均は1万4 , 012円 ： 紀伊民報AGARA｜和歌山県のニュースサイト",
+          "url": "https://www.agara.co.jp/article/711529",
+          "domain": "agara.co.jp",
+          "seendate": "20261112T053000Z"
+        },
+        {
+          "title": "2027年開始の 「 こどもNISA 」、 毎月いくら積み立てる ？ 全国平均は1万4 , 012円｜共同通信PRワイヤー プレスリリース｜京都新聞デジタル 京都 ・ 滋賀のニュースサイト",
+          "url": "https://www.kyoto-np.co.jp/ud/pressrelease/6af52be7126217118b000000",
+          "domain": "kyoto-np.co.jp",
+          "seendate": "20261112T034500Z"
+        },
+        {
+          "title": "比亞迪遭美軍駐日基地禁入 ？ 嘉手納空軍基地拒絕所有比亞迪車輛進出 | 國際車訊",
+          "url": "https://autos.udn.com/autos/story/7826/9865534",
+          "domain": "autos.udn.com",
+          "seendate": "20261112T033000Z"
+        },
+        {
+          "title": "自民党沖縄県連が党本部に申し入れをすると … ",
+          "url": "https://www.y-mainichi.co.jp/news/42961/",
+          "domain": "y-mainichi.co.jp",
+          "seendate": "20261111T023000Z"
+        },
+        {
+          "title": "熊本の防災士6倍 「 今なら力に 」、 16年地震から急増 避難所でも支援",
+          "url": "https://www.nikkei.com/article/DGXZQOUD30CX70Q6A031C2000000/",
+          "domain": "nikkei.com",
+          "seendate": "20261111T023000Z"
+        },
+        {
+          "title": "自民党沖縄県連が党本部に申し入れをすると … ",
+          "url": "https://www.y-mainichi.co.jp/news/42961",
+          "domain": "y-mainichi.co.jp",
+          "seendate": "20261111T023000Z"
+        },
+        {
+          "title": "Warnings of Okinawa terrorism",
+          "url": "https://spacewar.com/warnings-of-okinawa-terrorism-999/",
+          "domain": "spacewar.com",
+          "seendate": "20261111T013000Z"
+        },
+        {
+          "title": "Photographic memory : Former Navy chaplains reunite , reminisce over WWII - era photo",
+          "url": "https://www.altoonamirror.com/news/local-news/2026/11/photographic-memory-former-navy-chaplains-reunite-reminisce-over-wwii-era-photo/",
+          "domain": "altoonamirror.com",
+          "seendate": "20261110T053000Z"
+        },
+        {
+          "title": "  내 사이다 발언에 열광 ? 나도 믿지 말라  신숙옥의 당부",
+          "url": "https://www.ohmynews.com/NWS_Web/View/at_pg.aspx?CNTN_CD=A0003283252&PAGE_CD=ET001&BLCK_NO=1&CMPT_CD=T0016",
+          "domain": "ohmynews.com",
+          "seendate": "20261110T033000Z"
+        },
+        {
+          "title": "高儀 ( Takagi ) EARTH MAN 斬丸×龍宝丸 現場で一発チップソー研磨機 シルバー 研磨 工業用ダイヤモンド研磨 刈払機 回転 研ぎ 研ぐ",
+          "url": "https://www.cronicadechihuahua.com/ja-jp/products/WI5175478",
+          "domain": "cronicadechihuahua.com",
+          "seendate": "20261110T020000Z"
+        }
+      ]
+    },
+    "us_defense_budget": {
+      "status": "ok",
+      "value": 100,
+      "date": "2026-11-14",
+      "error": null,
+      "article_count": 50,
+      "articles": [
+        {
+          "title": "TMZ , NYP  The Low Down : Inside Pete Hegseth Looming Impeachment",
+          "url": "https://www.tmz.com/2026/11/13/inside-pete-hegseth-impeachment-push/",
+          "domain": "tmz.com",
+          "seendate": "20261113T180000Z"
+        },
+        {
+          "title": "Guerre en Iran : entre Donald Trump et J . D . Vance , le divorce est - il consommé ? ",
+          "url": "https://www.lexpress.fr/monde/proche-moyen-orient/guerre-en-iran-entre-donald-trump-et-jd-vance-le-divorce-est-il-consomme-K2K3WRTGPVDPZPPNK74G44XKU4/",
+          "domain": "lexpress.fr",
+          "seendate": "20261113T180000Z"
+        },
+        {
+          "title": "Researchers seek ghost - like particles deep in Lake Superior",
+          "url": "https://www.wadenapj.com/news/minnesota/researchers-seek-ghost-like-particles-deep-in-lake-superior",
+          "domain": "wadenapj.com",
+          "seendate": "20261113T180000Z"
+        },
+        {
+          "title": " [ 인천 행정기상도 ] 계양구 입주대책 미확정  흐림 … 인천시 백령공항 심사 통과  구름조금  ",
+          "url": "https://www.nspna.com/country/?mode=view&newsid=836223",
+          "domain": "nspna.com",
+          "seendate": "20261113T180000Z"
+        },
+        {
+          "title": "Труд : Премьер Польши собрался устроить ИИ - революцию",
+          "url": "https://www.trud.ru/article/13-11-2026/1853701_premjer_polshi_sobralsja_ustroit_ii-revoljutsiju.html",
+          "domain": "trud.ru",
+          "seendate": "20261113T180000Z"
+        },
+        {
+          "title": "Republicans wont recover until they stop enabling MAGA madness – Pasadena Star News",
+          "url": "https://www.pasadenastarnews.com/2026/11/13/republicans-wont-recover-until-they-stop-enabling-maga-madness/",
+          "domain": "pasadenastarnews.com",
+          "seendate": "20261113T180000Z"
+        },
+        {
+          "title": "BLS to Release October 2026 Consumer and Producer Price Indexes in Week of November 9 – 13",
+          "url": "https://newsroomamerica.com/a/W8cSAccgned4ZWCcBYTiRy1hvuY/the_bureau_of_labor_statistics_has_published_its_weekly_schedule_of_economic_news_releases_including_october_2026_cpi_ppi_and_real_earnings_data_plus_upcoming_reports_through_early_december.html",
+          "domain": "newsroomamerica.com",
+          "seendate": "20261113T180000Z"
+        },
+        {
+          "title": "Иран заявляет , что нанес удар по американской РЛС в Бахрейне ( Al Jazeera , Катар ) ",
+          "url": "https://inosmi.ru/20261113/iran_ssha-281176909.html",
+          "domain": "inosmi.ru",
+          "seendate": "20261113T180000Z"
+        },
+        {
+          "title": "黄仁勋为什么辞职 ？ 从公司治理到危机公关 | www . wenxuecity . com",
+          "url": "https://www.wenxuecity.com/blog/202611/71138/9662.html",
+          "domain": "wenxuecity.com",
+          "seendate": "20261113T180000Z"
+        },
+        {
+          "title": "Will Democrats try to strip US - Israel initiative from Pentagon funding ? ",
+          "url": "https://www.aljazeera.com/news/2026/11/13/will-democrats-try-to-strip-us-israel-initiative-from-pentagon-funding",
+          "domain": "aljazeera.com",
+          "seendate": "20261113T180000Z"
+        }
+      ]
+    },
+    "trump_defense": {
+      "status": "failed",
+      "value": null,
+      "date": null,
+      "error": "HTTP 429",
+      "article_count": 0,
+      "articles": []
+    },
+    "us_economy_stress": {
+      "status": "ok",
+      "value": 93,
+      "date": "2026-11-14",
+      "error": null,
+      "article_count": 50,
+      "articles": [
+        {
+          "title": "Salariul minim crește , dar nu toate lefurile se măresc",
+          "url": "https://financiarul.ro/economie/ce-salarii-trebuie-marite-cand-creste-salariul-minim-si-de-ce-preturile-nu-cresc-automat/",
+          "domain": "financiarul.ro",
+          "seendate": "20261113T180000Z"
+        },
+        {
+          "title": "The fight over Canadian steelworker jobs",
+          "url": "https://www.aljazeera.com/economy/2026/11/13/the-fight-over-canadian-steelworker-jobs",
+          "domain": "aljazeera.com",
+          "seendate": "20261113T180000Z"
+        },
+        {
+          "title": "State Pension increase April 2027 - full new rates revealed",
+          "url": "https://www.wharfedaleobserver.co.uk/news/national/uk-today/26727574.state-pension-increase-april-2027---full-new-rates-revealed/",
+          "domain": "wharfedaleobserver.co.uk",
+          "seendate": "20261113T180000Z"
+        },
+        {
+          "title": "Vance midterm autopsy falls flat among Republicans",
+          "url": "https://foxreno.com/news/nation-world/vice-president-vances-midterm-election-autopsy-falls-flat-among-republicans-gop-trump-john-kennedy-economy-rrt",
+          "domain": "foxreno.com",
+          "seendate": "20261113T180000Z"
+        },
+        {
+          "title": "Empresas perdieron 231 horas laborables por cortes de luz",
+          "url": "https://www.elnacional.com/2026/11/conindustria-empresas-privadas-perdieron-231-horas-laborables-por-cortes-electricos-entre-julio-y-septiembre/",
+          "domain": "elnacional.com",
+          "seendate": "20261113T180000Z"
+        },
+        {
+          "title": "Ennyit spórolhatna az állam , ha Magyarország bevezetné az eurót",
+          "url": "https://piacesprofit.hu/cikkek/gazdasag/ennyit-sporolhatna-az-allam-ha-magyarorszag-bevezetne-az-eurot.html",
+          "domain": "piacesprofit.hu",
+          "seendate": "20261113T180000Z"
+        },
+        {
+          "title": "Les syndicats de fonctionnaires sortent remontés de Matignon : la CFDT rejoint lappel à la grève le 17 novembre",
+          "url": "https://www.laprovence.com/article/societe/7016084843479514/les-syndicats-de-fonctionnaires-sortent-remontes-de-matignon-la-cfdt-rejoint-lappel-a-la-greve-le-17-novembre",
+          "domain": "laprovence.com",
+          "seendate": "20261113T180000Z"
+        },
+        {
+          "title": "Massachusetts funding bill could boost research",
+          "url": "https://www.bostonglobe.com/2026/11/13/newsletters/massachusetts-drive-economic-development-power-play/",
+          "domain": "bostonglobe.com",
+          "seendate": "20261113T180000Z"
+        },
+        {
+          "title": "USPS plans January shipping rate hikes , citing higher fuel costs",
+          "url": "https://www.turnto23.com/us-news/usps-plans-january-shipping-rate-hikes-citing-higher-fuel-costs",
+          "domain": "turnto23.com",
+          "seendate": "20261113T180000Z"
+        },
+        {
+          "title": "Retailers Sue Federal Regulators in Latest Drama Over Illinoi Credit Card Swipe Fee Law",
+          "url": "https://www.cpapracticeadvisor.com/2026/11/13/retailers-sue-federal-regulators-in-latest-drama-over-illinois-credit-card-swipe-fee-law/193850/",
+          "domain": "cpapracticeadvisor.com",
+          "seendate": "20261113T180000Z"
+        }
+      ]
+    }
+  }
+}
