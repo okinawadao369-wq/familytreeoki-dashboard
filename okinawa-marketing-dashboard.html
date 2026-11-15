@@ -874,6 +874,46 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP','Hiragino
       </table>
     </div>
   </div>
+  <div class="panel" id="estat-rank-panel" style="margin-top:14px;border:1px solid #8b5cf655">
+    <h3>📈 41市町村 基礎統計比較（e-Stat）— 業種に合う市町村を数字で探す</h3>
+    <div class="sec-sub" style="margin-bottom:8px">購買力・子育て世帯・人の流入・昼間人口・同業の多さを並べ替えて比較。上の業種を変えると「同業密度」の業種も連動します。<b>AXISスコア・GO判定には使っていない参考表示</b>です。</div>
+    <div class="filter-row">
+      <select id="estat-rank-key" onchange="renderEstatRank()">
+        <option value="inc">購買力：1納税者当たり課税対象所得</option>
+        <option value="kid">子育て世帯：0〜5歳人口の割合</option>
+        <option value="fto">子育て×購買力（県比の積）</option>
+        <option value="migr">人の流入：転入超過率（千人当たり）</option>
+        <option value="mig">人の流入：転入超過数</option>
+        <option value="day">昼間人口：昼夜間人口比率</option>
+        <option value="young">若さ：高齢化率が低い順</option>
+        <option value="dens">競合：同業の密度</option>
+      </select>
+      <select id="estat-rank-cat" onchange="renderEstatRank()">
+        <option value="7">同業＝小売業</option>
+        <option value="8">同業＝宿泊業・飲食サービス業</option>
+        <option value="9">同業＝生活関連サービス業・娯楽業</option>
+        <option value="10" selected>同業＝医療・福祉</option>
+        <option value="11">同業＝一般診療所</option>
+      </select>
+      <select id="estat-rank-order" onchange="renderEstatRank()">
+        <option value="desc">上位から</option>
+        <option value="asc">下位から</option>
+      </select>
+      <label style="font-size:11px;display:flex;align-items:center;gap:4px"><input type="checkbox" id="estat-rank-small" checked onchange="renderEstatRank()">人口5,000人未満を除く</label>
+    </div>
+    <div id="estat-rank-note" style="font-size:11px;color:var(--text2);margin:4px 0 8px"></div>
+    <div style="overflow-x:auto;max-height:520px;overflow-y:auto">
+      <table style="width:100%;border-collapse:collapse;font-size:11px">
+        <thead><tr style="background:var(--card-bg2);color:var(--gold);position:sticky;top:0">
+          <th style="padding:6px">順位</th><th style="padding:6px;text-align:left">市町村</th><th style="padding:6px;text-align:left">並べ替え値</th>
+          <th style="padding:6px;text-align:right">所得(千円)</th><th style="padding:6px;text-align:right">0〜5歳</th><th style="padding:6px;text-align:right">高齢化率</th>
+          <th style="padding:6px;text-align:right">転入超過</th><th style="padding:6px;text-align:right">昼夜間比</th>
+          <th style="padding:6px;text-align:right" id="estat-rank-denshead">同業密度</th><th style="padding:6px;text-align:right">人口</th></tr></thead>
+        <tbody id="estat-rank-body"></tbody>
+      </table>
+    </div>
+    <div style="font-size:9px;color:var(--text2);margin-top:6px">出典: 総務省統計局 e-Stat「統計でみる市区町村のすがた」（課税対象所得＝市町村税課税状況等の調、人口・年齢＝国勢調査、転入転出＝住民基本台帳人口移動報告、事業所＝経済センサス‐活動調査）を koya が集計。課税対象所得は納税義務者1人当たりで世帯所得ではない。同業密度は住民千人当たりのため、観光地・商業集積地（昼夜間比が高い所）は高く出やすい。小規模町村は数値の振れが大きい。</div>
+  </div>
 </div>
 
 <!-- TAB 9: 行事カレンダー -->
@@ -1385,7 +1425,7 @@ function showTab(id){
   if(id==='t4') setTimeout(initTab4,50);
   if(id==='t5') setTimeout(initTab5,50);
   if(id==='t6') setTimeout(initTab6,50);
-  if(id==='t8') setTimeout(initTab8,50);
+  if(id==='t8'){ setTimeout(initTab8,50); setTimeout(()=>{try{renderEstatRank()}catch(e){}},120); }
   if(id==='t9') setTimeout(initTab9,50);
   if(id==='t11') setTimeout(initTab11,50);
   if(id==='t12') setTimeout(initTab12,50);
@@ -1865,6 +1905,69 @@ function renderEstat(muni,biz){
    ${comp}
    <div style="font-size:9px;color:var(--text2)">出典: 総務省統計局 e-Stat「統計でみる市区町村のすがた（社会・人口統計体系）」を koya が集計（課税対象所得は総務省「市町村税課税状況等の調」、事業所数は経済センサス‐活動調査）。課税対象所得は納税義務者（所得割）1人当たりで、世帯所得ではない。<b>この情報はGO判定・スコアには使っていない（参考表示）</b>。</div>`;
 }
+// === e-Stat 41市町村比較（参考表示・スコア非連動） ===
+const ESTAT_RANK_COLS = {
+  inc:  {lbl:'1納税者当たり課税対象所得', unit:'千円', d:0, get:r=>r[0], yr:()=>ESTAT_YEARS.C120110},
+  kid:  {lbl:'0〜5歳人口の割合', unit:'%', d:1, get:r=>r[2], yr:()=>ESTAT_YEARS.A1101},
+  mig:  {lbl:'転入超過（転入−転出）', unit:'人', d:0, get:r=>r[4], yr:()=>ESTAT_YEARS.A5103},
+  migr: {lbl:'転入超過率（人口千人当たり）', unit:'‰', d:1, get:r=>(r[4]!=null&&r[12])?r[4]/r[12]*1000:null, yr:()=>ESTAT_YEARS.A5103},
+  day:  {lbl:'昼夜間人口比率', unit:'', d:1, get:r=>r[5], yr:()=>ESTAT_YEARS.A6108},
+  young:{lbl:'高齢化率の低さ', unit:'%', d:1, get:r=>r[1], yr:()=>ESTAT_YEARS.A1101, asc:true},
+  dens: {lbl:'同業の密度（人口千人当たり事業所）', unit:'', d:2, get:null, yr:()=>ESTAT_YEARS.C2108},
+  fto:  {lbl:'子育て×購買力（県比の積・参考）', unit:'', d:2, get:null, yr:()=>ESTAT_YEARS.C120110}
+};
+const ESTAT_CAT_LABEL = {7:'小売業',8:'宿泊業・飲食サービス業',9:'生活関連サービス業・娯楽業',10:'医療・福祉',11:'一般診療所'};
+const T8_BIZ_TO_CAT = {maternity:10,medical:11,childcare:10,restaurant:8,premium:8,tourism:8,retail:7,salon:9};
+function renderEstatRank(){
+  const el=document.getElementById('estat-rank-body'); if(!el||typeof ESTAT_MUNI==='undefined') return;
+  const key=(document.getElementById('estat-rank-key')||{}).value||'inc';
+  const cat=+((document.getElementById('estat-rank-cat')||{}).value||10);
+  const exSmall=(document.getElementById('estat-rank-small')||{}).checked;
+  const order=(document.getElementById('estat-rank-order')||{}).value||'desc';
+  const P=ESTAT_MUNI['_県計'];
+  const per1k=(r)=>(r[cat]!=null&&r[12])?r[cat]/r[12]*1000:null;
+  const pDen=per1k(P);
+  const val=(r)=>{
+    if(key==='dens') return per1k(r);
+    if(key==='fto') return (r[0]!=null&&r[2]!=null)?(r[0]/P[0])*(r[2]/P[2]):null;
+    return ESTAT_RANK_COLS[key].get(r);
+  };
+  let rows=Object.keys(ESTAT_MUNI).filter(m=>m!=='_県計').map(m=>({m,r:ESTAT_MUNI[m],v:val(ESTAT_MUNI[m])}))
+    .filter(x=>x.v!=null&&isFinite(x.v));
+  const nAll=rows.length;
+  if(exSmall) rows=rows.filter(x=>(x.r[12]||0)>=5000);
+  let asc=ESTAT_RANK_COLS[key].asc?true:false; if(order==='asc') asc=!asc;
+  rows.sort((a,b)=>asc?a.v-b.v:b.v-a.v);
+  const vs=rows.map(x=>x.v), mx=Math.max(...vs.map(Math.abs),1e-9);
+  const f=(v,d=0)=>v==null||!isFinite(v)?'—':Number(v).toLocaleString(undefined,{maximumFractionDigits:d,minimumFractionDigits:d});
+  const C=ESTAT_RANK_COLS[key];
+  const pv = key==='dens'?pDen : key==='fto'?1 : val(P);
+  document.getElementById('estat-rank-note').innerHTML=
+    `並べ替え: <b>${C.lbl}${key==='dens'?'（'+ESTAT_CAT_LABEL[cat]+'）':''}</b>（${C.yr()}年）／県全体 ${f(pv,C.d)}${C.unit}／表示 ${rows.length}市町村${exSmall?`（人口5,000人未満の${nAll-rows.length}町村を除外）`:''}`;
+  el.innerHTML=rows.map((x,i)=>{
+    const r=x.r, d=per1k(r), dq=(d!=null&&pDen)?d/pDen:null;
+    const w=Math.max(2,Math.abs(x.v)/mx*100), neg=x.v<0;
+    const col=key==='dens'?(dq>=1.3?'var(--red)':dq<=0.7?'var(--green)':'var(--blue)'):(neg?'var(--red)':'var(--teal,#14B8A6)');
+    return `<tr style="border-bottom:1px solid #ffffff10">
+      <td style="padding:4px 6px;text-align:center;color:var(--text2)">${i+1}</td>
+      <td style="padding:4px 6px;white-space:nowrap">${x.m}</td>
+      <td style="padding:4px 6px;min-width:120px"><div style="display:flex;align-items:center;gap:6px"><div style="height:8px;width:${w.toFixed(0)}%;background:${col};border-radius:3px"></div><span style="font-size:10px;white-space:nowrap">${f(x.v,C.d)}</span></div></td>
+      <td style="padding:4px 6px;text-align:right">${f(r[0])}</td>
+      <td style="padding:4px 6px;text-align:right">${f(r[2],1)}%</td>
+      <td style="padding:4px 6px;text-align:right">${f(r[1],1)}%</td>
+      <td style="padding:4px 6px;text-align:right;color:${r[4]>0?'var(--green)':r[4]<0?'var(--red)':'inherit'}">${r[4]>0?'+':''}${f(r[4])}</td>
+      <td style="padding:4px 6px;text-align:right">${f(r[5],1)}</td>
+      <td style="padding:4px 6px;text-align:right">${f(d,2)}${dq==null?'':` <span style="font-size:9px;color:${dq>=1.3?'var(--red)':dq<=0.7?'var(--green)':'var(--text2)'}">(${dq.toFixed(1)}倍)</span>`}</td>
+      <td style="padding:4px 6px;text-align:right;color:var(--text2)">${f(r[12])}</td></tr>`;}).join('');
+  const th=document.getElementById('estat-rank-denshead'); if(th) th.textContent=`同業密度（${ESTAT_CAT_LABEL[cat]}）`;
+}
+function syncEstatRankCat(){
+  const b=(document.getElementById('biz-type')||{}).value, s=document.getElementById('estat-rank-cat');
+  if(s&&T8_BIZ_TO_CAT[b]!=null){ s.value=String(T8_BIZ_TO_CAT[b]); renderEstatRank(); }
+}
+(function(){ const go=()=>{ try{ const bt=document.getElementById('biz-type'); if(bt) bt.addEventListener('change',syncEstatRankCat); syncEstatRankCat(); renderEstatRank(); }catch(e){ console.warn('estat rank',e); } };
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',go); else go(); })();
+
 function runDiagnosis(){
   const muni = document.getElementById('d-muni').value;
   const district = document.getElementById('d-district').value.trim();
