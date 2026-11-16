@@ -1,8 +1,8 @@
 {
-  "fetched_at": "2026-11-15T10:29:59.818+09:00",
+  "fetched_at": "2026-11-16T10:33:05.577+09:00",
   "fred_ok_count": 9,
   "fred_total": 9,
-  "gdelt_ok_count": 0,
+  "gdelt_ok_count": 3,
   "gdelt_total": 8,
   "fred": {
     "DEXJPUS": {
@@ -1132,42 +1132,225 @@
   },
   "gdelt": {
     "taiwan_strait": {
-      "status": "failed",
-      "value": null,
-      "date": null,
-      "error": "HTTP 429",
-      "article_count": 0,
-      "articles": []
+      "status": "ok",
+      "value": 100,
+      "date": "2026-11-16",
+      "error": null,
+      "article_count": 50,
+      "articles": [
+        {
+          "title": "帕拉桌球世錦賽林姿妤 ／ 田曉雯女雙奪金 首局失利後3比1逆轉中國組合",
+          "url": "https://n.yam.com/Article/20261115568103",
+          "domain": "n.yam.com",
+          "seendate": "20261115T074500Z"
+        },
+        {
+          "title": "Global economy to grow 2 . 8 % in 2027 , buoyed by lower oil prices and AI investments : Goldman Sachs",
+          "url": "https://www.thehindubusinessline.com/economy/global-economy-to-grow-28-in-2027-buoyed-by-lower-oil-prices-and-ai-investments-goldman-sachs/article71704111.ece",
+          "domain": "thehindubusinessline.com",
+          "seendate": "20261115T074500Z"
+        },
+        {
+          "title": "最黑暗一天 ！ 沈伯洋 「 惹怒2大動漫粉 」 初音競選歌炎上 本人回應了",
+          "url": "https://www.ettoday.net/news/20261115/3272561.htm",
+          "domain": "ettoday.net",
+          "seendate": "20261115T074500Z"
+        },
+        {
+          "title": "逾5500名跑者齊聚中央球場 ！ 「 慵懶跑者聚樂部 」 活力開跑",
+          "url": "https://n.yam.com/Article/20261115498835",
+          "domain": "n.yam.com",
+          "seendate": "20261115T074500Z"
+        },
+        {
+          "title": "貴族世家跨足個人燒肉市場 全台首店進駐台北大安區",
+          "url": "https://n.yam.com/Article/20261115291670",
+          "domain": "n.yam.com",
+          "seendate": "20261115T074500Z"
+        },
+        {
+          "title": "2026日月潭花火嘉年華震撼落幕成功吸客3 . 1萬人 ！ 打造臺灣國際級藝文永續觀光新標竿",
+          "url": "https://n.yam.com/Article/20261115169478",
+          "domain": "n.yam.com",
+          "seendate": "20261115T074500Z"
+        },
+        {
+          "title": "Saturday Night Live mocks Nvidia boss Chinese spy affair scandal as Bowen Yang makes surprise return as Jensen Huang",
+          "url": "https://www.dailymail.com/news/article-16293845/Saturday-Night-Live-Nvidia-boss-Chinese-spy-affair.html",
+          "domain": "dailymail.com",
+          "seendate": "20261115T074500Z"
+        },
+        {
+          "title": "陳秀梅5號競選總部成立大會熱鬧登場 「 一人當選 、 二人服務 」 凝聚鄉親力量 堅決反對名間焚化爐守護茶鄉",
+          "url": "https://n.yam.com/Article/20261115243281",
+          "domain": "n.yam.com",
+          "seendate": "20261115T074500Z"
+        },
+        {
+          "title": "面對台當局小動作 ， 馬來西亞總理重申堅持一個中國政策",
+          "url": "https://www.hkcna.hk/hk/content/s6af917e9e4b089a2db400e28.html",
+          "domain": "hkcna.hk",
+          "seendate": "20261115T074500Z"
+        },
+        {
+          "title": "从无障碍改造到服务规范 ， 提质焕新 ！ 文旅全链条适老化标准体系逐步成型 - 聚焦",
+          "url": "https://www.fjsen.com/2026-11/15/content_32283676.htm",
+          "domain": "fjsen.com",
+          "seendate": "20261115T074500Z"
+        }
+      ]
     },
     "north_korea": {
       "status": "failed",
       "value": null,
       "date": null,
-      "error": "HTTP 429",
+      "error": "This operation was aborted",
       "article_count": 0,
       "articles": []
     },
     "indopacific": {
-      "status": "failed",
-      "value": null,
-      "date": null,
-      "error": "HTTP 429",
-      "article_count": 0,
-      "articles": []
+      "status": "ok",
+      "value": 100,
+      "date": "2026-11-16",
+      "error": null,
+      "article_count": 50,
+      "articles": [
+        {
+          "title": "Trump to start new nuclear talks with Russia , China next week",
+          "url": "https://www.fox32chicago.com/news/trump-start-new-nuclear-talks-russia-china-next-week",
+          "domain": "fox32chicago.com",
+          "seendate": "20261115T074500Z"
+        },
+        {
+          "title": "Pentagonas Europoje gali sumažinti JAV pajėgų gretas mažiau , nei planuota",
+          "url": "https://www.lrt.lt/naujienos/pasaulyje/6/3115024/pentagonas-europoje-gali-sumazinti-jav-pajegu-gretas-maziau-nei-planuota",
+          "domain": "lrt.lt",
+          "seendate": "20261115T074500Z"
+        },
+        {
+          "title": "USA ograniczą obecność wojskową w Europie ? Media ujawniają szczegóły",
+          "url": "https://www.fakt.pl/polityka/usa-ogranicza-obecnosc-wojskowa-w-europie-media-ujawniaja-szczegoly/8cb1pdr",
+          "domain": "fakt.pl",
+          "seendate": "20261115T074500Z"
+        },
+        {
+          "title": "Trump , Xi and Putin plan joint meeting",
+          "url": "https://nagalandpost.com/trump-xi-and-putin-plan-joint-meeting/",
+          "domain": "nagalandpost.com",
+          "seendate": "20261115T074500Z"
+        },
+        {
+          "title": "Donald Trump , așteptat în Filipine la summitul ASEAN . Aproape 20 . 000 de polițiști , mobilizați înaintea protestelor anunțate",
+          "url": "https://ziare.com/summit-asean/donald-trump-filipine-proteste-2047771",
+          "domain": "ziare.com",
+          "seendate": "20261115T074500Z"
+        },
+        {
+          "title": "IRAN SHOWDOWN : Trump Weighs Halting New Strikes Despite Israeli Pressure As U . S . Tightens Economic Blockade",
+          "url": "https://www.theyeshivaworld.com/news/israel-news/2623104/iran-showdown-trump-weighs-halting-new-strikes-despite-israeli-pressure-as-u-s-tightens-economic-blockade.html",
+          "domain": "theyeshivaworld.com",
+          "seendate": "20261114T210000Z"
+        },
+        {
+          "title": "Trump , Xi et Poutine prévoient une rencontre conjointe en marge de lAPEC",
+          "url": "https://lactualite.com/actualites/trump-xi-et-poutine-prevoient-une-rencontre-conjointe-en-marge-de-lapec/",
+          "domain": "lactualite.com",
+          "seendate": "20261114T210000Z"
+        },
+        {
+          "title": "Betraying America military and the Constitution they swore to defend",
+          "url": "https://augustafreepress.com/news/john-whitehead-betraying-americas-military-and-the-constitution-they-swore-to-defend/",
+          "domain": "augustafreepress.com",
+          "seendate": "20261114T200000Z"
+        },
+        {
+          "title": "Trump , Xi and Putin plan an unprecedented joint meeting , White House says",
+          "url": "https://www.kcbd.com/2026/11/14/trump-xi-putin-plan-an-unprecedented-joint-meeting-white-house-says/",
+          "domain": "kcbd.com",
+          "seendate": "20261114T200000Z"
+        },
+        {
+          "title": "Труд : Премьер Польши собрался устроить ИИ - революцию",
+          "url": "https://www.trud.ru/article/13-11-2026/1853701_premjer_polshi_sobralsja_ustroit_ii-revoljutsiju.html",
+          "domain": "trud.ru",
+          "seendate": "20261113T180000Z"
+        }
+      ]
     },
     "usfj_okinawa": {
-      "status": "failed",
-      "value": null,
-      "date": null,
-      "error": "HTTP 429",
-      "article_count": 0,
-      "articles": []
+      "status": "ok",
+      "value": 100,
+      "date": "2026-11-16",
+      "error": null,
+      "article_count": 50,
+      "articles": [
+        {
+          "title": "Germany bans Dji drones at military bases immediately",
+          "url": "https://www.el-balad.com/17066100",
+          "domain": "el-balad.com",
+          "seendate": "20261112T070000Z"
+        },
+        {
+          "title": "2027年開始の 「 こどもNISA 」、 毎月いくら積み立てる ？ 全国平均は1万4 , 012円 ： 紀伊民報AGARA｜和歌山県のニュースサイト",
+          "url": "https://www.agara.co.jp/article/711529",
+          "domain": "agara.co.jp",
+          "seendate": "20261112T053000Z"
+        },
+        {
+          "title": "Honoring service , building bonds : Veterans Day events in Northampton , Amherst highlight camaraderie and community",
+          "url": "https://gazettenet.com/2026/11/11/honoring-service-building-bonds-veterans-day-events-in-northampton-amherst-highlight-camaraderie-and-community/",
+          "domain": "gazettenet.com",
+          "seendate": "20261112T034500Z"
+        },
+        {
+          "title": "2027年開始の 「 こどもNISA 」、 毎月いくら積み立てる ？ 全国平均は1万4 , 012円｜共同通信PRワイヤー プレスリリース｜京都新聞デジタル 京都 ・ 滋賀のニュースサイト",
+          "url": "https://www.kyoto-np.co.jp/ud/pressrelease/6af52be7126217118b000000",
+          "domain": "kyoto-np.co.jp",
+          "seendate": "20261112T034500Z"
+        },
+        {
+          "title": "比亞迪遭美軍駐日基地禁入 ？ 嘉手納空軍基地拒絕所有比亞迪車輛進出 | 國際車訊",
+          "url": "https://autos.udn.com/autos/story/7826/9865534",
+          "domain": "autos.udn.com",
+          "seendate": "20261112T033000Z"
+        },
+        {
+          "title": "自民党沖縄県連が党本部に申し入れをすると … ",
+          "url": "https://www.y-mainichi.co.jp/news/42961/",
+          "domain": "y-mainichi.co.jp",
+          "seendate": "20261111T023000Z"
+        },
+        {
+          "title": "熊本の防災士6倍 「 今なら力に 」、 16年地震から急増 避難所でも支援",
+          "url": "https://www.nikkei.com/article/DGXZQOUD30CX70Q6A031C2000000/",
+          "domain": "nikkei.com",
+          "seendate": "20261111T023000Z"
+        },
+        {
+          "title": "自民党沖縄県連が党本部に申し入れをすると … ",
+          "url": "https://www.y-mainichi.co.jp/news/42961",
+          "domain": "y-mainichi.co.jp",
+          "seendate": "20261111T023000Z"
+        },
+        {
+          "title": "Warnings of Okinawa terrorism",
+          "url": "https://spacewar.com/warnings-of-okinawa-terrorism-999/",
+          "domain": "spacewar.com",
+          "seendate": "20261111T013000Z"
+        },
+        {
+          "title": " 〈 視点 〉 中国の認知戦 沖縄帰属疑義の狙いは 論説委員 ・ 新貝憲弘 ： 東京新聞デジタル",
+          "url": "https://www.tokyo-np.co.jp:443/article/527361",
+          "domain": "tokyo-np.co.jp",
+          "seendate": "20261111T010000Z"
+        }
+      ]
     },
     "henoko": {
       "status": "failed",
       "value": null,
       "date": null,
-      "error": "HTTP 429",
+      "error": "This operation was aborted",
       "article_count": 0,
       "articles": []
     },
@@ -1175,7 +1358,7 @@
       "status": "failed",
       "value": null,
       "date": null,
-      "error": "HTTP 429",
+      "error": "This operation was aborted",
       "article_count": 0,
       "articles": []
     },
@@ -1183,7 +1366,7 @@
       "status": "failed",
       "value": null,
       "date": null,
-      "error": "HTTP 429",
+      "error": "This operation was aborted",
       "article_count": 0,
       "articles": []
     },
@@ -1191,7 +1374,7 @@
       "status": "failed",
       "value": null,
       "date": null,
-      "error": "HTTP 429",
+      "error": "This operation was aborted",
       "article_count": 0,
       "articles": []
     }
