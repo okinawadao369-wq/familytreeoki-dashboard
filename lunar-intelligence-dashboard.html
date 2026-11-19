@@ -2752,23 +2752,23 @@ function initGeopoliticsTab() {
 
   // Historical events table
   const events = [
-    {date:'1991-01-17',moon:'🌑新月',event:'湾岸戦争（砂漠の嵐作戦開始）',impact:'-4.8%',asset:'原油+40%',m_score:'88',note:'新月=開戦'},
-    {date:'1998-08-17',moon:'🌗下弦',event:'ロシア財政危機・ルーブル暴落',impact:'-15%',asset:'RUB崩壊',m_score:'71','note':''},
-    {date:'2001-09-11',moon:'🌓上弦',event:'9.11同時多発テロ',impact:'-11.6%',asset:'金+5%',m_score:'95',note:'上弦'},
-    {date:'2003-03-20',moon:'🌑新月直前',event:'イラク戦争開始',impact:'+3.5%',asset:'原油+8%',m_score:'82',note:'戦争=買い'},
-    {date:'2006-07-12',moon:'🌕満月',event:'レバノン戦争（ヒズボラvsイスラエル）',impact:'-2.1%',asset:'原油+4%',m_score:'72',note:'満月発動★'},
-    {date:'2008-08-08',moon:'🌕満月',event:'ロシア・ジョージア戦争',impact:'-3.2%',asset:'ルーブル-20%',m_score:'78',note:'満月発動★'},
-    {date:'2011-03-19',moon:'🌕スーパームーン',event:'リビア軍事介入(NATO)',impact:'-1.8%',asset:'金+3%',m_score:'61',note:'スーパームーン★'},
-    {date:'2014-02-27',moon:'🌑新月直後',event:'ロシア・クリミア併合',impact:'-3.1%',asset:'ウクライナHRV-30%',m_score:'91',note:'新月翌日'},
-    {date:'2016-06-23',moon:'🌔十三夜',event:'Brexit国民投票',impact:'-3.6%',asset:'GBP-11%',m_score:'44',note:''},
-    {date:'2019-09-14',moon:'🌕満月',event:'サウジアラビア石油施設攻撃',impact:'+0.8%',asset:'原油+15%',m_score:'69',note:'満月発動★'},
-    {date:'2020-01-03',moon:'🌘晦日月',event:'イラン・ソレイマニ司令官暗殺',impact:'-0.7%',asset:'原油+4%',m_score:'80',note:'晦日月'},
-    {date:'2022-02-24',moon:'🌓上弦',event:'ロシア ウクライナ全面侵攻',impact:'-2.5%',asset:'原油+40%',m_score:'98',note:'上弦後4日'},
-    {date:'2023-10-07',moon:'🌔十三夜',event:'ハマス・イスラエル攻撃（ガザ戦争）',impact:'-2.2%',asset:'金+5%',m_score:'77',note:'満月直前★'},
-    {date:'2024-04-01',moon:'🌕満月直後',event:'イスラエル・イラン相互攻撃',impact:'-1.5%',asset:'原油+6%',m_score:'82',note:'満月翌日★'},
-    {date:'2025-04-02',moon:'🌑新月直後',event:'米国相互関税発動（トランプ）',impact:'-9.1%',asset:'USD-3%',m_score:'55',note:''},
-    {date:'2025-08-15',moon:'🌕満月',event:'台湾海峡 中国演習激化',impact:'-3.3%',asset:'USD/TWD',m_score:'88',note:'満月★'},
-    {date:'2026-02-28',moon:'🌓上弦',event:'米・イスラエルのイラン攻撃（イラン戦争開始・ホルムズ海峡封鎖）',impact:'-2.0%',asset:'Brent+37%',m_score:'79',note:'S&P500 2/27→3/6、Brent 2/27→3/9'},
+    {date:'1991-01-17',moon:'🌑新月',event:'湾岸戦争（砂漠の嵐作戦開始）',impact:'-4.8%',asset:'原油+40%',m_score:'88',note:'🌑新月後2日'},
+    {date:'1998-08-17',moon:'🌗下弦',event:'ロシア財政危機・ルーブル暴落',impact:'-15%',asset:'RUB崩壊',m_score:'71',note:'🌑新月前5日'},
+    {date:'2001-09-11',moon:'🌗下弦',event:'9.11同時多発テロ',impact:'-11.6%',asset:'金+5%',m_score:'95',note:'🌑新月前6日'},
+    {date:'2003-03-20',moon:'🌖十六夜',event:'イラク戦争開始',impact:'+3.5%',asset:'原油+8%',m_score:'82',note:'🌕満月後2日'},
+    {date:'2006-07-12',moon:'🌖十六夜',event:'レバノン戦争（ヒズボラvsイスラエル）',impact:'-2.1%',asset:'原油+4%',m_score:'72',note:'🌕満月後1日'},
+    {date:'2008-08-08',moon:'🌒眉月',event:'ロシア・ジョージア戦争',impact:'-3.2%',asset:'ルーブル-20%',m_score:'78',note:'🌑新月後7日'},
+    {date:'2011-03-19',moon:'🌕満月(スーパームーン)',event:'リビア軍事介入(NATO)',impact:'-1.8%',asset:'金+3%',m_score:'61',note:'🌕満月当日'},
+    {date:'2014-02-27',moon:'🌘晦日月',event:'ロシア・クリミア併合',impact:'-3.1%',asset:'ウクライナHRV-30%',m_score:'91',note:'🌑新月前2日'},
+    {date:'2016-06-23',moon:'🌖十六夜',event:'Brexit国民投票',impact:'-3.6%',asset:'GBP-11%',m_score:'44',note:'🌕満月後3日'},
+    {date:'2019-09-14',moon:'🌕満月',event:'サウジアラビア石油施設攻撃',impact:'+0.8%',asset:'原油+15%',m_score:'69',note:'🌕満月当日'},
+    {date:'2020-01-03',moon:'🌓上弦',event:'イラン・ソレイマニ司令官暗殺',impact:'-0.7%',asset:'原油+4%',m_score:'80',note:'🌕満月前7日'},
+    {date:'2022-02-24',moon:'🌗下弦',event:'ロシア ウクライナ全面侵攻',impact:'-2.5%',asset:'原油+40%',m_score:'98',note:'🌑新月前6日'},
+    {date:'2023-10-07',moon:'🌗下弦',event:'ハマス・イスラエル攻撃（ガザ戦争）',impact:'-2.2%',asset:'金+5%',m_score:'77',note:'🌑新月前7日'},
+    {date:'2024-04-01',moon:'🌖十六夜',event:'イスラエル・イラン相互攻撃',impact:'-1.5%',asset:'原油+6%',m_score:'82',note:'🌕満月後7日'},
+    {date:'2025-04-02',moon:'🌒眉月',event:'米国相互関税発動（トランプ）',impact:'-9.1%',asset:'USD-3%',m_score:'55',note:'🌑新月後4日'},
+    {date:'2025-08-15',moon:'🌖十六夜',event:'台湾海峡 中国演習激化',impact:'-3.3%',asset:'USD/TWD',m_score:'88',note:'🌕満月後6日'},
+    {date:'2026-02-28',moon:'🌓上弦',event:'米・イスラエルのイラン攻撃（イラン戦争開始・ホルムズ海峡封鎖）',impact:'-2.0%',asset:'Brent+37%',m_score:'79',note:'🌕満月前3日'},
   ];
   const tbl = document.getElementById('geo-events-table');
   if (!tbl) return;
@@ -2781,7 +2781,7 @@ function initGeopoliticsTab() {
     <td style="font-weight:700;color:${e.impact.startsWith('+')?'#48bb78':e.impact.startsWith('-')?'#fc8181':'#888'};">${e.impact}</td>
     <td style="font-size:0.8rem;color:#aaa;">${e.asset}</td>
     <td style="font-weight:700;color:${parseInt(e.m_score)>=85?'#ff4444':parseInt(e.m_score)>=70?'#ffaa00':'#aaa'};">${e.m_score}</td>
-    <td style="font-size:0.75rem;color:${e.note.includes('★')?'#44ee66':'#666'};">${e.note}</td>
+    <td style="font-size:0.75rem;color:${e.note.includes('当日')?'#ffcc44':'#888'};">${e.note}</td>
   </tr>`).join('')}</tbody>`;
 }
 
@@ -2839,10 +2839,10 @@ function initGreedTab() {
 function initExtremesTab() {
   // Pattern summary KPI
   const patterns = [
-    {label:'新月底打ち率',val:'67%',desc:'17暴落中11回が新月±3日',color:'#4299e1'},
-    {label:'満月天井率',val:'58%',desc:'23バブル天井中13回が満月±5日',color:'#9f7aea'},
-    {label:'VIX最大値日',val:'新月前後多',desc:'2008/2020/2022最高値は新月周辺',color:'#f6ad55'},
-    {label:'暴落継続期間',val:'平均14日',desc:'半月(新月→満月)が最初の反発ゾーン',color:'#68d391'},
+    {label:'新月±3日の暴落',val:'2/10件',desc:'偶然の期待値 約2.4件と同水準（2026-11天文暦で再検証）',color:'#4299e1'},
+    {label:'満月±5日の天井',val:'0/3件',desc:'ITバブル・2007年S&P・BTC 2021年の天井はいずれも新月寄り',color:'#9f7aea'},
+    {label:'VIX最大値日',val:'一貫せず',desc:'2008/10/24新月前4日・2020/3/16満月後7日・2022/3/7新月後5日',color:'#f6ad55'},
+    {label:'結論',val:'月相の偏りなし',desc:'17事例では新月/満月への集中は偶然の範囲（事実A）',color:'#68d391'},
   ];
   const patDiv = document.getElementById('extremes-patterns');
   if (patDiv) patDiv.innerHTML = patterns.map(p=>`
@@ -2854,23 +2854,23 @@ function initExtremesTab() {
 
   // Historical extremes
   const extremes = [
-    {date:'1987-10-19',type:'暴落',event:'ブラックマンデー',moon:'🌕満月後3日',chg:'-22.6%',asset:'DOW',note:'史上最大1日下落★'},
-    {date:'1997-10-27',type:'暴落',event:'アジア通貨危機最大下落',moon:'🌑新月後2日',chg:'-7.2%',asset:'DOW',note:'新月直後★'},
-    {date:'1998-08-31',type:'暴落',event:'ロシア危機・LTCM危機',moon:'🌑新月',chg:'-6.8%',asset:'S&P',note:'新月ピタリ★★'},
-    {date:'2000-03-10',type:'天井',event:'ITバブル天井（ナスダック）',moon:'🌕満月前4日',chg:'ピーク',asset:'NASDAQ',note:'満月前天井★'},
-    {date:'2001-09-17',type:'暴落',event:'9.11後市場再開',moon:'🌓上弦後6日',chg:'-7.1%',asset:'DOW',note:''},
-    {date:'2002-07-23',type:'底',event:'ITバブル最安値',moon:'🌑新月後1日',chg:'底打ち',asset:'NASDAQ',note:'新月翌日底★'},
-    {date:'2007-10-11',type:'天井',event:'S&P500史上最高値(当時)',moon:'🌕満月',chg:'ピーク',asset:'S&P',note:'満月ピタリ天井★★'},
-    {date:'2008-10-10',type:'暴落',event:'リーマン最大パニック週',moon:'🌑新月後1日',chg:'-18.1%(週)',asset:'全市場',note:'新月翌日★★'},
-    {date:'2009-03-09',type:'底',event:'リーマンショック最安値',moon:'🌑新月後4日',chg:'底打ち',asset:'S&P',note:'新月後反発★'},
-    {date:'2010-05-06',type:'暴落',event:'フラッシュクラッシュ',moon:'🌑新月後2日',chg:'-9.2%(分)',asset:'DOW',note:'新月直後★'},
-    {date:'2015-08-24',type:'暴落',event:'チャイナショック',moon:'🌑新月後1日',chg:'-6.6%',asset:'全市場',note:'新月翌日★★'},
-    {date:'2018-12-24',type:'底',event:'クリスマスブラックアウト底',moon:'🌕満月後2日',chg:'底打ち',asset:'S&P',note:'満月後反発'},
-    {date:'2020-03-20',type:'底',event:'コロナパニック最安値',moon:'🌑新月後2日',chg:'-34%(高値比)',asset:'全市場',note:'新月後底★★'},
-    {date:'2021-11-10',type:'天井',event:'BTC史上最高値 $69K',moon:'🌕満月後2日',chg:'ピーク',asset:'BTC',note:'満月後天井★'},
-    {date:'2022-06-16',type:'暴落',event:'FED 0.75%緊急利上げ',moon:'🌑新月後5日',chg:'-23%(年)',asset:'S&P',note:'新月週'},
-    {date:'2023-03-10',type:'暴落',event:'SVB破綻ショック',moon:'🌕満月後2日',chg:'-5.6%(週)',asset:'銀行株',note:'満月後★'},
-    {date:'2024-08-05',type:'暴落',event:'円キャリー巻き戻し',moon:'🌑新月前3日',chg:'-12.4%(日経)',asset:'日経',note:'新月前★★'},
+    {date:'1987-10-19',type:'暴落',event:'ブラックマンデー',moon:'🌑新月前3日',chg:'-22.6%',asset:'DOW',note:''},
+    {date:'1997-10-27',type:'暴落',event:'アジア通貨危機最大下落',moon:'🌑新月前4日',chg:'-7.2%',asset:'DOW',note:''},
+    {date:'1998-08-31',type:'暴落',event:'ロシア危機・LTCM危機',moon:'🌕満月前6日',chg:'-6.8%',asset:'S&P',note:''},
+    {date:'2000-03-10',type:'天井',event:'ITバブル天井（ナスダック）',moon:'🌑新月後4日',chg:'ピーク',asset:'NASDAQ',note:''},
+    {date:'2001-09-17',type:'暴落',event:'9.11後市場再開',moon:'🌑新月当日',chg:'-7.1%',asset:'DOW',note:''},
+    {date:'2002-07-23',type:'底',event:'ITバブル最安値',moon:'🌕満月前1日',chg:'底打ち',asset:'NASDAQ',note:''},
+    {date:'2007-10-11',type:'天井',event:'S&P500史上最高値(当時)',moon:'🌑新月当日',chg:'ピーク',asset:'S&P',note:''},
+    {date:'2008-10-10',type:'暴落',event:'リーマン最大パニック週',moon:'🌕満月前4日',chg:'-18.1%(週)',asset:'全市場',note:''},
+    {date:'2009-03-09',type:'底',event:'リーマンショック最安値',moon:'🌕満月前1日',chg:'底打ち',asset:'S&P',note:''},
+    {date:'2010-05-06',type:'暴落',event:'フラッシュクラッシュ',moon:'🌑新月前7日',chg:'-9.2%(分)',asset:'DOW',note:''},
+    {date:'2015-08-24',type:'暴落',event:'チャイナショック',moon:'🌕満月前5日',chg:'-6.6%',asset:'全市場',note:''},
+    {date:'2018-12-24',type:'底',event:'クリスマスブラックアウト底',moon:'🌕満月後2日',chg:'底打ち',asset:'S&P',note:''},
+    {date:'2020-03-20',type:'底',event:'コロナパニック最安値',moon:'🌑新月前4日',chg:'-34%(高値比)',asset:'全市場',note:''},
+    {date:'2021-11-10',type:'天井',event:'BTC史上最高値 $69K',moon:'🌑新月後6日',chg:'ピーク',asset:'BTC',note:''},
+    {date:'2022-06-16',type:'暴落',event:'FED 0.75%緊急利上げ',moon:'🌕満月後2日',chg:'-23%(年)',asset:'S&P',note:''},
+    {date:'2023-03-10',type:'暴落',event:'SVB破綻ショック',moon:'🌕満月後3日',chg:'-5.6%(週)',asset:'銀行株',note:''},
+    {date:'2024-08-05',type:'暴落',event:'円キャリー巻き戻し',moon:'🌑新月後1日',chg:'-12.4%(日経)',asset:'日経',note:''},
   ];
   const tbl = document.getElementById('extremes-table');
   if (!tbl) return;
@@ -2891,21 +2891,21 @@ function initExtremesTab() {
 
   // Upcoming risk dates
   const upcoming = [
-    {date:'2026年11月24日(火)',moon:'🌕 満月',risk:'反転注意',note:'満月=感情ピーク・利確/反転に注意',color:'#9f7aea'},
-    {date:'2026年12月9日(水)',moon:'🌑 新月',risk:'要注意',note:'歴史上新月±3日に暴落集中（統計は参考値）',color:'#ffaa00'},
-    {date:'2026年12月24日(木)',moon:'🌕 満月',risk:'反転注意',note:'満月=感情ピーク・利確/反転に注意',color:'#9f7aea'},
-    {date:'2027年1月8日(金)',moon:'🌑 新月',risk:'要注意',note:'歴史上新月±3日に暴落集中（統計は参考値）',color:'#ffaa00'},
-    {date:'2027年1月22日(金)',moon:'🌕 満月',risk:'反転注意',note:'満月=感情ピーク・利確/反転に注意',color:'#9f7aea'},
-    {date:'2027年2月7日(日)',moon:'🌑 新月',risk:'要注意',note:'歴史上新月±3日に暴落集中（統計は参考値）',color:'#ffaa00'},
-    {date:'2027年2月21日(日)',moon:'🌕 満月',risk:'反転注意',note:'満月=感情ピーク・利確/反転に注意',color:'#9f7aea'},
-    {date:'2027年3月8日(月)',moon:'🌑 新月',risk:'要注意',note:'歴史上新月±3日に暴落集中（統計は参考値）',color:'#ffaa00'},
-    {date:'2027年3月22日(月)',moon:'🌕 満月',risk:'反転注意',note:'満月=感情ピーク・利確/反転に注意',color:'#9f7aea'},
-    {date:'2027年4月7日(水)',moon:'🌑 新月',risk:'要注意',note:'歴史上新月±3日に暴落集中（統計は参考値）',color:'#ffaa00'},
-    {date:'2027年4月21日(水)',moon:'🌕 満月',risk:'反転注意',note:'満月=感情ピーク・利確/反転に注意',color:'#9f7aea'},
-    {date:'2027年5月6日(木)',moon:'🌑 新月',risk:'要注意',note:'歴史上新月±3日に暴落集中（統計は参考値）',color:'#ffaa00'},
-    {date:'2027年5月20日(木)',moon:'🌕 満月',risk:'反転注意',note:'満月=感情ピーク・利確/反転に注意',color:'#9f7aea'},
-    {date:'2027年6月5日(土)',moon:'🌑 新月',risk:'要注意',note:'歴史上新月±3日に暴落集中（統計は参考値）',color:'#ffaa00'},
-    {date:'2027年6月19日(土)',moon:'🌕 満月',risk:'反転注意',note:'満月=感情ピーク・利確/反転に注意',color:'#9f7aea'},
+    {date:'2026年11月24日(火)',moon:'🌕 満月',risk:'観察日',note:'満月（統計的な反転効果は未確認。記録と振り返り用）',color:'#9f7aea'},
+    {date:'2026年12月9日(水)',moon:'🌑 新月',risk:'観察日',note:'新月（再検証で暴落の集中は確認されず。記録と振り返り用）',color:'#63b3ed'},
+    {date:'2026年12月24日(木)',moon:'🌕 満月',risk:'観察日',note:'満月（統計的な反転効果は未確認。記録と振り返り用）',color:'#9f7aea'},
+    {date:'2027年1月8日(金)',moon:'🌑 新月',risk:'観察日',note:'新月（再検証で暴落の集中は確認されず。記録と振り返り用）',color:'#63b3ed'},
+    {date:'2027年1月22日(金)',moon:'🌕 満月',risk:'観察日',note:'満月（統計的な反転効果は未確認。記録と振り返り用）',color:'#9f7aea'},
+    {date:'2027年2月7日(日)',moon:'🌑 新月',risk:'観察日',note:'新月（再検証で暴落の集中は確認されず。記録と振り返り用）',color:'#63b3ed'},
+    {date:'2027年2月21日(日)',moon:'🌕 満月',risk:'観察日',note:'満月（統計的な反転効果は未確認。記録と振り返り用）',color:'#9f7aea'},
+    {date:'2027年3月8日(月)',moon:'🌑 新月',risk:'観察日',note:'新月（再検証で暴落の集中は確認されず。記録と振り返り用）',color:'#63b3ed'},
+    {date:'2027年3月22日(月)',moon:'🌕 満月',risk:'観察日',note:'満月（統計的な反転効果は未確認。記録と振り返り用）',color:'#9f7aea'},
+    {date:'2027年4月7日(水)',moon:'🌑 新月',risk:'観察日',note:'新月（再検証で暴落の集中は確認されず。記録と振り返り用）',color:'#63b3ed'},
+    {date:'2027年4月21日(水)',moon:'🌕 満月',risk:'観察日',note:'満月（統計的な反転効果は未確認。記録と振り返り用）',color:'#9f7aea'},
+    {date:'2027年5月6日(木)',moon:'🌑 新月',risk:'観察日',note:'新月（再検証で暴落の集中は確認されず。記録と振り返り用）',color:'#63b3ed'},
+    {date:'2027年5月20日(木)',moon:'🌕 満月',risk:'観察日',note:'満月（統計的な反転効果は未確認。記録と振り返り用）',color:'#9f7aea'},
+    {date:'2027年6月5日(土)',moon:'🌑 新月',risk:'観察日',note:'新月（再検証で暴落の集中は確認されず。記録と振り返り用）',color:'#63b3ed'},
+    {date:'2027年6月19日(土)',moon:'🌕 満月',risk:'観察日',note:'満月（統計的な反転効果は未確認。記録と振り返り用）',color:'#9f7aea'},
   ];
   const upDiv = document.getElementById('upcoming-risk-dates');
   if (upDiv) upDiv.innerHTML = upcoming.map(u=>`
@@ -3415,7 +3415,7 @@ function renderEchoStats() {
 <div id="sec-geopolitics" class="section">
 <div class="main">
   <div class="section-title">🌍 地政学リスク × 月相 <span style="font-size:0.7em;color:#888;">1991-2027</span></div>
-  <div style="color:var(--text2);font-size:0.85rem;margin-bottom:18px;">ミアシャイマー攻撃的現実主義スコア × 月相タイミング × 市場インパクト。歴史18事例の分析と、2026年予測の実績検証・2027年リスクカレンダー（2026年11月19日更新）。</div>
+  <div style="color:var(--text2);font-size:0.85rem;margin-bottom:18px;">ミアシャイマー攻撃的現実主義スコア × 月相タイミング × 市場インパクト。歴史18事例（月相は2026-11-19に天文暦で再計算・以前の表示は新月と満月が入れ替わる誤りあり）と、2026年予測の実績検証・2027年リスクカレンダー（2026年11月19日更新）。</div>
 
   <!-- 2026 risk alerts -->
   <div style="background:linear-gradient(135deg,#2a1010,#1a0808);border:1px solid #cc4444;border-radius:12px;padding:16px;margin-bottom:20px;">
@@ -3504,7 +3504,7 @@ function renderEchoStats() {
 <div id="sec-extremes" class="section">
 <div class="main">
   <div class="section-title">⚠️ 市場極値 × 月相 <span style="font-size:0.7em;color:#888;">1987-2024 歴史的クラッシュ&ラリー</span></div>
-  <div style="color:var(--text2);font-size:0.85rem;margin-bottom:18px;">歴史的暴落・暴騰と月相の関係。「新月=最暗点・底打ち」「満月=頂点・転換」パターンの検証。</div>
+  <div style="color:var(--text2);font-size:0.85rem;margin-bottom:18px;">歴史的暴落・暴騰と月相の関係。「新月=最暗点・底打ち」「満月=頂点・転換」という仮説を、2026-11-19に天文暦(ephem)で月相を再計算して検証した結果、17事例では偶然の範囲を超える偏りは確認されなかった（以前の表示は月相の算出に誤りがあった）。</div>
 
   <!-- Pattern summary -->
   <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;" id="extremes-patterns"></div>
@@ -3517,7 +3517,7 @@ function renderEchoStats() {
 
   <!-- 2026 upcoming risk -->
   <div style="background:linear-gradient(135deg,#1a0a2a,#100820);border:1px solid #9955dd;border-radius:12px;padding:16px;">
-    <div style="color:#cc88ff;font-size:1rem;font-weight:700;margin-bottom:12px;">🔮 要注意月相日程（2026年12月〜2027年6月）</div>
+    <div style="color:#cc88ff;font-size:1rem;font-weight:700;margin-bottom:12px;">🔮 月相観察日程（2026年12月〜2027年6月）</div>
     <div id="upcoming-risk-dates"></div>
   </div>
 </div>
