@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-11-18T12:18:13.069+09:00",
+  "fetched_at": "2026-11-19T11:55:30.468+09:00",
   "fred_ok_count": 9,
   "fred_total": 9,
   "gdelt_ok_count": 0,
@@ -879,14 +879,10 @@
     },
     "DGS10": {
       "status": "ok",
-      "value": 5.12,
-      "date": "2026-11-16",
+      "value": 5.1,
+      "date": "2026-11-17",
       "error": null,
       "history": [
-        {
-          "date": "2026-10-06",
-          "value": 5.27
-        },
         {
           "date": "2026-10-07",
           "value": 5.28
@@ -994,6 +990,10 @@
         {
           "date": "2026-11-16",
           "value": 5.12
+        },
+        {
+          "date": "2026-11-17",
+          "value": 5.1
         }
       ]
     },
@@ -1131,7 +1131,7 @@
       "status": "failed",
       "value": null,
       "date": null,
-      "error": "This operation was aborted",
+      "error": "HTTP 429",
       "article_count": 0,
       "articles": []
     },
@@ -1139,7 +1139,7 @@
       "status": "failed",
       "value": null,
       "date": null,
-      "error": "This operation was aborted",
+      "error": "HTTP 429",
       "article_count": 0,
       "articles": []
     },
@@ -1147,7 +1147,7 @@
       "status": "failed",
       "value": null,
       "date": null,
-      "error": "This operation was aborted",
+      "error": "HTTP 429",
       "article_count": 0,
       "articles": []
     },
@@ -1155,7 +1155,7 @@
       "status": "failed",
       "value": null,
       "date": null,
-      "error": "This operation was aborted",
+      "error": "HTTP 429",
       "article_count": 0,
       "articles": []
     },
@@ -1171,7 +1171,7 @@
       "status": "failed",
       "value": null,
       "date": null,
-      "error": "This operation was aborted",
+      "error": "HTTP 429",
       "article_count": 0,
       "articles": []
     },
