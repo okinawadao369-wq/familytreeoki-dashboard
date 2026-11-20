@@ -266,6 +266,8 @@
 .tday-val{font-size:0.83rem;color:var(--text);line-height:1.4;}
 .act-type-card{background:var(--card2);border-radius:12px;padding:18px;border-top:4px solid var(--border);}
 .act-desc{font-size:0.8rem;color:var(--text2);line-height:1.5;margin-bottom:7px;}
+.mb-badge{display:inline-block;font-size:0.68rem;font-weight:700;padding:1px 7px;border-radius:9px;border:1px solid;white-space:nowrap;}
+.mb-now{background:rgba(255,204,68,0.10)!important;outline:1px solid #ffcc44;}
 </style>
 
 <!-- 30y patch moved to main script -->
@@ -311,6 +313,7 @@
     <button class="nav-btn" data-name="window" onclick="showSection('window')">📈 月相ウィンドウ</button>
     <button class="nav-btn" data-name="calendar" onclick="showSection('calendar')">📅 月相カレンダー</button>
     <button class="nav-btn" data-name="business" onclick="showSection('business')">💼 ビジネス戦略</button>
+    <button class="nav-btn" data-name="moonbiz" onclick="showSection('moonbiz')">🧭 月暦ビジネス行動</button>
     <span style="color:#2a3a50;padding:0 8px;">│</span>
     <button class="nav-btn" data-name="today"     onclick="showSection('today')">🌒 今日の状態</button>
     <button class="nav-btn" data-name="phases"    onclick="showSection('phases')">⚡ 感情フェーズ</button>
@@ -741,7 +744,7 @@
         <li>GOLD: 新月後にやや強い傾向</li>
         <li>月相±2日をトリガーとしたアラート設定</li>
       </ul>
-    </div>
+    <div style="font-size:0.72rem;color:#f6ad55;margin-top:8px;">※ 2026年8月・11月の再検証では、月相と相場の関係は統計的に確認されていません（📊統計分析・⚠️市場極値タブ参照）。投資判断の根拠にはしないでください。ビジネスでの使い方は「🧭 月暦ビジネス行動」タブへ。</div></div>
     <div class="strategy-card">
       <h4>🎯 マーケティング活用</h4>
       <ul>
@@ -835,6 +838,7 @@ function showSection(name) {
     else if (name === 'strategy')  initStrategyRows();
     else if (name === 'mechanism') initMechanism();
     else if (name === 'budget')    initBudgetCharts();
+    else if (name === 'moonbiz')   initMoonBizTab();
     else if (name === 'defense')     initDefenseTab();
     else if (name === 'geopolitics') initGeopoliticsTab();
     else if (name === 'greed')       initGreedTab();
@@ -3378,6 +3382,81 @@ function renderEchoStats() {
 
 // ===== END NEW TABS =====
 
+
+/* ===== 🧭 月暦ビジネス行動（2026-11-21追加） ===== */
+var MOONBIZ_EVENTS = [{"date": "2026-11-26", "end": "", "title": "Thanksgiving（感謝祭）", "action": "米軍家族の家族行事。前週に家族写真・ギフト券の案内、当日は休業や短縮も検討。", "cat": "us", "basis": "制度A"}, {"date": "2026-12-25", "end": "", "title": "Christmas", "action": "米軍家族の家族行事。前週に家族写真・ギフト券の案内、当日は休業や短縮も検討。", "cat": "us", "basis": "制度A"}, {"date": "2027-01-15", "end": "", "title": "ムーチー（旧12/8）・初ムーチー", "action": "その年に赤ちゃんが生まれた家庭が親戚・近所に餅を配る「初ムーチー」の日。産後・新生児家庭のお客様へお祝いメッセージ、「初ムーチー」の写真・記念撮影の提案、地元の餅店との協業を検討。", "cat": "okinawa", "basis": "文化A"}, {"date": "2027-01-31", "end": "", "title": "ウガンブトゥキ（旧12/24・御願解き）", "action": "1年の願いを解く日。社内で1年の振り返り（発見ログの総まとめ）を行い、来年の目標を決める準備。", "cat": "okinawa", "basis": "文化A"}, {"date": "2027-02-07", "end": "", "title": "旧正月（旧1/1）", "action": "地元のお客様・取引先へ新年のあいさつ。地域によっては休む家庭もあるので、地元向けの予約・連絡は前後にずらす。", "cat": "okinawa", "basis": "文化A"}, {"date": "2027-02-22", "end": "", "title": "十六日祭（旧1/16・ジュールクニチー）", "action": "宮古・八重山出身の家庭では大切な先祖供養の日。該当スタッフ・取引先の予定に配慮。", "cat": "okinawa", "basis": "文化A"}, {"date": "2027-04-05", "end": "2027-04-20", "title": "清明祭（シーミー）の時期", "action": "清明（4/5）から約2週間、門中・親族が墓前に集まる。地元家族は週末の予定が埋まるので、地元向けのイベントはこの週末を避ける。親族が集まる場は妊娠・出産報告の機会でもある。", "cat": "okinawa", "basis": "文化A"}, {"date": "2027-04-09", "end": "", "title": "浜下り（旧3/3）", "action": "女性の無病息災と子どもの健やかな成長を祈る日。妊婦さん・産後ケア・女性の健康をテーマにした発信に最適。", "cat": "okinawa", "basis": "文化A"}, {"date": "2027-05-01", "end": "2027-08-31", "title": "PCS（米軍の異動）シーズン", "action": "5〜8月は米軍家族の着任・離任が集中。着任家族＝新しいお客様、離任家族＝「沖縄で最後の記念撮影」需要。着任者向けの英語ガイド記事と、離任前の記念セッション案内を準備。", "cat": "us", "basis": "制度A"}, {"date": "2027-06-08", "end": "", "title": "ハーレー（旧5/4・糸満など）", "action": "海の安全と豊漁を祈る行事。地域イベントとして米軍家族も多く訪れる。地元イベントの紹介記事（英語）で接点づくり。", "cat": "okinawa", "basis": "文化A"}, {"date": "2027-06-23", "end": "", "title": "慰霊の日（沖縄県の休日）", "action": "沖縄戦の犠牲者を悼む日。派手な販促は控え、静かな発信にする。", "cat": "okinawa", "basis": "文化A"}, {"date": "2027-07-04", "end": "", "title": "Independence Day（7/4）", "action": "米軍家族の家族行事。前週に家族写真・ギフト券の案内、当日は休業や短縮も検討。", "cat": "us", "basis": "制度A"}, {"date": "2027-08-09", "end": "", "title": "旧七夕（旧7/7）", "action": "墓の掃除など旧盆の準備が始まる日。旧盆期間の予約枠・スタッフ体制をこの頃までに確定。", "cat": "okinawa", "basis": "文化A"}, {"date": "2027-08-15", "end": "2027-08-17", "title": "旧盆（ウンケー・ナカヌヒー・ウークイ）", "action": "地元スタッフ・取引先は家族行事で休みがち、スーパーは混雑し道路も渋滞。予約枠を絞る。米軍家族向けには「沖縄のお盆とエイサー」の英語記事で文化体験を発信。", "cat": "okinawa", "basis": "文化A"}, {"date": "2027-09-15", "end": "", "title": "十五夜（旧8/15）", "action": "月見とフチャギ（餅）の日。満月の「感謝」と重なる。既存のお客様へのお礼・お客様の声の依頼に使う。", "cat": "okinawa", "basis": "文化A"}, {"date": "2027-11-25", "end": "", "title": "Thanksgiving（感謝祭）", "action": "米軍家族の家族行事。前週に家族写真・ギフト券の案内、当日は休業や短縮も検討。", "cat": "us", "basis": "制度A"}, {"date": "2027-12-25", "end": "", "title": "Christmas", "action": "米軍家族の家族行事。前週に家族写真・ギフト券の案内、当日は休業や短縮も検討。", "cat": "us", "basis": "制度A"}];
+var MOONBIZ_PAYDAYS = ["2026-12-01", "2026-12-15", "2026-12-31", "2027-01-15", "2027-02-01", "2027-02-12", "2027-03-01", "2027-03-15", "2027-04-01", "2027-04-15", "2027-04-30", "2027-05-14", "2027-06-01", "2027-06-15", "2027-07-01", "2027-07-15", "2027-07-30", "2027-08-13", "2027-09-01", "2027-09-15", "2027-10-01", "2027-10-15", "2027-11-01", "2027-11-15", "2027-12-01", "2027-12-15"];
+var MOONBIZ_PHASES = [
+  {k:'新月・祈願',  ky:'旧1日前後',   t:'思考期', plan:'今月の目標を1つ決める。新しい企画を確定する', sofa:'「今月の新プラン」予告。英語記事の企画を決める', local:'一日の御願の朝は予定を空ける。取引先へ月初のあいさつ', money:'先月を締めて、今月の予算を決める', team:'朝礼で今月の目標件数を共有'},
+  {k:'三日月・芽吹き',ky:'旧2〜6日',  t:'活動期', plan:'決めたことを始める。新サービスを公開', sofa:'新規向けの広告・SNS動画を始める', local:'紹介元（助産師・ドゥーラ・病院周り）を訪問', money:'広告費を使い始める', team:'新しい手順を試す'},
+  {k:'上弦・決断',  ky:'旧7〜8日',    t:'活動期', plan:'中間チェック。続けるか止めるかを決める', sofa:'よくある質問・比較記事・予約ボタンを強化', local:'見積・契約を詰める', money:'月前半の予約数を確認', team:'詰まっている作業を片付ける'},
+  {k:'十三夜・最盛',ky:'旧9〜13日',   t:'活動期', plan:'大事な商談・撮影・イベントをここに置く', sofa:'空き枠・締切のお知らせ', local:'地域イベントに出る', money:'売上の山。現場を優先', team:'体力の配分に気をつける'},
+  {k:'満月・感謝',  ky:'旧14〜16日',  t:'思考期', plan:'成果を確認する', sofa:'お客様の声・口コミのお願い、感謝メッセージ', local:'十五日の御願。お世話になった方へお礼', money:'月中の売上・KPIを確認', team:'できたことを称え合う'},
+  {k:'十六夜・振り返り',ky:'旧17〜22日',t:'停滞期', plan:'何が効いたかを振り返る', sofa:'解説ブログ・英語ガイド記事を書く', local:'関係の手入れ（連絡・差し入れ）', money:'費用の見直し', team:'🔍発見ログに書く'},
+  {k:'下弦・整理',  ky:'旧23〜24日',  t:'停滞期', plan:'やめることを決める', sofa:'既存のお客様へのフォロー（産後・次回案内）', local:'書類・契約の整理', money:'支払・請求の整理', team:'機材・備品の点検'},
+  {k:'晦日・休息',  ky:'旧25〜30日',  t:'停滞期', plan:'来月の仕込み', sofa:'来月の告知を準備', local:'静かに過ごす', money:'月末の締め準備', team:'休む・学ぶ（研修）'}
+];
+function _mbBadge(b){
+  var c={'文化A':'#4ade80','制度A':'#60a5fa','運営リズム':'#c8a45a','仮説D':'#f87171'}[b]||'#888';
+  return '<span class="mb-badge" style="background:'+c+'22;color:'+c+';border-color:'+c+';">'+b+'</span>';
+}
+function _mbAddDays(ds,n){var d=new Date(ds+'T00:00:00Z');d.setUTCDate(d.getUTCDate()+n);return d.toISOString().slice(0,10);}
+function _mbFmt(ds){var d=new Date(ds+'T00:00:00Z');return (d.getUTCMonth()+1)+'/'+d.getUTCDate()+'('+['日','月','火','水','木','金','土'][d.getUTCDay()]+')';}
+function _mbDiff(a,b){return Math.round((new Date(b+'T00:00:00Z')-new Date(a+'T00:00:00Z'))/86400000);}
+function initMoonBizTab(){
+  var today=DATA.mkt_today;
+  var cal=DATA.mkt_calendar||[];
+  var td=cal.find(function(d){return d.date===today;});
+  var kyu=(window.kyurekiLookup?window.kyurekiLookup(today):null);
+  var ph=td?MOONBIZ_PHASES.find(function(p){return p.k===td.phase_name;}):null;
+  // upcoming items (30 days)
+  var end=_mbAddDays(today,30), items=[];
+  cal.forEach(function(d){
+    if(d.date<=today||d.date>end)return;
+    if(d.kyureki_day===1) items.push({date:d.date,title:'旧暦一日（新月）',action:'朝は御願の時間に配慮。社内で今月の目標を1つ決める。',basis:'文化A'});
+    if(d.kyureki_day===15) items.push({date:d.date,title:'旧暦十五日（満月）',action:'お礼と振り返り。お客様の声・口コミのお願いを送る。',basis:'文化A'});
+  });
+  MOONBIZ_PAYDAYS.forEach(function(p){ if(p>today&&p<=end){ items.push({date:_mbAddDays(p,-1),title:'米軍給料日の前日（給料日 '+_mbFmt(p)+'）',action:'英語で予約案内・空き枠のお知らせを送る（効果は要検証）。',basis:'制度A'}); }});
+  MOONBIZ_EVENTS.forEach(function(e){ var s=e.date, en=e.end||e.date; if(en>=today && s<=end){ items.push({date:s<today?today:s,title:e.title+(e.end?'（〜'+_mbFmt(e.end)+'）':''),action:e.action,basis:e.basis,lead:true}); }});
+  (DATA.mkt_moon_events||[]).forEach(function(e){ if(e.date>today&&e.date<=end) items.push({date:e.date,title:e.label+'（天文上の'+(e.type==='new_moon'?'新月':'満月')+'）',action:e.type==='new_moon'?'次の約2週間の計画を確定する日。':'成果確認の日。月の前半を振り返る。',basis:'運営リズム'}); });
+  items.sort(function(a,b){return a.date<b.date?-1:a.date>b.date?1:0;});
+  // today nav
+  var next7=items.filter(function(i){return _mbDiff(today,i.date)<=7;});
+  var tEl=document.getElementById('mb-today');
+  if(tEl){
+    tEl.innerHTML='<div style="display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start;">'+
+      '<div style="min-width:200px;"><div style="font-size:2.2rem;">'+(td?td.emoji:'🌙')+'</div>'+
+      '<div style="font-size:1rem;font-weight:700;color:var(--gold);">'+(td?td.phase_name:'--')+'</div>'+
+      '<div style="font-size:0.8rem;color:var(--text2);">'+today+'　'+(kyu?kyu.label:'')+'</div>'+
+      '<div style="font-size:0.78rem;color:var(--text2);margin-top:4px;">'+(td?td.activity_type:'')+'</div></div>'+
+      '<div style="flex:1;min-width:260px;">'+
+      (ph?'<div style="font-size:0.85rem;font-weight:700;color:var(--text);margin-bottom:6px;">今日の相でやること '+_mbBadge('運営リズム')+'</div>'+
+        '<ul style="margin:0 0 10px 18px;font-size:0.82rem;line-height:1.7;color:var(--text2);">'+
+        '<li><b>計画：</b>'+ph.plan+'</li><li><b>米軍家族向け発信：</b>'+ph.sofa+'</li><li><b>地元・関係：</b>'+ph.local+'</li><li><b>数字：</b>'+ph.money+'</li><li><b>チーム：</b>'+ph.team+'</li></ul>':'')+
+      '<div style="font-size:0.85rem;font-weight:700;color:var(--text);margin-bottom:6px;">これから7日の段取り</div>'+
+      (next7.length?next7.map(function(i){return '<div style="font-size:0.8rem;margin-bottom:5px;">'+_mbBadge(i.basis)+' <b>'+_mbFmt(i.date)+'</b> '+i.title+'<br><span style="color:var(--text2);margin-left:4px;">→ '+i.action+'</span></div>';}).join(''):'<div style="font-size:0.8rem;color:var(--text2);">大きな行事・区切りはありません。今の相の行動に集中。</div>')+
+      '</div></div>';
+  }
+  var uEl=document.getElementById('mb-upcoming');
+  if(uEl) uEl.innerHTML=items.map(function(i){var dd=_mbDiff(today,i.date);return '<div style="padding:8px 0;border-bottom:1px solid var(--border);font-size:0.8rem;">'+
+    '<div><b style="color:var(--gold);">'+_mbFmt(i.date)+'</b> <span style="color:#888;">（'+(dd<=0?'今日':dd+'日後')+'）</span> '+_mbBadge(i.basis)+'</div>'+
+    '<div style="color:var(--text);margin-top:2px;">'+i.title+'</div><div style="color:var(--text2);margin-top:2px;">→ '+i.action+'</div></div>';}).join('')||'<div style="color:var(--text2);font-size:0.8rem;">予定なし</div>';
+  // dual calendar: next 3 kyureki 1/15 vs next 3 paydays
+  var kd=cal.filter(function(d){return d.date>=today&&(d.kyureki_day===1||d.kyureki_day===15);}).slice(0,4);
+  var pd=MOONBIZ_PAYDAYS.filter(function(p){return p>=today;}).slice(0,4);
+  var dEl=document.getElementById('mb-dual');
+  if(dEl) dEl.innerHTML='<table class="data-table"><thead><tr><th>旧暦の一日・十五日（地元の御願）</th><th>米軍の給料日</th></tr></thead><tbody>'+
+    [0,1,2,3].map(function(i){return '<tr><td>'+(kd[i]?_mbFmt(kd[i].date)+' 旧'+kd[i].kyureki_month+'/'+kd[i].kyureki_day+(kd[i].kyureki_day===1?' 🌑':' 🌕'):'')+'</td><td>'+(pd[i]?_mbFmt(pd[i]):'')+'</td></tr>';}).join('')+'</tbody></table>'+
+    '<div style="font-size:0.7rem;color:#666;margin-top:4px;">給料日は「毎月1日・15日、土日・米国祝日なら前営業日」の規則で算出（DFASの公式カレンダーで最終確認してください）。</div>';
+  // matrix
+  var mEl=document.getElementById('mb-matrix');
+  if(mEl) mEl.innerHTML='<thead><tr><th>月の相</th><th>旧暦の目安</th><th>🧭 計画・意思決定</th><th>📣 米軍家族向け発信</th><th>🤝 地元・関係づくり</th><th>💴 数字</th><th>🧘 チーム・自分</th></tr></thead><tbody>'+
+    MOONBIZ_PHASES.map(function(p){var now=td&&td.phase_name===p.k;return '<tr class="'+(now?'mb-now':'')+'"><td style="white-space:nowrap;font-weight:700;color:'+_ac(p.t)+';">'+p.k+(now?' ◀今':'')+'</td><td style="white-space:nowrap;font-size:0.78rem;">'+p.ky+'<br><span style="color:#888;">'+p.t+'</span></td><td style="font-size:0.78rem;">'+p.plan+'</td><td style="font-size:0.78rem;">'+p.sofa+'</td><td style="font-size:0.78rem;">'+p.local+'</td><td style="font-size:0.78rem;">'+p.money+'</td><td style="font-size:0.78rem;">'+p.team+'</td></tr>';}).join('')+'</tbody>';
+  // events table
+  var eEl=document.getElementById('mb-events');
+  if(eEl) eEl.innerHTML='<thead><tr><th>日付</th><th>行事・節目</th><th>区分</th><th>FTOの行動</th><th>根拠</th></tr></thead><tbody>'+
+    MOONBIZ_EVENTS.map(function(e){var past=(e.end||e.date)<today;var k=window.kyurekiLookup?window.kyurekiLookup(e.date):null;return '<tr style="'+(past?'opacity:0.45;':'')+'"><td style="white-space:nowrap;">'+e.date+(e.end?'<br>〜'+e.end:'')+(k&&k.month?'<br><span style="color:#888;font-size:0.72rem;">'+k.label+'</span>':'')+'</td><td style="font-weight:700;">'+e.title+'</td><td>'+(e.cat==='okinawa'?'🏮 沖縄':'🇺🇸 米軍家族')+'</td><td style="font-size:0.78rem;">'+e.action+'</td><td>'+_mbBadge(e.basis)+'</td></tr>';}).join('')+'</tbody>';
+}
 </script>
 
 <!-- ===== 🛡️ 防衛株×月相 ===== -->
@@ -3648,6 +3727,81 @@ function renderEchoStats() {
       <a href="https://docs.google.com/spreadsheets/d/1ThQalxoAnsl9qgE6wTU1wCessZZpi9_NCjDMkKimVZ4/edit" target="_blank" style="color:#8fd090;">📊 スプレッドシートを開く</a>
     </div>
     <div style="font-size:0.72rem;color:#556;margin-top:10px;">💲 このタブは2026-08-23時点のスナップショットです（自動更新なし）。エコー記録タブのような読み取り専用リアルタイム同期は今後の拡張候補です。</div>
+  </div>
+</div>
+</div>
+
+
+<!-- ===== 🧭 月暦ビジネス行動（2026-11-21追加） ===== -->
+<div id="sec-moonbiz" class="section">
+<div class="main">
+  <div class="sec-title">🧭 月暦ビジネス行動ガイド</div>
+  <div class="sec-sub">月の満ち欠け・旧暦・沖縄の年中行事・米軍家族のカレンダーを「いつ何をするか」の行動に変える。Family Tree Oki（地元のご家族＋在沖米軍・軍属のご家族）向け。</div>
+
+  <!-- 考え方 -->
+  <div class="chart-card" style="border-left:4px solid var(--gold);">
+    <h3>💡 この使い方の前提（根拠の強さを分けて考える）</h3>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;font-size:0.8rem;line-height:1.6;color:var(--text2);">
+      <div><span class="mb-badge" style="background:#4ade8022;color:#4ade80;border-color:#4ade80;">文化A</span><br>沖縄の人が実際にその日に動く（旧盆・シーミー・ムーチー・一日十五日の御願）。<b style="color:var(--text);">人の予定と行動が確実に変わる日</b>なので、商売の段取りに直結する。</div>
+      <div><span class="mb-badge" style="background:#60a5fa22;color:#60a5fa;border-color:#60a5fa;">制度A</span><br>米軍の給料日（毎月1日・15日）、PCS（異動）シーズン、米国の祝日。<b style="color:var(--text);">お客様側の家計と予定が制度で決まっている日</b>。</div>
+      <div><span class="mb-badge" style="background:#c8a45a22;color:#c8a45a;border-color:#c8a45a;">運営リズム</span><br>月の満ち欠け（約29.5日）を「月に2回の区切り」として計画→実行→確認→振り返りを回す。<b style="color:var(--text);">月そのものの力ではなく、リズムとしての使い方</b>。</div>
+      <div><span class="mb-badge" style="background:#f8717122;color:#f87171;border-color:#f87171;">仮説D</span><br>「満月は感情が高ぶる」「給料日前後に予約が増える」など。<b style="color:var(--text);">まだ確かめていない</b>。下の「検証のしかた」で自社データで確かめる。</div>
+    </div>
+    <div style="font-size:0.75rem;color:#f6ad55;margin-top:10px;">※ 月相と株価・相場の関係は、このダッシュボードの再検証（2026年8月・11月）で統計的に確認されていません。月暦は「相場の予言」ではなく「人と地域のリズムに合わせて動く道具」として使います。</div>
+  </div>
+
+  <!-- 今日のナビ -->
+  <div class="chart-card" style="border:1px solid var(--gold);">
+    <h3>📍 今日の行動ナビ</h3>
+    <div id="mb-today"></div>
+  </div>
+
+  <div class="grid-2">
+    <div class="chart-card">
+      <h3>🗓️ これから30日の段取り</h3>
+      <div id="mb-upcoming" style="max-height:520px;overflow-y:auto;"></div>
+    </div>
+    <div class="chart-card">
+      <h3>🔁 「1日・15日」の二重構造</h3>
+      <div style="font-size:0.82rem;line-height:1.75;color:var(--text2);">
+        <p>沖縄の暮らしは<b style="color:#5ba3ff;">旧暦の一日（新月）</b>と<b style="color:#ffcc44;">十五日（満月）</b>に火の神（ヒヌカン）や仏壇へ御願をする。一方、在沖米軍の家族は<b style="color:#60a5fa;">新暦の毎月1日と15日が給料日</b>（土日・祝日なら前営業日）。</p>
+        <p>意味は全く違うが、どちらも<b style="color:var(--text);">「月に2回の区切り」</b>。FTOは両方のお客様を持つので、2つの「1日・15日」を重ねて見る。</p>
+        <ul style="margin:6px 0 0 18px;">
+          <li><b>旧暦一日・十五日の朝</b>：地元スタッフ・ご家族は御願の時間。朝一番の予約や会議は避ける［文化A］</li>
+          <li><b>給料日の前日</b>：英語で予約案内・空き枠のお知らせを送る［制度A＋仮説D：効果は要検証］</li>
+          <li><b>旧暦一日</b>：社内で今月の目標を1つ決める／<b>十五日</b>：お礼と振り返り［運営リズム］</li>
+        </ul>
+      </div>
+      <div id="mb-dual" style="margin-top:10px;"></div>
+    </div>
+  </div>
+
+  <!-- 8相マトリクス -->
+  <div class="chart-card">
+    <h3>🌗 月の8つの相 × ビジネス行動マトリクス［運営リズム］</h3>
+    <div style="font-size:0.75rem;color:var(--text2);margin-bottom:8px;">今の相の行が黄色く光ります。旧暦の日付は目安（例: 旧1日＝新月）。</div>
+    <div style="overflow-x:auto;"><table class="data-table" id="mb-matrix"></table></div>
+  </div>
+
+  <!-- 年間行事 -->
+  <div class="chart-card">
+    <h3>🏮 沖縄の旧暦行事・米軍カレンダー × 行動（2026年11月〜2027年12月）</h3>
+    <div style="font-size:0.75rem;color:var(--text2);margin-bottom:8px;">旧暦の日付はダッシュボードの旧暦テーブル（天文暦で計算・実物の沖縄カレンダーで検証済み）から新暦に換算。</div>
+    <div style="overflow-x:auto;"><table class="data-table" id="mb-events"></table></div>
+  </div>
+
+  <!-- 検証 -->
+  <div class="chart-card" style="border-left:4px solid #4ade80;">
+    <h3>🔬 効いているかを確かめる（発見→可視化→行動のループ）</h3>
+    <div style="font-size:0.82rem;line-height:1.75;color:var(--text2);">
+      <ol style="margin-left:18px;">
+        <li><b>記録</b>：STORES予約（Googleカレンダー）の予約日・問い合わせ日・エコー記録をそのまま残す。</li>
+        <li><b>可視化</b>：3か月ごとに、予約件数を「月の相」「給料日の前後3日」「旧暦行事の週」で分けて数える。</li>
+        <li><b>発見</b>：偶然の差か本当の差かを見る（件数が少ないうちは決めつけない）。</li>
+        <li><b>行動</b>：効いたものだけ残し、🔍発見ログに「何を試して、どうだったか」を書く。</li>
+      </ol>
+      <div style="margin-top:6px;">最初に確かめたい3つの仮説：①給料日前日の案内で予約が増えるか ②満月の週にお客様の声（口コミ）を頼むと返答率が上がるか ③初ムーチー・浜下りの発信で地元のご家族の問い合わせが増えるか。</div>
+    </div>
   </div>
 </div>
 </div>
