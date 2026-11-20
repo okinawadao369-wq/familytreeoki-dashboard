@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """国土交通省「不動産情報ライブラリ」API（XIT001）から沖縄県の取引価格を四半期ごとに取得し、
-市町村別・用途地域別の集計値だけを保存する（個別取引やAPIキーは保存しない）。
-APIキーは環境変数 REINFOLIB_API_KEY（GitHub Actions Secrets）から読む。"""
+市町村別・用途地域別の集計値を保存する。あわせて、土地の個別分析（字ごとの取引事例・接面道路無の事例など）
+のため、2020年以降の公表データ（地番・氏名を含まない国交省の公表項目）を四半期ごとに data/reinfolib/raw/ に保存する。
+APIキーは環境変数 REINFOLIB_API_KEY（GitHub Actions Secrets）から読み、どのファイルにも保存しない。"""
 import os, re, json, gzip, statistics as st, urllib.request, datetime
 from collections import defaultdict
 
@@ -11,7 +12,15 @@ if not KEY:
 API = "https://www.reinfolib.mlit.go.jp/ex-api/external/XIT001?year={y}&quarter={q}&area=47&language=ja"
 API_CITY = "https://www.reinfolib.mlit.go.jp/ex-api/external/XIT002?area=47&language={lang}"
 OUT_DIR = "data/reinfolib"
+RAW_DIR = OUT_DIR + "/raw"
+RAW_START = 2020  # 個別取引（公表項目）を保存する最初の年
+CREDIT = "このサービスは、国土交通省の不動産情報ライブラリのAPI機能を使用していますが、提供情報の最新性、正確性、完全性等が保証されたものではありません。"
+RAW_FIELDS = ["Period", "Type", "Region", "MunicipalityCode", "Municipality", "DistrictName", "DistrictCode", "TradePrice",
+              "PricePerUnit", "UnitPrice", "Area", "LandShape", "Frontage", "TotalFloorArea", "BuildingYear", "Structure",
+              "Use", "Purpose", "Direction", "Classification", "Breadth", "CityPlanning", "CoverageRatio", "FloorAreaRatio",
+              "Renovation", "Remarks", "FloorPlan", "PriceCategory"]
 os.makedirs(OUT_DIR, exist_ok=True)
+os.makedirs(RAW_DIR, exist_ok=True)
 
 def fetch(y, q, url=None):
     req = urllib.request.Request(url or API.format(y=y, q=q), headers={"Ocp-Apim-Subscription-Key": KEY, "Accept-Encoding": "gzip"})
@@ -81,6 +90,35 @@ def aggregate(rows):
     return out
 
 today = datetime.date.today()
+
+# --- 個別取引（公表項目）の保存：2020年以降。件数が前回と同じ四半期は書き換えない ---
+raw_index_path = f"{RAW_DIR}/index.json"
+try: raw_index = json.load(open(raw_index_path, encoding="utf-8"))
+except Exception: raw_index = {"quarters": {}}
+raw_cache = {}
+for y in range(RAW_START, 2024):
+    for q in range(1, 5):
+        tag = f"{y}Q{q}"
+        if tag in raw_index["quarters"] and os.path.exists(f"{RAW_DIR}/{tag}.json"):
+            continue  # 2023年以前は確定済み。一度保存したら取り直さない
+        rows = fetch(y, q)
+        if rows:
+            raw_cache[(y, q)] = rows
+
+def save_raw(y, q, rows):
+    tag = f"{y}Q{q}"
+    if raw_index["quarters"].get(tag) == len(rows) and os.path.exists(f"{RAW_DIR}/{tag}.json"):
+        return False
+    slim = [{k: r.get(k, "") for k in RAW_FIELDS if r.get(k, "") != ""} for r in rows]
+    json.dump({"quarter": tag, "fetched": today.isoformat(), "source": "国土交通省 不動産情報ライブラリ XIT001（沖縄県）",
+               "credit": CREDIT, "n": len(slim), "rows": slim},
+              open(f"{RAW_DIR}/{tag}.json", "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
+    raw_index["quarters"][tag] = len(rows)
+    return True
+
+for (y, q), rows in raw_cache.items():
+    save_raw(y, q, rows)
+
 quarters = []
 for y in range(2024, today.year + 1):
     for q in range(1, 5):
@@ -98,6 +136,7 @@ for y, q in quarters:
     rows = fetch(y, q)
     if not rows: continue
     raw[(y, q)] = rows
+    save_raw(y, q, rows)
     agg = aggregate(rows)
     tag = f"{y}Q{q}"
     if prev_counts.get(tag) == len(rows) and os.path.exists(f"{OUT_DIR}/{tag}.json"):
@@ -110,6 +149,10 @@ for y, q in quarters:
 
 if not series:
     raise SystemExit("no data fetched")
+raw_index.update({"updated": today.isoformat(), "credit": CREDIT,
+                  "note": "沖縄県の不動産取引価格情報（公表項目のみ）。ファイル名は四半期。DistrictName（字名）で絞り込んで使う。"})
+raw_index["quarters"] = dict(sorted(raw_index["quarters"].items()))
+json.dump(raw_index, open(raw_index_path, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
 pub = sorted(raw.keys())
 latest4 = pub[-4:]
 prev4 = [(y - 1, q) for (y, q) in latest4 if (y - 1, q) in raw]
@@ -119,7 +162,7 @@ summary = {
     "updated": today.isoformat(),
     "municipalities": {k: {"name": v, "name_en": CITY_EN.get(k, "")} for k, v in CITY_JA.items()},
     "source": "国土交通省「不動産情報ライブラリ」API XIT001（不動産取引価格情報・成約価格情報、沖縄県）をGitHub Actionsで取得しkoya集計",
-    "note": "3件未満の中央値はnull。中央値は取引構成で大きく動くため前年比は参考。個別取引・APIキーは保存しない。",
+    "note": "3件未満の中央値はnull。中央値は取引構成で大きく動くため前年比は参考。公表項目の個別取引は data/reinfolib/raw/ に保存。APIキーは保存しない。",
     "latest_window": f"{latest4[0][0]}Q{latest4[0][1]}〜{latest4[-1][0]}Q{latest4[-1][1]}",
     "latest_quarter": f"{pub[-1][0]}Q{pub[-1][1]}",
     "new_or_changed_quarters": [s["quarter"] for s in series if prev_counts.get(s["quarter"]) != s["n"]],
