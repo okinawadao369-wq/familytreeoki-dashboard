@@ -268,6 +268,29 @@
 .act-desc{font-size:0.8rem;color:var(--text2);line-height:1.5;margin-bottom:7px;}
 .mb-badge{display:inline-block;font-size:0.68rem;font-weight:700;padding:1px 7px;border-radius:9px;border:1px solid;white-space:nowrap;}
 .mb-now{background:rgba(255,204,68,0.10)!important;outline:1px solid #ffcc44;}
+
+/* ===== 📱 スマホ表示（月暦ビジネス行動・2026-11-21） ===== */
+.mb-c-smini{display:none;}
+@media (max-width:640px){
+  #sec-moonbiz .chart-card{padding:12px 10px;}
+  #sec-moonbiz .sec-title{font-size:1.15rem;}
+  #mb-cal-grid table th{font-size:0.66rem!important;padding:4px 0!important;}
+  #mb-cal-grid td.mb-cell{height:auto!important;padding:3px 2px 3px 3px!important;border-left-width:2px!important;}
+  #mb-cal-grid .mb-c-day{font-size:0.82rem!important;}
+  #mb-cal-grid .mb-c-moon{font-size:0.66rem!important;}
+  #mb-cal-grid .mb-ky-pre,#mb-cal-grid .mb-c-title,#mb-cal-grid .mb-c-stxt,#mb-cal-grid .mb-c-none{display:none;}
+  #mb-cal-grid .mb-c-smini{display:inline;}
+  #mb-cal-grid .mb-c-ky{font-size:0.56rem!important;line-height:1.2;white-space:nowrap;}
+  #mb-cal-grid .mb-c-word{font-size:0.56rem!important;}
+  #mb-cal-grid .mb-c-tags{display:block;font-size:0.62rem;line-height:1.15;letter-spacing:-1px;}
+  #mb-cal-grid .mb-c-st{font-size:0.52rem!important;margin-top:1px!important;}
+  #mb-cal-grid .mb-c-top{gap:1px;}
+  #sec-moonbiz #mb-matrix{font-size:0.72rem;}
+  #sec-moonbiz #mb-events td,#sec-moonbiz #mb-matrix td{padding:6px 5px;}
+}
+@media (max-width:380px){
+  #mb-cal-grid .mb-c-moon{display:none;}
+}
 </style>
 
 <!-- 30y patch moved to main script -->
@@ -3506,24 +3529,43 @@ function renderMbCalendar(){
     var bd=prayer?(kd===1?'#3a6ea8':'#a88a2a'):'#0d1828';
     var L=log[ds]||{}, done=MB_AREAS.filter(function(a){return L[a.k];}).length;
     var strip='<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:2px;margin-top:4px;">'+MB_AREAS.map(function(a){return '<div title="'+a.n+'" style="height:6px;border-radius:2px;background:'+(L[a.k]?a.c:'#2a3140')+';"></div>';}).join('')+'</div>';
-    var status=(done||L.bookings!=null&&L.bookings!=='')?'<div style="font-size:0.62rem;color:#9ab;margin-top:3px;">✅実行'+done+'/5'+(L.bookings!=null&&L.bookings!==''?'　📒予約'+L.bookings:'')+'</div>':'<div style="font-size:0.62rem;color:#3a4454;margin-top:3px;">未記録</div>';
-    h+='<td onclick="mbShowDay(\''+ds+'\')" style="border:1px solid '+bd+';border-left:3px solid '+col+';padding:5px;vertical-align:top;background:'+bg+';cursor:pointer;height:104px;">'+
-      '<div style="display:flex;justify-content:space-between;align-items:flex-start;">'+
-        '<span style="font-size:1rem;font-weight:'+(isT?'900':'600')+';color:'+(isT?'#90cdf4':'#8a94a6')+';">'+d+'</span>'+
-        '<span style="font-size:0.95rem;" title="'+(cd?cd.phase_name:'')+'">'+(cd?cd.emoji:'')+'</span></div>'+
-      '<div style="font-size:0.7rem;font-weight:'+(prayer?'700':'400')+';color:'+(prayer?(kd===1?'#5ba3ff':'#ffcc44'):'#4d5a6e')+';">旧'+ky+(prayer?'🙏':'')+'</div>'+
-      '<div style="font-size:0.66rem;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"><span style="color:'+col+';font-weight:700;">'+(cd?(MB_ACT_WORD[cd.phase_name]||''):'')+'</span> '+inf.tags.join('')+'</div>'+
-      (inf.acts.length&&!(prayer&&inf.acts.length===1)?'<div style="font-size:0.58rem;color:#7a8699;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+inf.acts.filter(function(a){return a.t.indexOf('旧暦')!==0;}).map(function(a){return a.t;})[0]+'</div>':'')+
+    var hasB=(L.bookings!=null&&L.bookings!=='');
+    var status=(done||hasB)?'<div class="mb-c-st" style="font-size:0.62rem;color:#9ab;margin-top:3px;"><span class="mb-c-stxt">✅実行'+done+'/5'+(hasB?'　📒予約'+L.bookings:'')+'</span><span class="mb-c-smini">✅'+done+(hasB?' 📒'+L.bookings:'')+'</span></div>':'<div class="mb-c-st mb-c-none" style="font-size:0.62rem;color:#3a4454;margin-top:3px;">未記録</div>';
+    var ttl=inf.acts.filter(function(a){return a.t.indexOf('旧暦')!==0;}).map(function(a){return a.t;})[0];
+    h+='<td class="mb-cell'+(isT?' mb-today':'')+'" onclick="mbShowDay(\''+ds+'\')" style="border:1px solid '+bd+';border-left:3px solid '+col+';padding:5px;vertical-align:top;background:'+bg+';cursor:pointer;height:104px;">'+
+      '<div class="mb-c-top" style="display:flex;justify-content:space-between;align-items:flex-start;">'+
+        '<span class="mb-c-day" style="font-size:1rem;font-weight:'+(isT?'900':'600')+';color:'+(isT?'#90cdf4':'#8a94a6')+';">'+d+'</span>'+
+        '<span class="mb-c-moon" style="font-size:0.95rem;" title="'+(cd?cd.phase_name:'')+'">'+(cd?cd.emoji:'')+'</span></div>'+
+      '<div class="mb-c-ky" style="font-size:0.7rem;font-weight:'+(prayer?'700':'400')+';color:'+(prayer?(kd===1?'#5ba3ff':'#ffcc44'):'#4d5a6e')+';"><span class="mb-ky-pre">旧</span>'+ky+(prayer?'🙏':'')+'</div>'+
+      '<div class="mb-c-word" style="font-size:0.66rem;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"><span style="color:'+col+';font-weight:700;">'+(cd?(MB_ACT_WORD[cd.phase_name]||''):'')+'</span> <span class="mb-c-tags">'+inf.tags.join('')+'</span></div>'+
+      (ttl?'<div class="mb-c-title" style="font-size:0.58rem;color:#7a8699;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+ttl+'</div>':'')+
       strip+status+'</td>';
     if((first+d)%7===0&&d<last) h+='</tr><tr>';
   }
   var rem=(7-((first+last)%7))%7; for(var j=0;j<rem;j++) h+='<td style="border:1px solid #0d1420;background:#040810;"></td>';
   h+='</tr></tbody></table>';
   grid.innerHTML=h;
+  // 今月の要点リスト（スマホで読みやすい縦並び）
+  var ag=document.getElementById('mb-cal-agenda'); if(ag){
+    var rows=[];
+    for(var dd=1;dd<=last;dd++){
+      var ds2=yr+'-'+String(mo).padStart(2,'0')+'-'+String(dd).padStart(2,'0');
+      var i2=_mbDayInfo(ds2), c2=i2.cd; if(!i2.acts.length) continue;
+      var k2=window.kyurekiLookup?window.kyurekiLookup(ds2):null, L2=log[ds2]||{}, dn2=MB_AREAS.filter(function(a){return L2[a.k];}).length;
+      var colr=c2?_ac(c2.activity_type):'#555';
+      rows.push('<div onclick="mbShowDay(\''+ds2+'\')" style="cursor:pointer;display:flex;gap:10px;align-items:flex-start;padding:9px 10px;border-radius:9px;background:var(--card2);margin-bottom:6px;border-left:4px solid '+colr+';'+(ds2===DATA.mkt_today?'outline:1px solid var(--gold);':'')+'">'+
+        '<div style="min-width:54px;text-align:center;"><div style="font-size:1.05rem;font-weight:800;color:var(--text);">'+_mbFmt(ds2)+'</div><div style="font-size:0.66rem;color:#8a94a6;">'+(k2&&k2.month?'旧'+(k2.leap?'閏':'')+k2.month+'/'+k2.day:'')+'</div><div style="font-size:1rem;">'+(c2?c2.emoji:'')+'</div></div>'+
+        '<div style="flex:1;min-width:0;">'+i2.acts.map(function(a){return '<div style="font-size:0.8rem;margin-bottom:3px;">'+_mbBadge(a.b)+' <b style="color:var(--text);">'+a.t+'</b></div><div style="font-size:0.74rem;color:var(--text2);margin-bottom:5px;line-height:1.5;">'+a.a+'</div>';}).join('')+
+        ((dn2||(L2.bookings!=null&&L2.bookings!==''))?'<div style="font-size:0.7rem;color:#9ab;">✅実行'+dn2+'/5'+((L2.bookings!=null&&L2.bookings!=='')?'　📒予約'+L2.bookings:'')+'</div>':'')+
+        '</div></div>');
+    }
+    ag.innerHTML='<div style="font-size:0.9rem;font-weight:700;color:var(--gold);margin:14px 0 8px;">📌 '+yr+'年'+mo+'月の要点（押すと詳細・記録）</div>'+(rows.join('')||'<div style="font-size:0.8rem;color:var(--text2);">大きな行事・区切りはありません。</div>');
+  }
 }
 function mbToggle(ds,key){ var l=mbGetLog(); l[ds]=l[ds]||{}; l[ds][key]=!l[ds][key]; mbSaveLog(l); renderMbCalendar(); mbShowDay(ds); }
 function mbSaveDay(ds){ var l=mbGetLog(); l[ds]=l[ds]||{}; var b=document.getElementById('mb-in-book'), m=document.getElementById('mb-in-memo'); l[ds].bookings=b&&b.value!==''?parseInt(b.value,10):''; l[ds].memo=m?m.value:''; mbSaveLog(l); renderMbCalendar(); mbShowDay(ds); var s=document.getElementById('mb-save-msg'); if(s) s.textContent='保存しました'; }
-function mbShowDay(ds){
+function mbShowDay(ds,noScroll){
+  setTimeout(function(){ if(window.innerWidth<=640){ var el2=document.getElementById('mb-cal-detail'); if(el2&&mbShowDay._user) el2.scrollIntoView({behavior:'smooth',block:'start'}); } mbShowDay._user=true; },30);
   var inf=_mbDayInfo(ds), cd=inf.cd, el=document.getElementById('mb-cal-detail'); if(!el)return;
   var k=window.kyurekiLookup?window.kyurekiLookup(ds):null;
   var ph=cd?MOONBIZ_PHASES.find(function(p){return p.k===cd.phase_name;}):null;
@@ -3866,6 +3908,7 @@ function mbExportCSV(){
     <div style="font-size:0.72rem;color:var(--text2);margin-bottom:8px;">日付をクリックすると、その日に<b style="color:var(--text);">実行した行動（計画・発信・地元・数字・チーム）</b>と<b style="color:var(--text);">予約・問い合わせ件数</b>を記録できます。セル下の5色の帯が実行の記録です（🧭<span style="color:#c8a45a;">計画</span> 📣<span style="color:#60a5fa;">発信</span> 🤝<span style="color:#4ade80;">地元</span> 💴<span style="color:#f6ad55;">数字</span> 🧘<span style="color:#cc88ff;">チーム</span>）。記録はこの端末のブラウザに保存されます（CSVで書き出して大元シートへ）。</div>
     <div id="mb-cal-grid" style="overflow-x:auto;"></div>
     <div id="mb-cal-detail" style="margin-top:12px;"></div>
+    <div id="mb-cal-agenda"></div>
   </div>
 
   <div class="grid-2">
