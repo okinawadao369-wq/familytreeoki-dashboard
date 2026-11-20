@@ -3453,9 +3453,70 @@ function initMoonBizTab(){
   if(mEl) mEl.innerHTML='<thead><tr><th>月の相</th><th>旧暦の目安</th><th>🧭 計画・意思決定</th><th>📣 米軍家族向け発信</th><th>🤝 地元・関係づくり</th><th>💴 数字</th><th>🧘 チーム・自分</th></tr></thead><tbody>'+
     MOONBIZ_PHASES.map(function(p){var now=td&&td.phase_name===p.k;return '<tr class="'+(now?'mb-now':'')+'"><td style="white-space:nowrap;font-weight:700;color:'+_ac(p.t)+';">'+p.k+(now?' ◀今':'')+'</td><td style="white-space:nowrap;font-size:0.78rem;">'+p.ky+'<br><span style="color:#888;">'+p.t+'</span></td><td style="font-size:0.78rem;">'+p.plan+'</td><td style="font-size:0.78rem;">'+p.sofa+'</td><td style="font-size:0.78rem;">'+p.local+'</td><td style="font-size:0.78rem;">'+p.money+'</td><td style="font-size:0.78rem;">'+p.team+'</td></tr>';}).join('')+'</tbody>';
   // events table
+  renderMbCalendar(); mbShowDay(today);
   var eEl=document.getElementById('mb-events');
   if(eEl) eEl.innerHTML='<thead><tr><th>日付</th><th>行事・節目</th><th>区分</th><th>FTOの行動</th><th>根拠</th></tr></thead><tbody>'+
     MOONBIZ_EVENTS.map(function(e){var past=(e.end||e.date)<today;var k=window.kyurekiLookup?window.kyurekiLookup(e.date):null;return '<tr style="'+(past?'opacity:0.45;':'')+'"><td style="white-space:nowrap;">'+e.date+(e.end?'<br>〜'+e.end:'')+(k&&k.month?'<br><span style="color:#888;font-size:0.72rem;">'+k.label+'</span>':'')+'</td><td style="font-weight:700;">'+e.title+'</td><td>'+(e.cat==='okinawa'?'🏮 沖縄':'🇺🇸 米軍家族')+'</td><td style="font-size:0.78rem;">'+e.action+'</td><td>'+_mbBadge(e.basis)+'</td></tr>';}).join('')+'</tbody>';
+}
+
+/* ===== 月暦ビジネスカレンダー（2026-11-21追加） ===== */
+var MB_ACT_WORD={'新月・祈願':'計画','三日月・芽吹き':'始動','上弦・決断':'見直し','十三夜・最盛':'勝負','満月・感謝':'感謝','十六夜・振り返り':'振返り','下弦・整理':'整理','晦日・休息':'仕込み'};
+function _mbDayInfo(ds){
+  var cal=DATA.mkt_calendar||[], cd=null;
+  for(var i=0;i<cal.length;i++){ if(cal[i].date===ds){cd=cal[i];break;} }
+  var tags=[], acts=[];
+  if(cd&&(cd.kyureki_day===1||cd.kyureki_day===15)){ tags.push('🙏'); acts.push({t:cd.kyureki_day===1?'旧暦一日（新月）':'旧暦十五日（満月）',a:cd.kyureki_day===1?'朝は御願の時間に配慮。社内で今月の目標を1つ決める。':'お礼と振り返り。お客様の声・口コミのお願いを送る。',b:'文化A'}); }
+  if(MOONBIZ_PAYDAYS.indexOf(ds)>=0){ tags.push('💵'); acts.push({t:'米軍給料日',a:'入金日。予約・決済の動きを記録しておく。',b:'制度A'}); }
+  var nx=_mbAddDays(ds,1); if(MOONBIZ_PAYDAYS.indexOf(nx)>=0){ tags.push('📨'); acts.push({t:'給料日の前日（案内日）',a:'英語で予約案内・空き枠のお知らせを送る（効果は要検証）。',b:'仮説D'}); }
+  MOONBIZ_EVENTS.forEach(function(e){ var en=e.end||e.date; if(ds>=e.date&&ds<=en){ if(e.title.indexOf('PCS')>=0){ if(ds===e.date) {tags.push('🇺🇸');acts.push({t:e.title+'（開始）',a:e.action,b:e.basis});} return; } tags.push(e.cat==='okinawa'?'🏮':'🇺🇸'); acts.push({t:e.title,a:e.action,b:e.basis}); }});
+  (DATA.mkt_moon_events||[]).forEach(function(e){ if(e.date===ds){ tags.push(e.type==='new_moon'?'🌑':'🌕'); } });
+  return {cd:cd,tags:tags,acts:acts};
+}
+function mbCalInitSelect(){
+  var sel=document.getElementById('mb-cal-month'); if(!sel||sel.options.length)return;
+  var y=2026,m=11;
+  while(y<2027||(y===2027&&m<=12)){ var o=document.createElement('option'); o.value=y+'-'+String(m).padStart(2,'0'); o.textContent=y+'年'+m+'月'; sel.appendChild(o); m++; if(m>12){m=1;y++;} }
+  var ym=(DATA.mkt_today||'').slice(0,7); if([].some.call(sel.options,function(o){return o.value===ym;})) sel.value=ym;
+}
+function mbCalShift(n){ var sel=document.getElementById('mb-cal-month'); var i=sel.selectedIndex+n; if(i>=0&&i<sel.options.length){sel.selectedIndex=i;renderMbCalendar();} }
+function mbCalToday(){ var sel=document.getElementById('mb-cal-month'); sel.value=(DATA.mkt_today||'').slice(0,7); renderMbCalendar(); mbShowDay(DATA.mkt_today); }
+function renderMbCalendar(){
+  mbCalInitSelect();
+  var sel=document.getElementById('mb-cal-month'), grid=document.getElementById('mb-cal-grid'); if(!sel||!grid)return;
+  var yr=parseInt(sel.value.slice(0,4)), mo=parseInt(sel.value.slice(5,7));
+  var first=new Date(Date.UTC(yr,mo-1,1)).getUTCDay(), last=new Date(Date.UTC(yr,mo,0)).getUTCDate();
+  var html='';
+  for(var i=0;i<first;i++) html+='<div></div>';
+  for(var d=1;d<=last;d++){
+    var ds=yr+'-'+String(mo).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+    var inf=_mbDayInfo(ds), cd=inf.cd, isT=ds===DATA.mkt_today;
+    var col=cd?_ac(cd.activity_type):'#333';
+    var k=window.kyurekiLookup?window.kyurekiLookup(ds):null;
+    var ky=k&&k.month?((k.leap?'閏':'')+k.month+'/'+k.day):'';
+    var prayer=cd&&(cd.kyureki_day===1||cd.kyureki_day===15);
+    var dow=(first+d-1)%7;
+    html+='<div onclick="mbShowDay(\''+ds+'\')" style="cursor:pointer;min-height:86px;border-radius:7px;padding:4px;background:'+col+'14;border-left:3px solid '+col+';'+(isT?'outline:2px solid var(--gold);box-shadow:0 0 8px rgba(200,164,90,.4);':'')+(prayer?'border-top:2px solid '+(cd.kyureki_day===1?'#5ba3ff':'#ffcc44')+';':'')+'">'+
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start;">'+
+        '<span style="font-size:0.95rem;font-weight:800;color:'+(dow===0?'#e05555':dow===6?'#6ab0f5':'var(--text)')+';">'+d+'</span>'+
+        '<span style="font-size:0.9rem;">'+(cd?cd.emoji:'')+'</span></div>'+
+      '<div style="font-size:0.62rem;color:'+(prayer?(cd.kyureki_day===1?'#5ba3ff':'#ffcc44'):'#7a8699')+';font-weight:'+(prayer?'700':'400')+';">旧'+ky+'</div>'+
+      (cd?'<div style="font-size:0.6rem;color:'+col+';font-weight:700;margin-top:1px;">'+(MB_ACT_WORD[cd.phase_name]||'')+'</div>':'')+
+      (inf.tags.length?'<div style="font-size:0.72rem;margin-top:2px;line-height:1.2;">'+inf.tags.join('')+'</div>':'')+
+      (inf.acts.length?'<div style="font-size:0.55rem;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+inf.acts[0].t+'</div>':'')+
+    '</div>';
+  }
+  grid.innerHTML=html;
+}
+function mbShowDay(ds){
+  var inf=_mbDayInfo(ds), cd=inf.cd, el=document.getElementById('mb-cal-detail'); if(!el)return;
+  var k=window.kyurekiLookup?window.kyurekiLookup(ds):null;
+  var ph=cd?MOONBIZ_PHASES.find(function(p){return p.k===cd.phase_name;}):null;
+  el.innerHTML='<div style="background:var(--card2);border-radius:10px;padding:14px;border-left:4px solid '+(cd?_ac(cd.activity_type):'#555')+';">'+
+    '<div style="font-size:0.95rem;font-weight:700;color:var(--gold);">'+(cd?cd.emoji+' ':'')+_mbFmt(ds)+' '+ds.slice(0,4)+'年　'+(k?k.label:'')+'　'+(cd?cd.phase_name+'（'+cd.activity_type+'）':'')+'</div>'+
+    (inf.acts.length?'<div style="margin-top:8px;">'+inf.acts.map(function(a){return '<div style="font-size:0.8rem;margin-bottom:6px;">'+_mbBadge(a.b)+' <b>'+a.t+'</b><br><span style="color:var(--text2);margin-left:4px;">→ '+a.a+'</span></div>';}).join('')+'</div>':'')+
+    (ph?'<div style="font-size:0.8rem;font-weight:700;margin-top:8px;">この相でやること '+_mbBadge('運営リズム')+'</div><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:6px;margin-top:6px;font-size:0.75rem;color:var(--text2);">'+
+      '<div>🧭 <b>計画</b><br>'+ph.plan+'</div><div>📣 <b>米軍家族向け</b><br>'+ph.sofa+'</div><div>🤝 <b>地元・関係</b><br>'+ph.local+'</div><div>💴 <b>数字</b><br>'+ph.money+'</div><div>🧘 <b>チーム</b><br>'+ph.team+'</div></div>':'')+
+  '</div>';
 }
 </script>
 
@@ -3754,6 +3815,30 @@ function initMoonBizTab(){
   <div class="chart-card" style="border:1px solid var(--gold);">
     <h3>📍 今日の行動ナビ</h3>
     <div id="mb-today"></div>
+  </div>
+
+  <!-- 月暦ビジネスカレンダー -->
+  <div class="chart-card" style="border:1px solid #3a6ea8;">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:10px;">
+      <h3 style="margin:0;">📅 月暦ビジネスカレンダー</h3>
+      <div style="display:flex;gap:6px;align-items:center;">
+        <button onclick="mbCalShift(-1)" style="background:var(--card2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:5px 10px;cursor:pointer;">◀</button>
+        <select id="mb-cal-month" onchange="renderMbCalendar()" style="background:var(--card2);color:var(--text);border:1px solid var(--border);padding:6px 10px;border-radius:7px;font-size:0.82rem;"></select>
+        <button onclick="mbCalShift(1)" style="background:var(--card2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:5px 10px;cursor:pointer;">▶</button>
+        <button onclick="mbCalToday()" style="background:var(--gold);color:#0a1220;border:none;border-radius:6px;padding:5px 10px;cursor:pointer;font-weight:700;font-size:0.78rem;">今日</button>
+      </div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:10px;font-size:0.72rem;color:var(--text2);margin-bottom:8px;">
+      <span><span style="display:inline-block;width:10px;height:10px;background:#5ba85d;border-radius:2px;"></span> 活動期（実行）</span>
+      <span><span style="display:inline-block;width:10px;height:10px;background:#c8a45a;border-radius:2px;"></span> 思考期（計画・感謝）</span>
+      <span><span style="display:inline-block;width:10px;height:10px;background:#4a6fa5;border-radius:2px;"></span> 停滞期（振り返り・仕込み）</span>
+      <span>🙏 旧暦一日・十五日</span><span>💵 米軍給料日</span><span>📨 給料日前日（案内日）</span><span>🏮 沖縄行事</span><span>🇺🇸 米国行事</span><span>🌑🌕 天文の新月・満月</span>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:4px;">
+      <div style="text-align:center;font-size:0.7rem;color:#e05555;">日</div><div style="text-align:center;font-size:0.7rem;color:var(--text2);">月</div><div style="text-align:center;font-size:0.7rem;color:var(--text2);">火</div><div style="text-align:center;font-size:0.7rem;color:var(--text2);">水</div><div style="text-align:center;font-size:0.7rem;color:var(--text2);">木</div><div style="text-align:center;font-size:0.7rem;color:var(--text2);">金</div><div style="text-align:center;font-size:0.7rem;color:#6ab0f5;">土</div>
+    </div>
+    <div id="mb-cal-grid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;"></div>
+    <div id="mb-cal-detail" style="margin-top:12px;"></div>
   </div>
 
   <div class="grid-2">
