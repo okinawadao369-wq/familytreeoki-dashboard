@@ -2700,10 +2700,10 @@ window.addEventListener('load', function(){
 function initDefenseTab() {
   // KPI row
   const kpiData = [
-    {sym:'LMT',name:'ロッキード・マーティン',price:'$575.50',ytd:'+19.0%',color:'#48bb78'},
-    {sym:'RTX',name:'RTX (レイセオン)',price:'$195.15',ytd:'+6.4%',color:'#63b3ed'},
-    {sym:'NOC',name:'ノースロップ・グラマン',price:'$536.46',ytd:'-5.9%',color:'#fc8181'},
-    {sym:'GD',name:'ゼネラル・ダイナミクス',price:'$347.71',ytd:'+3.3%',color:'#68d391'},
+    {sym:'LMT',name:'ロッキード・マーティン',price:'$565.50',ytd:'+16.9%',color:'#48bb78'},
+    {sym:'RTX',name:'RTX (レイセオン)',price:'$190.17',ytd:'+3.7%',color:'#63b3ed'},
+    {sym:'NOC',name:'ノースロップ・グラマン',price:'$534.31',ytd:'-6.3%',color:'#fc8181'},
+    {sym:'GD',name:'ゼネラル・ダイナミクス',price:'$341.50',ytd:'+1.4%',color:'#68d391'},
   ];
   const kpiRow = document.getElementById('defense-kpi-row');
   if (kpiRow) kpiRow.innerHTML = kpiData.map(k=>`
@@ -2785,6 +2785,7 @@ function initGeopoliticsTab() {
     {date:'2027年1月',moon:'🌗下弦',event:'新議会発足（1/3）民主党多数の上下院 vs 大統領拒否権',prob:'中',color:'#ffaa00'},
     {date:'2027年4月',moon:'🌒/🌖',event:'フランス大統領選（4月・第1回投票）',prob:'中',color:'#ffaa00'},
     {date:'2027年8月',moon:'🌘晦日月',event:'中国人民解放軍 建軍100年（8/1）＝台湾有事の節目年として注目',prob:'高',color:'#ff4444'},
+    {date:'2026年12月',moon:'—',event:'米中露首脳会談の宿題：核リスク対話の初会合・石油増産の具体量・プーチンのG20出席',prob:'中',color:'#ffaa00'},
     {date:'継続中',moon:'—',event:'ホルムズ海峡の航行制限・米イラン対立／ウクライナ停戦交渉',prob:'高',color:'#ff4444'},
   ];
   const riskDiv = document.getElementById('geo-risk-2026');
@@ -2824,6 +2825,7 @@ function initGeopoliticsTab() {
     {date:'2025-04-02',moon:'🌒眉月',event:'米国相互関税発動（トランプ）',impact:'-9.1%',asset:'USD-3%',m_score:'55',note:'🌑新月後4日'},
     {date:'2025-08-15',moon:'🌖十六夜',event:'台湾海峡 中国演習激化',impact:'-3.3%',asset:'USD/TWD',m_score:'88',note:'🌕満月後6日'},
     {date:'2026-02-28',moon:'🌓上弦',event:'米・イスラエルのイラン攻撃（イラン戦争開始・ホルムズ海峡封鎖）',impact:'-2.0%',asset:'Brent+37%',m_score:'79',note:'🌕満月前3日'},
+    {date:'2026-11-19',moon:'🌓上弦',event:'米中露 初の3首脳会談（深圳）「平和宣言」',impact:'-5.6%',asset:'VIX 24.6→35.9',m_score:'—',note:'旧暦10/11。株安の主因はNVIDIA・AI株（S&P500 11/18→11/20）'},
   ];
   const tbl = document.getElementById('geo-events-table');
   if (!tbl) return;
@@ -2870,16 +2872,16 @@ function initGreedTab() {
 
   // Indicators
   const indicators = [
-    {name:'VIX 恐怖指数',val:'24.7',status:'警戒〜やや高め',color:'#68d391'},
+    {name:'VIX 恐怖指数',val:'35.9',status:'11/20・AI株急落で恐怖圏（11/18は24.7）',color:'#68d391'},
     {name:'プットコールレシオ',val:'0.71',status:'株式P/C 11/17・21日平均0.59（中立）',color:'#63b3ed'},
     {name:'NYSE 高値/安値比',val:'17 / 419',status:'新高値17・新安値419（11/17）＝売り優勢',color:'#ff6644'},
-    {name:'株式トレンド強度',val:'-3.8%',status:'S&P500の125日線乖離（11/18）・下向き',color:'#ff8844'},
-    {name:'BTC 30日ボラ',val:'~45%',status:'実現ボラ(30日・年率)',color:'#f6ad55'},
+    {name:'株式トレンド強度',val:'-8.9%',status:'S&P500の125日線乖離（11/20）・修正局面入り',color:'#ff8844'},
+    {name:'BTC 30日ボラ',val:'~45%',status:'実現ボラ(30日・年率・11/21)',color:'#f6ad55'},
     {name:'マージンデット',val:'$1.45T',status:'2026年10月末・6月の過去最高$1.50Tから-3.6%',color:'#ff8800'},
     {name:'信用スプレッド(HY)',val:'343bp',status:'11/17・52週レンジ260〜348bpの上限付近',color:'#ffaa44'},
-    {name:'ドル指数 (DXY)',val:'103.8',status:'2026年11月18日終値',color:'#f6ad55'},
-    {name:'原油 (Brent)',val:'$89.2',status:'2026年11月18日終値',color:'#ffcc44'},
-    {name:'金 (スポット)',val:'$3,734',status:'2026年11月18日終値(先物)',color:'#ffd700'},
+    {name:'ドル指数 (DXY)',val:'103.8',status:'2026年11月20日終値',color:'#f6ad55'},
+    {name:'原油 (Brent)',val:'$89.9',status:'11/20・米中露の増産宣言でも動かず',color:'#ffcc44'},
+    {name:'金 (スポット)',val:'$3,539',status:'11/20・1週間で約-9%',color:'#ffd700'},
   ];
   const indDiv = document.getElementById('greed-indicators');
   if (indDiv) indDiv.innerHTML = indicators.map(i=>`
@@ -3700,7 +3702,7 @@ window.addEventListener('load',function(){ var s=document.getElementById('sec-st
 <div id="sec-defense" class="section">
 <div class="main">
   <div class="section-title">🛡️ 防衛株 × 月相分析 <span style="font-size:0.7em;color:#888;">ミアシャイマー×25年データ 2000-2025</span></div>
-  <div style="font-size:0.72rem;color:#666;margin-bottom:8px;">💲 株価KPIは2026年11月18日終値のスナップショットです（YTDは2025年末比・自動更新なし）</div>
+  <div style="font-size:0.72rem;color:#666;margin-bottom:8px;">💲 株価KPIは2026年11月20日終値のスナップショットです（YTDは2025年末比・自動更新なし）</div>
   <div style="color:var(--text2);font-size:0.85rem;margin-bottom:18px;">防衛・航空宇宙・コモディティ15銘柄×旧暦一日（新月）・十五日（満月）の統計検証。地政学リスクが「満月」に集中する驚愕のパターン。</div>
 
   <!-- Current price KPIs -->
@@ -3739,6 +3741,25 @@ window.addEventListener('load',function(){ var s=document.getElementById('sec-st
     <div id="geo-risk-2026"></div>
   </div>
 
+
+  <!-- 🌐 米中露首脳会談の読み解き（2026-11-21追加） -->
+  <div class="card" style="margin-bottom:16px;border-top:3px solid #63b3ed;">
+    <div class="card-title">🌐 米中露 初の3首脳会談（2026-11-19 深圳・旧暦10/11）の読み解き</div>
+    <div style="font-size:0.8rem;color:var(--text2);line-height:1.7;">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin-bottom:10px;">
+        <div style="background:#0f1825;border-radius:8px;padding:10px;"><b style="color:#63b3ed;">📜 合意した4項目［事実A］</b><br>①国連改革の推進 ②精製石油製品の供給拡大・安定したエネルギーの流れ ③国家の同意と国家高官の免責の尊重（ICCをけん制） ④核リスク低減・不拡散の対話<br><span style="color:#888;">いずれも量・期限・手順の記載なし</span></div>
+        <div style="background:#0f1825;border-radius:8px;padding:10px;"><b style="color:#f6ad55;">🚫 書かれなかったこと［事実A］</b><br>ウクライナ、イラン戦争、台湾、核兵器の削減数・査察。<br><span style="color:#888;">「何を避けたか」に3か国の本音が出ている</span></div>
+        <div style="background:#0f1825;border-radius:8px;padding:10px;"><b style="color:#cc88ff;">🎯 3か国の狙い［強い推論B］</b><br>🇺🇸 中間選挙で上下院を失った直後の外交成果づくり<br>🇨🇳 議長国として「内政不干渉・核心的利益の尊重」を米国に確認させる場<br>🇷🇺 ICC逮捕状を抱える中で米中と対等に並ぶ写真（G20にも招待）</div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin-bottom:10px;">
+        <div style="background:#0f1825;border-radius:8px;padding:10px;"><b style="color:#68d391;">🧭 国際政治の読み</b><br>対立は続けたまま「衝突しないための最低限の線」と「大国の裁量（免責・不干渉）」を共有した＝<b>緊張の管理</b>であって<b>解消</b>ではない。Mスコアは据え置き。欧州・日本など中堅国は頭越しにされる構図。</div>
+        <div style="background:#0f1825;border-radius:8px;padding:10px;"><b style="color:#fc8181;">📉 市場の実測（11/18→11/20）［事実A］</b><br>S&P500 -5.6%（修正局面入り）・NASDAQ -7.4%・VIX 24.6→35.9・金 -5.4%・Brent -2.3%・ドル円159円台で横ばい。<br><span style="color:#888;">株安の主因はNVIDIA会計へのSEC調査報道とAI株の巻き戻しで、会談ではない。原油増産の宣言は相場を動かさず（Bloomberg）</span></div>
+        <div style="background:#0f1825;border-radius:8px;padding:10px;"><b style="color:#ffcc44;">🏝️ 沖縄・FTOへの意味</b><br>在日・在沖米軍の態勢に関する発表はなし＝米軍家族のお客様に直接の影響材料なし。円安159円台・原油90ドル前後が続き、米軍家族には円建て料金が割安、地元のご家族には物価負担。発信では大国政治の論評を避け、生活情報に徹する。</div>
+      </div>
+      <div style="background:#1a1408;border-radius:8px;padding:10px;"><b style="color:#ffcc44;">👀 次に見るもの</b>（宣言が「言葉だけ」か「枠組みの始まり」かの判定材料）：①G20マイアミ12/14-15にプーチンが出席するか ②核リスク対話の初会合が開かれるか ③石油増産の具体量 ④米中関税休戦の期限2027/1/10 ⑤ホルムズ海峡 ⑥台湾 11/28地方選と年末の演習。<br>
+      <span style="color:#888;">考えた流れ（事実→狙い→国際政治→地政学→市場→沖縄→監視→反映）は大元スプレッドシート「🌐地政学イベント思考ログ」に出典付きで保存。</span></div>
+    </div>
+  </div>
   <!-- Historical events table -->
   <div class="card" style="margin-bottom:16px;">
     <div class="card-title">📜 歴史的地政学イベント × 月相（1991-2026）</div>
@@ -3749,15 +3770,15 @@ window.addEventListener('load',function(){ var s=document.getElementById('sec-st
   <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
     <div class="card" style="border-top:3px solid #ff4444;">
       <div class="card-title">🇺🇦 ウクライナ情勢</div>
-      <div style="font-size:0.85rem;color:var(--text2);line-height:1.6;">Mスコア: <strong style="color:#ff6666;">98.2</strong><br>11/10-11アブダビ協議も停戦合意なし（捕虜交換のみ）<br>協議中も電力インフラ攻撃継続<br>露「欧州安保再編が先」vs 宇「停戦が先」<br><span style="color:#ff8888;">→ LMT/RTX受注継続</span></div>
+      <div style="font-size:0.85rem;color:var(--text2);line-height:1.6;">Mスコア: <strong style="color:#ff6666;">98.2</strong><br>11/10-11アブダビ協議も停戦合意なし<br>11/19米中露宣言にウクライナの記述なし<br>同日 欧州有志連合がベルリンで会合<br>露「欧州安保再編が先」vs 宇「停戦が先」<br><span style="color:#ff8888;">→ LMT/RTX受注継続</span></div>
     </div>
     <div class="card" style="border-top:3px solid #ffaa00;">
       <div class="card-title">🇹🇼 台湾海峡</div>
-      <div style="font-size:0.85rem;color:var(--text2);line-height:1.6;">Mスコア: <strong style="color:#ffcc44;">90</strong><br>9月米中首脳会談で休戦を1/10まで延長<br>11月に未公表の大規模展開の可能性（分析段階）<br>11/28地方選・11〜12月は演習多発期<br><span style="color:#ffaa44;">→ NOC/LMT宇宙防衛に注目</span></div>
+      <div style="font-size:0.85rem;color:var(--text2);line-height:1.6;">Mスコア: <strong style="color:#ffcc44;">90</strong><br>11/19米中露宣言に台湾の記述なし<br>中国は「内政不干渉・核心的利益の尊重」を要求<br>11月に未公表の大規模展開の可能性（分析段階）<br>11/28地方選・米中休戦期限1/10<br><span style="color:#ffaa44;">→ NOC/LMT宇宙防衛に注目</span></div>
     </div>
     <div class="card" style="border-top:3px solid #aa44ff;">
       <div class="card-title">☢️ 中東・イラン核問題</div>
-      <div style="font-size:0.85rem;color:var(--text2);line-height:1.6;">Mスコア: <strong style="color:#cc88ff;">75</strong><br>2/28開戦以降の戦争状態が継続<br>ホルムズ海峡は航行制限（11/18）<br>原油 Brent $89（11/18）<br><span style="color:#aa66ff;">→ エネルギー株・金に注目</span></div>
+      <div style="font-size:0.85rem;color:var(--text2);line-height:1.6;">Mスコア: <strong style="color:#cc88ff;">75</strong><br>2/28開戦以降の戦争状態が継続<br>米中露宣言は「安定したエネルギーの流れ」を掲げたがイラン言及なし<br>ホルムズ海峡は航行制限継続／Brent $89.9（11/20）<br><span style="color:#aa66ff;">→ エネルギー株・金に注目</span></div>
     </div>
   </div>
 </div>
@@ -3766,7 +3787,7 @@ window.addEventListener('load',function(){ var s=document.getElementById('sec-st
 <!-- ===== 💹 欲望指数 ===== -->
 <div id="sec-greed" class="section">
 <div class="main">
-  <div class="section-title">💹 市場欲望指数 <span style="font-size:0.7em;color:#888;">全10指標を2026年11月17〜18日の値に更新</span></div>
+  <div class="section-title">💹 市場欲望指数 <span style="font-size:0.7em;color:#888;">VIX・トレンド・原油・金・BTC・DXYは11/20〜21、その他は11/17〜18の値</span></div>
   <div style="color:var(--text2);font-size:0.85rem;margin-bottom:18px;">「人の思考が数字の影響力で知らぬ間に動く」—月の引力が欲望と恐怖を駆動する10指標の可視化。</div>
 
   <!-- Fear & Greed Gauge -->
@@ -3789,8 +3810,8 @@ window.addEventListener('load',function(){ var s=document.getElementById('sec-st
       <div style="font-size:3rem;">₿</div>
       <div>
         <div style="font-size:1.1rem;font-weight:700;color:#f7931a;">BTC = 人類の純粋欲望の結晶体</div>
-        <div style="font-size:0.85rem;color:#cc7722;margin-top:4px;">現在価格: <strong style="color:#f7931a;font-size:1.2rem;">~$62,357</strong>（2026年11月18日時点）</div>
-        <div style="font-size:0.85rem;color:#888;margin-top:4px;">高値 $126,198（2025年10月）から-51%。恐怖&欲望指数24＝恐怖（11/18）。<br>旧暦分析: BTC満月リターン平均+0.71%(p=0.085 △準有意) — 30年で最も強い月相シグナル。</div>
+        <div style="font-size:0.85rem;color:#cc7722;margin-top:4px;">現在価格: <strong style="color:#f7931a;font-size:1.2rem;">~$58,967</strong>（2026年11月21日時点）</div>
+        <div style="font-size:0.85rem;color:#888;margin-top:4px;">高値 $126,198（2025年10月）から-53%。恐怖&欲望指数24＝恐怖（11/18）。<br>旧暦分析: BTC満月リターン平均+0.71%(p=0.085 △準有意) — 30年で最も強い月相シグナル。</div>
       </div>
     </div>
   </div>
