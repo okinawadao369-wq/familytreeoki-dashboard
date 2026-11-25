@@ -306,6 +306,8 @@
   #hx-grid .hx-astro{font-size:0.58rem!important;} #hx-grid .hx-word{font-size:0.54rem!important;} #hx-grid .hx-st{font-size:0.5rem!important;}
 }
 @media (max-width:380px){ #hx-grid .hx-moon{display:none;} }
+
+@media (max-width:640px){ #my-grid td.my-cell{height:62px!important;padding:2px!important;} #my-grid .my-d{font-size:0.8rem!important;} #my-grid .my-i{font-size:0.85rem!important;} #my-grid .my-n{font-size:0.5rem!important;} #my-grid .my-k{font-size:0.5rem!important;} }
 </style>
 
 <!-- 30y patch moved to main script -->
@@ -4774,7 +4776,7 @@ function initAstroTab(){
     mt.innerHTML='<thead><tr><th>銘柄</th><th>期間</th><th>水星逆行中の平均</th><th>それ以外の平均</th><th>日数（逆行/他）</th><th>p値</th></tr></thead><tbody>'+rows.join('')+'</tbody>'; }
   var mn=document.getElementById('ax-mtest-note');
   if(mn) mn.innerHTML='🔬 <strong>結果</strong>：S&P500（1995〜2026年）と日経225は、水星逆行中の平均リターンがそれ以外の日より低く、前半・後半とも同じ向きでした。48か国の株価指数を調べた研究（Hang & Wang 2021、年率約3%低い）とも向きは同じです。ただし今回の検定ではどれも統計的に有意ではなく（p=0.07〜0.47）、BTCは前半と後半で向きが逆転しました。<b>「水星逆行中は株が弱いかもしれない」は競合仮説C</b>（偶然と区別できない）で、売買判断には使いません。';
-  renderHxCalendar(); hxShowDay(today); initHxTheme(); renderTeam();
+  renderHxCalendar(); hxShowDay(today); initHxTheme(); renderTeam(); renderMy(); myShowDay(today);
   if(!document.getElementById('ax-date').value) document.getElementById('ax-date').value='2027-05-15';
   axMakeCard();
 }
@@ -4963,8 +4965,8 @@ function tmAdd(){ var n=document.getElementById('tm-name').value.trim(), r=docum
   var msg=document.getElementById('tm-msg'); if(!n||!d){ msg.style.color='#f87171'; msg.textContent='名前と生年月日を入れてください'; return; }
   if(d<'1938-01-01'||d>'2032-12-31'){ msg.style.color='#f87171'; msg.textContent='1938〜2032年の日付に対応しています'; return; }
   var L=tmGet(); L.push({name:n.slice(0,30),role:r,date:d,time:t}); tmSet(L); document.getElementById('tm-name').value=''; document.getElementById('tm-date').value=''; document.getElementById('tm-time').value='';
-  msg.style.color='#68d391'; msg.textContent='この端末に保存しました'; renderTeam(); renderHxCalendar(); }
-function tmDel(i){ if(!confirm('この登録を削除しますか？（この端末からのみ削除されます）')) return; var L=tmGet(); L.splice(i,1); tmSet(L); renderTeam(); renderHxCalendar(); }
+  msg.style.color='#68d391'; msg.textContent='この端末に保存しました'; renderTeam(); renderHxCalendar(); renderMy(); myShowDay(DATA.mkt_today); }
+function tmDel(i){ if(!confirm('この登録を削除しますか？（この端末からのみ削除されます）')) return; var L=tmGet(); L.splice(i,1); tmSet(L); renderTeam(); renderHxCalendar(); renderMy(); myShowDay(DATA.mkt_today); }
 function tmDayMarks(ds){ var s=''; if(ds.slice(5)===TM_COMPANY.date.slice(5)) s+='🏢'; var L=tmGet(); for(var i=0;i<L.length;i++){ var p=L[i]; if(tmNextSolar(p.date,ds)===ds){ s+='🎂'; break; } var n=window.kyurekiLookup?window.kyurekiLookup(p.date):null, k=window.kyurekiLookup?window.kyurekiLookup(ds):null; if(n&&k&&n.month===k.month&&n.day===k.day&&!k.leap){ s+='🎂'; break; } } return s; }
 function tmDayDetail(ds){ var L=tmGet(), out=[]; if(ds.slice(5)===TM_COMPANY.date.slice(5)) out.push('🏢 合同会社koya 設立記念日（'+(+ds.slice(0,4)-2024)+'周年）');
   var xi=_hxIdx(ds);
@@ -4973,6 +4975,89 @@ function tmDayDetail(ds){ var L=tmGet(), out=[]; if(ds.slice(5)===TM_COMPANY.dat
     if(n.kyu&&k&&n.kyu.month===k.month&&n.kyu.day===k.day&&!k.leap) out.push('🏮 '+tmEsc(p.name)+'の旧暦の誕生日');
     if(xi>=0&&ASTRO.days[xi][2]===n.sun) out.push('🌙 '+tmEsc(p.name)+'のムーンデー'); });
   return out.length?'<div style="margin-top:8px;background:#132018;border-radius:8px;padding:8px;"><div style="font-size:0.7rem;color:#68d391;">👥 チーム</div>'+out.map(function(o){return '<div style="color:var(--text);">'+o+'</div>';}).join('')+'</div>':''; }
+
+/* ===== 🌙 わたしの月暦カレンダー（2026-11-25追加・エンタメ） ===== */
+var MY_LOG='koya_my_log_v1', MY_SEL='koya_my_sel_v1';
+var MY_TYPES={
+ bday:{i:'🎂',n:'誕生日',s:5,c:'#ff9fd0',m:'お誕生日おめでとう！今日は主役の日。やりたいことを1つ宣言してみよう。'},
+ kbday:{i:'🏮',n:'旧暦の誕生日',s:5,c:'#ffcc44',m:'沖縄の暦でのお誕生日。家族やご先祖さまに「ありがとう」を伝える日。'},
+ moon:{i:'🌙',n:'ムーンデー',s:5,c:'#c8d4ff',m:'月があなたの星座に来る日。アイデアを話す・提案する・新しいことを試すお題の日。'},
+ home:{i:'💭',n:'心のホームデー',s:4,c:'#cc88ff',m:'月があなたの心の星座に帰ってくる日。好きなこと・ほっとすることを少しだけ。'},
+ flow:{i:'🌊',n:'流れに乗る日',s:4,c:'#68d391',m:'今日の月とあなたの星座は同じエレメント。いつもの仕事を気持ちよく進めるお題の日。'},
+ listen:{i:'🤝',n:'聞き役デー',s:3,c:'#60a5fa',m:'月があなたの星座の向かい側に。人の話を聞く・ありがとうを伝えるお題の日。'},
+ base:{i:'🌱',n:'コツコツデー',s:3,c:'#8a94a6',m:'いつものリズムを大切に。小さな「できた」を1つ積み重ねる日。'}};
+var MY_COLOR=[['赤・オレンジ','#ff7a6b'],['グリーン・ブラウン','#68d391'],['イエロー・水色','#ffd966'],['ブルー・パープル','#7fa8ff']];
+function myGetLog(){ try{ return JSON.parse(localStorage.getItem(MY_LOG)||'{}'); }catch(e){ return {}; } }
+function mySetLog(l){ try{ localStorage.setItem(MY_LOG,JSON.stringify(l)); }catch(e){} }
+function _myPerson(){ var L=tmGet(); if(!L.length) return null; var s=0; try{ s=+(localStorage.getItem(MY_SEL)||0); }catch(e){} if(s>=L.length) s=0; return {i:s,p:L[s]}; }
+function myDayType(p,n,ds){ var xi=_hxIdx(ds), ax=xi>=0?ASTRO.days[xi]:null;
+  if(tmNextSolar(p.date,ds)===ds) return 'bday';
+  var k=window.kyurekiLookup?window.kyurekiLookup(ds):null; if(n.kyu&&k&&n.kyu.month===k.month&&n.kyu.day===k.day&&!k.leap) return 'kbday';
+  if(!ax) return 'base'; var ms=ax[2];
+  if(ms===n.sun) return 'moon'; if(ms===n.moon) return 'home'; if(ms%4===n.sun%4) return 'flow'; if(ms===(n.sun+6)%12) return 'listen'; return 'base'; }
+function myInitSelect(){ var s=document.getElementById('my-month'); if(!s||s.options.length) return; var y=2026,m=11; while(y<2028||(y===2028&&m<=6)){ var o=document.createElement('option'); o.value=y+'-'+String(m).padStart(2,'0'); o.textContent=y+'年'+m+'月'; s.appendChild(o); m++; if(m>12){m=1;y++;} } var ym=(DATA.mkt_today||'').slice(0,7); if([].some.call(s.options,function(o){return o.value===ym;})) s.value=ym; }
+function myShift(n){ var s=document.getElementById('my-month'); var i=s.selectedIndex+n; if(i>=0&&i<s.options.length){ s.selectedIndex=i; renderMy(); } }
+function myPick(i){ try{ localStorage.setItem(MY_SEL,String(i)); }catch(e){} renderMy(); myShowDay(DATA.mkt_today); }
+function renderMy(){
+  var box=document.getElementById('my-wrap'); if(!box) return; myInitSelect();
+  var L=tmGet(), cur=_myPerson();
+  var pick=document.getElementById('my-people');
+  if(!cur){ pick.innerHTML=''; document.getElementById('my-grid').innerHTML='<div style="font-size:0.82rem;color:var(--text2);padding:10px 0;">上の「👥 チームの星と暦」で自分を登録すると、ここにあなた専用の月暦カレンダーが出ます。</div>'; document.getElementById('my-detail').innerHTML=''; document.getElementById('my-head').innerHTML=''; return; }
+  pick.innerHTML=L.map(function(p,i){ return '<button onclick="myPick('+i+')" style="background:'+(i===cur.i?'var(--gold)':'var(--card2)')+';color:'+(i===cur.i?'#0a1220':'var(--text)')+';border:1px solid var(--border);border-radius:16px;padding:5px 12px;font-size:0.8rem;font-weight:'+(i===cur.i?'700':'400')+';cursor:pointer;">'+tmEsc(p.name)+'</button>'; }).join('');
+  var p=cur.p, n=tmNatal(p.date,p.time), sel=document.getElementById('my-month'), yr=+sel.value.slice(0,4), mo=+sel.value.slice(5,7);
+  var first=new Date(Date.UTC(yr,mo-1,1)).getUTCDay(), last=new Date(Date.UTC(yr,mo,0)).getUTCDate(), log=myGetLog()[p.name]||{}, cnt={}, stamps=0;
+  var h='<table style="width:100%;border-collapse:collapse;table-layout:fixed;"><thead><tr>';
+  ['日','月','火','水','木','金','土'].forEach(function(d,i){ h+='<th style="padding:5px 1px;font-size:0.72rem;color:'+(i===0?'#e05555':i===6?'#6ab0f5':'#777')+';">'+d+'</th>'; });
+  h+='</tr></thead><tbody><tr>'; for(var i=0;i<first;i++) h+='<td style="border:1px solid #0d1420;background:#050a10;"></td>';
+  for(var d=1;d<=last;d++){
+    var ds=yr+'-'+String(mo).padStart(2,'0')+'-'+String(d).padStart(2,'0'), t=myDayType(p,n,ds), T=MY_TYPES[t]; cnt[t]=(cnt[t]||0)+1;
+    var cd=(DATA.mkt_calendar||[]).find(function(x){return x.date===ds;}), k=window.kyurekiLookup?window.kyurekiLookup(ds):null, isT=ds===DATA.mkt_today, st=!!log[ds]; if(st) stamps++;
+    h+='<td class="my-cell" onclick="myShowDay(\''+ds+'\')" style="border:1px solid #0d1828;border-top:3px solid '+T.c+';padding:4px 3px;vertical-align:top;cursor:pointer;height:84px;background:'+(isT?'#0d1f35':T.c+(t==='base'?'08':'18'))+';'+(isT?'outline:2px solid var(--gold);':'')+'">'+
+      '<div style="display:flex;justify-content:space-between;align-items:center;"><span class="my-d" style="font-size:0.95rem;font-weight:'+(isT?'900':'700')+';color:'+(isT?'#90cdf4':'#c9d1e0')+';">'+d+'</span><span class="my-i" style="font-size:1.05rem;">'+T.i+'</span></div>'+
+      '<div class="my-n" style="font-size:0.6rem;color:'+T.c+';font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+T.n+'</div>'+
+      '<div class="my-k" style="font-size:0.58rem;color:#5d6a80;">'+(cd?cd.emoji:'')+' '+(k&&k.month?k.month+'/'+k.day:'')+'</div>'+
+      (st?'<div style="font-size:0.7rem;">✅</div>':'')+'</td>';
+    if((first+d)%7===0&&d<last) h+='</tr><tr>';
+  }
+  var rem=(7-((first+last)%7))%7; for(var j=0;j<rem;j++) h+='<td style="border:1px solid #0d1420;background:#040810;"></td>';
+  document.getElementById('my-grid').innerHTML=h+'</tr></tbody></table>';
+  document.getElementById('my-head').innerHTML='<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:0.78rem;color:var(--text2);margin:6px 0;">'+
+    '<b style="color:var(--text);font-size:0.95rem;">'+tmEsc(p.name)+' さんの月暦</b>'+
+    '<span>☉'+AX_SIGN_ICON[n.sun]+ASTRO.signs[n.sun]+'・☽'+AX_SIGN_ICON[n.moon]+ASTRO.signs[n.moon]+'・'+(n.kyu&&n.kyu.month?'旧暦'+n.kyu.month+'/'+n.kyu.day+'生まれ':'')+'</span>'+
+    '<span style="margin-left:auto;">今月: 🌙×'+(cnt.moon||0)+' 💭×'+(cnt.home||0)+' 🌊×'+(cnt.flow||0)+'　<b style="color:#68d391;">✅スタンプ '+stamps+'</b></span></div>';
+}
+function _myWheel(xi,n){ var s=_hxWheel(xi); if(!s) return ''; var cx=150,cy=150,R=146;
+  function pt(lon,r){ var a=(180-lon)*Math.PI/180; return [cx+r*Math.cos(a),cy+r*Math.sin(a)]; }
+  var add='', marks=[[n.sun*30+n.sunDeg,'☉','#ffcc44'],[n.moon*30+n.moonDeg,'☽','#dfe6ff']];
+  marks.forEach(function(m){ var q=pt(m[0],R-2), q2=pt(m[0],R+0); add+='<circle cx="'+q[0].toFixed(1)+'" cy="'+q[1].toFixed(1)+'" r="7" fill="#0a1024" stroke="'+m[2]+'" stroke-width="1.5"/><text x="'+q[0].toFixed(1)+'" y="'+(q[1]+4).toFixed(1)+'" text-anchor="middle" font-size="10" fill="'+m[2]+'">'+m[1]+'</text>'; });
+  return s.replace('viewBox="0 0 300 300"','viewBox="-8 -8 316 316"').replace('</svg>',add+'</svg>'); }
+function myToggle(ds){ var c=_myPerson(); if(!c) return; var l=myGetLog(); l[c.p.name]=l[c.p.name]||{}; if(l[c.p.name][ds]) delete l[c.p.name][ds]; else l[c.p.name][ds]=1; mySetLog(l); renderMy(); myShowDay(ds); }
+function myShowDay(ds){
+  var el=document.getElementById('my-detail'), c=_myPerson(); if(!el||!c) return;
+  var p=c.p, n=tmNatal(p.date,p.time), t=myDayType(p,n,ds), T=MY_TYPES[t], xi=_hxIdx(ds), ax=xi>=0?ASTRO.days[xi]:null;
+  var cd=(DATA.mkt_calendar||[]).find(function(x){return x.date===ds;}), ph=cd?MOONBIZ_PHASES.find(function(q){return q.k===cd.phase_name;}):null, k=window.kyurekiLookup?window.kyurekiLookup(ds):null;
+  var col=ax?MY_COLOR[ax[2]%4]:null, th=ax?HX_THEME[ax[2]]:null, done=!!(myGetLog()[p.name]||{})[ds];
+  var dd=new Date(ds+'T00:00:00Z'), wd=['日','月','火','水','木','金','土'][dd.getUTCDay()];
+  var acts=(TM_ROLE[p.role]||['team']).map(function(kk){ var a=MB_AREAS.find(function(x){return x.k===kk;}); return ph?'<div>'+a.i+' <b>'+a.n+'</b>：'+ph[kk]+'</div>':''; }).join('');
+  var inf=_mbDayInfo(ds);
+  el.innerHTML='<div style="background:linear-gradient(160deg,#1b1640,#0d1430 70%);border:1px solid '+T.c+';border-radius:14px;padding:14px;">'+
+    '<div style="font-size:0.72rem;color:#8a94c6;">'+tmEsc(p.name)+' さんの '+ds.replace(/-/g,'/')+'（'+wd+'）　'+(k?k.label:'')+'　'+(cd?cd.emoji+' '+cd.phase_name:'')+'</div>'+
+    '<div style="display:flex;align-items:center;gap:10px;margin:8px 0;"><div style="font-size:2.2rem;">'+T.i+'</div><div><div style="font-size:1.15rem;font-weight:800;color:'+T.c+';">'+T.n+'</div><div style="font-size:0.95rem;color:#ffcc44;">'+'★'.repeat(T.s)+'<span style="color:#333;">'+'★'.repeat(5-T.s)+'</span></div></div></div>'+
+    '<div style="font-size:0.88rem;color:#dfe4ff;line-height:1.7;">'+T.m+'</div>'+
+    (xi>=0?'<div style="text-align:center;margin-top:8px;">'+_myWheel(xi,n)+'<div style="font-size:0.66rem;color:#8a94c6;">内側＝今日の空（JST正午）／外周の丸印＝'+tmEsc(p.name)+'さんの生まれた日の☉太陽・☽月</div></div>':'')+
+    '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-top:10px;font-size:0.78rem;color:var(--text2);">'+
+      (col?'<div style="background:#0d1430;border-radius:8px;padding:8px;">🎨 ラッキーカラー<br><b style="color:'+col[1]+';">'+col[0]+'</b></div>':'')+
+      (th?'<div style="background:#0d1430;border-radius:8px;padding:8px;">💬 今日のお題<br><b style="color:#c8d4ff;">'+th[1]+'</b></div>':'')+
+      (ax?'<div style="background:#0d1430;border-radius:8px;padding:8px;">☽ 今日の月<br><b style="color:var(--text);">'+AX_SIGN_ICON[ax[2]]+' '+ASTRO.signs[ax[2]]+'</b></div>':'')+
+    '</div>'+
+    (acts?'<div style="font-size:0.8rem;color:var(--text2);line-height:1.7;margin-top:10px;"><b style="color:var(--gold);">🧭 チームのリズム（'+tmEsc(p.role)+'）</b>'+acts+'</div>':'')+
+    (inf.acts.length?'<div style="font-size:0.76rem;color:var(--text2);margin-top:6px;">'+inf.acts.map(function(a){return '・'+a.t;}).join('<br>')+'</div>':'')+
+    '<button onclick="myToggle(\''+ds+'\')" style="margin-top:12px;width:100%;background:'+(done?'#1f3a28':'var(--gold)')+';color:'+(done?'#68d391':'#0a1220')+';border:'+(done?'1px solid #68d391':'none')+';border-radius:10px;padding:10px;font-weight:800;cursor:pointer;font-size:0.9rem;">'+(done?'✅ やってみた！（スタンプ済み・押すと取り消し）':'✨ 今日のお題をやってみた → スタンプを押す')+'</button>'+
+    '<div style="font-size:0.62rem;color:#6a7090;margin-top:8px;">遊び・話題づくりのためのカレンダーです。星の位置は天文計算、旧暦は国立天文台方式。記録はこの端末の中だけに保存されます。</div>'+
+  '</div>';
+  if(window.innerWidth<=640 && myShowDay._u) el.scrollIntoView({behavior:'smooth',block:'start'}); myShowDay._u=true;
+}
+window.addEventListener('load',function(){ if(location.hash==='#my'){ setTimeout(function(){ try{ showSection('astro'); var w=document.getElementById('my-wrap'); if(w) w.scrollIntoView(); }catch(e){} },300); } });
 </script>
 
 <!-- ===== 🛡️ 防衛株×月相 ===== -->
@@ -5423,6 +5508,32 @@ function tmDayDetail(ds){ var L=tmGet(), out=[]; if(ds.slice(5)===TM_COMPANY.dat
     </div>
     <div id="tm-cards"></div>
     <div id="tm-upcoming" style="margin-top:12px;"></div>
+  </div>
+
+  <!-- 🌙 わたしの月暦カレンダー（2026-11-25追加） -->
+  <div class="chart-card" id="my-wrap" style="border:2px solid #ffcc44;">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+      <h3 style="margin:0;">🌙 わたしの月暦カレンダー <span style="font-size:0.7rem;color:#ffcc44;font-weight:400;">エンタメ</span></h3>
+      <div style="display:flex;gap:6px;align-items:center;">
+        <button onclick="myShift(-1)" style="background:var(--card2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:5px 10px;cursor:pointer;">◀</button>
+        <select id="my-month" onchange="renderMy()" style="background:var(--card2);color:var(--text);border:1px solid var(--border);padding:6px 10px;border-radius:7px;font-size:0.82rem;"></select>
+        <button onclick="myShift(1)" style="background:var(--card2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:5px 10px;cursor:pointer;">▶</button>
+      </div>
+    </div>
+    <div style="font-size:0.74rem;color:var(--text2);line-height:1.6;margin:6px 0;">登録した人ごとに、月の動きと自分の星座・旧暦の誕生日から「今日はどんな日？」を色とアイコンで表示します。日付を押すと、その日のメッセージ・ラッキーカラー・お題・チームのリズムが出て、やってみたらスタンプを押せます。</div>
+    <div id="my-people" style="display:flex;flex-wrap:wrap;gap:6px;margin:6px 0;"></div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;font-size:0.68rem;color:var(--text2);margin-bottom:4px;">
+      <span>🎂 誕生日</span><span>🏮 旧暦の誕生日</span><span>🌙 ムーンデー★5</span><span>💭 心のホーム★4</span><span>🌊 流れに乗る★4</span><span>🤝 聞き役★3</span><span>🌱 コツコツ★3</span><span>✅ スタンプ</span>
+    </div>
+    <div id="my-head"></div>
+    <div id="my-grid" style="overflow-x:auto;"></div>
+    <div id="my-detail" style="margin-top:12px;"></div>
+    <div style="margin-top:12px;background:#0d1430;border-radius:10px;padding:10px 12px;font-size:0.76rem;color:var(--text2);line-height:1.7;">
+      📱 <b style="color:var(--text);">自分のスマホで毎日見るには</b><br>
+      ① スマホでこのURLを開く：<b style="color:#c8d4ff;word-break:break-all;">familytreeoki.com/familytreeoki-dashboard/lunar-intelligence-dashboard.html#my</b>（最後の <b>#my</b> を付けると、このカレンダーが直接開きます）<br>
+      ② 上の「👥 チームの星と暦」で自分を登録（そのスマホの中だけに保存）<br>
+      ③ ホーム画面に追加：iPhoneは共有ボタン→「ホーム画面に追加」、Androidはメニュー→「ホーム画面に追加」
+    </div>
   </div>
   <div class="chart-card">
     <h3>☽ 月の星座 × 発信テーマ早見表［話題性］</h3>
